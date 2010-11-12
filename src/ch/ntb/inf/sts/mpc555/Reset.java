@@ -5,10 +5,9 @@ import ch.ntb.inf.sts.internal.*;
  * 11.11.10	NTB/GRAU	creation
  */
 
-class Decrementer extends Exception {
-
-	static void decrementer() {
+class Reset extends Exception {
+	
+	static void reset() {
 		
 	}
-
 }

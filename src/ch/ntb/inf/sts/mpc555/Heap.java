@@ -1,23 +1,31 @@
 package ch.ntb.inf.sts.mpc555;
 
+/*changes:
+ * 11.11.10	NTB/GRAU	creation
+ */
+
 public class Heap {
-	private static final int $NATIVE = 0xCedeBead;
 
-	private static byte // native method names, parameter list equals the
-			// corresponding methods in this class
-			_0Init, // Constructor value
-			Sweep, // PROCEDURE Sweep*;
-			Mark; // PROCEDURE Mark* ; 
-
-	private Heap() {
-		_0Init = _0Init;
+	// called by new	
+	private static Object newObject(Object ref) {
+		return ref;
 	}
 	
-	public static void Mark() {
-		Mark = Mark;
+	// called by newarray	
+	private static Object newArray(int nofElements, int type) {
+		Object ref = null;
+		return ref;
 	}
 	
-	public static void Sweep() {
-		Sweep = Sweep;
+	// called by anewarray	
+	private static Object anewArray(int nofElements, Object ref) {
+		return ref;
 	}
+	
+	// called by multianewarray	
+	private static Object multianewArray(int nofDimensions, int dim1, int dim2) {
+		Object ref = null;
+		return ref;
+	}
+	
 }

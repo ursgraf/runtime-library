@@ -1,54 +1,10 @@
 package ch.ntb.inf.sts.mpc555;
 
 /*changes:
- 24.3.05	NTB/ED	Emulationsanweisungen gelöscht
- 10.5.04	NTB/ED	new native interface
- 19.3.04	NTB/sz	creation
+ * 11.11.10	NTB/GRAU	creation
  */
-/**
- <ul>
- <li><b>Kategorie 1: </b>&nbsp;<i>nextActivation &lt;= timeInMs() &amp;&amp; period == 0</i><br>
- <i>Tasks</i> die immer bereit sind, werden zyklisch aktiviert, bis zu 50'000 Taks pro 
- Sekunde.</li>
- <li><b>Kategorie 2:</b>&nbsp; <i>nextActivation &gt; timeInMs()</i><br>
- Nächste Aktivierung erfolgt frühestens zum Zeitpunkt nextActivation == 
- timeInMs().<br>
- Nach der Aktivierung entscheidet die Instanzvariable <i>period</i>, ob er in die 
- Kategorie 1 oder 3 wechselt.</li>
- <li><b>Kategorie 3: </b>&nbsp;<i>period &gt; 0</i> (periodische Tasks)<br>
- <i>Tasks</i> werden periodisch aktiviert, die Zustandsvariable&nbsp; <i>nextActivation</i>&nbsp; legt 
- den Zeitpunkt der nächsten Aktivierung fest, beim gerade aktiven <i>Task</i> die 
- geplante Startzeit. <i>&nbsp;nextActivation</i>&nbsp; wird am Ende der 
- Aktivierung um den Wert von&nbsp; <i>period</i>&nbsp; erhöht.</li>
- <li><b>Kategorie 4:</b>&nbsp; <i>stop == true</i> (gestoppte Tasks)<br>
- <i>Tasks</i> die gestoppt wurden werden nicht mehr aktiviert und aus der Liste der 
- installierten <i>Taks</i> entfernt.<br>
- Wird ein <i>Task</i> während der aktiven Zeit gestoppt, ist es ihm überlassen, ob er 
- die gegenwärtige Aufgabe zu Ende bringt oder an geeigneter Stelle abbricht.</li>
- </ul>
- */
-/**
- * Tasking System - Verwaltung von <i>Tasks</i>. <br>
- * Unter einem Task wird aus Sicht des Andwenders (Programmierers) eine Klasse
- * verstanden, die als Erweiterung der Klasse Task deklariert wurde: <i> class
- * MeinTask extends Task</i> Diese Klasse muss eine Methode <i>Do()</i> mit
- * der Signatur <i>void Do()</i> anbieten (siehe Beispiele in der
- * Fachausbildung).
- */
+
 public class Task {
-	private static final int $NATIVE = 0xCedeBead;
-
-	private static byte // native method names, parameter like the public
-			// methods in this class
-			_0Init, Do, setStop, Install, Start, Time, Remove;
-
-	// ---- read only class fields
-	/**
-	 * Zustandsvariable: zeigt an, ob schon Fehler aufgetreten sind. <br>
-	 * Done == <i>true</i>: bis jetzt sind keine Fehler aufgetreten <br>
-	 * Done == <i>false</i>: es sind Fehler aufgetreten: die Nummer des ersten
-	 * Fehlers wurde in der Variablen <i>firstErr</i> registriert.
-	 */
 	public static boolean Done;
 
 	/**
@@ -86,27 +42,19 @@ public class Task {
 
 	public boolean safe, getTime, coalesce;
 
-	/**
-	 * Erzeugung eines Tasks
-	 */
 	public Task() {
-		_0Init = _0Init;
 	}
 
 	/**
-	 * Aufgabe des Tasks: <i>Do()</i> beschreibt das Verhalten (die
-	 * Funktionalität) eines Tasks.
+	 * action to be performed by the task
 	 */
-	public void Do() {
-		Do = Do;
+	public void action() {
 	}
 
 	/**
-	 * Liefert die aktuelle Systemzeit in Millisekunden. Zeitmessung beginnt bei
-	 * Systemstart.
+	 * returns system time in milliseconds, time starts at powerup
 	 */
 	public static int time() {
-		Time = Time;
 		return 0;
 	}
 
@@ -117,7 +65,6 @@ public class Task {
 	 * registrierten entfernt wurde (siehe auch <i>setStop()</i> ).
 	 */
 	public static void install(Task task) {
-		Install = Install;
 	}
 
 	/**
@@ -127,6 +74,5 @@ public class Task {
 	 *            Der zu entfernende Task.
 	 */
 	public static void remove(Task task) {
-		Remove = Remove;
 	}
 }

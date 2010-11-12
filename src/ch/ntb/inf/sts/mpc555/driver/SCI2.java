@@ -1,7 +1,7 @@
 package ch.ntb.inf.sts.mpc555.driver;
 
 import ch.ntb.inf.sts.internal.SYS;
-import ch.ntb.inf.sts.mpc555.Exceptions;
+//import ch.ntb.inf.sts.mpc555.Exceptions;
 import ch.ntb.inf.sts.mpc555.Interrupt;
 import ch.ntb.inf.sts.util.ByteFifo;
 
@@ -325,7 +325,7 @@ public class SCI2 extends Interrupt {
 		txInterrupt.flagRegAdr = QSMCM.SC2SR;
 		txInterrupt.flag = QSMCM.sc2srTDRE;
 
-		Exceptions.installInternalIntProc(rxInterrupt, 5);
-		Exceptions.installInternalIntProc(txInterrupt, 5);
+//		Exceptions.installInternalIntProc(rxInterrupt, 5);	anpassen
+//		Exceptions.installInternalIntProc(txInterrupt, 5);
 	}
 }

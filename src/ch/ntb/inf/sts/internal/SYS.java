@@ -58,6 +58,33 @@ public class SYS {
 		return 0;
 	}
 
+	/** get content of general purpose register */
+	public static int GETGPR(int reg) {
+		return 0;
+	}
+
+	/** get content of floating point register */
+	public static int GETFPR(int reg) {
+		return 0;
+	}
+
+	/** get content of special purpose register */
+	public static int GETSPR(int reg) {
+		return 0;
+	}
+
+	/** write to general purpose register */
+	public static void PUTGPR(int reg, int value) {
+	}
+
+	/** write to floating point register */
+	public static void PUTFPR(int reg, int value) {
+	}
+
+	/** write to special purpose register */
+	public static void PUTSPR(int reg, int value) {
+	}
+
 	/** halt exception: program termination, 20 <= haltNr < 256 */
 	public static void HALT(int haltNr) {
 	}
