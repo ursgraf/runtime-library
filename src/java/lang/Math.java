@@ -1,6 +1,6 @@
 package java.lang;
 
-import ch.ntb.inf.sts.internal.SYS;
+import ch.ntb.inf.deep.unsafe.SYS;
 
 /*changes:
  04.09.09	NTB/MZ	ceil, floor, fix, class moved to java.lang

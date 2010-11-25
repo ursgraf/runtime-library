@@ -1,5 +1,5 @@
 package java.io;
-import ch.ntb.inf.sts.mpc555.driver.Flash;
+import ch.ntb.inf.deep.runtime.mpc555.driver.Flash;
 
 
 

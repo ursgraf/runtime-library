@@ -1,6 +1,6 @@
 package java.lang;
 
-import ch.ntb.inf.sts.internal.SYS;
+import ch.ntb.inf.deep.unsafe.SYS;
 
 public class Double {
 	private static final boolean _$compileForTarget = true; // compile for Target | Host
