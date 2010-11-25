@@ -5,7 +5,7 @@ import ch.ntb.inf.deep.unsafe.*;
  * 11.11.10	NTB/GRAU	creation
  */
 
-class Decrementer extends Exception {
+class Decrementer extends PPCException {
 
 	static void decrementer() {
 		

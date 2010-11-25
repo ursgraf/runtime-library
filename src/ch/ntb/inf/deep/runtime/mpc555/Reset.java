@@ -5,9 +5,10 @@ import ch.ntb.inf.deep.unsafe.*;
  * 11.11.10	NTB/GRAU	creation
  */
 
-class Reset extends Exception {
+class Reset extends PPCException {
 	
 	static void reset() {
+		HWD.PUTGPR(1, 0x0);	// set stack pointer
 		
 	}
 }
