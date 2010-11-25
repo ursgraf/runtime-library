@@ -15,8 +15,8 @@ public class Kernel implements Registers {
 	 * @return system time in us
 	 */
 	public static long time() {
-		long time = SYS.GETSPR(TBU) >> 32;
-		time |= SYS.GETSPR(TBL);
+		long time = HWD.GETSPR(TBU) >> 32;
+		time |= HWD.GETSPR(TBL);
 		return time;
 	}
 	
@@ -24,36 +24,36 @@ public class Kernel implements Registers {
 	 * blinks LED on MPIOSM pin 15 with aprrox. 5Hz
 	 */
 	public static void blink() {
-		SYS.PUT2(MPIOSMDDR, SYS.GET2(MPIOSMDDR) | 0x8000);
+		HWD.PUT2(MPIOSMDDR, HWD.GET2(MPIOSMDDR) | 0x8000);
 		while (true) {
 			for (int i = 0; i < 1000000; i++);
-			SYS.PUT2(MPIOSMDR, SYS.GET2(MPIOSMDR) ^ 0x8000);
+			HWD.PUT2(MPIOSMDR, HWD.GET2(MPIOSMDR) ^ 0x8000);
 		}
 	}
 	
 	private static void boot() {
-		SYS.PUT4(SIUMCR, 0x00040000);	// internal arb., no data show cycles, BDM operation, CS functions,
+		HWD.PUT4(SIUMCR, 0x00040000);	// internal arb., no data show cycles, BDM operation, CS functions,
 			// output FREEZE, no lock, use data & address bus, use as RSTCONF, no reserv. logic
-		SYS.PUT4(PLPRCR, 0x00900000);	// MF = 9, 40MHz operation with 4MHz quarz
+		HWD.PUT4(PLPRCR, 0x00900000);	// MF = 9, 40MHz operation with 4MHz quarz
 		int reg;
-		do reg = SYS.GET4(PLPRCR); while ((reg & (1 << 16)) != 0);	// wait for PLL to lock 
-		SYS.PUT4(UMCR, 0);	// enable IMB clock, no int. multiplexing, full speed
-		SYS.PUTSPR(158, 0x800);	// take out of serialized mode
-		SYS.PUTSPR(638, 0x800);	// enable internal flash
+		do reg = HWD.GET4(PLPRCR); while ((reg & (1 << 16)) != 0);	// wait for PLL to lock 
+		HWD.PUT4(UMCR, 0);	// enable IMB clock, no int. multiplexing, full speed
+		HWD.PUTSPR(158, 0x800);	// take out of serialized mode
+		HWD.PUTSPR(638, 0x800);	// enable internal flash
 		// configure CS for external Flash
-		SYS.PUT4(BR0, 0x01000003);	// chip select base address reg external Flash,
+		HWD.PUT4(BR0, 0x01000003);	// chip select base address reg external Flash,
 		// base address = 1000000H, 32 bit port, no write protect, WE activ, no burst accesses, valid 
-		SYS.PUT4(OR0, 0x0ffc00020);	// address mask = 4MB, adress type mask = 0,
+		HWD.PUT4(OR0, 0x0ffc00020);	// address mask = 4MB, adress type mask = 0,
 		// CS normal timing, CS and addr. same timing, 2 wait states
 		// configure CS for external RAM 
-		SYS.PUT4(BR1, 0x00800003); 	// chip select base address reg external RAM,
+		HWD.PUT4(BR1, 0x00800003); 	// chip select base address reg external RAM,
 		// base address = 800000H, 32 bit port, no write protect, WE activ, no burst accesses, valid
-		SYS.PUT4(OR1, 0x0ffe00020);		//address mask = 2MB, adress type mask = 0,
+		HWD.PUT4(OR1, 0x0ffe00020);		//address mask = 2MB, adress type mask = 0,
 		// CS normal timing, CS and addr. same timing, 2 wait states
-		SYS.PUT2(PDMCR, 0); 	// configure pads, slow slew rate, enable pull-ups 
-		SYS.PUT4(SCCR, 0x081210300); 	// enable clock out and engineering clock, EECLK = 10MHz 
-		SYS.PUT2(TBSCR, 1); 	// time base, no interrupts, stop time base while freeze, enable
-		short reset = SYS.GET2(RSR);
+		HWD.PUT2(PDMCR, 0); 	// configure pads, slow slew rate, enable pull-ups 
+		HWD.PUT4(SCCR, 0x081210300); 	// enable clock out and engineering clock, EECLK = 10MHz 
+		HWD.PUT2(TBSCR, 1); 	// time base, no interrupts, stop time base while freeze, enable
+		short reset = HWD.GET2(RSR);
 		if ((reset & (1<<5 | 1<<15)) != 0) {	// boot from flash
 /*			SYS.PUT4(SYPCR, pSYPCR);
 			SYS.PUT4(DMBR, pDMBRRom);

@@ -1,6 +1,6 @@
 package java.lang;
 
-import ch.ntb.inf.deep.unsafe.SYS;
+import ch.ntb.inf.deep.unsafe.HWD;
 
 public class LiteralString extends String {
 	public int addr;
@@ -29,7 +29,7 @@ public class LiteralString extends String {
 			return new byte[] {0};
 		byte[] b = new byte[count];
 		for (int i = 0; i < b.length; i++) {
-			b[i] = SYS.GET1(addr + i);
+			b[i] = HWD.GET1(addr + i);
 		}
 		return b;
 	}
@@ -39,7 +39,7 @@ public class LiteralString extends String {
 		if ((index < 0) || (index >= count))
 			return '\0';
 		else {
-			return (char) SYS.GET1(addr + index);
+			return (char) HWD.GET1(addr + index);
 		}
 	}
 	
@@ -71,7 +71,7 @@ public class LiteralString extends String {
 	//@Override
 	void getChars(char dst[], int dstBegin) {
 		for (int i = 0; i < dst.length - dstBegin; i++) {
-			dst[i + dstBegin] = (char) SYS.GET1(addr + i);
+			dst[i + dstBegin] = (char) HWD.GET1(addr + i);
 		}
 	}
 	
@@ -83,7 +83,7 @@ public class LiteralString extends String {
 		} else {
 			value = new char[count];
 			for (int i = 0; i < value.length; i++) {
-				value[i] = (char) SYS.GET1(addr + i);
+				value[i] = (char) HWD.GET1(addr + i);
 			}
 			return value;
 		}

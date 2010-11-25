@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.unsafe.SYS;
+import ch.ntb.inf.deep.unsafe.HWD;
 
 /*changes:
  * 10.1.2008 NTB/SP	to java ported
@@ -53,59 +53,59 @@ public class PWM {
 			TPU_A.init();
 			shift = (channel * 4) % 16;
 			tpuAdr = TPU_A.CFSR3 - (channel / 4) * 2;			
-			s = SYS.GET2(tpuAdr);
+			s = HWD.GET2(tpuAdr);
 			s &= ~(0xF << shift);
 			s |= 3 << shift;
-			SYS.PUT2(tpuAdr,(short) s);
+			HWD.PUT2(tpuAdr,(short) s);
 			//Force pin hig, use TCR1
 			tpuAdr = TPU_A.TPURAM0 +0x10 * channel;
-			SYS.PUT2(tpuAdr, 0x91 );
+			HWD.PUT2(tpuAdr, 0x91 );
 			//Define high time
-			SYS.PUT2(tpuAdr + 4, highTime);
+			HWD.PUT2(tpuAdr + 4, highTime);
 			//Define time of period
-			SYS.PUT2(tpuAdr  + 6, period);
+			HWD.PUT2(tpuAdr  + 6, period);
 			//Request initialization
 			tpuAdr = TPU_A.HSRR1 - (channel / 8) * 2;
 			shift = (channel * 2) % 16;
-			s = SYS.GET2(tpuAdr);
+			s = HWD.GET2(tpuAdr);
 			s &= ~(0x3 << shift);
 			s |= 2 << shift;
-			SYS.PUT2(tpuAdr,s);
+			HWD.PUT2(tpuAdr,s);
 			//set priority low
 			tpuAdr = TPU_A.CPR1 - (channel / 8) * 2;
-			s = SYS.GET2(tpuAdr);
+			s = HWD.GET2(tpuAdr);
 			s &= ~(0x3 << shift);
 			s |= 1 << shift;
-			SYS.PUT2(tpuAdr,s);
+			HWD.PUT2(tpuAdr,s);
 		}
 		else{
 			TPU_B.init();
 			shift = (channel * 4) % 16;
 			tpuAdr = TPU_B.CFSR3 - (channel / 4) * 2;			
-			s = SYS.GET2(tpuAdr);
+			s = HWD.GET2(tpuAdr);
 			s &= ~(0xF << shift);
 			s |= 3 << shift;
-			SYS.PUT2(tpuAdr,(short) s);
+			HWD.PUT2(tpuAdr,(short) s);
 			//Force pin hig, use TCR1
 			tpuAdr = TPU_B.TPURAM0 +0x10 * channel;
-			SYS.PUT2(tpuAdr, 0x91 );
+			HWD.PUT2(tpuAdr, 0x91 );
 			//Define high time
-			SYS.PUT2(tpuAdr + 4, highTime);
+			HWD.PUT2(tpuAdr + 4, highTime);
 			//Define time of period
-			SYS.PUT2(tpuAdr  + 6, period);
+			HWD.PUT2(tpuAdr  + 6, period);
 			//Request initialization
 			tpuAdr = TPU_B.HSRR1 - (channel / 8) * 2;
 			shift = (channel * 2) % 16;
-			s = SYS.GET2(tpuAdr);
+			s = HWD.GET2(tpuAdr);
 			s &= ~(0x3 << shift);
 			s |= 2 << shift;
-			SYS.PUT2(tpuAdr,s);
+			HWD.PUT2(tpuAdr,s);
 			//set priority low
 			tpuAdr = TPU_B.CPR1 - (channel / 8) * 2;
-			s = SYS.GET2(tpuAdr);
+			s = HWD.GET2(tpuAdr);
 			s &= ~(0x3 << shift);
 			s |= 1 << shift;
-			SYS.PUT2(tpuAdr,s);
+			HWD.PUT2(tpuAdr,s);
 		}
 	}
 
@@ -134,15 +134,15 @@ public class PWM {
 		if(tpuA){
 			//Define high time
 			adr = TPU_A.TPURAM0 + 0x10 * channel;
-			SYS.PUT2(adr + 4, highTime);
+			HWD.PUT2(adr + 4, highTime);
 			//Define time of period
-			SYS.PUT2(adr + 6, period);
+			HWD.PUT2(adr + 6, period);
 		}else{
 			//Define high time
 			adr = TPU_B.TPURAM0 + 0x10 * channel;
-			SYS.PUT2(adr + 4, highTime);
+			HWD.PUT2(adr + 4, highTime);
 			//Define time of period
-			SYS.PUT2(adr + 6, period);
+			HWD.PUT2(adr + 6, period);
 		}
 		
 	}

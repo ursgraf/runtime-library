@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Task;
-import ch.ntb.inf.deep.unsafe.SYS;
+import ch.ntb.inf.deep.unsafe.HWD;
 
 /*changes:
  * 29.5.2008 NTB/SP variable digits changed to global
@@ -221,12 +221,12 @@ public class CharLCD extends Task{
 	public void Do() {
 		if ((lcdStatus == lcdIdle) && !lcdDone) {
 			adrCmd = lcdCmdBuff[lcdCmdBuffOut];
-			SYS.PUT1(BASE + adrCmd / 0x100, adrCmd);
+			HWD.PUT1(BASE + adrCmd / 0x100, adrCmd);
 			lcdCmdBuffOut = (short)((lcdCmdBuffOut + 1) % BufLen); 
 			lcdCmdBuffLen--;
 			lcdStatus = lcdWaiting;
 		} else if (lcdStatus == lcdWaiting) {
-			status = SYS.GET1(BASE);
+			status = HWD.GET1(BASE);
 			if (status >= 0) {
 				lcdStatus = lcdIdle;
 				if (lcdCmdBuffLen == 0) {
@@ -255,39 +255,39 @@ public class CharLCD extends Task{
 		adrCntOfRow[3] = 0xD0;
 		
 		/* Chip Select */
-		SYS.PUT4(BR2, 0x2000403);
+		HWD.PUT4(BR2, 0x2000403);
 		/* base address: 2000000H, 8 bit port, RW, internal transfer ack, no bursts */
 
-		SYS.PUT4(OR2, 0x0FFFF8EF1);
+		HWD.PUT4(OR2, 0x0FFFF8EF1);
 		/* address mask: 0FFFF8CF1H für CS endet 1/4 clock früher, CS startet 1/2 clock nach Adresse,  15+2 wait states, Timing relaxed => 2 * wait states */
 		
 		/* init LCD */
 		/*Dreimaliges Initalisieren, da Display z.T. nicht korrekt funktioniert*/
-		SYS.PUT1(BASE, 0x30);
-		do { } while (SYS.BIT(BASE, 7));
-		SYS.PUT1(BASE, 0x30);
-		do { } while (SYS.BIT(BASE, 7));
-		SYS.PUT1(BASE, 0x30);
-		do { } while (SYS.BIT(BASE, 7));
+		HWD.PUT1(BASE, 0x30);
+		do { } while (HWD.BIT(BASE, 7));
+		HWD.PUT1(BASE, 0x30);
+		do { } while (HWD.BIT(BASE, 7));
+		HWD.PUT1(BASE, 0x30);
+		do { } while (HWD.BIT(BASE, 7));
 
-		SYS.PUT1(BASE, 0x38); 	/* set 8 Bit, 2 lines, 5*7 dots */
-		do { } while (SYS.BIT(BASE, 7));
-		SYS.PUT1(BASE, 0x38); 	/* set 8 Bit, 2 lines, 5*7 dots */
-		do { } while (SYS.BIT(BASE, 7));
-		SYS.PUT1(BASE, 0x38); 	/* set 8 Bit, 2 lines, 5*7 dots */
-		do { } while (SYS.BIT(BASE, 7));
+		HWD.PUT1(BASE, 0x38); 	/* set 8 Bit, 2 lines, 5*7 dots */
+		do { } while (HWD.BIT(BASE, 7));
+		HWD.PUT1(BASE, 0x38); 	/* set 8 Bit, 2 lines, 5*7 dots */
+		do { } while (HWD.BIT(BASE, 7));
+		HWD.PUT1(BASE, 0x38); 	/* set 8 Bit, 2 lines, 5*7 dots */
+		do { } while (HWD.BIT(BASE, 7));
 		
-		SYS.PUT1(BASE, 0x1); 	/* clear display */
-		do { } while (SYS.BIT(BASE, 7));
+		HWD.PUT1(BASE, 0x1); 	/* clear display */
+		do { } while (HWD.BIT(BASE, 7));
 
-		SYS.PUT1(BASE, 0x0F); 	/* display on, cursor on, blink on */
-		do { } while (SYS.BIT(BASE, 7));
+		HWD.PUT1(BASE, 0x0F); 	/* display on, cursor on, blink on */
+		do { } while (HWD.BIT(BASE, 7));
 
-		SYS.PUT1(BASE, 0x06); 	/* increment address, no shift */
-		do { } while (SYS.BIT(BASE, 7));
+		HWD.PUT1(BASE, 0x06); 	/* increment address, no shift */
+		do { } while (HWD.BIT(BASE, 7));
 
-		SYS.PUT1(BASE, 0x02); 	/* return home */
-		do { } while (SYS.BIT(BASE, 7));
+		HWD.PUT1(BASE, 0x02); 	/* return home */
+		do { } while (HWD.BIT(BASE, 7));
 		
 		transferTask = new CharLCD(); Task.install(transferTask);
 	}

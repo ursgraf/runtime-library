@@ -4,7 +4,7 @@ package ch.ntb.inf.deep.unsafe;
  6.6.06,NTB/ED	creation
  */
 /** Stub of Module SYSTEM */
-public class SYS {
+public class HWD {
 	/** get address */
 	public static int ADR(int variable) {
 		return 0;

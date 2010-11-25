@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.unsafe.SYS;
+import ch.ntb.inf.deep.unsafe.HWD;
 
 /**
  * Driver to use the QADC_A and QADC_B module as digital I/O.<br>
@@ -37,13 +37,13 @@ public class DIO_ADC {
 		short oldState;
 		channel=getChannel(channel);
 		if(qadcA){
-			oldState=SYS.GET2(DDRQA_A);
-			if(out) SYS.PUT2(DDRQA_A,oldState | 1 << channel);
-			else SYS.PUT2(DDRQA_A,oldState & ~(1 << channel));
+			oldState=HWD.GET2(DDRQA_A);
+			if(out) HWD.PUT2(DDRQA_A,oldState | 1 << channel);
+			else HWD.PUT2(DDRQA_A,oldState & ~(1 << channel));
 		}else{
-			oldState=SYS.GET2(DDRQA_B);
-			if(out) SYS.PUT2(DDRQA_B,oldState | 1 << channel);
-			else SYS.PUT2(DDRQA_B,oldState & ~(1 << channel));
+			oldState=HWD.GET2(DDRQA_B);
+			if(out) HWD.PUT2(DDRQA_B,oldState | 1 << channel);
+			else HWD.PUT2(DDRQA_B,oldState & ~(1 << channel));
 		}
 	}
 	
@@ -57,9 +57,9 @@ public class DIO_ADC {
 	public static boolean in(boolean qadcA, int channel){
 		channel=getChannel(channel);
 		if(qadcA){
-			return (SYS.GET2(PORTQA_A) & (1<< channel)) != 0;
+			return (HWD.GET2(PORTQA_A) & (1<< channel)) != 0;
 		}else{
-			return (SYS.GET2(PORTQA_B) & (1<< channel)) != 0;
+			return (HWD.GET2(PORTQA_B) & (1<< channel)) != 0;
 		}
 	}
 	
@@ -73,11 +73,11 @@ public class DIO_ADC {
 	public static void out(boolean qadcA, int channel, boolean val){
 		channel=getChannel(channel);
 		if(qadcA){
-			if(val) SYS.PUT2(PORTQA_A, SYS.GET2(PORTQA_A) | (1 << channel));
-			else SYS.PUT2(PORTQA_A, SYS.GET2(PORTQA_A) & ~(1 << channel));
+			if(val) HWD.PUT2(PORTQA_A, HWD.GET2(PORTQA_A) | (1 << channel));
+			else HWD.PUT2(PORTQA_A, HWD.GET2(PORTQA_A) & ~(1 << channel));
 		}else{
-			if(val) SYS.PUT2(PORTQA_B, SYS.GET2(PORTQA_B) | (1 << channel));
-			else SYS.PUT2(PORTQA_B, SYS.GET2(PORTQA_B) & ~(1 << channel));
+			if(val) HWD.PUT2(PORTQA_B, HWD.GET2(PORTQA_B) | (1 << channel));
+			else HWD.PUT2(PORTQA_B, HWD.GET2(PORTQA_B) & ~(1 << channel));
 		}
 	}
 

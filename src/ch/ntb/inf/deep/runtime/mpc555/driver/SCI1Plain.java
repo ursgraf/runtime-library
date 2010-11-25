@@ -15,28 +15,28 @@ public class SCI1Plain {
 	static final byte RDRF = 6;	// Receive Data Register Full Flag in SC1SR 
 	
 	public static void stop() {
-		SYS.PUT2(SCC1R1, 0);	//  TE, RE = 0 
+		HWD.PUT2(SCC1R1, 0);	//  TE, RE = 0 
 	}
 	
 	public static void start() {
-		SYS.PUT2(SCC1R0,  130); 	// baud rate 
-		SYS.PUT2(SCC1R1, 0x0C);	// no parity, 8 data bits, enable tx and rx 
+		HWD.PUT2(SCC1R0,  130); 	// baud rate 
+		HWD.PUT2(SCC1R1, 0x0C);	// no parity, 8 data bits, enable tx and rx 
 	}
 	
 	public static void send(byte b) {	// blocking
-		SYS.PUT2(SC1DR, b);
+		HWD.PUT2(SC1DR, b);
 		short status;
 		do 
-			status = SYS.GET2(SC1SR);
+			status = HWD.GET2(SC1SR);
 		while ((status & (1<<TDRE)) == 0);
 	}
 		
 	public static byte receive() {	// blocking
 		short status;
 		do 
-			status = SYS.GET2(SC1SR);
+			status = HWD.GET2(SC1SR);
 		while ((status & (1<<RDRF)) == 0);
-		short data = SYS.GET2(SC1DR);
+		short data = HWD.GET2(SC1DR);
 		return (byte)data;
 	}
 	

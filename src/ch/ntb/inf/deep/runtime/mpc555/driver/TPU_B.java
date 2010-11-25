@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.unsafe.SYS;
+import ch.ntb.inf.deep.unsafe.HWD;
 
 /*
  * changes:
@@ -182,24 +182,24 @@ public class TPU_B {
 	public static int getCycleTime() {
 		int prescale = 1;
 		short value;
-		short s = SYS.GET2(TPUMCR3);
+		short s = HWD.GET2(TPUMCR3);
 		if((s & (1 << 6)) != 0){
 			value = (short) (s & 0x1F);
 			prescale = prescale * (value + 1) * 2;
 		}else{
-			s = SYS.GET2(TPUMCR);
+			s = HWD.GET2(TPUMCR);
 			if((s & (1 << 6)) != 0) prescale *= 4;
 			else prescale *= 32;
 		}
 		
 		//TCR1 prescaler
-		s = SYS.GET2(TPUMCR);
+		s = HWD.GET2(TPUMCR);
 		value = (short) (s & 0x6000);
 		value = (short) (value >> 12);
 		prescale = prescale * (1 << value);
 		
 		//DIV2
-		s = SYS.GET2(TPUMCR2);
+		s = HWD.GET2(TPUMCR2);
 		if((s & (1 << 8)) != 0) prescale *= 2;
 		
 		//40 MHz => cycle time = 25ns
@@ -212,7 +212,7 @@ public class TPU_B {
 	public static void init(){}
 	
 	static{
-		SYS.PUT2(TPUMCR3,0x0);
+		HWD.PUT2(TPUMCR3,0x0);
 		
 		//SYS.PUT2(TPUMCR,0x000); //IMB Clock not divided for TCR1, 1 cycle = 0.8us
 		//SYS.PUT2(TPUMCR,0x050); //IMB Clock divided by 4 instead of 32, 1 cycle = 0.1us

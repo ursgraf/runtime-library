@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.unsafe.SYS;
+import ch.ntb.inf.deep.unsafe.HWD;
 
 /*changes:
  * 15.2.2007 NTB/SP assigned to java
@@ -35,10 +35,10 @@ public class Mpiosm {
 	 *            <code>false</code> definiert den Mpiosm-Pin als TTL-Eingang.
 	 */
 	public static void init(int channel, boolean out) {
-		short s = SYS.GET2(Kernel.MPIOSMDDR);
+		short s = HWD.GET2(Kernel.MPIOSMDDR);
 		if(out) s |= (1 << channel);
 		else s &= ~(1 << channel);
-		SYS.PUT2(Kernel.MPIOSMDDR,s);
+		HWD.PUT2(Kernel.MPIOSMDDR,s);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class Mpiosm {
 	 *         <code>false</code> dem Wert <i>logisch 0</i> entspricht.
 	 */
 	public static boolean in(int channel) {
-		return (SYS.GET2(Kernel.MPIOSMDR) & (1 << channel)) != 0;
+		return (HWD.GET2(Kernel.MPIOSMDR) & (1 << channel)) != 0;
 	}
 
 	/**
@@ -65,10 +65,10 @@ public class Mpiosm {
 	 *            <i>logisch 0</i> auf den TTL-Ausgang gelegt.
 	 */
 	public static void out(int channel, boolean val) {
-		short s = SYS.GET2(Kernel.MPIOSMDR);
+		short s = HWD.GET2(Kernel.MPIOSMDR);
 		if(val) s |= (1 << channel);
 		else s &= ~(1 << channel);
-		SYS.PUT2(Kernel.MPIOSMDR, s);
+		HWD.PUT2(Kernel.MPIOSMDR, s);
 	}
 
 }

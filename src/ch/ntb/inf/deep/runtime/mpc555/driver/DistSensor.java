@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
-import ch.ntb.inf.deep.unsafe.SYS;
+import ch.ntb.inf.deep.unsafe.HWD;
 
 /*changes:
  * 29.04.08	NTB/ED	simplification and efficiency improvement
@@ -92,7 +92,7 @@ public class DistSensor extends Task {
 		if (sensAdr >= 0) {// get result
 //			resultVal[sensAdr] = SYS.GET2(RJURR_A);
 //			resultDark[sensAdr] = SYS.GET2(RJURR_A + 2);
-			resultVal[sensAdr] = (short)(SYS.GET2(RJURR_A + 2) - SYS.GET2(RJURR_A)); // dark - val
+			resultVal[sensAdr] = (short)(HWD.GET2(RJURR_A + 2) - HWD.GET2(RJURR_A)); // dark - val
 		}
 		sensAdr++;
 		period = 1;
@@ -105,17 +105,17 @@ public class DistSensor extends Task {
 			}
 		}
 		if (sensAdr >= 0) { // fire sensor
-			int dataReg = SYS.GET2(Kernel.MPIOSMDR);
+			int dataReg = HWD.GET2(Kernel.MPIOSMDR);
 			dataReg = dataReg & ~outPinPat; // clear output pins (address and trigger pins)
 			dataReg = dataReg | adrPatTab[sensAdr]; // set new address and trigger pins
 
-			SYS.PUT2(Kernel.MPIOSMDR, dataReg);
+			HWD.PUT2(Kernel.MPIOSMDR, dataReg);
 			// no interrupts, enable single-scan, interval timer single-scan
 			// mode, 256 * QCLK
-			SYS.PUT2(QACR1_A, 0x2500);
+			HWD.PUT2(QACR1_A, 0x2500);
 			// trig pulse must not be too short
 			dataReg = dataReg & ~trigPinPat; // clear trigger pin
-			SYS.PUT2(Kernel.MPIOSMDR, dataReg);
+			HWD.PUT2(Kernel.MPIOSMDR, dataReg);
 		}
 	}
 
@@ -179,22 +179,22 @@ public class DistSensor extends Task {
 		}
 
 		// init output pins
-		int val = SYS.GET2(Kernel.MPIOSMDDR);
-		SYS.PUT2(Kernel.MPIOSMDDR, val | outPinPat);
+		int val = HWD.GET2(Kernel.MPIOSMDDR);
+		HWD.PUT2(Kernel.MPIOSMDDR, val | outPinPat);
 
 		// user access
-		SYS.PUT2(QADCMCR_A, 0);
+		HWD.PUT2(QADCMCR_A, 0);
 		// internal multiplexing, use ETRIG1 for queue1, QCLK = 2 MHz
-		SYS.PUT2(QACR0_A, 0x00B7);
+		HWD.PUT2(QACR0_A, 0x00B7);
 		// disable queue2, queue 2 begins at 16
-		SYS.PUT2(QACR2_A, 0x0010);
+		HWD.PUT2(QACR2_A, 0x0010);
 
 		// pause after conversion, max sample time, use inputChannel
-		SYS.PUT2(CCW_A, 0x02C0 + analogInChn);
+		HWD.PUT2(CCW_A, 0x02C0 + analogInChn);
 		// max sample time, use inputChannel
-		SYS.PUT2(CCW_A + 2, 0x00C0 + analogInChn);
+		HWD.PUT2(CCW_A + 2, 0x00C0 + analogInChn);
 		// end of queue
-		SYS.PUT2(CCW_A + 4, 0x003F);
+		HWD.PUT2(CCW_A + 4, 0x003F);
 
 		sensAdr = -1;
 	}

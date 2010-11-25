@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
-import ch.ntb.inf.deep.unsafe.SYS;
+import ch.ntb.inf.deep.unsafe.HWD;
 
 /*changes:
  * 22.06.06	NTB/HS	whole driver in java, new init method
@@ -77,10 +77,10 @@ public class DistSense extends Task {
 	 * <b>Do not call this method!</b>
 	 */
 	public void Do() {
-		resultVal[addr] = SYS.GET2(RJURR_A);
-		resultDark[addr] = SYS.GET2(RJURR_A + 2);
+		resultVal[addr] = HWD.GET2(RJURR_A);
+		resultDark[addr] = HWD.GET2(RJURR_A + 2);
 		addr = (addr + 1) % 16;
-		int val = SYS.GET2(Kernel.MPIOSMDR);
+		int val = HWD.GET2(Kernel.MPIOSMDR);
 		for (int i = 0; i < addrPinNeg.length; i++) {
 			if (addrPinNeg[i] != -1)
 				val &= addrPinNeg[i];
@@ -91,13 +91,13 @@ public class DistSense extends Task {
 		if (addr <= maxNoOfSens) {
 			val |= trigPin;
 		}
-		SYS.PUT2(Kernel.MPIOSMDR, val);
+		HWD.PUT2(Kernel.MPIOSMDR, val);
 		// no interrupts, enable single-scan, interval timer single-scan
 		// mode, 256 * QCLK
-		SYS.PUT2(QACR1_A, 0x2500);
+		HWD.PUT2(QACR1_A, 0x2500);
 		// trig pulse must not be too short
 		val &= trigPinNeg;
-		SYS.PUT2(Kernel.MPIOSMDR, val);
+		HWD.PUT2(Kernel.MPIOSMDR, val);
 	}
 
 	private static int getAddrPin(int ad) {
@@ -235,7 +235,7 @@ public class DistSense extends Task {
 		}
 		trigPinNeg = 0xFFFFFFFF ^ trigPin;
 
-		int val = SYS.GET2(Kernel.MPIOSMDDR);
+		int val = HWD.GET2(Kernel.MPIOSMDDR);
 
 		// Set pins as output
 		for (int i = 0; i < addrPin.length; i++) {
@@ -243,25 +243,25 @@ public class DistSense extends Task {
 				val |= addrPin[i];
 		}
 		val |= trigPin;
-		SYS.PUT2(Kernel.MPIOSMDDR, val);
+		HWD.PUT2(Kernel.MPIOSMDDR, val);
 
 		// user access
-		SYS.PUT2(QADCMCR_A, 0);
+		HWD.PUT2(QADCMCR_A, 0);
 		// internal multiplexing, use ETRIG1 for queue1, QCLK = 2 MHz
-		SYS.PUT2(QACR0_A, 0x00B7);
+		HWD.PUT2(QACR0_A, 0x00B7);
 		// disable queue2, queue 2 begins at 16
-		SYS.PUT2(QACR2_A, 0x0010);
+		HWD.PUT2(QACR2_A, 0x0010);
 
 		if (inputChannel > 59)
 			inputChannel = 59;
 		if (inputChannel < 0)
 			inputChannel = 0;
 		// pause after conversion, max sample time, use inputChannel
-		SYS.PUT2(CCW_A, 0x02C0 + inputChannel);
+		HWD.PUT2(CCW_A, 0x02C0 + inputChannel);
 		// max sample time, use inputChannel
-		SYS.PUT2(CCW_A + 2, 0x00C0 + inputChannel);
+		HWD.PUT2(CCW_A + 2, 0x00C0 + inputChannel);
 		// end of queue
-		SYS.PUT2(CCW_A + 4, 0x003F);
+		HWD.PUT2(CCW_A + 4, 0x003F);
 
 		addr = 0;
 

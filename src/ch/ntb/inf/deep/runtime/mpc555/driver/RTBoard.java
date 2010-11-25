@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.unsafe.SYS;
+import ch.ntb.inf.deep.unsafe.HWD;
 
 /**
  * Dieser Treiber wird fuer den Regelungstechnik-Print verwendet.<br>
@@ -41,7 +41,7 @@ public class RTBoard {
    * @return Analoges Signal in Volt [V], welches eingelesen wurde.
    */
   public static float analogIn(int channel) {
-    return ((SYS.GET2(RJURR_A + ADDR_OFFSET + channel * 2)) - 511.5f) / 511.5f * 10f;
+    return ((HWD.GET2(RJURR_A + ADDR_OFFSET + channel * 2)) - 511.5f) / 511.5f * 10f;
   }
 
   /**
@@ -58,7 +58,7 @@ public class RTBoard {
    *            werden soll.
    */
   public static void analogOut(int channel, float val) {
-    SYS.PUT2(QSMCM.TR + 2 * channel, (channel % 4) * 0x4000 + (int)(val / 10 * 2047.5f + 2047.5f));
+    HWD.PUT2(QSMCM.TR + 2 * channel, (channel % 4) * 0x4000 + (int)(val / 10 * 2047.5f + 2047.5f));
 }
 
 	/**
@@ -76,7 +76,7 @@ public class RTBoard {
 	 */
   public static void analogPowerOut(int channel, float val) {
     channel += 2;
-    SYS.PUT2(QSMCM.TR + 2 * channel, (channel % 4) * 0x4000 + (int)(val / 10 * 2047.5f + 2047.5f));
+    HWD.PUT2(QSMCM.TR + 2 * channel, (channel % 4) * 0x4000 + (int)(val / 10 * 2047.5f + 2047.5f));
   }
 
 
@@ -199,42 +199,42 @@ public class RTBoard {
 
 
 	private static void initDAC() {
-    SYS.PUT2(QSMCM.SPCR1, 0x0);     //disable QSPI 
-		SYS.PUT1(QSMCM.PQSPAR, 0x013);  // use PCS1, MOSI, MISO for QSPI 
-		SYS.PUT1(QSMCM.DDRQS, 0x016);   //SCK, MOSI, PCS1 output; MISO is input 
-		SYS.PUT2(QSMCM.PORTQS, 0x0FF);  //all Pins, in case QSPI disabled, are high 
-		SYS.PUT2(QSMCM.SPCR0, 0x08302); // QSPI is master, 16 bits per transfer, inactive state of SCLK is high (CPOL=1), data changed on leading edge (CPHA=1), clock = 10s MHz 
-		SYS.PUT2(QSMCM.SPCR2, 0x4300);  // no interrupts, wraparound mode, NEWQP=0, ENDQP=03 
-		for(int i=0; i<4; i++) SYS.PUT1(QSMCM.CR + i, 0x4D); //disable chip select after transfer, use bits in SPCR0, use PCS1 
-		for(int i=0; i<4; i++) SYS.PUT2(QSMCM.TR + 2 * i, i * 0x4000 + 2048);
-		SYS.PUT2(QSMCM.SPCR1, 0x8000);  // enable QSPI
-		SYS.PUT1(QSMCM.DDRQS, 0x36);
-		SYS.PUT1(QSMCM.PQSPAR, 0x33);
-		SYS.PUT1(QSMCM.CR, 0x49);
+    HWD.PUT2(QSMCM.SPCR1, 0x0);     //disable QSPI 
+		HWD.PUT1(QSMCM.PQSPAR, 0x013);  // use PCS1, MOSI, MISO for QSPI 
+		HWD.PUT1(QSMCM.DDRQS, 0x016);   //SCK, MOSI, PCS1 output; MISO is input 
+		HWD.PUT2(QSMCM.PORTQS, 0x0FF);  //all Pins, in case QSPI disabled, are high 
+		HWD.PUT2(QSMCM.SPCR0, 0x08302); // QSPI is master, 16 bits per transfer, inactive state of SCLK is high (CPOL=1), data changed on leading edge (CPHA=1), clock = 10s MHz 
+		HWD.PUT2(QSMCM.SPCR2, 0x4300);  // no interrupts, wraparound mode, NEWQP=0, ENDQP=03 
+		for(int i=0; i<4; i++) HWD.PUT1(QSMCM.CR + i, 0x4D); //disable chip select after transfer, use bits in SPCR0, use PCS1 
+		for(int i=0; i<4; i++) HWD.PUT2(QSMCM.TR + 2 * i, i * 0x4000 + 2048);
+		HWD.PUT2(QSMCM.SPCR1, 0x8000);  // enable QSPI
+		HWD.PUT1(QSMCM.DDRQS, 0x36);
+		HWD.PUT1(QSMCM.PQSPAR, 0x33);
+		HWD.PUT1(QSMCM.CR, 0x49);
   }
 
 
   private static void initADC() {
     // user access
-    SYS.PUT2(QADCMCR_A, 0);
+    HWD.PUT2(QADCMCR_A, 0);
     
     // internal multiplexing, use ETRIG1 for queue1, QCLK = 40 MHz / (11+1 + 7+1) = 2 MHz
-    SYS.PUT2(QACR0_A, 0x00B7);
+    HWD.PUT2(QACR0_A, 0x00B7);
     
     // queue2:
     // Software triggered continuous-scan mode
     // Resume execution with the aborted CCW
     // queue2 begins at CCW + 2*32 = 64 ( = ADDR_OFFSET)
-    SYS.PUT2(QACR2_A, 0x31A0);
+    HWD.PUT2(QACR2_A, 0x31A0);
     
     // CCW for AN48 - AN59, max sample time
     // ADDR_OFFSET: Using queue2
     for (int i = 52; i <= 58; i += 2) {
-    	SYS.PUT2(CCW_A + ADDR_OFFSET + (i-52), CCW_INIT + i);
+    	HWD.PUT2(CCW_A + ADDR_OFFSET + (i-52), CCW_INIT + i);
     }
     
     // end of queue
-    SYS.PUT2(CCW_A + ADDR_OFFSET + 4 * 2, END_OF_QUEUE);
+    HWD.PUT2(CCW_A + ADDR_OFFSET + 4 * 2, END_OF_QUEUE);
   }
 
 

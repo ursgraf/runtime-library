@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.unsafe.SYS;
+import ch.ntb.inf.deep.unsafe.HWD;
 
 /**
  * Digital-Ein-/Ausgabe über die PortQS-Schnittstelle.<br>
@@ -42,13 +42,13 @@ public class DIO_PortQS {
 	 *            <code>false</code> definiert den PortQS-Pin als TTL-Eingang.
 	 */
 	public static void init(int channel, boolean out) {
-		byte s = SYS.GET1(QSMCM.PQSPAR);
+		byte s = HWD.GET1(QSMCM.PQSPAR);
 		s &= ~(1 << channel);
-		SYS.PUT1(QSMCM.PQSPAR, s);
-		s = SYS.GET1(QSMCM.DDRQS);
+		HWD.PUT1(QSMCM.PQSPAR, s);
+		s = HWD.GET1(QSMCM.DDRQS);
 		if(out) s |= (1 << channel);
 		else s &= ~(1 << channel);
-		SYS.PUT1(QSMCM.DDRQS,s);
+		HWD.PUT1(QSMCM.DDRQS,s);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class DIO_PortQS {
 	 *         <code>false</code> dem Wert <i>logisch 0</i> entspricht.
 	 */
 	public static boolean in(int channel) {
-		return (SYS.GET1(QSMCM.PORTQS + 1) & (1 << channel)) != 0;
+		return (HWD.GET1(QSMCM.PORTQS + 1) & (1 << channel)) != 0;
 	}
 
 	/**
@@ -75,9 +75,9 @@ public class DIO_PortQS {
 	 *            <i>logisch 0</i> auf den TTL-Ausgang gelegt.
 	 */
 	public static void out(int channel, boolean val) {
-		short s = SYS.GET1(QSMCM.PORTQS + 1);
+		short s = HWD.GET1(QSMCM.PORTQS + 1);
 		if(val) s |= (1 << channel);
 		else s &= ~(1 << channel);
-		SYS.PUT1(QSMCM.PORTQS + 1, s);
+		HWD.PUT1(QSMCM.PORTQS + 1, s);
 	}
 }
