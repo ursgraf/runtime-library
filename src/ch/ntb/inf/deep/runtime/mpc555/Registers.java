@@ -1,6 +1,28 @@
 package ch.ntb.inf.deep.runtime.mpc555;
 
 interface Registers {
+	public static final int SRAMA_BaseAddr = 0x3f9800;
+	public static final int SRAMA_Size = 0x2800;
+	public static final int SRAMB_BaseAddr = 0x3fc000;
+	public static final int SRAMB_Size = 0x4000;
+	public static final int CMFA_BaseAddr = 0x0;
+	public static final int CMFA_Size = 0x4000;
+	public static final int CMFB = 0x4000;
+	public static final int CMFB_Size = 0x3000;
+	public static final int sysTabBaseAddr = 0x3f9800;
+	public static final int stackSize = 0x2000;
+	public static final int stackOffset = 12;
+	
+	int LR = 8;
+	int SRR0 = 26;
+	int SRR1 = 27;
+	int SRR1init = 0x3801;
+	int clbkClinitAddrOffset = 8;
+	int cblkCodeBaseOffset = 4;
+	int cblkCodeSizeOffset = 8;
+	int cblkVarBaseOffset = 12;
+	int cblkVarSizeOffset = 16;
+
 	// internal memory 
 	int ISB	= 0;	// internal memory base 
 

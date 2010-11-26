@@ -21,14 +21,21 @@ public class Kernel implements Registers {
 	}
 	
 	/** 
-	 * blinks LED on MPIOSM pin 15 with aprrox. 5Hz
+	 * blinks LED on MPIOSM pin 15, nTimes with approx. 100us high time and 100us low time, blocks for 1s
 	 */
-	public static void blink() {
+	public static void blink(int nTimes) {
 		HWD.PUT2(MPIOSMDDR, HWD.GET2(MPIOSMDDR) | 0x8000);
-		while (true) {
-			for (int i = 0; i < 1000000; i++);
-			HWD.PUT2(MPIOSMDR, HWD.GET2(MPIOSMDR) ^ 0x8000);
+		for (int i = 0; i < nTimes; i++) {
+			HWD.PUT2(MPIOSMDR, HWD.GET2(MPIOSMDR) | 0x8000);
+			for (int k = 0; k < 10000; k++);
+			HWD.PUT2(MPIOSMDR, HWD.GET2(MPIOSMDR) & ~0x8000);
+			for (int k = 0; k < 10000; k++);
 		}
+		for (int k = 0; k < (1000000 - nTimes * 10000); k++);
+	}
+
+	private static short FCS(int begin, int end) {
+		return 0;
 	}
 	
 	private static void boot() {
@@ -61,60 +68,49 @@ public class Kernel implements Registers {
 			SYS.GET(sysTabAdrRom + stoSysTabSize, sysTabSize);
 			SYS.MOVE(sysTabAdrRom, sysTabAdr, sysTabSize)*/
 		}
-/*		
+		
 //		SetFPSCR;
 
-		modTabPtr := sysTabAdr + stoModulesOffset;
-		SYS.GET(modTabPtr, modTabPtr);
-		INC(modTabPtr, sysTabAdr + 8); 	(*now modTabPtr points to the first module*)
-		modNr := kernelModNr;
+		int sysTabConstBlkOffset = HWD.GET4(sysTabBaseAddr) + 4;
+		int modNr = 0;
+		int state = 0;
+		while (true) {
+			// get addresses of classes from system table
+			int constBlkBase = HWD.GET4(sysTabConstBlkOffset);
+			if (constBlkBase == 0) break;
+			
+			// check integrity of constant block for each class
+			int constBlkSize = HWD.GET4(constBlkBase);
+			if (FCS(constBlkBase, constBlkBase + constBlkSize) != 0) while(true) blink(1);
 
-		state := 0;
-		LOOP
-		(*---- get addresses from system table *)
-			SYS.GET(modTabPtr, constBlkBase);
-			IF constBlkBase = 0 THEN	EXIT	END;
-			SYS.GET(constBlkBase, nofPtrs);
-			fixHdrBase := constBlkBase + (nofPtrs + 1) * 4;
-			SYS.GET(fixHdrBase + cbfhoBodyAddr, bodyAdr);
-			SYS.GET(fixHdrBase + cbfhoConstBlkSize, size);
-			IF FCS(constBlkBase, constBlkBase + size) # 0 THEN	LOOP	Blink(8, 16)	END	END;
+			// check integrity of code block for each class
+			int codeBase = HWD.GET4(constBlkBase + cblkCodeBaseOffset);
+			int codeSize = HWD.GET4(constBlkBase + cblkCodeSizeOffset);
+			if (FCS(codeBase, codeBase + codeSize) != 0) while(true) blink(2);
 
-			SYS.GET(fixHdrBase + cbfhoCodeBlkBase, codeBlkBase);
-			SYS.GET(fixHdrBase + cbfhoCodeBlkSize, size);
-			IF FCS(codeBlkBase, codeBlkBase + size) # 0 THEN	LOOP	Blink(16, 8); Blink(4, 64)	END	END;
-
-		(*---- copy constants to var block *)
-			SYS.GET(fixHdrBase + cbfhoConstBase, constBase);
-			SYS.GET(fixHdrBase + cbfhoConstSize, size);
-			SYS.GET(fixHdrBase + cbfhoInitVarBlkBase, initVarBlkBase);
-			SYS.MOVE(constBase, initVarBlkBase, size);
-
-		(*---- global variables *)
-			SYS.GET(fixHdrBase + cbfhoGlobVarBlkBase, globVarBlkBase); 	begin := globVarBlkBase;
-			SYS.GET(fixHdrBase + cbfhoGlobVarBlkSize, end); 	INC(end, begin);
-			WHILE begin < end DO	SYS.PUT4(begin, 0); 	INC(begin, 4)	END;
-
-		(*---- init module *)
-			IF modNr # kernelModNr THEN (* skip kernel *)
-				SYS.PUT(SYS.ADR(body), bodyAdr); 	SYS.PUT(SYS.ADR(body) + 4, globVarBlkBase);
-				body;
-				IF modNr = exceptionModNr THEN (* enable ints after initialisation of module exceptions *)
-					SYS.PUT4(SIEL, 0FFFF0000H); 	(* external ints are edge sensitive, exit low-power modes *)
-					SYS.PUT4(SIPEND, 0FFFF0000H); 	(* reset all int requests *)
-					SYS.PUT4(SIMASK, 0FFFF0000H); 	(* enable all interrupt levels *)
-					SYS.GETREG(msr, anySet); 	INCL(anySet, msrEE); 	SYS.PUTREG(msr, anySet)
-				END
-			ELSE
-				scheduler := Loop (* kernel *);
-			END;
-			INC(state); 	INC(modNr); 	INC(modTabPtr, 4);
-		END;*/
+			// initialize class variables
+			int varBase = HWD.GET4(constBlkBase + cblkVarBaseOffset);
+			int varSize = HWD.GET4(constBlkBase + cblkVarSizeOffset);
+			int begin = varBase;
+			int end = varBase + varSize;
+			while (begin < end) {HWD.PUT4(begin, 0); begin += 4;}
+			
+			// initialize classes
+			if (modNr != 0) {	// skip kernel 
+				int clinitAddr = HWD.GET4(constBlkBase + clbkClinitAddrOffset);
+				HWD.PUTSPR(LR, clinitAddr);
+				HWD.ASM("bclr always, 0");
+			} else {	// kernel
+				//scheduler := Loop (* kernel *);
+			}
+			state++; modNr++;
+			sysTabConstBlkOffset += 4;
+		}
 	}
 	
 	static {
 		boot();
-		blink();
+		blink(4);
 	}
 
 }

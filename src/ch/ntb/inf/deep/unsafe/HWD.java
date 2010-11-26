@@ -38,6 +38,10 @@ public class HWD {
 	public static void PUT4(int address, int value) {
 	}
 
+	/** put 8 bytes: mem[address] = value */
+	public static void PUT8(int address, long value) {
+	}
+
 	/** get bit: return BIT(mem[address], bitNr) */
 	public static boolean BIT(int address, int bitNr) {
 		return false;
@@ -55,6 +59,11 @@ public class HWD {
 
 	/** get 4 bytes: return mem[address] */
 	public static int GET4(int address) {
+		return 0;
+	}
+
+	/** get 8 bytes: return mem[address] */
+	public static long GET8(int address) {
 		return 0;
 	}
 
