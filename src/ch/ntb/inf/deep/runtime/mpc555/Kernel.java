@@ -7,15 +7,15 @@ import ch.ntb.inf.deep.unsafe.*;
 
 public class Kernel implements Registers {
 	
-	public static final int MPIOSMDDR = 0;
-	public static final int MPIOSMDR = 0;
+	public static final int MPIOSMDDR = 0x306102;
+	public static final int MPIOSMDR = 0x306100;
 	public static final int CextRomBase = 0;
 
 	/** 
 	 * @return system time in us
 	 */
 	public static long time() {
-		long time = HWD.GETSPR(TBU) >> 32;
+		long time = (long)HWD.GETSPR(TBU) >> 32;
 		time |= HWD.GETSPR(TBL);
 		return time;
 	}
@@ -98,8 +98,8 @@ public class Kernel implements Registers {
 			// initialize classes
 			if (modNr != 0) {	// skip kernel 
 				int clinitAddr = HWD.GET4(constBlkBase + clbkClinitAddrOffset);
-				HWD.PUTSPR(LR, clinitAddr);
-				HWD.ASM("bclr always, 0");
+//				HWD.PUTSPR(LR, clinitAddr);
+//				HWD.ASM("bclr always, 0");
 			} else {	// kernel
 				//scheduler := Loop (* kernel *);
 			}
