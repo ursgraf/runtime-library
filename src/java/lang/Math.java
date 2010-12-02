@@ -1,6 +1,6 @@
 package java.lang;
 
-import ch.ntb.inf.deep.unsafe.HWD;
+import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
  04.09.09	NTB/MZ	ceil, floor, fix, class moved to java.lang
@@ -154,11 +154,11 @@ public class Math {
 		double a = arg;
 		int argAdr;
 		if (_$bigEndian)
-			argAdr = HWD.ADR(a);
+			argAdr = US.ADR(a);
 		else
-			argAdr = HWD.ADR(a) + 6;
+			argAdr = US.ADR(a) + 6;
 
-		int high = HWD.GET2(argAdr); // high = Math.abs(a) >>> 32
+		int high = US.GET2(argAdr); // high = Math.abs(a) >>> 32
 		if (high < 0)
 			return Double.NaN;
 		if ((high & 0x7FF0) == 0x7FF0)
@@ -178,7 +178,7 @@ public class Math {
 		seDiv2 += (sexp >> 1) & (-1 << 4);
 		int seMod2 = sexp & (1 << 4);
 		high = (high & ((1 << 4) - 1)) + seMod2 + (dExpOffset << 4);
-		HWD.PUT2(argAdr, high);
+		US.PUT2(argAdr, high);
 
 		double ar = a; // load a in reg ar
 		double xa = (ar + 1) / 2;
@@ -189,7 +189,7 @@ public class Math {
 		xn = (xa + ar / xa) / 2; // 4
 		a = (xn + ar / xn) / 2; // 5
 		// high = SYS.GET2(argAdr); SYS.PUT2(argAdr, high + seDiv2);
-		HWD.PUT2(argAdr, HWD.GET2(argAdr) + seDiv2);
+		US.PUT2(argAdr, US.GET2(argAdr) + seDiv2);
 		return a;
 	}
 

@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.unsafe.HWD;
+import ch.ntb.inf.deep.unsafe.US;
 
 /**
  * Driver to use the QADC_A and QADC_B module as digital I/O.<br>
@@ -37,13 +37,13 @@ public class DIO_ADC {
 		short oldState;
 		channel=getChannel(channel);
 		if(qadcA){
-			oldState=HWD.GET2(DDRQA_A);
-			if(out) HWD.PUT2(DDRQA_A,oldState | 1 << channel);
-			else HWD.PUT2(DDRQA_A,oldState & ~(1 << channel));
+			oldState=US.GET2(DDRQA_A);
+			if(out) US.PUT2(DDRQA_A,oldState | 1 << channel);
+			else US.PUT2(DDRQA_A,oldState & ~(1 << channel));
 		}else{
-			oldState=HWD.GET2(DDRQA_B);
-			if(out) HWD.PUT2(DDRQA_B,oldState | 1 << channel);
-			else HWD.PUT2(DDRQA_B,oldState & ~(1 << channel));
+			oldState=US.GET2(DDRQA_B);
+			if(out) US.PUT2(DDRQA_B,oldState | 1 << channel);
+			else US.PUT2(DDRQA_B,oldState & ~(1 << channel));
 		}
 	}
 	
@@ -57,9 +57,9 @@ public class DIO_ADC {
 	public static boolean in(boolean qadcA, int channel){
 		channel=getChannel(channel);
 		if(qadcA){
-			return (HWD.GET2(PORTQA_A) & (1<< channel)) != 0;
+			return (US.GET2(PORTQA_A) & (1<< channel)) != 0;
 		}else{
-			return (HWD.GET2(PORTQA_B) & (1<< channel)) != 0;
+			return (US.GET2(PORTQA_B) & (1<< channel)) != 0;
 		}
 	}
 	
@@ -73,11 +73,11 @@ public class DIO_ADC {
 	public static void out(boolean qadcA, int channel, boolean val){
 		channel=getChannel(channel);
 		if(qadcA){
-			if(val) HWD.PUT2(PORTQA_A, HWD.GET2(PORTQA_A) | (1 << channel));
-			else HWD.PUT2(PORTQA_A, HWD.GET2(PORTQA_A) & ~(1 << channel));
+			if(val) US.PUT2(PORTQA_A, US.GET2(PORTQA_A) | (1 << channel));
+			else US.PUT2(PORTQA_A, US.GET2(PORTQA_A) & ~(1 << channel));
 		}else{
-			if(val) HWD.PUT2(PORTQA_B, HWD.GET2(PORTQA_B) | (1 << channel));
-			else HWD.PUT2(PORTQA_B, HWD.GET2(PORTQA_B) & ~(1 << channel));
+			if(val) US.PUT2(PORTQA_B, US.GET2(PORTQA_B) | (1 << channel));
+			else US.PUT2(PORTQA_B, US.GET2(PORTQA_B) & ~(1 << channel));
 		}
 	}
 

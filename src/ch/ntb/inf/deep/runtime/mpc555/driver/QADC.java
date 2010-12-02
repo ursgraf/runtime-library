@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.unsafe.HWD;
+import ch.ntb.inf.deep.unsafe.US;
 
 /**
  * Treiber für den Analog-Digital Konverter.<br>
@@ -56,9 +56,9 @@ public class QADC {
 	public static short read(boolean qadcA, int channel) {
 		int channelOffset = getAddrForChn(channel);
 		if (qadcA) {
-			return HWD.GET2(RJURR_A + channelOffset + ADDR_OFFSET);
+			return US.GET2(RJURR_A + channelOffset + ADDR_OFFSET);
 		} else {
-			return HWD.GET2(RJURR_B + channelOffset + ADDR_OFFSET);
+			return US.GET2(RJURR_B + channelOffset + ADDR_OFFSET);
 		}
 	}
 	
@@ -89,10 +89,10 @@ public class QADC {
 	public static void init(boolean qadcA) {
 		if (qadcA) {
 			// user access
-			HWD.PUT2(QADCMCR_A, 0);
+			US.PUT2(QADCMCR_A, 0);
 			
 			// internal multiplexing, use ETRIG1 for queue1, QCLK = 40 MHz / (11+1 + 7+1) = 2 MHz
-			HWD.PUT2(QACR0_A, 0x00B7);
+			US.PUT2(QACR0_A, 0x00B7);
 			
 			// queue2:
 			// Periodic timer continuous-scan mode:
@@ -100,30 +100,30 @@ public class QADC {
 			// Resume execution with the aborted CCW
 			// queue2 begins at CCW + 2*16 (32 = ADDR_OFFSET)
 			// This offset is used because of the DistSense driver
-			HWD.PUT2(QACR2_A, 0x1890);
+			US.PUT2(QACR2_A, 0x1890);
 
 			// CCW for AN0 - AN3, max sample time
 			// ADDR_OFFSET: Using queue2
 			for (int i = 0; i <= 3; i++) {
 				int addr = i * 2;
-				HWD.PUT2(CCW_A + ADDR_OFFSET + addr, CCW_INIT + i);
+				US.PUT2(CCW_A + ADDR_OFFSET + addr, CCW_INIT + i);
 			}
 			
 			// CCW for AN48 - AN59, max sample time
 			// ADDR_OFFSET: Using queue2
 			for (int i = 48; i <= 59; i++) {
 				int addr = getAddrForChn(i);
-				HWD.PUT2(CCW_A + ADDR_OFFSET + addr, CCW_INIT + i);
+				US.PUT2(CCW_A + ADDR_OFFSET + addr, CCW_INIT + i);
 			}
 			
 			// end of queue
-			HWD.PUT2(CCW_A + ADDR_OFFSET + 16 * 2, END_OF_QUEUE);
+			US.PUT2(CCW_A + ADDR_OFFSET + 16 * 2, END_OF_QUEUE);
 		} else {
 			// user access
-			HWD.PUT2(QADCMCR_B, 0);
+			US.PUT2(QADCMCR_B, 0);
 			
 			// internal multiplexing, use ETRIG1 for queue1, QCLK = 40 MHz / (11+1 + 7+1) = 2 MHz
-			HWD.PUT2(QACR0_B, 0x00B7);
+			US.PUT2(QACR0_B, 0x00B7);
 			
 			// queue2:
 			// Periodic timer continuous-scan mode:
@@ -131,24 +131,24 @@ public class QADC {
 			// Resume execution with the aborted CCW
 			// queue2 begins at CCW + 2*16 (32 = ADDR_OFFSET)
 			// This offset is used because of the DistSense driver
-			HWD.PUT2(QACR2_B, 0x1890);
+			US.PUT2(QACR2_B, 0x1890);
 
 			// CCW for AN0 - AN3, max sample time
 			// ADDR_OFFSET: Using queue2
 			for (int i = 0; i <= 3; i++) {
 				int addr = i * 2;
-				HWD.PUT2(CCW_B + ADDR_OFFSET + addr, CCW_INIT + i);
+				US.PUT2(CCW_B + ADDR_OFFSET + addr, CCW_INIT + i);
 			}
 			
 			// CCW for AN48 - AN59, max sample time
 			// ADDR_OFFSET: Using queue2
 			for (int i = 48; i <= 59; i++) {
 				int addr = getAddrForChn(i);
-				HWD.PUT2(CCW_B + ADDR_OFFSET + addr, CCW_INIT + i);
+				US.PUT2(CCW_B + ADDR_OFFSET + addr, CCW_INIT + i);
 			}
 			
 			// end of queue
-			HWD.PUT2(CCW_B + ADDR_OFFSET + 16 * 2, END_OF_QUEUE);
+			US.PUT2(CCW_B + ADDR_OFFSET + 16 * 2, END_OF_QUEUE);
 		}
 
 	}

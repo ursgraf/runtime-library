@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.unsafe.HWD;
+import ch.ntb.inf.deep.unsafe.US;
 
 /**
 *
@@ -18,8 +18,8 @@ public class DIO_Mios {
 	 */
 	public static void init(int channel, boolean out){
 		if(channel >=6  && channel <= 9) channel += 10;
-		if(out) HWD.PUT2(Mios.MPWMSMSCR0 + channel * 8, 0x4000);
-		else HWD.PUT2(Mios.MPWMSMSCR0 + channel * 8, 0x0);
+		if(out) US.PUT2(Mios.MPWMSMSCR0 + channel * 8, 0x4000);
+		else US.PUT2(Mios.MPWMSMSCR0 + channel * 8, 0x0);
 	}
 	
 	
@@ -30,8 +30,8 @@ public class DIO_Mios {
 	 */
 	public static void out(int channel, boolean val){
 		if(channel >=6  && channel <= 9) channel += 10;
-		if(val) HWD.PUT2(Mios.MPWMSMSCR0 + channel * 8, 0x4800);
-		else HWD.PUT2(Mios.MPWMSMSCR0 + channel * 8, 0x4000);
+		if(val) US.PUT2(Mios.MPWMSMSCR0 + channel * 8, 0x4800);
+		else US.PUT2(Mios.MPWMSMSCR0 + channel * 8, 0x4000);
 	}
 	
 	/**
@@ -42,6 +42,6 @@ public class DIO_Mios {
 	 */
 	public static boolean in(int channel){
 		if(channel >=6  && channel <= 9) channel += 10;
-		return (HWD.GET2(Mios.MPWMSMSCR0 + channel * 8) & 0x8000) != 0;
+		return (US.GET2(Mios.MPWMSMSCR0 + channel * 8) & 0x8000) != 0;
 	}
 }

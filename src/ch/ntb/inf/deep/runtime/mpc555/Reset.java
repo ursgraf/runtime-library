@@ -8,13 +8,13 @@ import ch.ntb.inf.deep.unsafe.*;
 class Reset extends PPCException implements Registers {
 	
 	static void reset() {
-		int stackBase = HWD.GET4(sysTabBaseAddr + stackOffset + 4);
-		int stackSize = HWD.GET4(sysTabBaseAddr + stackOffset + 8);
-		HWD.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
-		int kernelConstBlkBase = HWD.GET4(HWD.GET4(sysTabBaseAddr) + 4);
-		int clinitAddr = HWD.GET4(kernelConstBlkBase + clbkClinitAddrOffset);
-		HWD.PUTSPR(SRR0, clinitAddr);
-		HWD.PUTSPR(SRR1, SRR1init);
-		HWD.ASM("rfi");
+		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
+		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 8);
+		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
+		int kernelConstBlkBase = US.GET4(US.GET4(sysTabBaseAddr) + 4);
+		int clinitAddr = US.GET4(kernelConstBlkBase + clbkClinitAddrOffset);
+		US.PUTSPR(SRR0, clinitAddr);
+		US.PUTSPR(SRR1, SRR1init);
+		US.ASM("rfi");
 	}
 }

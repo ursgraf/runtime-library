@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Interrupt;
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
-import ch.ntb.inf.deep.unsafe.HWD;
+import ch.ntb.inf.deep.unsafe.US;
 //import ch.ntb.inf.sts.mpc555.Exceptions;
 
 /* 
@@ -62,15 +62,15 @@ public class SCI1 extends Interrupt {
 	public void Do() {
 		intCtr++;
 		if (this == rxInterrupt) {
-			short word = HWD.GET2(QSMCM.SC1DR);
+			short word = US.GET2(QSMCM.SC1DR);
 			rxQueue.enqueue((byte) word);
 		} else {
 			if (txQueue.availToRead() > 0) {
-				HWD.PUT2(QSMCM.SC1DR, txQueue.dequeue());
+				US.PUT2(QSMCM.SC1DR, txQueue.dequeue());
 			} else {
 				txDone = true;
 				scc1r1 &= ~(1 << QSMCM.scc1r1TIE);
-				HWD.PUT2(QSMCM.SCC1R1, scc1r1);
+				US.PUT2(QSMCM.SCC1R1, scc1r1);
 			}
 		}
 	}
@@ -78,9 +78,9 @@ public class SCI1 extends Interrupt {
 	private static void startTransmission() {
 		if (txDone && (txQueue.availToRead() > 0)) {
 			txDone = false;
-			HWD.PUT2(QSMCM.SC1DR, txQueue.dequeue());
+			US.PUT2(QSMCM.SC1DR, txQueue.dequeue());
 			scc1r1 |= (1 << QSMCM.scc1r1TIE);
-			HWD.PUT2(QSMCM.SCC1R1, scc1r1);
+			US.PUT2(QSMCM.SCC1R1, scc1r1);
 		}
 	}
 
@@ -90,7 +90,7 @@ public class SCI1 extends Interrupt {
 
 	public static void clearTransmittBuffer() {
 		scc1r1 &= ~(1 << QSMCM.scc1r1TIE);
-		HWD.PUT2(QSMCM.SCC1R1, scc1r1);
+		US.PUT2(QSMCM.SCC1R1, scc1r1);
 		txQueue.clear();
 		txDone = true;
 	}
@@ -105,7 +105,7 @@ public class SCI1 extends Interrupt {
 	 */
 	public static void stop() {
 		clear();
-		HWD.PUT2(QSMCM.SCC1R1, 0);
+		US.PUT2(QSMCM.SCC1R1, 0);
 		portStat = 0;
 	}
 
@@ -144,10 +144,10 @@ public class SCI1 extends Interrupt {
 			if (parity == 1)
 				scc1r1 |= (1 << QSMCM.scc1r1PT);
 		}
-		HWD.PUT2(QSMCM.SCC1R0, scbr);
-		HWD.PUT2(QSMCM.SCC1R1, scc1r1);
+		US.PUT2(QSMCM.SCC1R0, scbr);
+		US.PUT2(QSMCM.SCC1R1, scc1r1);
 		portStat |= (1 << PORT_OPEN);
-		short status = HWD.GET2(QSMCM.SC1SR); // Clear status register
+		short status = US.GET2(QSMCM.SC1SR); // Clear status register
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class SCI1 extends Interrupt {
 	 * @return die Port Status Bits
 	 */
 	public static short portStatus() {
-		return (short) (portStat | HWD.GET2(QSMCM.SC1SR));
+		return (short) (portStat | US.GET2(QSMCM.SC1SR));
 	}
 
 	/**

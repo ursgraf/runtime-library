@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.unsafe.HWD;
+import ch.ntb.inf.deep.unsafe.US;
 
 /**
  * Driver for the Maxim512 Digital to Analog Converter.<br>
@@ -24,7 +24,7 @@ public class MAX512 {
 	 */
 	public static void disable(int ch){
 		disDACs |= 0x0800 << ch;
-		HWD.PUT2(QSMCM.TR + 2 * ch,disDACs);
+		US.PUT2(QSMCM.TR + 2 * ch,disDACs);
 	}
 	
 	/**
@@ -33,7 +33,7 @@ public class MAX512 {
 	 */
 	public static void enable(int ch){
 		disDACs &=  ~(0x0800 << ch);
-		HWD.PUT2(QSMCM.TR + 2 * ch,disDACs);
+		US.PUT2(QSMCM.TR + 2 * ch,disDACs);
 	}
 	
 	/**
@@ -42,23 +42,23 @@ public class MAX512 {
 	 * @param val the desired output value
 	 */
 	public static void write(int ch, byte val){
-		HWD.PUT2(QSMCM.TR + 2 * ch, (disDACs | (0x0100  << ch)| (0xFF & val))); // Write data to transmit ram
+		US.PUT2(QSMCM.TR + 2 * ch, (disDACs | (0x0100  << ch)| (0xFF & val))); // Write data to transmit ram
 	}
 	
 	/**
 	 * Initializes the SPI.
 	 */
 	public static void init(){
-		HWD.PUT2(QSMCM.SPCR1, 0x0); 	//disable QSPI 
-		HWD.PUT1(QSMCM.PQSPAR, 0x0B); // use PCS0, MOSI, MISO for QSPI 
-		HWD.PUT1(QSMCM.DDRQS, 0x0E); 	//SCK, MOSI, PCS's outputs; MISO is input 
-		HWD.PUT2(QSMCM.PORTQS, 0xFF); 	//all Pins, in case QSPI disabled, are high 
-		HWD.PUT2(QSMCM.SPCR0, 0x8014); // QSPI is master, 16 bits per transfer, inactive state of SCLK is high (CPOL=1), data changed on leading edge (CPHA=1), clock = 1 MHz 
-		HWD.PUT2(QSMCM.SPCR2, 0x4200); 	// no interrupts, wraparound mode, NEWQP=0, ENDQP=7 		
-		HWD.PUT1(QSMCM.CR, 0x6E); //Cont off, BITS of SPCR0, DT from SPCR1, CS0 low
-		HWD.PUT1(QSMCM.CR + 1, 0x6E); //Cont off, BITS of SPCR0, DT from SPCR1, CS0 low
-		HWD.PUT1(QSMCM.CR + 2, 0x6E); //Cont off, BITS of SPCR0, DT from SPCR1, CS0 low
-		HWD.PUT2(QSMCM.SPCR1, 0x08010);	//enable QSPI, delay 13us after transfer
+		US.PUT2(QSMCM.SPCR1, 0x0); 	//disable QSPI 
+		US.PUT1(QSMCM.PQSPAR, 0x0B); // use PCS0, MOSI, MISO for QSPI 
+		US.PUT1(QSMCM.DDRQS, 0x0E); 	//SCK, MOSI, PCS's outputs; MISO is input 
+		US.PUT2(QSMCM.PORTQS, 0xFF); 	//all Pins, in case QSPI disabled, are high 
+		US.PUT2(QSMCM.SPCR0, 0x8014); // QSPI is master, 16 bits per transfer, inactive state of SCLK is high (CPOL=1), data changed on leading edge (CPHA=1), clock = 1 MHz 
+		US.PUT2(QSMCM.SPCR2, 0x4200); 	// no interrupts, wraparound mode, NEWQP=0, ENDQP=7 		
+		US.PUT1(QSMCM.CR, 0x6E); //Cont off, BITS of SPCR0, DT from SPCR1, CS0 low
+		US.PUT1(QSMCM.CR + 1, 0x6E); //Cont off, BITS of SPCR0, DT from SPCR1, CS0 low
+		US.PUT1(QSMCM.CR + 2, 0x6E); //Cont off, BITS of SPCR0, DT from SPCR1, CS0 low
+		US.PUT2(QSMCM.SPCR1, 0x08010);	//enable QSPI, delay 13us after transfer
 	}
 	
 }

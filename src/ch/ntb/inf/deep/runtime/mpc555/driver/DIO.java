@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.unsafe.HWD;
+import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
  * 15.2.07 NTB/SP adapted to java
@@ -37,70 +37,70 @@ public class DIO {
 	public static void init(boolean tpuA, int channel, boolean out) {
 		if(tpuA){
 			//function code (2) for DIO
-			short s = HWD.GET2(TPU_A.CFSR3 - (channel / 4) * 2);
+			short s = US.GET2(TPU_A.CFSR3 - (channel / 4) * 2);
 			int shiftl = (channel % 4) * 4;
 			s &= ~(7 << shiftl);
 			s |= (2 << shiftl);
-			HWD.PUT2(TPU_A.CFSR3 - (channel / 4) * 2,s);
+			US.PUT2(TPU_A.CFSR3 - (channel / 4) * 2,s);
 			
 			//Update on transition for inputs, dosen't have any effect for outputs
-			s = HWD.GET2(TPU_A.HSQR1 - (channel / 8) * 2);
+			s = US.GET2(TPU_A.HSQR1 - (channel / 8) * 2);
 			shiftl = (channel % 8) * 2;
 			s &= ~(3 << shiftl);
-			HWD.PUT2(TPU_A.HSQR1 -(channel / 8) * 2, s);
+			US.PUT2(TPU_A.HSQR1 -(channel / 8) * 2, s);
 			
 			if(out){
-				HWD.PUT2(TPU_A.TPURAM0 + 0x10 * channel, 0x3);
+				US.PUT2(TPU_A.TPURAM0 + 0x10 * channel, 0x3);
 			}else{
-				s = HWD.GET2(TPU_A.HSQR1 - (channel / 8) * 2);
+				s = US.GET2(TPU_A.HSQR1 - (channel / 8) * 2);
 				s &= ~(3 << shiftl);
-				HWD.PUT2(TPU_A.HSQR1 -(channel / 8) * 2, s);
-				HWD.PUT2(TPU_A.TPURAM0 + 0x10 * channel, 0xF);
+				US.PUT2(TPU_A.HSQR1 -(channel / 8) * 2, s);
+				US.PUT2(TPU_A.TPURAM0 + 0x10 * channel, 0xF);
 			}
 			
 			//Request initialization
-			s = HWD.GET2(TPU_A.HSRR1 -(channel / 8)* 2);
+			s = US.GET2(TPU_A.HSRR1 -(channel / 8)* 2);
 			s |= (3 <<shiftl);
-			HWD.PUT2(TPU_A.HSRR1 -(channel / 8)* 2, s);
+			US.PUT2(TPU_A.HSRR1 -(channel / 8)* 2, s);
 			
 			//Set priority low
-			s = HWD.GET2(TPU_A.CPR1 - (channel / 8)* 2);
+			s = US.GET2(TPU_A.CPR1 - (channel / 8)* 2);
 			s &= ~(3 << shiftl);
 			s |= (1 << shiftl);
-			HWD.PUT2(TPU_A.CPR1 - (channel / 8) * 2,s);
+			US.PUT2(TPU_A.CPR1 - (channel / 8) * 2,s);
 		}else{
 			//function code (2) for DIO
-			short s = HWD.GET2(TPU_B.CFSR3 - (channel / 4) * 2);
+			short s = US.GET2(TPU_B.CFSR3 - (channel / 4) * 2);
 			int shiftl = (channel % 4) * 4;
 			s &= ~(7 << shiftl);
 			s |= (2 << shiftl);
-			HWD.PUT2(TPU_B.CFSR3 - (channel / 4) * 2,s);
+			US.PUT2(TPU_B.CFSR3 - (channel / 4) * 2,s);
 			
 			//Update on transition for inputs, dosen't have any effect for outputs
-			s = HWD.GET2(TPU_B.HSQR1 - (channel / 8) * 2);
+			s = US.GET2(TPU_B.HSQR1 - (channel / 8) * 2);
 			shiftl = (channel % 8) * 2;
 			s &= ~(3 << shiftl);
-			HWD.PUT2(TPU_B.HSQR1 -(channel / 8) * 2, s);
+			US.PUT2(TPU_B.HSQR1 -(channel / 8) * 2, s);
 			
 			if(out){
-				HWD.PUT2(TPU_B.TPURAM0 + 0x10 * channel, 0x3);
+				US.PUT2(TPU_B.TPURAM0 + 0x10 * channel, 0x3);
 			}else{
-				s = HWD.GET2(TPU_B.HSQR1 - (channel / 8) * 2);
+				s = US.GET2(TPU_B.HSQR1 - (channel / 8) * 2);
 				s &= ~(3 << shiftl);
-				HWD.PUT2(TPU_B.HSQR1 -(channel / 8) * 2, s);
-				HWD.PUT2(TPU_B.TPURAM0 + 0x10 * channel, 0xF);
+				US.PUT2(TPU_B.HSQR1 -(channel / 8) * 2, s);
+				US.PUT2(TPU_B.TPURAM0 + 0x10 * channel, 0xF);
 			}
 			
 			//Request initialization
-			s = HWD.GET2(TPU_B.HSRR1 -(channel / 8)* 2);
+			s = US.GET2(TPU_B.HSRR1 -(channel / 8)* 2);
 			s |= (3 <<shiftl);
-			HWD.PUT2(TPU_B.HSRR1 -(channel / 8)* 2, s);
+			US.PUT2(TPU_B.HSRR1 -(channel / 8)* 2, s);
 			
 			//Set priority low
-			s = HWD.GET2(TPU_B.CPR1 - (channel / 8)* 2);
+			s = US.GET2(TPU_B.CPR1 - (channel / 8)* 2);
 			s &= ~(3 << shiftl);
 			s |= (1 << shiftl);
-			HWD.PUT2(TPU_B.CPR1 - (channel / 8) * 2,s);
+			US.PUT2(TPU_B.CPR1 - (channel / 8) * 2,s);
 		}
 	}
 
@@ -118,9 +118,9 @@ public class DIO {
 	 */
 	public static boolean in(boolean tpuA, int channel) {
 		if(tpuA){
-			return (HWD.GET2(TPU_A.TPURAM0 + 0x10 * channel + 2) & (1 << 15)) != 0; 
+			return (US.GET2(TPU_A.TPURAM0 + 0x10 * channel + 2) & (1 << 15)) != 0; 
 		}else{
-			return (HWD.GET2(TPU_B.TPURAM0  + 0x10 * channel + 2) & (1 << 15)) != 0; 
+			return (US.GET2(TPU_B.TPURAM0  + 0x10 * channel + 2) & (1 << 15)) != 0; 
 		}
 	}
 
@@ -140,32 +140,32 @@ public class DIO {
 	public static void out(boolean tpuA, int channel, boolean val) {
 		if(tpuA){
 			//Disable all Interrupts
-			short sh = HWD.GET2(TPU_A.CISR);
-			HWD.PUT2(TPU_A.CISR,(short)0);
+			short sh = US.GET2(TPU_A.CISR);
+			US.PUT2(TPU_A.CISR,(short)0);
 			
-			short s = HWD.GET2(TPU_A.HSRR1 - ((channel / 8) * 2));
+			short s = US.GET2(TPU_A.HSRR1 - ((channel / 8) * 2));
 			int shiftl = (channel % 8) * 2;
 			s &= ~(3 << shiftl);
 			if(val) s |= (1 << shiftl);
 			else s |= (2 << shiftl);
-			HWD.PUT2(TPU_A.HSRR1 - ((channel / 8) * 2), s);
+			US.PUT2(TPU_A.HSRR1 - ((channel / 8) * 2), s);
 			
 			//Restore Interrupts
-			HWD.PUT2(TPU_A.CISR, sh);
+			US.PUT2(TPU_A.CISR, sh);
 		}else{
 			//Disable all Interrupts
-			short sh = HWD.GET2(TPU_B.CISR);
-			HWD.PUT2(TPU_B.CISR,(short)0);
+			short sh = US.GET2(TPU_B.CISR);
+			US.PUT2(TPU_B.CISR,(short)0);
 			
 			int shiftl = (channel % 8) * 2;
-			short s = HWD.GET2(TPU_B.HSRR1 - ((channel / 8) * 2));
+			short s = US.GET2(TPU_B.HSRR1 - ((channel / 8) * 2));
 			s &= ~(3 << shiftl);
 			if(val) s |= (1 << shiftl);
 			else s |= (2 << shiftl);
-			HWD.PUT2(TPU_B.HSRR1 - ((channel / 8) * 2), s);
+			US.PUT2(TPU_B.HSRR1 - ((channel / 8) * 2), s);
 			
 			//Restore Interrupts
-			HWD.PUT2(TPU_B.CISR, sh);
+			US.PUT2(TPU_B.CISR, sh);
 			
 		}
 	}

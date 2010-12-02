@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.unsafe.HWD;
+import ch.ntb.inf.deep.unsafe.US;
 
 // driver for AM29LV160 Flash, 4MB 
 /*
@@ -66,7 +66,7 @@ public class Flash {
 	 */
 	public static byte readByte(int sector, int offset) {
 		int addr = DevAddr + FSOffset + sector * SectorSize + offset;
-		return HWD.GET1(addr);
+		return US.GET1(addr);
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class Flash {
 	 */
 	public static short readShort(int sector, int offset) {
 		int addr = DevAddr + FSOffset + sector * SectorSize + offset;
-		return HWD.GET2(addr);
+		return US.GET2(addr);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class Flash {
 	 */
 	public static int readInt(int sector, int offset) {
 		int addr = DevAddr + FSOffset + sector * SectorSize + offset;
-		return HWD.GET4(addr);
+		return US.GET4(addr);
 	}
 
 }

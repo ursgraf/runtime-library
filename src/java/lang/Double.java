@@ -1,6 +1,6 @@
 package java.lang;
 
-import ch.ntb.inf.deep.unsafe.HWD;
+import ch.ntb.inf.deep.unsafe.US;
 
 public class Double {
 	private static final boolean _$compileForTarget = true; // compile for Target | Host
@@ -173,11 +173,11 @@ public class Double {
 	public static double intBitsToDouble(int highBits, int lowBits) {
 		double value = 0;
 		if (_$bigEndian) {
-			HWD.PUT4(HWD.ADR(value), highBits);
-			HWD.PUT4(HWD.ADR(value) + 4, lowBits);
+			US.PUT4(US.ADR(value), highBits);
+			US.PUT4(US.ADR(value) + 4, lowBits);
 		} else { // little-endian
-			HWD.PUT4(HWD.ADR(value) + 4, highBits);
-			HWD.PUT4(HWD.ADR(value), lowBits);
+			US.PUT4(US.ADR(value) + 4, highBits);
+			US.PUT4(US.ADR(value), lowBits);
 		}
 		return value;
 	}
@@ -186,9 +186,9 @@ public class Double {
 		double value = arg;
 		int	highBits;
 		if (_$bigEndian) {
-			highBits = HWD.GET4(HWD.ADR(value));
+			highBits = US.GET4(US.ADR(value));
 		} else { // little-endian
-			highBits = HWD.GET4(HWD.ADR(value) + 4);
+			highBits = US.GET4(US.ADR(value) + 4);
 		}
 		return highBits;
 	}
@@ -197,9 +197,9 @@ public class Double {
 		double value = arg;
 		int	lowBits;
 		if (_$bigEndian) {
-			lowBits = HWD.GET4(HWD.ADR(value) + 4);
+			lowBits = US.GET4(US.ADR(value) + 4);
 		} else { // little-endian
-			lowBits = HWD.GET4(HWD.ADR(value));
+			lowBits = US.GET4(US.ADR(value));
 		}
 		return lowBits;
 	}
@@ -210,8 +210,8 @@ public class Double {
 	public static  int  getExponent(double arg) {
 		double x = arg;
 		int  addr;
-		if (_$bigEndian)	addr = HWD.ADR(x);	else	addr = HWD.ADR(x) + 6;
-		return ((HWD.GET2(addr) >> 4) & 0x7FF) - expOffset;
+		if (_$bigEndian)	addr = US.ADR(x);	else	addr = US.ADR(x) + 6;
+		return ((US.GET2(addr) >> 4) & 0x7FF) - expOffset;
 	}
 
 	/**
@@ -223,10 +223,10 @@ public class Double {
 		newExp += expOffset;
 		int addr;
 		if (_$bigEndian)
-			addr = HWD.ADR(x);
+			addr = US.ADR(x);
 		else
-			addr = HWD.ADR(x) + 6;
-		HWD.PUT2(addr, (HWD.GET2(addr) & 0x800F) | (newExp << 4));
+			addr = US.ADR(x) + 6;
+		US.PUT2(addr, (US.GET2(addr) & 0x800F) | (newExp << 4));
 		return x;
 	}
 
@@ -239,13 +239,13 @@ public class Double {
 	public static  double  getMantissa(double arg) { // clear sign
 		double x = arg;
 		int  addr;
-		if (_$bigEndian)	addr = HWD.ADR(x);	else	addr = HWD.ADR(x) + 6;
-		int	highBits = HWD.GET2(addr);
+		if (_$bigEndian)	addr = US.ADR(x);	else	addr = US.ADR(x) + 6;
+		int	highBits = US.GET2(addr);
 		if ( (highBits & 0x7FF0)  == 0)	{ // denormalised or +-0
 			x = 0;	highBits = 0;	// x *= twoPow52;	highBits = SYS.GET2(addr) & 0xFFFF; 	causes probles!
 		}else {
 			highBits = (highBits & 0x000F)  |  (expOffset << 4);	// 
-			HWD.PUT2(addr, highBits);
+			US.PUT2(addr, highBits);
 		}
 		return x;
 	}
@@ -270,11 +270,11 @@ public class Double {
 
 	public static  int  doubleToRawBytes (double arg, char []  chars) {
 		double val = arg;
-		int	adr = HWD.ADR(val);
+		int	adr = US.ADR(val);
 		int	nofBytes = 8;
 		do {
 			nofBytes--;
-			chars[nofBytes] = (char) (HWD.GET1(adr + nofBytes) & 0xFF);
+			chars[nofBytes] = (char) (US.GET1(adr + nofBytes) & 0xFF);
 		} while (nofBytes > 0);
 		/*
 		 * chars[0] = (char)(SYS.GET1(adr + 0) & 0xFF); chars[1] =
@@ -297,11 +297,11 @@ public class Double {
 	public static  int  floatToRawBytes (float arg, char []  chars) {
 		float val = arg;
 //		float fvalue = (float)val;
-		int	adr = HWD.ADR(val);
-		chars[0] = (char)(HWD.GET1(adr) & 0xFF);
-		chars[1] = (char)(HWD.GET1(adr + 1) & 0xFF);
-		chars[2] = (char)(HWD.GET1(adr + 2) & 0xFF);
-		chars[3] = (char)(HWD.GET1(adr + 3) & 0xFF);
+		int	adr = US.ADR(val);
+		chars[0] = (char)(US.GET1(adr) & 0xFF);
+		chars[1] = (char)(US.GET1(adr + 1) & 0xFF);
+		chars[2] = (char)(US.GET1(adr + 2) & 0xFF);
+		chars[3] = (char)(US.GET1(adr + 3) & 0xFF);
 		return 4;
 	}
 

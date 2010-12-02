@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.unsafe.HWD;
+import ch.ntb.inf.deep.unsafe.US;
 
 /**
  * Driver for the MPWM module.
@@ -27,13 +27,13 @@ public class Mios {
   * @param highTime
   */
 	public static void initPWM(int channel, int period, int highTime){
-		HWD.PUT2(MPWMSMSCR0 + channel * 8, 0x04FC);	// enable, prescaler = 4 -> 400ns 
-		HWD.PUT2(MPWMSMPERR0 + channel * 8, period);	// set period 
-		HWD.PUT2(MPWMSMPULR0 + channel * 8, highTime);	//set pulse width 
+		US.PUT2(MPWMSMSCR0 + channel * 8, 0x04FC);	// enable, prescaler = 4 -> 400ns 
+		US.PUT2(MPWMSMPERR0 + channel * 8, period);	// set period 
+		US.PUT2(MPWMSMPULR0 + channel * 8, highTime);	//set pulse width 
 	}
 
 	static{
-		HWD.PUT2(MIOS1MCR, 0);	//enable, supervisor access 
-		HWD.PUT2(MCPSMSCR, 0x8004);	// prescaler = 4, clock for MIOS = system clock / 4 = 10MHz
+		US.PUT2(MIOS1MCR, 0);	//enable, supervisor access 
+		US.PUT2(MCPSMSCR, 0x8004);	// prescaler = 4, clock for MIOS = system clock / 4 = 10MHz
 	}
 }

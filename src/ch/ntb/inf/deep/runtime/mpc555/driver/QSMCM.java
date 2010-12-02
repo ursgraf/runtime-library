@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.unsafe.HWD;
+import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
  * 15.05.07	NTB/SP	creation
@@ -488,8 +488,8 @@ public class QSMCM{
 	public static void init(){}
 
 	static {
-		HWD.PUT2(QSMCM_REG,0);
-		HWD.PUT2(QDSCI_IL, SCI_IntLevel * 0x100);
-		HWD.PUT2(QSPI_IL, SPI_IntLevel);
+		US.PUT2(QSMCM_REG,0);
+		US.PUT2(QDSCI_IL, SCI_IntLevel * 0x100);
+		US.PUT2(QSPI_IL, SPI_IntLevel);
 	}
 }
