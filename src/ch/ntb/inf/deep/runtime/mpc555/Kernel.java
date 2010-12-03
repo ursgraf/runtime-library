@@ -89,7 +89,7 @@ public class Kernel implements Registers {
 			if (FCS(codeBase, codeBase + codeSize) != 0) while(true) blink(2);
 
 			// initialize class variables
-			int varBase = US.GET4(constBlkBase + cblkVarBaseOffset);
+/*			int varBase = US.GET4(constBlkBase + cblkVarBaseOffset);
 			int varSize = US.GET4(constBlkBase + cblkVarSizeOffset);
 			int begin = varBase;
 			int end = varBase + varSize;
@@ -102,7 +102,7 @@ public class Kernel implements Registers {
 //				HWD.ASM("bclr always, 0");
 			} else {	// kernel
 				//scheduler := Loop (* kernel *);
-			}
+			}*/
 			state++; modNr++;
 			sysTabConstBlkOffset += 4;
 		}
