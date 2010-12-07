@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.Kernel;
+import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
@@ -13,27 +13,8 @@ import ch.ntb.inf.deep.unsafe.US;
  * Der Wertebereich der Eingänge beträgt: <code>0..3</code> und
  * <code>48..59</code>
  */
-public class QADC {
+public class QADC implements ntbMpc555HB {
 
-	private static final int UIMB = Kernel.UIMB;
-
-	private static final int QADCMCR_A = UIMB + 0x4800,
-			QADCINT_A = UIMB + 0x4804, PORTQA_A = UIMB + 0x4806,
-			PORTQA_B = UIMB + 0x4807, DDRQA_A = UIMB + 0x4808,
-			QACR0_A = UIMB + 0x480A, QACR1_A = UIMB + 0x480C,
-			QACR2_A = UIMB + 0x480E, QASR0_A = UIMB + 0x4810,
-			QASR1_A = UIMB + 0x4812, CCW_A = UIMB + 0x4A00,
-			RJURR_A = UIMB + 0x4A80, LJSRR_A = UIMB + 0x4B00,
-			LJURR_A = UIMB + 0x4B80;
-
-	private static final int QADCMCR_B = UIMB + 0x4C00,
-			QADCINT_B = UIMB + 0x4C04, PORTQB_A = UIMB + 0x4C06,
-			PORTQB_B = UIMB + 0x4C07, DDRQA_B = UIMB + 0x4C08,
-			QACR0_B = UIMB + 0x4C0A, QACR1_B = UIMB + 0x4C0C,
-			QACR2_B = UIMB + 0x4C0E, QASR0_B = UIMB + 0x4C10,
-			QASR1_B = UIMB + 0x4C12, CCW_B = UIMB + 0x4E00,
-			RJURR_B = UIMB + 0x4E80, LJSRR_B = UIMB + 0x4F00,
-			LJURR_B = UIMB + 0x4F80;
 
 	private static final int ADDR_OFFSET = 32;
 
@@ -89,7 +70,7 @@ public class QADC {
 	public static void init(boolean qadcA) {
 		if (qadcA) {
 			// user access
-			US.PUT2(QADCMCR_A, 0);
+			US.PUT2(QADC64MCR_A, 0);
 			
 			// internal multiplexing, use ETRIG1 for queue1, QCLK = 40 MHz / (11+1 + 7+1) = 2 MHz
 			US.PUT2(QACR0_A, 0x00B7);
@@ -120,7 +101,7 @@ public class QADC {
 			US.PUT2(CCW_A + ADDR_OFFSET + 16 * 2, END_OF_QUEUE);
 		} else {
 			// user access
-			US.PUT2(QADCMCR_B, 0);
+			US.PUT2(QADC64MCR_B, 0);
 			
 			// internal multiplexing, use ETRIG1 for queue1, QCLK = 40 MHz / (11+1 + 7+1) = 2 MHz
 			US.PUT2(QACR0_B, 0x00B7);

@@ -1,5 +1,5 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
-import ch.ntb.inf.deep.runtime.mpc555.Kernel;
+import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
@@ -9,15 +9,9 @@ import ch.ntb.inf.deep.unsafe.US;
  * The pins 6,7,8,9 has to be initialized with 16,17,18,19.
  *
  */
-public class Mios {
+public class Mios implements ntbMpc555HB {
 
 	static public final int TIME_BASE = 400;	// time base in ns
-
-	static final int MIOS1MCR = Kernel.USIU + 0x0A806; 
-	static final int MCPSMSCR = Kernel.USIU + 0x0A816; 
-	static final int MPWMSMPERR0 = Kernel.USIU + 0x0A000;
-	static final int MPWMSMPULR0 = Kernel.USIU + 0x0A002;
-	static final int MPWMSMSCR0 = Kernel.USIU + 0x0A006; 
 
 	/**
   * Initialise and update the pwm signal as multible of the<code>TIME_BASE</code> ({@value TIME_BASE}us).<br>
@@ -27,9 +21,9 @@ public class Mios {
   * @param highTime
   */
 	public static void initPWM(int channel, int period, int highTime){
-		US.PUT2(MPWMSMSCR0 + channel * 8, 0x04FC);	// enable, prescaler = 4 -> 400ns 
-		US.PUT2(MPWMSMPERR0 + channel * 8, period);	// set period 
-		US.PUT2(MPWMSMPULR0 + channel * 8, highTime);	//set pulse width 
+		US.PUT2(MPWMSM0SCR + channel * 8, 0x04FC);	// enable, prescaler = 4 -> 400ns 
+		US.PUT2(MPWMSM0PERR + channel * 8, period);	// set period 
+		US.PUT2(MPWMSM0PULR + channel * 8, highTime);	//set pulse width 
 	}
 
 	static{

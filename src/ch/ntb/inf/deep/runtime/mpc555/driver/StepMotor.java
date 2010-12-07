@@ -1,5 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
@@ -30,7 +31,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 14</em> und im Haltstep-Modus im Bereich <em>0 <= Startpin <= 12</em> gewählt werden.
  * 
  */
-public class StepMotor {
+public class StepMotor implements ntbMpc555HB {
 
 
 	/**
@@ -59,33 +60,33 @@ public class StepMotor {
 			int stepPeriodTCR1 = stepPeriod * 1000 / TPU_A.getCycleTime();
 			
 			//Disable interrupts for first channel
-			s = US.GET2(TPU_A.CIER);
+			s = US.GET2(CIER_A);
 			s &= ~(1 << channel);
-			US.PUT2(TPU_A.CIER, s);
+			US.PUT2(CIER_A, s);
 			
 			//Disable the TPU channels by clearing the priority bits
 			//first channel
 			shiftl = (channel % 8) * 2;
-			reg = TPU_A.CPR1 - (channel / 8) * 2;
+			reg = CPR1_A - (channel / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			US.PUT2(reg, s);
 			//second channel
 			shiftl = ((channel + 1) % 8) * 2;
-			reg = TPU_A.CPR1 - ((channel + 1) / 8) * 2;
+			reg = CPR1_A - ((channel + 1) / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			US.PUT2(reg, s);
 			if(!fullStep){
 				//second channel
 				shiftl = ((channel + 2) % 8) * 2;
-				reg = TPU_A.CPR1 - ((channel + 2) / 8) * 2;
+				reg = CPR1_A - ((channel + 2) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				US.PUT2(reg, s);
 				//second channel
 				shiftl = ((channel + 3) % 8) * 2;
-				reg = TPU_A.CPR1 - ((channel + 3) / 8) * 2;
+				reg = CPR1_A - ((channel + 3) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				US.PUT2(reg, s);
@@ -94,14 +95,14 @@ public class StepMotor {
 			//function code (D) for Stepper
 			//first channel
 			shiftl = ((channel % 4) * 4);
-			reg = TPU_A.CFSR3 - (channel / 4) * 2;
+			reg = CFSR3_A - (channel / 4) * 2;
 			s = US.GET2(reg);
 			s &= ~(0xF << shiftl);
 			s |= (0xD << shiftl);
 			US.PUT2(reg,s);
 			//second channel
 			shiftl = (((channel + 1) % 4) * 4);
-			reg = TPU_A.CFSR3 - ((channel + 1) / 4) * 2;
+			reg = CFSR3_A - ((channel + 1) / 4) * 2;
 			s = US.GET2(reg);
 			s &= ~(0xF << shiftl);
 			s |= (0xD << shiftl);
@@ -109,14 +110,14 @@ public class StepMotor {
 			if(!fullStep){
 				//third channel
 				shiftl = (((channel + 2) % 4) * 4);
-				reg = TPU_A.CFSR3 - ((channel + 2) / 4) * 2;
+				reg = CFSR3_A - ((channel + 2) / 4) * 2;
 				s = US.GET2(reg);
 				s &= ~(0xF << shiftl);
 				s |= (0xD << shiftl);
 				US.PUT2(reg,s);
 				//fourth channel
 				shiftl = (((channel + 3) % 4) * 4);
-				reg = TPU_A.CFSR3 - ((channel + 3) / 4) * 2;
+				reg = CFSR3_A - ((channel + 3) / 4) * 2;
 				s = US.GET2(reg);
 				s &= ~(0xF << shiftl);
 				s |= (0xD << shiftl);
@@ -132,36 +133,36 @@ public class StepMotor {
 //			SYS.PUT2(TPU_A.TPURAM0 + 0x10 * (channel + 1) + 0xA, 0xFFE8);
 			
 //			Acceleration table
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * (channel + 1), 240 * 0x100 + 250);
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * (channel + 1) + 2, 205 * 0x100 + 225);
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * (channel + 1) + 4, 165 * 0x100 + 185);
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * (channel + 1) + 6, 125 * 0x100 + 145);
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * (channel + 1) + 8, 90 * 0x100 + 105);
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * (channel + 1) + 0xA, 70 * 0x100 + 80);
+			US.PUT2(TPURAM0_A + 0x10 * (channel + 1), 240 * 0x100 + 250);
+			US.PUT2(TPURAM0_A + 0x10 * (channel + 1) + 2, 205 * 0x100 + 225);
+			US.PUT2(TPURAM0_A + 0x10 * (channel + 1) + 4, 165 * 0x100 + 185);
+			US.PUT2(TPURAM0_A + 0x10 * (channel + 1) + 6, 125 * 0x100 + 145);
+			US.PUT2(TPURAM0_A + 0x10 * (channel + 1) + 8, 90 * 0x100 + 105);
+			US.PUT2(TPURAM0_A + 0x10 * (channel + 1) + 0xA, 70 * 0x100 + 80);
 			
 			//Desired Position
 //			SYS.PUT2(TPU_A.TPURAM0 + 0x10 * channel, 0x0);
 			
 			//Current position, first channel
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * channel + 2,0x0);
-			s = US.GET2(TPU_A.TPURAM0 + 0x10 * channel + 2);
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * channel, s);
+			US.PUT2(TPURAM0_A + 0x10 * channel + 2,0x0);
+			s = US.GET2(TPURAM0_A + 0x10 * channel + 2);
+			US.PUT2(TPURAM0_A + 0x10 * channel, s);
 			
 			//Acceleration table size (12) and initializing table index
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * channel + 4, 0xC00);
+			US.PUT2(TPURAM0_A + 0x10 * channel + 4, 0xC00);
 			//Slew period and initializeng bit s = 0 (bit 0 = 0)
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * channel + 6, stepPeriodTCR1 *2);
+			US.PUT2(TPURAM0_A + 0x10 * channel + 6, stepPeriodTCR1 *2);
 			if(fullStep){
 				//Start period and bit a= 0 => two channel mode (bit 0 = 0)
-				US.PUT2(TPU_A.TPURAM0 + 0x10 * channel + 8,4 * stepPeriodTCR1 * 2);
+				US.PUT2(TPURAM0_A + 0x10 * channel + 8,4 * stepPeriodTCR1 * 2);
 				
 				//Pin sequence
-				US.PUT2(TPU_A.TPURAM0 + 0x10 * channel + 0xA, 0x9999);
+				US.PUT2(TPURAM0_A + 0x10 * channel + 0xA, 0x9999);
 				
 				//Operating mode, only first channel
 				//Local table mode (no spare TPU channels), rotate pin sequence once => %00
 				shiftl = (channel % 8) * 2;
-				reg = TPU_A.HSQR1 - (channel / 8) * 2;
+				reg = HSQR1_A - (channel / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				US.PUT2(reg, s);
@@ -170,14 +171,14 @@ public class StepMotor {
 				//For pin pattern 0x9999, first channel = %10 (pin high), second channel = %10 (pin high)
 				//first channel
 				shiftl = (channel % 8) * 2;
-				reg = TPU_A.HSRR1 - (channel / 8) * 2;
+				reg = HSRR1_A - (channel / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (2 << shiftl);
 				US.PUT2(reg, s);
 				//second channel
 				shiftl = ((channel + 1) % 8) * 2;
-				reg = TPU_A.HSRR1 - ((channel + 1) / 8) * 2;
+				reg = HSRR1_A - ((channel + 1) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (2 << shiftl);
@@ -187,15 +188,15 @@ public class StepMotor {
 			}
 			else{
 				//Start period and bit a = 1 => four channel mode (bit 0 = 1
-				US.PUT2(TPU_A.TPURAM0 + 0x10 * channel + 8,4 * stepPeriodTCR1 * 2 + 1);
+				US.PUT2(TPURAM0_A + 0x10 * channel + 8,4 * stepPeriodTCR1 * 2 + 1);
 				
 				//Pin sequence
-				US.PUT2(TPU_A.TPURAM0 + 0x10 * channel + 0xA, 0xE0E0);
+				US.PUT2(TPURAM0_A + 0x10 * channel + 0xA, 0xE0E0);
 				
 				//Operating mode, only first channel
 				//Local table mode (no spare TPU channels), rotate pin sequence twice => %10
 				shiftl = (channel % 8) * 2;
-				reg = TPU_A.HSQR1 - (channel / 8) * 2;
+				reg = HSQR1_A - (channel / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (2 << shiftl);
@@ -206,28 +207,28 @@ public class StepMotor {
 				//third channel = %01 (pin low) fourth channel = %10 (pin high)
 				//first channel
 				shiftl = (channel % 8) * 2;
-				reg = TPU_A.HSRR1 - (channel / 8) * 2;
+				reg = HSRR1_A - (channel / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (2 << shiftl);
 				US.PUT2(reg, s);
 				//second channel
 				shiftl = ((channel + 1) % 8) * 2;
-				reg = TPU_A.HSRR1 - ((channel + 1) / 8) * 2;
+				reg = HSRR1_A - ((channel + 1) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (1 << shiftl);
 				US.PUT2(reg, s);
 				//third channel
 				shiftl = ((channel + 2) % 8) * 2;
-				reg = TPU_A.HSRR1 - ((channel + 2) / 8) * 2;
+				reg = HSRR1_A - ((channel + 2) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (1 << shiftl);
 				US.PUT2(reg, s);
 				//fourth channel
 				shiftl = ((channel + 3) % 8) * 2;
-				reg = TPU_A.HSRR1 - ((channel + 3) / 8) * 2;
+				reg = HSRR1_A - ((channel + 3) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (2 << shiftl);
@@ -237,14 +238,14 @@ public class StepMotor {
 			//Set priority low
 			//First channel
 			shiftl = (channel % 8) * 2;
-			reg = TPU_A.CPR1 - (channel / 8) * 2;
+			reg = CPR1_A - (channel / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			s |= (1 << shiftl);
 			US.PUT2(reg, s);
 			//Second channel
 			shiftl = ((channel + 1) % 8) * 2;
-			reg = TPU_A.CPR1 - ((channel + 1)  / 8) * 2;
+			reg = CPR1_A - ((channel + 1)  / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			s |= (1 << shiftl);
@@ -253,14 +254,14 @@ public class StepMotor {
 			if(!fullStep){
 				//Third channel
 				shiftl = ((channel + 2) % 8) * 2;
-				reg = TPU_A.CPR1 - ((channel + 2)  / 8) * 2;
+				reg = CPR1_A - ((channel + 2)  / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (1 << shiftl);
 				US.PUT2(reg, s);
 				//Fourth channel
 				shiftl = ((channel + 3) % 8) * 2;
-				reg = TPU_A.CPR1 - ((channel + 3)  / 8) * 2;
+				reg = CPR1_A - ((channel + 3)  / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (1 << shiftl);
@@ -270,33 +271,33 @@ public class StepMotor {
 			int stepPeriodTCR1 = stepPeriod * 1000 / TPU_A.getCycleTime();
 			
 			//Disable interrupts for first channel
-			s = US.GET2(TPU_B.CIER);
+			s = US.GET2(CIER_B);
 			s &= ~(1 << channel);
-			US.PUT2(TPU_B.CIER, s);
+			US.PUT2(CIER_B, s);
 			
 			//Disable the TPU channels by clearing the priority bits
 			//first channel
 			shiftl = (channel % 8) * 2;
-			reg = TPU_B.CPR1 - (channel / 8) * 2;
+			reg = CPR1_B - (channel / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			US.PUT2(reg, s);
 			//second channel
 			shiftl = ((channel + 1) % 8) * 2;
-			reg = TPU_B.CPR1 - ((channel + 1) / 8) * 2;
+			reg = CPR1_B - ((channel + 1) / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			US.PUT2(reg, s);
 			if(!fullStep){
 				//second channel
 				shiftl = ((channel + 2) % 8) * 2;
-				reg = TPU_B.CPR1 - ((channel + 2) / 8) * 2;
+				reg = CPR1_B - ((channel + 2) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				US.PUT2(reg, s);
 				//second channel
 				shiftl = ((channel + 3) % 8) * 2;
-				reg = TPU_B.CPR1 - ((channel + 3) / 8) * 2;
+				reg = CPR1_B - ((channel + 3) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				US.PUT2(reg, s);
@@ -305,14 +306,14 @@ public class StepMotor {
 			//function code (D) for Stepper
 			//first channel
 			shiftl = ((channel % 4) * 4);
-			reg = TPU_B.CFSR3 - (channel / 4) * 2;
+			reg = CFSR3_B - (channel / 4) * 2;
 			s = US.GET2(reg);
 			s &= ~(0xF << shiftl);
 			s |= (0xD << shiftl);
 			US.PUT2(reg,s);
 			//second channel
 			shiftl = (((channel + 1) % 4) * 4);
-			reg = TPU_B.CFSR3 - ((channel + 1) / 4) * 2;
+			reg = CFSR3_B - ((channel + 1) / 4) * 2;
 			s = US.GET2(reg);
 			s &= ~(0xF << shiftl);
 			s |= (0xD << shiftl);
@@ -320,14 +321,14 @@ public class StepMotor {
 			if(!fullStep){
 				//third channel
 				shiftl = (((channel + 2) % 4) * 4);
-				reg = TPU_B.CFSR3 - ((channel + 2) / 4) * 2;
+				reg = CFSR3_B - ((channel + 2) / 4) * 2;
 				s = US.GET2(reg);
 				s &= ~(0xF << shiftl);
 				s |= (0xD << shiftl);
 				US.PUT2(reg,s);
 				//fourth channel
 				shiftl = (((channel + 3) % 4) * 4);
-				reg = TPU_B.CFSR3 - ((channel + 3) / 4) * 2;
+				reg = CFSR3_B - ((channel + 3) / 4) * 2;
 				s = US.GET2(reg);
 				s &= ~(0xF << shiftl);
 				s |= (0xD << shiftl);
@@ -343,36 +344,36 @@ public class StepMotor {
 //			SYS.PUT2(TPU_B.TPURAM0 + 0x10 * (channel + 1) + 0xA, 0xFFE8);
 			
 //			Acceleration table
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * (channel + 1), 240 * 0x100 + 250);
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * (channel + 1) + 2, 205 * 0x100 + 225);
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * (channel + 1) + 4, 165 * 0x100 + 185);
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * (channel + 1) + 6, 125 * 0x100 + 145);
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * (channel + 1) + 8, 90 * 0x100 + 105);
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * (channel + 1) + 0xA, 70 * 0x100 + 80);
+			US.PUT2(TPURAM0_B + 0x10 * (channel + 1), 240 * 0x100 + 250);
+			US.PUT2(TPURAM0_B + 0x10 * (channel + 1) + 2, 205 * 0x100 + 225);
+			US.PUT2(TPURAM0_B + 0x10 * (channel + 1) + 4, 165 * 0x100 + 185);
+			US.PUT2(TPURAM0_B + 0x10 * (channel + 1) + 6, 125 * 0x100 + 145);
+			US.PUT2(TPURAM0_B + 0x10 * (channel + 1) + 8, 90 * 0x100 + 105);
+			US.PUT2(TPURAM0_B + 0x10 * (channel + 1) + 0xA, 70 * 0x100 + 80);
 			
 			//Desired Position
 //			SYS.PUT2(TPU_B.TPURAM0 + 0x10 * channel, 0x0);
 			
 			//Current position, first channel
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * channel + 2,0x0);
-			s = US.GET2(TPU_B.TPURAM0 + 0x10 * channel + 2);
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * channel, s);
+			US.PUT2(TPURAM0_B + 0x10 * channel + 2,0x0);
+			s = US.GET2(TPURAM0_B + 0x10 * channel + 2);
+			US.PUT2(TPURAM0_B + 0x10 * channel, s);
 			
 			//Acceleration table size (12) and initializing table index
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * channel + 4, 0xC00);
+			US.PUT2(TPURAM0_B + 0x10 * channel + 4, 0xC00);
 			//Slew period and initializeng bit s = 0 (bit 0 = 0)
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * channel + 6, stepPeriodTCR1 *2);
+			US.PUT2(TPURAM0_B + 0x10 * channel + 6, stepPeriodTCR1 *2);
 			if(fullStep){
 				//Start period and bit a= 0 => two channel mode (bit 0 = 0)
-				US.PUT2(TPU_B.TPURAM0 + 0x10 * channel + 8,4 * stepPeriodTCR1 * 2);
+				US.PUT2(TPURAM0_B + 0x10 * channel + 8,4 * stepPeriodTCR1 * 2);
 				
 				//Pin sequence
-				US.PUT2(TPU_B.TPURAM0 + 0x10 * channel + 0xA, 0x9999);
+				US.PUT2(TPURAM0_B + 0x10 * channel + 0xA, 0x9999);
 				
 				//Operating mode, only first channel
 				//Local table mode (no spare TPU channels), rotate pin sequence once => %00
 				shiftl = (channel % 8) * 2;
-				reg = TPU_B.HSQR1 - (channel / 8) * 2;
+				reg = HSQR1_B - (channel / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				US.PUT2(reg, s);
@@ -381,14 +382,14 @@ public class StepMotor {
 				//For pin pattern 0x9999, first channel = %10 (pin high), second channel = %10 (pin high)
 				//first channel
 				shiftl = (channel % 8) * 2;
-				reg = TPU_B.HSRR1 - (channel / 8) * 2;
+				reg = HSRR1_B - (channel / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (2 << shiftl);
 				US.PUT2(reg, s);
 				//second channel
 				shiftl = ((channel + 1) % 8) * 2;
-				reg = TPU_B.HSRR1 - ((channel + 1) / 8) * 2;
+				reg = HSRR1_B - ((channel + 1) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (2 << shiftl);
@@ -398,15 +399,15 @@ public class StepMotor {
 			}
 			else{
 				//Start period and bit a = 1 => four channel mode (bit 0 = 1
-				US.PUT2(TPU_B.TPURAM0 + 0x10 * channel + 8,4 * stepPeriodTCR1 * 2 + 1);
+				US.PUT2(TPURAM0_B + 0x10 * channel + 8,4 * stepPeriodTCR1 * 2 + 1);
 				
 				//Pin sequence
-				US.PUT2(TPU_B.TPURAM0 + 0x10 * channel + 0xA, 0xE0E0);
+				US.PUT2(TPURAM0_B + 0x10 * channel + 0xA, 0xE0E0);
 				
 				//Operating mode, only first channel
 				//Local table mode (no spare TPU channels), rotate pin sequence twice => %10
 				shiftl = (channel % 8) * 2;
-				reg = TPU_B.HSQR1 - (channel / 8) * 2;
+				reg = HSQR1_B - (channel / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (2 << shiftl);
@@ -417,28 +418,28 @@ public class StepMotor {
 				//third channel = %01 (pin low) fourth channel = %10 (pin high)
 				//first channel
 				shiftl = (channel % 8) * 2;
-				reg = TPU_B.HSRR1 - (channel / 8) * 2;
+				reg = HSRR1_B - (channel / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (2 << shiftl);
 				US.PUT2(reg, s);
 				//second channel
 				shiftl = ((channel + 1) % 8) * 2;
-				reg = TPU_B.HSRR1 - ((channel + 1) / 8) * 2;
+				reg = HSRR1_B - ((channel + 1) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (1 << shiftl);
 				US.PUT2(reg, s);
 				//third channel
 				shiftl = ((channel + 2) % 8) * 2;
-				reg = TPU_B.HSRR1 - ((channel + 2) / 8) * 2;
+				reg = HSRR1_B - ((channel + 2) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (1 << shiftl);
 				US.PUT2(reg, s);
 				//fourth channel
 				shiftl = ((channel + 3) % 8) * 2;
-				reg = TPU_B.HSRR1 - ((channel + 3) / 8) * 2;
+				reg = HSRR1_B - ((channel + 3) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (2 << shiftl);
@@ -448,14 +449,14 @@ public class StepMotor {
 			//Set priority low
 			//First channel
 			shiftl = (channel % 8) * 2;
-			reg = TPU_B.CPR1 - (channel / 8) * 2;
+			reg = CPR1_B - (channel / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			s |= (1 << shiftl);
 			US.PUT2(reg, s);
 			//Second channel
 			shiftl = ((channel + 1) % 8) * 2;
-			reg = TPU_B.CPR1 - ((channel + 1)  / 8) * 2;
+			reg = CPR1_B - ((channel + 1)  / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			s |= (1 << shiftl);
@@ -464,14 +465,14 @@ public class StepMotor {
 			if(!fullStep){
 				//Third channel
 				shiftl = ((channel + 2) % 8) * 2;
-				reg = TPU_B.CPR1 - ((channel + 2)  / 8) * 2;
+				reg = CPR1_B - ((channel + 2)  / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (1 << shiftl);
 				US.PUT2(reg, s);
 				//Fourth channel
 				shiftl = ((channel + 3) % 8) * 2;
-				reg = TPU_B.CPR1 - ((channel + 3)  / 8) * 2;
+				reg = CPR1_B - ((channel + 3)  / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (1 << shiftl);
@@ -498,25 +499,25 @@ public class StepMotor {
 		short s;
 		if(tpuA){
 			//Get current position
-			short pos = US.GET2(TPU_A.TPURAM0 + 0x10 * channel + 2);
+			short pos = US.GET2(TPURAM0_A + 0x10 * channel + 2);
 			//Set disired position
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * channel,(short) pos + steps);
+			US.PUT2(TPURAM0_A + 0x10 * channel,(short) pos + steps);
 			
 			//Move Request (Host Service Request) (Master only)
 			shiftl = (channel % 8) * 2;
-			reg = TPU_A.HSRR1 - (channel / 8) * 2;
+			reg = HSRR1_A - (channel / 8) * 2;
 			s = US.GET2(reg);
 			s |= (3 << shiftl);
 			US.PUT2(reg,s);
 		}else{
 			//Get current position
-			short pos = US.GET2(TPU_B.TPURAM0 + 0x10 * channel + 2);
+			short pos = US.GET2(TPURAM0_B + 0x10 * channel + 2);
 			//Set disired position
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * channel,(short) pos + steps);
+			US.PUT2(TPURAM0_B + 0x10 * channel,(short) pos + steps);
 			
 			//Move Request (Host Service Request) (Master only)
 			shiftl = (channel % 8) * 2;
-			reg = TPU_B.HSRR1 - (channel / 8) * 2;
+			reg = HSRR1_B - (channel / 8) * 2;
 			s = US.GET2(reg);
 			s |= (3 << shiftl);
 			US.PUT2(reg,s);
@@ -544,14 +545,14 @@ public class StepMotor {
 			//Set priority low
 			//first channel
 			shiftl = (channel % 8) * 2;
-			reg = TPU_A.CPR1 - (channel / 8) * 2;
+			reg = CPR1_A - (channel / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			s |= (1 << shiftl);
 			US.PUT2(reg, s);
 			//second channel
 			shiftl = ((channel + 1) % 8) * 2;
-			reg = TPU_A.CPR1 - ((channel + 1) / 8) * 2;
+			reg = CPR1_A - ((channel + 1) / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			s |= (1 << shiftl);
@@ -559,14 +560,14 @@ public class StepMotor {
 			if(!fullStep){
 				//Third channel
 				shiftl = ((channel + 2) % 8) * 2;
-				reg = TPU_A.CPR1 - ((channel + 2) / 8) * 2;
+				reg = CPR1_A - ((channel + 2) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (1 << shiftl);
 				US.PUT2(reg,s);
 				//fourth channel
 				shiftl = ((channel + 3) % 8) * 2;
-				reg = TPU_A.CPR1 - ((channel + 3) / 8) * 2;
+				reg = CPR1_A - ((channel + 3) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (1 << shiftl);
@@ -578,14 +579,14 @@ public class StepMotor {
 			//Set priority low
 			//first channel
 			shiftl = (channel % 8) * 2;
-			reg = TPU_B.CPR1 - (channel / 8) * 2;
+			reg = CPR1_B - (channel / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			s |= (1 << shiftl);
 			US.PUT2(reg, s);
 			//second channel
 			shiftl = ((channel + 1) % 8) * 2;
-			reg = TPU_B.CPR1 - ((channel + 1) / 8) * 2;
+			reg = CPR1_B - ((channel + 1) / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			s |= (1 << shiftl);
@@ -593,14 +594,14 @@ public class StepMotor {
 			if(!fullStep){
 				//Third channel
 				shiftl = ((channel + 2) % 8) * 2;
-				reg = TPU_B.CPR1 - ((channel + 2) / 8) * 2;
+				reg = CPR1_B - ((channel + 2) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (1 << shiftl);
 				US.PUT2(reg,s);
 				//fourth channel
 				shiftl = ((channel + 3) % 8) * 2;
-				reg = TPU_B.CPR1 - ((channel + 3) / 8) * 2;
+				reg = CPR1_B - ((channel + 3) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				s |= (1 << shiftl);
@@ -630,26 +631,26 @@ public class StepMotor {
 			//Set priority null
 			//first channel
 			shiftl = (channel % 8) * 2;
-			reg = TPU_A.CPR1 - (channel / 8) * 2;
+			reg = CPR1_A - (channel / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			US.PUT2(reg,s);
 			//second channel
 			shiftl = ((channel + 1) % 8) * 2;
-			reg = TPU_A.CPR1 - ((channel + 1) / 8) * 2;
+			reg = CPR1_A - ((channel + 1) / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			US.PUT2(reg,s);
 			if(!fullStep){
 				//third channel
 				shiftl = ((channel + 2) % 8) * 2;
-				reg = TPU_A.CPR1 - ((channel + 2) / 8) * 2;
+				reg = CPR1_A - ((channel + 2) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				US.PUT2(reg,s);
 				//fourth channel
 				shiftl = ((channel + 3) % 8) * 2;
-				reg = TPU_A.CPR1 - ((channel + 3) / 8) * 2;
+				reg = CPR1_A - ((channel + 3) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				US.PUT2(reg,s);
@@ -660,26 +661,26 @@ public class StepMotor {
 			//Set priority null
 			//first channel
 			shiftl = (channel % 8) * 2;
-			reg = TPU_B.CPR1 - (channel / 8) * 2;
+			reg = CPR1_B - (channel / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			US.PUT2(reg,s);
 			//second channel
 			shiftl = ((channel + 1) % 8) * 2;
-			reg = TPU_B.CPR1 - ((channel + 1) / 8) * 2;
+			reg = CPR1_B - ((channel + 1) / 8) * 2;
 			s = US.GET2(reg);
 			s &= ~(3 << shiftl);
 			US.PUT2(reg,s);
 			if(!fullStep){
 				//third channel
 				shiftl = ((channel + 2) % 8) * 2;
-				reg = TPU_B.CPR1 - ((channel + 2) / 8) * 2;
+				reg = CPR1_B - ((channel + 2) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				US.PUT2(reg,s);
 				//fourth channel
 				shiftl = ((channel + 3) % 8) * 2;
-				reg = TPU_B.CPR1 - ((channel + 3) / 8) * 2;
+				reg = CPR1_B - ((channel + 3) / 8) * 2;
 				s = US.GET2(reg);
 				s &= ~(3 << shiftl);
 				US.PUT2(reg,s);
@@ -701,12 +702,12 @@ public class StepMotor {
 	 */
 	public static boolean finished(boolean tpuA, int channel) {
 		if(tpuA){
-			short desPos = US.GET2(TPU_A.TPURAM0 + 0x10 * channel);
-			short curPos = US.GET2(TPU_A.TPURAM0 + 0x10 * channel + 2);
+			short desPos = US.GET2(TPURAM0_A + 0x10 * channel);
+			short curPos = US.GET2(TPURAM0_A + 0x10 * channel + 2);
 			return desPos == curPos;
 		}else{
-			short desPos = US.GET2(TPU_B.TPURAM0 + 0x10 * channel);
-			short curPos = US.GET2(TPU_B.TPURAM0 + 0x10 * channel + 2);
+			short desPos = US.GET2(TPURAM0_B + 0x10 * channel);
+			short curPos = US.GET2(TPURAM0_B + 0x10 * channel + 2);
 			return desPos == curPos;
 		}
 	}
@@ -722,8 +723,8 @@ public class StepMotor {
 	 * @return Momentane Position in Schritten.
 	 */
 	public static int position(boolean tpuA, int channel) {
-		if(tpuA) return US.GET2(TPU_A.TPURAM0 + 0x10 * channel + 2);
-		else return US.GET2(TPU_B.TPURAM0 + 0x10 * channel + 2);
+		if(tpuA) return US.GET2(TPURAM0_A + 0x10 * channel + 2);
+		else return US.GET2(TPURAM0_B + 0x10 * channel + 2);
 	}
 	
 		
@@ -740,14 +741,14 @@ public class StepMotor {
 	public static void reset(boolean tpuA, int channel) {
 		if(tpuA){
 			//Get current position
-			short pos = US.GET2(TPU_A.TPURAM0 + 0x10 * channel + 2);
+			short pos = US.GET2(TPURAM0_A + 0x10 * channel + 2);
 			//Set desired position
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * channel, pos);	
+			US.PUT2(TPURAM0_A + 0x10 * channel, pos);	
 		}else{
 			//Get current position
-			short pos = US.GET2(TPU_B.TPURAM0 + 0x10 * channel + 2);
+			short pos = US.GET2(TPURAM0_B + 0x10 * channel + 2);
 			//Set desired position
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * channel, pos);	
+			US.PUT2(TPURAM0_B + 0x10 * channel, pos);	
 		}
 	}
 	

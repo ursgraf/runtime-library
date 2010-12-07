@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.Kernel;
+import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
@@ -14,17 +14,8 @@ import ch.ntb.inf.deep.unsafe.US;
  * <strong>Änderungen</strong>
  * 18.02.2010 M. Züger: Treiber für DAC und ADC angepasst und direkt integriert
  */
-public class RTBoard {
+public class RTBoard implements ntbMpc555HB {
   
-  private static final int UIMB = Kernel.UIMB;
-  private static final int QADCMCR_A = UIMB + 0x4800,
-    QADCINT_A = UIMB + 0x4804, PORTQA_A = UIMB + 0x4806,
-    PORTQA_B = UIMB + 0x4807, DDRQA_A = UIMB + 0x4808,
-    QACR0_A = UIMB + 0x480A, QACR1_A = UIMB + 0x480C,
-    QACR2_A = UIMB + 0x480E, QASR0_A = UIMB + 0x4810,
-    QASR1_A = UIMB + 0x4812, CCW_A = UIMB + 0x4A00,
-    RJURR_A = UIMB + 0x4A80, LJSRR_A = UIMB + 0x4B00,
-    LJURR_A = UIMB + 0x4B80;
   private static final int ADDR_OFFSET = 64;
   private static final int CCW_INIT = 0x0000;
   private static final int END_OF_QUEUE = 0x003F;
@@ -58,7 +49,7 @@ public class RTBoard {
    *            werden soll.
    */
   public static void analogOut(int channel, float val) {
-    US.PUT2(QSMCM.TR + 2 * channel, (channel % 4) * 0x4000 + (int)(val / 10 * 2047.5f + 2047.5f));
+    US.PUT2(TRANRAM + 2 * channel, (channel % 4) * 0x4000 + (int)(val / 10 * 2047.5f + 2047.5f));
 }
 
 	/**
@@ -76,7 +67,7 @@ public class RTBoard {
 	 */
   public static void analogPowerOut(int channel, float val) {
     channel += 2;
-    US.PUT2(QSMCM.TR + 2 * channel, (channel % 4) * 0x4000 + (int)(val / 10 * 2047.5f + 2047.5f));
+    US.PUT2(TRANRAM + 2 * channel, (channel % 4) * 0x4000 + (int)(val / 10 * 2047.5f + 2047.5f));
   }
 
 
@@ -200,23 +191,23 @@ public class RTBoard {
 
 	private static void initDAC() {
     US.PUT2(QSMCM.SPCR1, 0x0);     //disable QSPI 
-		US.PUT1(QSMCM.PQSPAR, 0x013);  // use PCS1, MOSI, MISO for QSPI 
-		US.PUT1(QSMCM.DDRQS, 0x016);   //SCK, MOSI, PCS1 output; MISO is input 
-		US.PUT2(QSMCM.PORTQS, 0x0FF);  //all Pins, in case QSPI disabled, are high 
-		US.PUT2(QSMCM.SPCR0, 0x08302); // QSPI is master, 16 bits per transfer, inactive state of SCLK is high (CPOL=1), data changed on leading edge (CPHA=1), clock = 10s MHz 
-		US.PUT2(QSMCM.SPCR2, 0x4300);  // no interrupts, wraparound mode, NEWQP=0, ENDQP=03 
-		for(int i=0; i<4; i++) US.PUT1(QSMCM.CR + i, 0x4D); //disable chip select after transfer, use bits in SPCR0, use PCS1 
-		for(int i=0; i<4; i++) US.PUT2(QSMCM.TR + 2 * i, i * 0x4000 + 2048);
-		US.PUT2(QSMCM.SPCR1, 0x8000);  // enable QSPI
-		US.PUT1(QSMCM.DDRQS, 0x36);
-		US.PUT1(QSMCM.PQSPAR, 0x33);
-		US.PUT1(QSMCM.CR, 0x49);
+		US.PUT1(PQSPAR, 0x013);  // use PCS1, MOSI, MISO for QSPI 
+		US.PUT1(DDRQS, 0x016);   //SCK, MOSI, PCS1 output; MISO is input 
+		US.PUT2(PORTQS, 0x0FF);  //all Pins, in case QSPI disabled, are high 
+		US.PUT2(SPCR0, 0x08302); // QSPI is master, 16 bits per transfer, inactive state of SCLK is high (CPOL=1), data changed on leading edge (CPHA=1), clock = 10s MHz 
+		US.PUT2(SPCR2, 0x4300);  // no interrupts, wraparound mode, NEWQP=0, ENDQP=03 
+		for(int i=0; i<4; i++) US.PUT1(COMDRAM + i, 0x4D); //disable chip select after transfer, use bits in SPCR0, use PCS1 
+		for(int i=0; i<4; i++) US.PUT2(COMDRAM + 2 * i, i * 0x4000 + 2048);
+		US.PUT2(SPCR1, 0x8000);  // enable QSPI
+		US.PUT1(DDRQS, 0x36);
+		US.PUT1(PQSPAR, 0x33);
+		US.PUT1(COMDRAM, 0x49);
   }
 
 
   private static void initADC() {
     // user access
-    US.PUT2(QADCMCR_A, 0);
+    US.PUT2(QADC64MCR_A, 0);
     
     // internal multiplexing, use ETRIG1 for queue1, QCLK = 40 MHz / (11+1 + 7+1) = 2 MHz
     US.PUT2(QACR0_A, 0x00B7);

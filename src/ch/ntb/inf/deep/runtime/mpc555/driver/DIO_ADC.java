@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.Kernel;
+import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
@@ -15,12 +15,8 @@ import ch.ntb.inf.deep.unsafe.US;
  * these are only input ports.
  * @see mpc555.Mpiosm
  */
-public class DIO_ADC {
+public class DIO_ADC implements ntbMpc555HB{
 
-	private static final int UIMB = Kernel.UIMB;
-	private static final int  PORTQA_A=UIMB+0x4806, DDRQA_A=UIMB+0x4808;
-	private static final int  PORTQA_B=UIMB+0x4C06, DDRQA_B=UIMB+0x4C08;
-	
 	private static int getChannel(int channel){
 		if(channel>15) channel -= 44;
 		return channel;

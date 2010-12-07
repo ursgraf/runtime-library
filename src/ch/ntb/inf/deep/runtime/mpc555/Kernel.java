@@ -5,17 +5,13 @@ import ch.ntb.inf.deep.unsafe.*;
  * 11.11.10	NTB/GRAU	creation
  */
 
-public class Kernel implements Registers {
+public class Kernel implements ntbMpc555HB {
 	
-	public static final int MPIOSMDDR = 0x306102;
-	public static final int MPIOSMDR = 0x306100;
-	public static final int CextRomBase = 0;
-
 	/** 
 	 * @return system time in us
 	 */
 	public static long time() {
-		long time = (long)US.GETSPR(TBU) >> 32;
+		long time = (long)US.GETSPR(TBU) << 32;
 		time |= US.GETSPR(TBL);
 		return time;
 	}
@@ -41,6 +37,7 @@ public class Kernel implements Registers {
 	private static void boot() {
 		US.PUT4(SIUMCR, 0x00040000);	// internal arb., no data show cycles, BDM operation, CS functions,
 			// output FREEZE, no lock, use data & address bus, use as RSTCONF, no reserv. logic
+		US.ASM("rfi");
 		US.PUT4(PLPRCR, 0x00900000);	// MF = 9, 40MHz operation with 4MHz quarz
 		int reg;
 		do reg = US.GET4(PLPRCR); while ((reg & (1 << 16)) != 0);	// wait for PLL to lock 

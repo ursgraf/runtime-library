@@ -13,7 +13,7 @@ import ch.ntb.inf.deep.unsafe.US;
 
 public class Flash {
 
-	static final int DevAddr = Kernel.CextRomBase; // ext. flash address, 16MB 
+	static final int DevAddr = 0;//Kernel.CextRomBase; // ext. flash address, 16MB 	//Todo: fix rom base
 
 
 	static final int FSOffset = 0x200000; // start of file system in flash, 1MB 

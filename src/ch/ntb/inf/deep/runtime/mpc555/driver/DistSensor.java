@@ -2,6 +2,7 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
+import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
@@ -40,18 +41,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * <br>adrPat: 16-Bit  address pattern (16-Bit  Adress-Bitmuster mit max vier 1-Bits)
  * <br>adrPatTab: 16-Bit  address pattern table (Tabelle mit den 16 möglichen Adress-Bitmustern)
  */
-public class DistSensor extends Task {
-
-	private static final int UIMB = Kernel.UIMB;
-
-	private static final int QADCMCR_A = UIMB + 0x4800,
-			QADCINT_A = UIMB + 0x4804, PORTQA_A = UIMB + 0x4806,
-			PORTQA_B = UIMB + 0x4807, DDRQA_A = UIMB + 0x4808,
-			QACR0_A = UIMB + 0x480A, QACR1_A = UIMB + 0x480C,
-			QACR2_A = UIMB + 0x480E, QASR0_A = UIMB + 0x4810,
-			QASR1_A = UIMB + 0x4812, CCW_A = UIMB + 0x4A00,
-			RJURR_A = UIMB + 0x4A80, LJSRR_A = UIMB + 0x4B00,
-			LJURR_A = UIMB + 0x4B80;
+public class DistSensor extends Task implements ntbMpc555HB{
 
 	public static final  byte maxNofSensors = 16, maxAnalogInPortNr = 59;
 
@@ -183,7 +173,7 @@ public class DistSensor extends Task {
 		US.PUT2(Kernel.MPIOSMDDR, val | outPinPat);
 
 		// user access
-		US.PUT2(QADCMCR_A, 0);
+		US.PUT2(QADC64MCR_A, 0);
 		// internal multiplexing, use ETRIG1 for queue1, QCLK = 2 MHz
 		US.PUT2(QACR0_A, 0x00B7);
 		// disable queue2, queue 2 begins at 16

@@ -1,5 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
@@ -23,7 +24,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * Bei jedem Methodenaufruf kann die gewünschte TPU mittels dem Parameter
  * <code>tpuA</code> gewählt werden.
  */
-public class FQD {
+public class FQD implements ntbMpc555HB{
 
 
 	/**
@@ -46,77 +47,77 @@ public class FQD {
 		 if(tpuA){
 			 int shiftl = (channel % 4) * 4;
 			 //initalize TPU for quadrature decode function code = 6;
-			 short s = US.GET2(TPU_A.CFSR3 -(channel / 4) * 2);
+			 short s = US.GET2(CFSR3_A -(channel / 4) * 2);
 			 s &= ~(0xFF << shiftl);
 			 s |= (0x66 << shiftl);
-			 US.PUT2(TPU_A.CFSR3 - (channel / 4) * 2, s);
+			 US.PUT2(CFSR3_A - (channel / 4) * 2, s);
 			
 			 //ch14: Position_Count = 0
-			 US.PUT2(TPU_A.TPURAM0 + 0x10 * channel + 2, 0);
+			 US.PUT2(TPURAM0_A + 0x10 * channel + 2, 0);
 			 //Edge_time_LSB_Addr = TPRAM14+1
-			 US.PUT2(TPU_A.TPURAM0 + 0x10 * channel +10, TPU_A.TPURAM0  + 0x10 * channel + 1);
+			 US.PUT2(TPURAM0_A + 0x10 * channel +10, TPURAM0_A + 0x10 * channel + 1);
 			 //Edge_Time_LSB_addr = TPRAM14 + 1
-			 US.PUT2(TPU_A.TPURAM0 + 0x10 * (channel + 1) + 10, TPU_A.TPURAM0 +0x10 * channel  + 1);
+			 US.PUT2(TPURAM0_A + 0x10 * (channel + 1) + 10, TPURAM0_A +0x10 * channel  + 1);
 			 //Corr_Pinstate_addr = TPRAM15+6
-			 US.PUT2(TPU_A.TPURAM0 + 0x10 * channel + 8, TPU_A.TPURAM0 +0x10 * (channel + 1) + 6);
+			 US.PUT2(TPURAM0_A + 0x10 * channel + 8, TPURAM0_A +0x10 * (channel + 1) + 6);
 			 //Corr_Pinstate_addr = TPRAM14+6
-			 US.PUT2(TPU_A.TPURAM0 + 0x10 * (channel + 1) + 8, TPU_A.TPURAM0 +0x10 *channel  +6);
+			 US.PUT2(TPURAM0_A + 0x10 * (channel + 1) + 8, TPURAM0_A +0x10 *channel  +6);
 			 
 			 shiftl = (channel % 8) * 2;
 			 //Channel is primary, ch+ 1 is secondary channel
-			 s = US.GET2(TPU_A.HSQR1 - (channel / 8) * 2);
+			 s = US.GET2(HSQR1_A - (channel / 8) * 2);
 			 s &= ~(0x9 << shiftl);
 			 s |= (0x4 << shiftl);
-			 US.PUT2(TPU_A.HSQR1 - (channel / 8) * 2,s);
+			 US.PUT2(HSQR1_A - (channel / 8) * 2,s);
 			
 			 //Initalize channel and ch + 1	 
-			 s = US.GET2(TPU_A.HSRR1 - (channel / 8) * 2);
+			 s = US.GET2(HSRR1_A - (channel / 8) * 2);
 			 s &= ~(0x9 << shiftl);
 			 s |= (0xF << shiftl);
-			 US.PUT2(TPU_A.HSRR1 - (channel / 8) * 2,s);
+			 US.PUT2(HSRR1_A - (channel / 8) * 2,s);
 			
 			 //set priority high
-			 s = US.GET2(TPU_A.CPR1 - (channel / 8) * 2);
+			 s = US.GET2(CPR1_A - (channel / 8) * 2);
 			 s &= ~(0x9 << shiftl);
 			 s |= (0xF << shiftl);
-			 US.PUT2(TPU_A.CPR1 - (channel / 8) * 2, s);
+			 US.PUT2(CPR1_A - (channel / 8) * 2, s);
 		 }else{
 			 int shiftl = (channel % 4) * 4;
 			 //initalize TPU for quadrature decode function code = 6;
-			 short s = US.GET2(TPU_B.CFSR3 -(channel / 4) * 2);
+			 short s = US.GET2(CFSR3_B -(channel / 4) * 2);
 			 s &= ~(0xFF << shiftl);
 			 s |= (0x66 << shiftl);
-			 US.PUT2(TPU_B.CFSR3 - (channel / 4) * 2, s);
+			 US.PUT2(CFSR3_B - (channel / 4) * 2, s);
 			 
 			 //ch14: Position_Count = 0
-			 US.PUT2(TPU_B.TPURAM0 + 0x10 * channel + 2, 0);
+			 US.PUT2(TPURAM0_B + 0x10 * channel + 2, 0);
 			 //Edge_time_LSB_Addr = TPRAM14+1
-			 US.PUT2(TPU_B.TPURAM0 + 0x10 * channel +10, TPU_B.TPURAM0  + 0x10 * channel + 1);
+			 US.PUT2(TPURAM0_B + 0x10 * channel +10, TPURAM0_B  + 0x10 * channel + 1);
 			 //Edge_Time_LSB_addr = TPRAM14 + 1
-			 US.PUT2(TPU_B.TPURAM0 + 0x10 * (channel + 1) + 10, TPU_B.TPURAM0 +0x10 * channel  + 1);
+			 US.PUT2(TPURAM0_B + 0x10 * (channel + 1) + 10, TPURAM0_B +0x10 * channel  + 1);
 			 //Corr_Pinstate_addr = TPRAM15+6
-			 US.PUT2(TPU_B.TPURAM0 + 0x10 * channel + 8, TPU_B.TPURAM0 +0x10 * (channel + 1) + 6);
+			 US.PUT2(TPURAM0_B + 0x10 * channel + 8, TPURAM0_B +0x10 * (channel + 1) + 6);
 			 //Corr_Pinstate_addr = TPRAM14+6
-			 US.PUT2(TPU_B.TPURAM0 + 0x10 * (channel + 1) + 8, TPU_B.TPURAM0 +0x10 *channel  +6);
+			 US.PUT2(TPURAM0_B + 0x10 * (channel + 1) + 8, TPURAM0_B +0x10 *channel  +6);
 			 
 			 shiftl = (channel % 8) * 2;
 			 //Channel is primary, ch+ 1 is secondary channel
-			 s = US.GET2(TPU_B.HSQR1 - (channel / 8) * 2);
+			 s = US.GET2(HSQR1_B - (channel / 8) * 2);
 			 s &= ~(0x9 << shiftl);
 			 s |= (0x4 << shiftl);
-			 US.PUT2(TPU_B.HSQR1 - (channel / 8) * 2,s);
+			 US.PUT2(HSQR1_B - (channel / 8) * 2,s);
 			 
 			 //Initalize channel and ch + 1	 
-			 s = US.GET2(TPU_B.HSRR1 - (channel / 8) * 2);
+			 s = US.GET2(HSRR1_B - (channel / 8) * 2);
 			 s &= ~(0x9 << shiftl);
 			 s |= (0xF << shiftl);
-			 US.PUT2(TPU_B.HSRR1 - (channel / 8) * 2,s);
+			 US.PUT2(HSRR1_B - (channel / 8) * 2,s);
 			 
 			 //set priority high
-			 s = US.GET2(TPU_B.CPR1 - (channel / 8) * 2);
+			 s = US.GET2(CPR1_B - (channel / 8) * 2);
 			 s &= ~(0x9 << shiftl);
 			 s |= (0xF << shiftl);
-			 US.PUT2(TPU_B.CPR1 - (channel / 8) * 2, s);
+			 US.PUT2(CPR1_B - (channel / 8) * 2, s);
 			 
 		 }
 	}
@@ -135,9 +136,9 @@ public class FQD {
 	 */
 	public static short getPosition(boolean tpuA, int channel) {
 		if(tpuA){
-			return US.GET2(TPU_A.TPURAM0 + 0x10 * channel + 2);
+			return US.GET2(TPURAM0_A + 0x10 * channel + 2);
 		}else{
-			return US.GET2(TPU_B.TPURAM0 + 0x10 * channel + 2);
+			return US.GET2(TPURAM0_B + 0x10 * channel + 2);
 		}
 	}
 
@@ -155,9 +156,9 @@ public class FQD {
 	 */
 	public static void setPosition(boolean tpuA, int channel, int pos) {
 		if(tpuA){
-			US.PUT2(TPU_A.TPURAM0 + 0x10 * channel + 2, pos);
+			US.PUT2(TPURAM0_A + 0x10 * channel + 2, pos);
 		}else{			
-			US.PUT2(TPU_B.TPURAM0 + 0x10 * channel + 2, pos);
+			US.PUT2(TPURAM0_B + 0x10 * channel + 2, pos);
 		}
 	}
 

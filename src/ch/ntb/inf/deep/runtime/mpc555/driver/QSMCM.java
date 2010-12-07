@@ -1,15 +1,16 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.Kernel;
+import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
  * 15.05.07	NTB/SP	creation
- */
+ * 7.12.17	NTB/GRAU	ported to deep
+*/
 /**
  * constant definitions for QSMCM<br>
  */
-public class QSMCM{
+public class QSMCM implements ntbMpc555HB{
 
 	// interrupt levels
 
@@ -22,118 +23,6 @@ public class QSMCM{
 	 */
 	public static final int SPI_IntLevel = 4;
 
-	// registers
-
-	/**
-	 * QSMCM configuration
-	 */
-	public static final int QSMCM_REG = Kernel.UIMB + 0x5000;
-	/**
-	 * SCI interrupt level register
-	 */
-	public static final int QDSCI_IL = Kernel.UIMB + 0x5004;
-	/**
-	 * SPI interrupt level register
-	 */
-	public static final int QSPI_IL = Kernel.UIMB + 0x5006;
-
-	/**
-	 * SCI1 control register 0
-	 */
-	public static final int SCC1R0 = Kernel.UIMB + 0x5008;
-	/**
-	 * SCI1 control register 1
-	 */
-	public static final int SCC1R1 = Kernel.UIMB + 0x500A;
-	/**
-	 * SCI1 status register
-	 */
-	public static final int SC1SR = Kernel.UIMB + 0x500C;
-	/**
-	 * SCI1 data register
-	 */
-	public static final int SC1DR = Kernel.UIMB + 0x500E;
-
-	/**
-	 * QSMCM portQ data register
-	 */
-	public static final int PORTQS = Kernel.UIMB + 0x5014;
-	/**
-	 * QSMCM pin assignment register
-	 */
-	public static final int PQSPAR = Kernel.UIMB + 0x5016;
-	/**
-	 * QSMCM data direction register
-	 */
-	public static final int DDRQS = Kernel.UIMB + 0x5017;
-
-	/**
-	 * QSPI control register 0
-	 */
-	public static final int SPCR0 = Kernel.UIMB + 0x5018;
-	/**
-	 * QSPI control register 1
-	 */
-	public static final int SPCR1 = Kernel.UIMB + 0x501A;
-	/**
-	 * QSPI control register 2
-	 */
-	public static final int SPCR2 = Kernel.UIMB + 0x501C;
-	/**
-	 * QSPI control register 2
-	 */
-	public static final int SPCR3 = Kernel.UIMB + 0x501E;
-	/**
-	 * QSPI status register
-	 */
-	public static final int SPSR = Kernel.UIMB + 0x501F;
-
-	/**
-	 * SCI2 control register 0
-	 */
-	public static final int SCC2R0 = Kernel.UIMB + 0x5020;
-	/**
-	 * SCI2 control register 1
-	 */
-	public static final int SCC2R1 = Kernel.UIMB + 0x5022;
-	/**
-	 * SCI2 status register
-	 */
-	public static final int SC2SR = Kernel.UIMB + 0x5024;
-	/**
-	 * SCI2 data register
-	 */
-	public static final int SC2DR = Kernel.UIMB + 0x5026;
-
-	/**
-	 * QSCI1 control register
-	 */
-	public static final int QSCI1CR = Kernel.UIMB + 0x5028;
-	/**
-	 * QSCI1 status register
-	 */
-	public static final int QSCI1SR = Kernel.UIMB + 0x502A;
-	/**
-	 * Transmit queue locations
-	 */
-	public static final int SCTQ = Kernel.UIMB + 0x502C;
-	/**
-	 * Receive queue locations
-	 */
-	public static final int SCRQ = Kernel.UIMB + 0x504C;
-
-	/**
-	 * QSPI Receive RAM
-	 */
-	public static final int RR = Kernel.UIMB + 0x5140;
-	/**
-	 * QSPI Transmit RAM
-	 */
-	public static final int TR = Kernel.UIMB + 0x5180;
-	/**
-	 * QSPI Command RAM
-	 */
-	public static final int CR = Kernel.UIMB + 0x51C0;
 
 	// SCI2 control register 1 (SCC+R+) flags
 
@@ -488,7 +377,7 @@ public class QSMCM{
 	public static void init(){}
 
 	static {
-		US.PUT2(QSMCM_REG,0);
+		US.PUT2(QSMCMMCR,0);
 		US.PUT2(QDSCI_IL, SCI_IntLevel * 0x100);
 		US.PUT2(QSPI_IL, SPI_IntLevel);
 	}

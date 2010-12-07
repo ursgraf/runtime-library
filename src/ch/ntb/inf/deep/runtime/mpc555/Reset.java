@@ -5,14 +5,14 @@ import ch.ntb.inf.deep.unsafe.*;
  * 11.11.10	NTB/GRAU	creation
  */
 
-class Reset extends PPCException implements Registers {
+class Reset extends PPCException implements ntbMpc555HB {
 	
 	static void reset() {
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
-		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 8);
+		int stackBase = US.GET4(sysTabBaseAddr + stStackOffset + 4);
+		int stackSize = US.GET4(sysTabBaseAddr + stStackOffset + 8);
 		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
 		int kernelConstBlkBase = US.GET4(US.GET4(sysTabBaseAddr) + 4);
-		int clinitAddr = US.GET4(kernelConstBlkBase + clbkClinitAddrOffset);
+		int clinitAddr = US.GET4(kernelConstBlkBase + cblkClinitAddrOffset);
 		US.PUTSPR(SRR0, clinitAddr);
 		US.PUTSPR(SRR1, SRR1init);
 		US.ASM("rfi");

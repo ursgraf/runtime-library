@@ -1,5 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
@@ -17,7 +18,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * Zeitangaben müssen in ganzzahligen Vielfachen der TPU-Zeitbasis gemacht
  * werden. Ein Zeitzyklus entspricht 0.8 ns.
  */
-public class PWM {
+public class PWM implements ntbMpc555HB{
 
 
 	/** TPU-Zeitbasis: 806 ns */
@@ -52,27 +53,27 @@ public class PWM {
 		if(tpuA){
 			TPU_A.init();
 			shift = (channel * 4) % 16;
-			tpuAdr = TPU_A.CFSR3 - (channel / 4) * 2;			
+			tpuAdr = CFSR3_A - (channel / 4) * 2;			
 			s = US.GET2(tpuAdr);
 			s &= ~(0xF << shift);
 			s |= 3 << shift;
 			US.PUT2(tpuAdr,(short) s);
 			//Force pin hig, use TCR1
-			tpuAdr = TPU_A.TPURAM0 +0x10 * channel;
+			tpuAdr = TPURAM0_A +0x10 * channel;
 			US.PUT2(tpuAdr, 0x91 );
 			//Define high time
 			US.PUT2(tpuAdr + 4, highTime);
 			//Define time of period
 			US.PUT2(tpuAdr  + 6, period);
 			//Request initialization
-			tpuAdr = TPU_A.HSRR1 - (channel / 8) * 2;
+			tpuAdr = HSRR1_A - (channel / 8) * 2;
 			shift = (channel * 2) % 16;
 			s = US.GET2(tpuAdr);
 			s &= ~(0x3 << shift);
 			s |= 2 << shift;
 			US.PUT2(tpuAdr,s);
 			//set priority low
-			tpuAdr = TPU_A.CPR1 - (channel / 8) * 2;
+			tpuAdr = CPR1_A - (channel / 8) * 2;
 			s = US.GET2(tpuAdr);
 			s &= ~(0x3 << shift);
 			s |= 1 << shift;
@@ -81,27 +82,27 @@ public class PWM {
 		else{
 			TPU_B.init();
 			shift = (channel * 4) % 16;
-			tpuAdr = TPU_B.CFSR3 - (channel / 4) * 2;			
+			tpuAdr = CFSR3_B - (channel / 4) * 2;			
 			s = US.GET2(tpuAdr);
 			s &= ~(0xF << shift);
 			s |= 3 << shift;
 			US.PUT2(tpuAdr,(short) s);
 			//Force pin hig, use TCR1
-			tpuAdr = TPU_B.TPURAM0 +0x10 * channel;
+			tpuAdr = TPURAM0_B +0x10 * channel;
 			US.PUT2(tpuAdr, 0x91 );
 			//Define high time
 			US.PUT2(tpuAdr + 4, highTime);
 			//Define time of period
 			US.PUT2(tpuAdr  + 6, period);
 			//Request initialization
-			tpuAdr = TPU_B.HSRR1 - (channel / 8) * 2;
+			tpuAdr = HSRR1_B - (channel / 8) * 2;
 			shift = (channel * 2) % 16;
 			s = US.GET2(tpuAdr);
 			s &= ~(0x3 << shift);
 			s |= 2 << shift;
 			US.PUT2(tpuAdr,s);
 			//set priority low
-			tpuAdr = TPU_B.CPR1 - (channel / 8) * 2;
+			tpuAdr = CPR1_B - (channel / 8) * 2;
 			s = US.GET2(tpuAdr);
 			s &= ~(0x3 << shift);
 			s |= 1 << shift;
@@ -133,13 +134,13 @@ public class PWM {
 		int adr ;
 		if(tpuA){
 			//Define high time
-			adr = TPU_A.TPURAM0 + 0x10 * channel;
+			adr = TPURAM0_A + 0x10 * channel;
 			US.PUT2(adr + 4, highTime);
 			//Define time of period
 			US.PUT2(adr + 6, period);
 		}else{
 			//Define high time
-			adr = TPU_B.TPURAM0 + 0x10 * channel;
+			adr = TPURAM0_B + 0x10 * channel;
 			US.PUT2(adr + 4, highTime);
 			//Define time of period
 			US.PUT2(adr + 6, period);
