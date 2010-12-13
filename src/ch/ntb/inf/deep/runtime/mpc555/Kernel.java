@@ -59,8 +59,8 @@ public class Kernel implements ntbMpc555HB {
 		US.PUT2(TBSCR, 1); 	// time base, no interrupts, stop time base while freeze, enable
 		short reset = US.GET2(RSR);
 		if ((reset & (1<<5 | 1<<15)) != 0) {	// boot from flash
-/*			SYS.PUT4(SYPCR, pSYPCR);
-			SYS.PUT4(DMBR, pDMBRRom);
+			US.PUT4(SYPCR, 0);	// noch korrigieren
+/*			SYS.PUT4(DMBR, pDMBRRom);
 			SYS.PUT4(DMOR, pDMOR);
 			SYS.GET(sysTabAdrRom + stoSysTabSize, sysTabSize);
 			SYS.MOVE(sysTabAdrRom, sysTabAdr, sysTabSize)*/
@@ -86,7 +86,7 @@ public class Kernel implements ntbMpc555HB {
 			if (FCS(codeBase, codeBase + codeSize) != 0) while(true) blink(2);
 
 			// initialize class variables
-/*			int varBase = US.GET4(constBlkBase + cblkVarBaseOffset);
+			int varBase = US.GET4(constBlkBase + cblkVarBaseOffset);
 			int varSize = US.GET4(constBlkBase + cblkVarSizeOffset);
 			int begin = varBase;
 			int end = varBase + varSize;
@@ -94,12 +94,12 @@ public class Kernel implements ntbMpc555HB {
 			
 			// initialize classes
 			if (modNr != 0) {	// skip kernel 
-				int clinitAddr = US.GET4(constBlkBase + clbkClinitAddrOffset);
-//				HWD.PUTSPR(LR, clinitAddr);
-//				HWD.ASM("bclr always, 0");
+				int clinitAddr = US.GET4(constBlkBase + cblkClinitAddrOffset);
+				US.PUTSPR(LR, clinitAddr);
+				US.ASM("bclr always, 0");
 			} else {	// kernel
 				//scheduler := Loop (* kernel *);
-			}*/
+			}
 			state++; modNr++;
 			sysTabConstBlkOffset += 4;
 		}

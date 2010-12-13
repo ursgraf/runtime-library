@@ -8,12 +8,11 @@ import ch.ntb.inf.deep.unsafe.*;
 class Reset extends PPCException implements ntbMpc555HB {
 	
 	static void reset() {
-		int stackBase = US.GET4(sysTabBaseAddr + stStackOffset + 4);
+		int stackBase = US.GET4(sysTabBaseAddr + stStackOffset);
 		int stackSize = US.GET4(sysTabBaseAddr + stStackOffset + 8);
 		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
-		int kernelConstBlkBase = US.GET4(US.GET4(sysTabBaseAddr) + 4);
-		int clinitAddr = US.GET4(kernelConstBlkBase + cblkClinitAddrOffset);
-		US.PUTSPR(SRR0, clinitAddr);
+		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
+		US.PUTSPR(SRR0, kernelClinitAddr);
 		US.PUTSPR(SRR1, SRR1init);
 		US.ASM("rfi");
 	}

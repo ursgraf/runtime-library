@@ -19,7 +19,7 @@ public interface ntbMpc555HB{
 	public static final int cblkNofPtrsOffset = 0x18;
 	public static final int stStackOffset = 0x4;
 	public static final int stHeapOffset = 0x8;
-	public static final int stNofStacksOffset = 0xc;
+	public static final int stKernelClinitAddr = 0xc;
 	public static final int sysTabBaseAddr = 0x3f9800;
 	public static final int stackSize = 0x2000;
 	public static final int heapSize = 0x2000;
