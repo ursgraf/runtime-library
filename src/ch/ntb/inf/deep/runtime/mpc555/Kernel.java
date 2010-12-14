@@ -77,8 +77,8 @@ public class Kernel implements ntbMpc555HB {
 			if (constBlkBase == 0) break;
 			
 			// check integrity of constant block for each class
-			int constBlkSize = US.GET4(constBlkBase);
-			if (FCS(constBlkBase, constBlkBase + constBlkSize) != 0) while(true) blink(1);
+//			int constBlkSize = US.GET4(constBlkBase);
+//			if (FCS(constBlkBase, constBlkBase + constBlkSize) != 0) while(true) blink(1);
 
 			// check integrity of code block for each class
 			int codeBase = US.GET4(constBlkBase + cblkCodeBaseOffset);
@@ -86,7 +86,7 @@ public class Kernel implements ntbMpc555HB {
 			if (FCS(codeBase, codeBase + codeSize) != 0) while(true) blink(2);
 
 			// initialize class variables
-			int varBase = US.GET4(constBlkBase + cblkVarBaseOffset);
+/*			int varBase = US.GET4(constBlkBase + cblkVarBaseOffset);
 			int varSize = US.GET4(constBlkBase + cblkVarSizeOffset);
 			int begin = varBase;
 			int end = varBase + varSize;
@@ -99,13 +99,15 @@ public class Kernel implements ntbMpc555HB {
 				US.ASM("bclr always, 0");
 			} else {	// kernel
 				//scheduler := Loop (* kernel *);
-			}
+			}*/
 			state++; modNr++;
 			sysTabConstBlkOffset += 4;
 		}
 	}
 	
 	static {
+		boolean a = true;
+		while (a);
 		boot();
 		blink(4);
 	}
