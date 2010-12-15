@@ -37,7 +37,6 @@ public class Kernel implements ntbMpc555HB {
 	private static void boot() {
 		US.PUT4(SIUMCR, 0x00040000);	// internal arb., no data show cycles, BDM operation, CS functions,
 			// output FREEZE, no lock, use data & address bus, use as RSTCONF, no reserv. logic
-		US.ASM("rfi");
 		US.PUT4(PLPRCR, 0x00900000);	// MF = 9, 40MHz operation with 4MHz quarz
 		int reg;
 		do reg = US.GET4(PLPRCR); while ((reg & (1 << 16)) != 0);	// wait for PLL to lock 
@@ -68,12 +67,13 @@ public class Kernel implements ntbMpc555HB {
 		
 //		SetFPSCR;
 
-		int sysTabConstBlkOffset = US.GET4(sysTabBaseAddr) + 4;
-		int modNr = 0;
+		int classConstOffset = US.GET4(sysTabBaseAddr) + 4;
+//		int modNr = 0;
 		int state = 0;
+		int kernelClinitAddr = US.GET4(sysTabBaseAddr + 12); 
 		while (true) {
 			// get addresses of classes from system table
-			int constBlkBase = US.GET4(sysTabConstBlkOffset);
+			int constBlkBase = US.GET4(classConstOffset);
 			if (constBlkBase == 0) break;
 			
 			// check integrity of constant block for each class
@@ -81,27 +81,27 @@ public class Kernel implements ntbMpc555HB {
 //			if (FCS(constBlkBase, constBlkBase + constBlkSize) != 0) while(true) blink(1);
 
 			// check integrity of code block for each class
-			int codeBase = US.GET4(constBlkBase + cblkCodeBaseOffset);
-			int codeSize = US.GET4(constBlkBase + cblkCodeSizeOffset);
-			if (FCS(codeBase, codeBase + codeSize) != 0) while(true) blink(2);
+//			int codeBase = US.GET4(constBlkBase + cblkCodeBaseOffset);
+//			int codeSize = US.GET4(constBlkBase + cblkCodeSizeOffset);
+//			if (FCS(codeBase, codeBase + codeSize) != 0) while(true) blink(2);
 
 			// initialize class variables
-/*			int varBase = US.GET4(constBlkBase + cblkVarBaseOffset);
+			int varBase = US.GET4(constBlkBase + cblkVarBaseOffset);
 			int varSize = US.GET4(constBlkBase + cblkVarSizeOffset);
 			int begin = varBase;
 			int end = varBase + varSize;
 			while (begin < end) {US.PUT4(begin, 0); begin += 4;}
 			
 			// initialize classes
-			if (modNr != 0) {	// skip kernel 
-				int clinitAddr = US.GET4(constBlkBase + cblkClinitAddrOffset);
+			int clinitAddr = US.GET4(constBlkBase + cblkClinitAddrOffset);
+			if (clinitAddr != kernelClinitAddr) {	// skip kernel 
 				US.PUTSPR(LR, clinitAddr);
 				US.ASM("bclr always, 0");
 			} else {	// kernel
 				//scheduler := Loop (* kernel *);
-			}*/
-			state++; modNr++;
-			sysTabConstBlkOffset += 4;
+			}
+			state++; //modNr++;
+			constBlkBase += 4;
 		}
 	}
 	

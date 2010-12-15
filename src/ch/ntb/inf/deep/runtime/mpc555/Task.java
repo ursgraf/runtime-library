@@ -66,7 +66,9 @@ public class Task {
 	 * returns system time in milliseconds, time starts at powerup
 	 */
 	public static int time() {
-		return 0;
+//		return (int)(Kernel.time() / 1000);
+		return (int)(Kernel.time() >> 10);
+//		return 0;
 	}
 
 	/**
