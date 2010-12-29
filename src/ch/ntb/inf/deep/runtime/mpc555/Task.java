@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555;
 
 /*changes:
- * 11.11.10	NTB/GRAU	creation
+ * 11.11.10	NTB/GRAU	porting from Pascal
  */
 
 public class Task {
@@ -131,4 +131,8 @@ public class Task {
 		}
 	}
 	
+/*	static {
+		Kernel.loopAddr = 
+	}
+	*/
 }

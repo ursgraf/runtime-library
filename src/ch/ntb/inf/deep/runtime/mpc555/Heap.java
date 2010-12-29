@@ -14,12 +14,14 @@ public class Heap implements ntbMpc555HB {
 	private static int newObject(int ref) {	
 		int size = US.GET4(ref) + 8;
 		int addr = heapPtr; 
-		while (addr < heapPtr + size) US.PUT4(addr, 0);
+		while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
 		US.PUT4(heapPtr + 4, ref);	// write tag
 		ref = heapPtr + 8;
 		heapPtr += ((size + 15) >> 4) << 4;
+//		US.ASM("b 0");
 		return ref;
-	}
+	}	
+
 	
 	// called by newarray	
 	private static int newPrimTypeArray(int nofElements, int type) {
@@ -30,7 +32,7 @@ public class Heap implements ntbMpc555HB {
 		else elementSize = 1;
 		int size = nofElements * elementSize + 8;
 		int addr = heapPtr; 
-		while (addr < heapPtr + size) US.PUT4(addr, 0);
+		while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
 		US.PUT4(heapPtr + 4, type);	// write tag
 		US.PUT2(heapPtr + 2, nofElements);	// write length
 		int ref = heapPtr + 8;
@@ -40,9 +42,12 @@ public class Heap implements ntbMpc555HB {
 	
 	// called by anewarray	
 	private static int newRefArray(int nofElements, int ref) {
+/*		int heapOffset = US.GET4(sysTabBaseAddr + stHeapOffset); 
+		heapBase = US.GET4(sysTabBaseAddr + heapOffset * 4 + 4);
+		heapPtr = heapBase;*/
 		int size = nofElements * 4 + 8;
 		int addr = heapPtr; 
-		while (addr < heapPtr + size) US.PUT4(addr, 0);
+		while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
 		US.PUT4(heapPtr + 4, ref);	// write tag
 		US.PUT2(heapPtr + 2, nofElements);	// write length
 		ref = heapPtr + 8;
@@ -58,7 +63,7 @@ public class Heap implements ntbMpc555HB {
 	
 	static {
 		int heapOffset = US.GET4(sysTabBaseAddr + stHeapOffset);
-		heapBase = US.GET4(heapOffset * 4 + 4);
+		heapBase = US.GET4(sysTabBaseAddr + heapOffset * 4 + 4);
 		heapPtr = heapBase;
 	}
 	

@@ -65,9 +65,9 @@ public class OutT {
 	 */
 	public static void open() {
 		if (useSCI2) {
-			SCI2.start(9600, SCI2.NO_PARITY, (short) 8);
+			SCI2Plain.start(9600, SCI2Plain.NO_PARITY, (short) 8);
 		} else {
-			SCI1.start(9600, SCI1.NO_PARITY, (short) 8);
+			SCI1Plain.start(9600, SCI1Plain.NO_PARITY, (short) 8);
 		}
 	}
 
@@ -76,9 +76,9 @@ public class OutT {
 	 */
 	public static void close() {
 		if (useSCI2) {
-			SCI2.stop();
+			SCI2Plain.stop();
 		} else {
-			SCI1.stop();
+			SCI1Plain.stop();
 		}
 	}
 
@@ -90,9 +90,9 @@ public class OutT {
 	 */
 	public static void print(char ch) {
 		if (useSCI2) {
-			SCI2.write((byte) ch);
+			SCI2Plain.write((byte) ch);
 		} else {
-			SCI1.write((byte) ch);
+			SCI1Plain.write((byte) ch);
 		}
 	}
 
@@ -120,12 +120,12 @@ public class OutT {
 		int pos = 0;
 		if (useSCI2) {
 			while (pos < len) {
-				SCI2.write((byte) str.charAt(pos));
+				SCI2Plain.write((byte) str.charAt(pos));
 				pos++;
 			}
 		} else {
 			while (pos < len) {
-				SCI1.write((byte) str.charAt(pos));
+				SCI1Plain.write((byte) str.charAt(pos));
 				pos++;
 			}
 		}
@@ -172,16 +172,16 @@ public class OutT {
 					break;
 				default:
 					if (useSCI2)
-						SCI2.write((byte) '%');
+						SCI2Plain.write((byte) '%');
 					else
-						SCI1.write((byte) '%');
+						SCI1Plain.write((byte) '%');
 					break;
 				}
 			} else {
 				if (useSCI2)
-					SCI2.write((byte) c);
+					SCI2Plain.write((byte) c);
 				else
-					SCI1.write((byte) c);
+					SCI1Plain.write((byte) c);
 			}
 		}
 	}
@@ -233,16 +233,16 @@ public class OutT {
 					break;
 				default:
 					if (useSCI2)
-						SCI2.write((byte) '%');
+						SCI2Plain.write((byte) '%');
 					else
-						SCI1.write((byte) '%');
+						SCI1Plain.write((byte) '%');
 					break;
 				}
 			} else {
 				if (useSCI2)
-					SCI2.write((byte) c);
+					SCI2Plain.write((byte) c);
 				else
-					SCI1.write((byte) c);
+					SCI1Plain.write((byte) c);
 			}
 		}
 	}
@@ -271,12 +271,12 @@ public class OutT {
 	 *            Float-Zahl, welche ausgegeben werden soll.
 	 */
 	public static void print(float val) {
-		int nofChars = Double.doubleToChars(val, 6, chars);
+/*		int nofChars = Double.doubleToChars(val, 6, chars);
 		int n = 0;
 		while (n < nofChars) {
 			OutT.print(chars[n]);
 			n++;
-		}
+		}*/
 	}
 
 
@@ -289,12 +289,12 @@ public class OutT {
 	 *            Double-Zahl, welche ausgegeben werden soll.
 	 */
 	public static void print(double val) {
-		int nofChars = Double.doubleToChars(val, 15, chars);
+/*		int nofChars = Double.doubleToChars(val, 15, chars);
 		int n = 0;
 		while (n < nofChars) {
 			OutT.print(chars[n]);
 			n++;
-		}
+		}*/
 	}
 
 	private static final char esc = 0x1B, ecPrintForm = 0xF0, // print format
@@ -314,11 +314,11 @@ public class OutT {
 	 *            Wert, der ausgegeben werden soll.
 	 */
 	public static void printRaw(double val) {
-		int nofChars = Double.doubleToRawBytes(val, chars);
+/*		int nofChars = Double.doubleToRawBytes(val, chars);
 		OutT.print(esc);
 		OutT.print(ecDouble);
 		for (int n = 0; n < nofChars; n++)
-			OutT.print(chars[n]);
+			OutT.print(chars[n]);*/
 	}
 
 	/**
@@ -332,11 +332,11 @@ public class OutT {
 	 *            Wert, der ausgegeben werden soll.
 	 */
 	public static void printRaw(float val) {
-		int nofChars = Double.floatToRawBytes(val, chars);
+/*		int nofChars = Double.floatToRawBytes(val, chars);
 		OutT.print(esc);
 		OutT.print(ecFloat);
 		for (int n = 0; n < nofChars; n++)
-			OutT.print(chars[n]);
+			OutT.print(chars[n]);*/
 	}
 
 	/**
@@ -383,9 +383,9 @@ public class OutT {
 	 */
 	public static void println() {
 		if (useSCI2) {
-			SCI2.write((byte) CR);
+			SCI2Plain.write((byte) CR);
 		} else {
-			SCI1.write((byte) CR); // SCI1.write((byte)lf);
+			SCI1Plain.write((byte) CR); // SCI1.write((byte)lf);
 		}
 	}
 
@@ -519,9 +519,9 @@ public class OutT {
 	 */
 	public static void printTab() {
 		if (useSCI2) {
-			SCI2.write((byte) TAB);
+			SCI2Plain.write((byte) TAB);
 		} else {
-			SCI1.write((byte) TAB);
+			SCI1Plain.write((byte) TAB);
 		}
 	}
 

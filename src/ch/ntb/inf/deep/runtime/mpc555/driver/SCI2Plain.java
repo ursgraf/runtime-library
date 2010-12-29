@@ -1,4 +1,5 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
+import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.*;
 
@@ -6,7 +7,7 @@ import ch.ntb.inf.deep.unsafe.*;
  * 11.11.10	NTB/GRAU	creation
  */
 
-public class SCI1Plain implements ntbMpc555HB {
+public class SCI2Plain implements ntbMpc555HB {
 
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
 
@@ -23,28 +24,28 @@ public class SCI1Plain implements ntbMpc555HB {
 	static final byte RDRF = 6;	// Receive Data Register Full Flag in SC1SR 
 	
 	public static void stop() {
-		US.PUT2(SCC1R1, 0);	//  TE, RE = 0 
+		US.PUT2(SCC2R1, 0);	//  TE, RE = 0 
 	}
 	
 	public static void start(int i, byte noParity, short s) {
-		US.PUT2(SCC1R0,  130); 	// baud rate 
-		US.PUT2(SCC1R1, 0x0C);	// no parity, 8 data bits, enable tx and rx 
+		US.PUT2(SCC2R0,  130); 	// baud rate 
+		US.PUT2(SCC2R1, 0x0C);	// no parity, 8 data bits, enable tx and rx 
 	}
 	
 	public static void write(byte b) {	// blocking
 		short status;
 		do 
-			status = US.GET2(SC1SR);
+			status = US.GET2(SC2SR);
 		while ((status & (1<<TDRE)) == 0);
-		US.PUT2(SC1DR, b);
+		US.PUT2(SC2DR, b);
 	}
 		
 	public static byte receive() {	// blocking
 		short status;
 		do 
-			status = US.GET2(SC1SR);
+			status = US.GET2(SC2SR);
 		while ((status & (1<<RDRF)) == 0);
-		short data = US.GET2(SC1DR);
+		short data = US.GET2(SC2DR);
 		return (byte)data;
 	}
 	

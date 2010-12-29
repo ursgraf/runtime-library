@@ -153,9 +153,9 @@ public interface ntbMpc555HB{
 	public static final int SPR159 = 0x9f;
 	public static final int BAR = 0x9f;
 	public static final int SPR268 = 0x10c;
-	public static final int TBL = 0x11c;
+	public static final int TBLread = 0x10c;
 	public static final int SPR269 = 0x10d;
-	public static final int TBU = 0x11d;
+	public static final int TBUread = 0x10d;
 	public static final int SPR272 = 0x110;
 	public static final int SPRG0 = 0x110;
 	public static final int SPR273 = 0x111;
@@ -165,7 +165,9 @@ public interface ntbMpc555HB{
 	public static final int SPR275 = 0x113;
 	public static final int SPRG3 = 0x113;
 	public static final int SPR284 = 0x11c;
+	public static final int TBLwrite = 0x11c;
 	public static final int SPR285 = 0x11d;
+	public static final int TBUwrite = 0x11d;
 	public static final int SPR287 = 0x11f;
 	public static final int PVR = 0x11f;
 	public static final int SPR528 = 0x210;
