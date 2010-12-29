@@ -8,9 +8,11 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.*;
 
 public class OutTest4 {
 	static {
-		int a = 100;
-//		SCI2Plain.start(9600, (byte)0, (short)8);
-//		SCI2Plain.write((byte)'y');
-//		OutT.println(117);
+		SCI2Plain.start(9600, (byte)0, (short)8);
+		OutT.switchToSCI2();
+		SCI2Plain.write((byte)'f');
+		OutT.println('w');
+		OutT.println(123);
+		SCI2Plain.write((byte)'1');
 	}
 }

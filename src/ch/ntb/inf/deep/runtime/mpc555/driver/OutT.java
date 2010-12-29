@@ -89,11 +89,11 @@ public class OutT {
 	 *            Zeichen, welches ausgegeben werden soll.
 	 */
 	public static void print(char ch) {
-		if (useSCI2) {
+//		if (useSCI2) {
 			SCI2Plain.write((byte) ch);
-		} else {
+/*		} else {
 			SCI1Plain.write((byte) ch);
-		}
+		}*/
 	}
 
 	/**
@@ -102,12 +102,12 @@ public class OutT {
 	 * @param bool
 	 *            Boolscher Wert, welcher ausgegeben werden soll.
 	 */
-	public static void print(boolean bool) {
+/*	public static void print(boolean bool) {
 		if (bool)
 			print("true");
 		else
 			print("false");
-	}
+	}*/
 
 	/**
 	 * Gibt einen Literal-String über die serielle Schnittstelle aus.
@@ -115,7 +115,7 @@ public class OutT {
 	 * @param str
 	 *            Zeichen, welches ausgegeben werden soll.
 	 */
-	public static void print(String str) {
+/*	public static void print(String str) {
 		int len = str.length();
 		int pos = 0;
 		if (useSCI2) {
@@ -129,7 +129,7 @@ public class OutT {
 				pos++;
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * Gibt einen String über die serielle Schnittstelle aus. Der Wert
@@ -149,7 +149,7 @@ public class OutT {
 	 * @param value
 	 *            Wert der im String eingefügt wird.
 	 */
-	public static void printf(String str, int value) {
+/*	public static void printf(String str, int value) {
 		int strlen = str.length();
 		for (int i = 0; i < strlen; i++) {
 			char c = str.charAt(i);
@@ -184,7 +184,7 @@ public class OutT {
 					SCI1Plain.write((byte) c);
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * Gibt einen String über die serielle Schnittstelle aus. Der Werte
@@ -205,7 +205,7 @@ public class OutT {
 	 * @param value
 	 *            Wert der im String eingefügt wird.
 	 */
-	public static void printf(String str, int... values) {
+/*	public static void printf(String str, int... values) {
 		int strlen = str.length();
 		int vallen = values.length;
 		int valctr = 0;
@@ -245,7 +245,7 @@ public class OutT {
 					SCI1Plain.write((byte) c);
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Gibt eine Integer-Zahl als Dezimalzahl über die serielle Schnittstelle
@@ -270,14 +270,14 @@ public class OutT {
 	 * @param val
 	 *            Float-Zahl, welche ausgegeben werden soll.
 	 */
-	public static void print(float val) {
-/*		int nofChars = Double.doubleToChars(val, 6, chars);
+/*	public static void print(float val) {
+		int nofChars = Double.doubleToChars(val, 6, chars);
 		int n = 0;
 		while (n < nofChars) {
 			OutT.print(chars[n]);
 			n++;
-		}*/
-	}
+		}
+	}*/
 
 
 
@@ -288,14 +288,14 @@ public class OutT {
 	 * @param val
 	 *            Double-Zahl, welche ausgegeben werden soll.
 	 */
-	public static void print(double val) {
-/*		int nofChars = Double.doubleToChars(val, 15, chars);
+/*	public static void print(double val) {
+		int nofChars = Double.doubleToChars(val, 15, chars);
 		int n = 0;
 		while (n < nofChars) {
 			OutT.print(chars[n]);
 			n++;
-		}*/
-	}
+		}
+	}*/
 
 	private static final char esc = 0x1B, ecPrintForm = 0xF0, // print format
 			// for double
@@ -313,13 +313,13 @@ public class OutT {
 	 * @param val
 	 *            Wert, der ausgegeben werden soll.
 	 */
-	public static void printRaw(double val) {
-/*		int nofChars = Double.doubleToRawBytes(val, chars);
+/*	public static void printRaw(double val) {
+		int nofChars = Double.doubleToRawBytes(val, chars);
 		OutT.print(esc);
 		OutT.print(ecDouble);
 		for (int n = 0; n < nofChars; n++)
-			OutT.print(chars[n]);*/
-	}
+			OutT.print(chars[n]);
+	}*/
 
 	/**
 	 * Gibt die 4 bytes einer Float-Zahl als ESC-Sequnz über die serielle
@@ -331,13 +331,13 @@ public class OutT {
 	 * @param val
 	 *            Wert, der ausgegeben werden soll.
 	 */
-	public static void printRaw(float val) {
-/*		int nofChars = Double.floatToRawBytes(val, chars);
+/*	public static void printRaw(float val) {
+		int nofChars = Double.floatToRawBytes(val, chars);
 		OutT.print(esc);
 		OutT.print(ecFloat);
 		for (int n = 0; n < nofChars; n++)
-			OutT.print(chars[n]);*/
-	}
+			OutT.print(chars[n]);
+	}*/
 
 	/**
 	 * Sendet das Printformat für double- und float-Zahlen an den Empfänger.<br>
@@ -363,7 +363,7 @@ public class OutT {
 	 * @param fillChar
 	 *            If necessary, preceding <code>fillCh</code> will be inserted.
 	 */
-	public static void setRealPrintFormat(int precision, int minW, int expW,
+/*	public static void setRealPrintFormat(int precision, int minW, int expW,
 			char fillChar) {
 		OutT.print(esc);
 		OutT.print(ecPrintForm);
@@ -375,7 +375,7 @@ public class OutT {
 
 	public static void setRealDefaultFormat() {
 		setRealPrintFormat(16, 0, 0, ' ');
-	}
+	}*/
 
 	/**
 	 * Gibt einen Zeilenumbruch (carriage return '\r' , line feed '\n´) über die
@@ -408,10 +408,10 @@ public class OutT {
 	 * @param bool
 	 *            Boolscher Wert, welcher ausgegeben werden soll.
 	 */
-	public static void println(boolean bool) {
+/*	public static void println(boolean bool) {
 		print(bool);
 		println();
-	}
+	}*/
 
 	/**
 	 * Gibt einen Literal-String über die serielle Schnittstelle aus.<br>
@@ -420,10 +420,10 @@ public class OutT {
 	 * @param str
 	 *            Zeichen, welches ausgegeben werden soll.
 	 */
-	public static void println(String str) {
+/*	public static void println(String str) {
 		print(str);
 		println();
-	}
+	}*/
 	
 	/**
 	 * Gibt einen String über die serielle Schnittstelle aus. Der Wert
@@ -444,10 +444,10 @@ public class OutT {
 	 * @param value
 	 *            Wert der im String eingefügt wird.
 	 */
-	public static void printfln(String str, int value) {
+/*	public static void printfln(String str, int value) {
 		printf(str, value);
 		println();
-	}
+	}*/
 
 
 
@@ -471,10 +471,10 @@ public class OutT {
 	 * @param value
 	 *            Wert der im String eingefügt wird.
 	 */
-	public static void printfln(String str, int... values) {
+/*	public static void printfln(String str, int... values) {
 		printf(str, values);
 		println();
-	}
+	}*/
 
 
 	/**
@@ -497,10 +497,10 @@ public class OutT {
 	 * @param val
 	 *            Float-Zahl, welche ausgegeben werden soll.
 	 */
-	public static void println(float val) {
+/*	public static void println(float val) {
 		print(val);
 		println();
-	}
+	}*/
 
 	/**
 	 * Gibt eine Double-Zahl über die serielle Schnittstelle aus.<br>
@@ -509,10 +509,10 @@ public class OutT {
 	 * @param val
 	 *            Double-Zahl, welche ausgegeben werden soll.
 	 */
-	public static void println(double val) {
+/*	public static void println(double val) {
 		print(val);
 		println();
-	}
+	}*/
 
 	/**
 	 * Gibt ein Tabulator-Zeichen ('\t') über die serielle Schnittstelle aus
@@ -603,6 +603,7 @@ public class OutT {
 					n = 10;
 				}
 			} else {
+//				print('T');
 				if (showBase) {
 					valDigits[0] = '0';
 					valDigits[1] = '1';
@@ -614,11 +615,13 @@ public class OutT {
 					neg = true;
 					val = -val;
 				}
+				print('E');	// Päng
 				do {
 					valDigits[n] = DIGITS[val % 10];
 					n++;
 					val = val / 10;
 				} while (val > 0); // UNTIL val <= 0;
+//				print('Q');
 			}
 		} else {
 			bitPerDigit = 4;

@@ -8,7 +8,7 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 public class OutTest1 {
-	static short[] a123;
+//	static short[] a123;
 	
 	static void run() {
 		while (true) {
@@ -20,13 +20,13 @@ public class OutTest1 {
 	static {
 		SCI2Plain.start(9600, (byte)0, (short)8);
 		SCI2Plain.write((byte)'y');
-		a123 = new short[4];
+/*		a123 = new short[4];
 		a123[0] = 65;
 		a123[1] = 66;
 		a123[2] = 67;
 		a123[3] = 68;
 		short b = a123[1];
-		SCI2Plain.write((byte)a123[3]);
+		SCI2Plain.write((byte)a123[3]);*/
 		run();
 	}
 }

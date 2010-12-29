@@ -19,11 +19,11 @@ public class FileTransfer extends Task {
 
 	void sendFileDir () {
 		File f;
-		OutT.println(); OutT.println("File Directory");
+//		OutT.println(); OutT.println("File Directory");
 		for (int i = 0; i < File.MaxFiles; i++) {
 			if (File.directory(i)) {
 				f = File.fileTab[i];
-				OutT.printTab();OutT.print(f.name); OutT.printTab(); OutT.print("length = "); OutT.println(f.len); 
+//				OutT.printTab();OutT.print(f.name); OutT.printTab(); OutT.print("length = "); OutT.println(f.len); 
 			}
 		}
 	}
@@ -37,7 +37,7 @@ public class FileTransfer extends Task {
 				ch = (char)res;
 				if (ch == 'g') sendFileDir();
 				if (ch == 'a') File.formatAll();
-				if (ch == 's') {OutT.println("sending file"); this.state = sendingFile; this.count = 0;}	// transfer to host 
+//				if (ch == 's') {OutT.println("sending file"); this.state = sendingFile; this.count = 0;}	// transfer to host 
 				if (ch == 'p') {this.state = receivingFile; this.subState = 0; this.count = 0;}	// receive from host
 			}
 			break;
@@ -50,10 +50,10 @@ public class FileTransfer extends Task {
 					str[this.count] = 0; 
 					name = new String(str);
 					OutT.println();
-					OutT.print(name);
+//					OutT.print(name);
 					f = File.old(name);
 					if (f != null) {
-						OutT.print(f.length()); OutT.println(" Bytes"); 
+//						OutT.print(f.length()); OutT.println(" Bytes"); 
 						r = new Rider();
 						r.set(f, 0);
 					int	val1 = r.readInt();
@@ -67,7 +67,7 @@ public class FileTransfer extends Task {
 							val = r.readByte();
 							val1 = r.readInt();
 						}
-					} else OutT.println(" does not exist");
+					} else /*OutT.println(" does not exist")*/;
 					this.state = receivingCommands;
 				}
 			}				
@@ -88,8 +88,8 @@ public class FileTransfer extends Task {
 						this.subState++;
 						this.i = 0;
 						name = new String(str);
-						OutT.print("create file "); OutT.println(name);
-						OutT.print("length "); OutT.print(this.len);OutT.println(" Bytes");
+//						OutT.print("create file "); OutT.println(name);
+//						OutT.print("length "); OutT.print(this.len);OutT.println(" Bytes");
 						f = new File(name);
 						r = new Rider();
 						r.set(f, 0);
@@ -98,7 +98,7 @@ public class FileTransfer extends Task {
 				case 2:
 					r.writeByte((byte)res); this.i++;
 					if (this.i == this.len) {
-						f.register(); OutT.print(f.name); OutT.println(" created");
+//						f.register(); OutT.print(f.name); OutT.println(" created");
 						this.state = receivingCommands;
 					}
 				}

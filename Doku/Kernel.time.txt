@@ -1,0 +1,46 @@
+	public static long time() {
+		long time = (long)HWD.GETSPR(TBU) >> 32;
+		time |= HWD.GETSPR(TBL);
+		return time;
+	}
+
+SSA for Method: time
+   SSANode 0:
+      EntrySet {[ , , , ], [ , ]}
+         0: NoOpnd[sCloadConst] 269 (Integer),   end=1
+         1: Call[sCcall] {0} (Integer),   GETSPR,   end=2, reg=2
+         2: Monadic[sCconvInt] {1} (Long),   end=4, regLong=2, reg=3
+         3: NoOpnd[sCloadConst] 32 (Integer),   end=4
+         4: Dyadic[sCshr] {2, 3} (Long),   end=8, index=0, regLong=31, reg=30
+         5: NoOpnd[sCloadConst] 268 (Integer),   end=6
+         6: Call[sCcall] {5} (Integer),   GETSPR,   end=7, reg=2
+         7: Monadic[sCconvInt] {6} (Long),   end=8, regLong=2, reg=3
+         8: Dyadic[sCor] {4, 7} (Long),   end=9, index=0, regLong=4, reg=5
+         9: Branch[sCreturn] {8} (Void)
+      ExitSet {[ , , , ], [ 8 (Long), ]}
+
+Code for Method: time
+	9421ffe0	[0x0]	stwu  r1, -32(r1)
+	7c0802a6	[0x4]	mfspr  r0, LR
+	9001001c	[0x8]	stw  r0, 28(r1)
+	bfc1000c	[0xc]	stmw  r30, 12(r1)
+	7c4d42a6	[0x10]	mfspr  r2, TBU
+	7c431378	[0x14]	lr  r3, r2
+	7c40fe70	[0x18]	srawi  r0, r2, 31
+	7c020378	[0x1c]	lr  r2, r0
+	547e083e	[0x20]	rlwinm  r30, r3, 1, 0, 31
+	505e003e	[0x24]	rlwimi  r30, r2, 0, 0, 31
+	7c5f0670	[0x28]	srawi  r31, r2, 0
+	7c4c42a6	[0x2c]	mfspr  r2, TBL
+	7c431378	[0x30]	lr  r3, r2
+	7c40fe70	[0x34]	srawi  r0, r2, 31
+	7c020378	[0x38]	lr  r2, r0
+	7fe41378	[0x3c]	or  r4, r31, r2
+	7fc51b78	[0x40]	or  r5, r30, r3
+	7ca22b78	[0x44]	lr  r2, r5
+	7c832378	[0x48]	lr  r3, r4
+	bbc1000c	[0x4c]	lmw  r30, 12(r1)
+	8001001c	[0x50]	lwz  r0, 28(r1)
+	7c0803a6	[0x54]	mtspr  LR, r0
+	38210020	[0x58]	addi  r1, r1, 32
+	4e800020	[0x5c]	bclr always, CRF7[SO]
