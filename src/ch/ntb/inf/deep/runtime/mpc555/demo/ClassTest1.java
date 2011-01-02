@@ -7,11 +7,20 @@ import ch.ntb.inf.deep.unsafe.US;
  * 11.11.10	NTB/GRAU	creation
  */
 
-public class OutTest1 {
+public class ClassTest1 {
+	static int x = 0x223344;
+	static short s1;
+	static byte b1 = -3;
+	static boolean bool1 = true;
+	static short[] a123;
+	static int i = 0;
+	static OutTest1 out = null;
 	
 	static void run() {
 		while (true) {
 			SCI2Plain.write((byte)'x');
+			SCI2Plain.write((byte)a123[i]);
+			i++;
 			for (int i = 0; i < 1000000; i++);
 		}
 	}
@@ -19,6 +28,14 @@ public class OutTest1 {
 	static {
 		SCI2Plain.start(9600, (byte)0, (short)8);
 		SCI2Plain.write((byte)'y');
+		a123 = new short[4];
+		a123[0] = 65;
+		a123[1] = 66;
+		a123[2] = 67;
+		a123[3] = 68;
+		s1 = (short)(2 + a123[3]);
+		short s2 = a123[1] ;
+		SCI2Plain.write((byte)a123[3]);
 		run();
 	}
 }

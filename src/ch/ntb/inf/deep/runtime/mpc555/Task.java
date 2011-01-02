@@ -1,11 +1,14 @@
 package ch.ntb.inf.deep.runtime.mpc555;
 
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2Plain;
+import ch.ntb.inf.deep.unsafe.US;
+
 /*changes:
  * 11.11.10	NTB/GRAU	porting from Pascal
  */
 
 public class Task {
-	public static final int maxNofTasks = 32;
+//	public static final int maxNofTasks = 32;
 	
 	public static boolean done;	/** previous operation successfully completed */
 
@@ -17,8 +20,10 @@ public class Task {
 	 */
 	public static int firstErr;
 	
-	private static short nofPerTasks, nofReadyTasks, curRdyTask, curTask;
-	private static Task[] tasks = new Task[maxNofTasks+2];	// periodic tasks
+	private static int nofPerTasks, nofReadyTasks, curRdyTask, curTask;
+	private static Task[] tasks = new Task[32+2];	// periodic tasks
+	private static Task lowestPrioStub = new Task(); // to be put at the end of the prioQ when dequeueing a task
+	private static Task highestPrioStub = new Task(); // to be put at the front of the prioQ (periodic Task[0])
 	
 	/** time:	0 <= time : start time in ms from install time */
 	public int time;
@@ -47,6 +52,7 @@ public class Task {
 	
 	private boolean installed;
 	private long nextTime;
+	private long periodUs;
 
 	public Task() {
 	}
@@ -68,7 +74,6 @@ public class Task {
 	public static int time() {
 //		return (int)(Kernel.time() / 1000);
 		return (int)(Kernel.time() >> 10);
-//		return 0;
 	}
 
 	/**
@@ -77,35 +82,34 @@ public class Task {
 	public static void install(Task task) {
 		remove(task);
 		if ((task.time < 0) || (task.period < 0)) error(1);
-		if (nofPerTasks + nofReadyTasks >= maxNofTasks) error(2);
+		if (nofPerTasks + nofReadyTasks >= 32) error(2);
 		else {
 			long time = Kernel.time();
 			if (task.time > 0 || task.period > 0) {
-				task.nextTime = time + task.time;
+				task.nextTime = time + task.time*1000;
 				task.nofActivations = 0;
+				task.periodUs = (long)(task.period) * 1000;
 				task.minExecTimeInMicro = 0x7fffffff;
+//			US.ASM("b 0");
 				enqueuePeriodicTask(task);
 			} else {
 				nofReadyTasks++;
 				tasks[tasks.length - nofReadyTasks] = task;
 			}
 		}
+		task.installed = true;
 	}
 
 	private static void enqueuePeriodicTask(Task task) {
-		done = done && (nofPerTasks + nofReadyTasks < maxNofTasks);
+		done = done && (nofPerTasks + nofReadyTasks < 32);
 		if (done) {
 			nofPerTasks++; 
 			int n = nofPerTasks;
-			while (task.startTimeLess(tasks[n >> 1])) {
-				tasks[n] = tasks[n >> 2]; n = n >> 2;
+			while (task.nextTime < tasks[n >> 1].nextTime) {
+				tasks[n] = tasks[n >> 1]; n = n >> 1;
 			}
 			tasks[n] = task;
 		}
-	}
-
-	private boolean startTimeLess(Task task) {
-		return this.nextTime < task.nextTime;
 	}
 
 	/** removes an installed task */
@@ -125,14 +129,55 @@ public class Task {
 		
 	}
 
+	private static void requeuePerTask() {
+		if (nofPerTasks > 1) {
+			Task head = tasks[1];
+			int fath = 1, son;
+			while (true) {
+				son = fath * 2;
+				if (son > nofPerTasks) break;
+				if (tasks[son].nextTime > tasks[son + 1].nextTime) son++; // son = right son
+				if (head.nextTime < tasks[son].nextTime) break;
+				else {tasks[fath] = tasks[son]; fath = son;}
+			}
+			tasks[fath] = head;
+		}
+	}
+
 	static void loop() {
+		SCI2Plain.write((byte)'2');
+		Task currentTask;
 		while(true) {
-			
+			long time = Kernel.time();
+			currentTask = tasks[1];
+				int temp1 = US.GETGPR(31);
+			if (currentTask.nextTime < time) {
+				SCI2Plain.write((byte)'3');
+				curTask = 1;
+				currentTask.nofActivations++;
+				SCI2Plain.write((byte)'a');
+				int temp2 = US.GETGPR(31);
+				US.ASM("b 0");
+				currentTask.action();
+				if (currentTask.installed) {
+					currentTask.nextTime += currentTask.periodUs;
+					requeuePerTask();
+				}
+			}
 		}
 	}
 	
-/*	static {
-		Kernel.loopAddr = 
+	static {
+		done = true; 
+		firstErr = 0;
+		nofPerTasks = 0;
+		nofReadyTasks = 0;
+		curRdyTask = tasks.length;
+		lowestPrioStub.nextTime = 0x7fffffff;
+		highestPrioStub.nextTime = 0x80000000;
+		tasks[0] = highestPrioStub;
+		for (int i = 1; i < tasks.length; i++) tasks[i] = lowestPrioStub;
+		Kernel.loopAddr = 0x803324;
 	}
-	*/
+	
 }

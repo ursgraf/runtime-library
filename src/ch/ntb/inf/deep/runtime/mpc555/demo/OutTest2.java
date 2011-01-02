@@ -8,12 +8,10 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 public class OutTest2 {
-	static OutTest2 out;
 	
 	static void run() {
 		while (true) {
 			SCI2Plain.write((byte)'x');
-			out.send();
 			for (int i = 0; i < 1000000; i++);
 			int a = 3;
 			switch (a) {
@@ -29,18 +27,9 @@ public class OutTest2 {
 		}
 	}
 	
-	void send() {
-		SCI2Plain.write((byte)'U');
-	}
-	
 	static {
 		SCI2Plain.start(9600, (byte)0, (short)8);
-		SCI2Plain.write((byte)'0');
-		SCI2Plain.write((byte)'1');
-		out = new OutTest2();
-		out.send();
-		SCI2Plain.write((byte)'2');
-		SCI2Plain.write((byte)'3');
+		SCI2Plain.write((byte)'9');
 		run();
 	}
 }

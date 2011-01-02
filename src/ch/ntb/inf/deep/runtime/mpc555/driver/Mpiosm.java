@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.Kernel;
+import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
@@ -21,7 +21,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * MPIOB. Die Pins <i>0..4</i> sind infolge Doppelbelegung als <i>VF0</i>,
  * <i>VF1</i>, <i>VF2</i>, <i>VFLS0</i>, <i>VFLS1</i> beschriftet.
  */
-public class Mpiosm {
+public class Mpiosm implements ntbMpc555HB {
 
 
 	/**
@@ -35,10 +35,10 @@ public class Mpiosm {
 	 *            <code>false</code> definiert den Mpiosm-Pin als TTL-Eingang.
 	 */
 	public static void init(int channel, boolean out) {
-		short s = US.GET2(Kernel.MPIOSMDDR);
+		short s = US.GET2(MPIOSMDDR);
 		if(out) s |= (1 << channel);
 		else s &= ~(1 << channel);
-		US.PUT2(Kernel.MPIOSMDDR,s);
+		US.PUT2(MPIOSMDDR,s);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class Mpiosm {
 	 *         <code>false</code> dem Wert <i>logisch 0</i> entspricht.
 	 */
 	public static boolean in(int channel) {
-		return (US.GET2(Kernel.MPIOSMDR) & (1 << channel)) != 0;
+		return (US.GET2(MPIOSMDR) & (1 << channel)) != 0;
 	}
 
 	/**
@@ -65,10 +65,10 @@ public class Mpiosm {
 	 *            <i>logisch 0</i> auf den TTL-Ausgang gelegt.
 	 */
 	public static void out(int channel, boolean val) {
-		short s = US.GET2(Kernel.MPIOSMDR);
+		short s = US.GET2(MPIOSMDR);
 		if(val) s |= (1 << channel);
 		else s &= ~(1 << channel);
-		US.PUT2(Kernel.MPIOSMDR, s);
+		US.PUT2(MPIOSMDR, s);
 	}
 
 }

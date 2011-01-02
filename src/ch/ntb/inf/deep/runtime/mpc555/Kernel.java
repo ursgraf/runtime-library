@@ -7,6 +7,7 @@ import ch.ntb.inf.deep.unsafe.*;
 
 public class Kernel implements ntbMpc555HB {
 	static int loopAddr;
+	static int cmdAddr;
 	
 	/** 
 	 * @return system time in us
@@ -80,13 +81,13 @@ public class Kernel implements ntbMpc555HB {
 			if (constBlkBase == 0) break;
 
 			// check integrity of constant block for each class
-			int constBlkSize = US.GET4(constBlkBase);
-			if (FCS(constBlkBase, constBlkBase + constBlkSize) != 0) while(true) blink(1);
+//			int constBlkSize = US.GET4(constBlkBase);
+//			if (FCS(constBlkBase, constBlkBase + constBlkSize) != 0) while(true) blink(1);
 
 			// check integrity of code block for each class
-			int codeBase = US.GET4(constBlkBase + cblkCodeBaseOffset);
-			int codeSize = US.GET4(constBlkBase + cblkCodeSizeOffset);
-			if (FCS(codeBase, codeBase + codeSize) != 0) while(true) blink(2);
+//			int codeBase = US.GET4(constBlkBase + cblkCodeBaseOffset);
+//			int codeSize = US.GET4(constBlkBase + cblkCodeSizeOffset);
+//			if (FCS(codeBase, codeBase + codeSize) != 0) while(true) blink(2);
 
 			// initialize class variables
 			int varBase = US.GET4(constBlkBase + cblkVarBaseOffset);
@@ -103,7 +104,7 @@ public class Kernel implements ntbMpc555HB {
 					US.PUTSPR(LR, clinitAddr);
 					US.ASM("bclrl always, 0");
 				} else {	// kernel
-//					blink(1);
+					blink(1);
 					//scheduler := Loop (* kernel *);
 				}
 			} //else blink(2);
@@ -115,6 +116,8 @@ public class Kernel implements ntbMpc555HB {
 	static {
 		boot();
 		blink(8);
+		US.PUTSPR(LR, loopAddr);
+		US.ASM("bclrl always, 0");
 		boolean a = true;
 		while (a) blink(4);
 	}

@@ -42,9 +42,6 @@ public class Heap implements ntbMpc555HB {
 	
 	// called by anewarray	
 	private static int newRefArray(int nofElements, int ref) {
-/*		int heapOffset = US.GET4(sysTabBaseAddr + stHeapOffset); 
-		heapBase = US.GET4(sysTabBaseAddr + heapOffset * 4 + 4);
-		heapPtr = heapBase;*/
 		int size = nofElements * 4 + 8;
 		int addr = heapPtr; 
 		while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
