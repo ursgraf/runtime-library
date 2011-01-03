@@ -23,7 +23,7 @@ class BlinkerApplication {
 		SCI2Plain.start(9600, (byte)0, (short)8);
 		SCI2Plain.write((byte)'0');
 //		blinker14 = new Blinker(14, 500); 
-//		blinker13 = new Blinker(13, 100, 150); 
+		blinker13 = new Blinker(13, 100, 150); 
 		blinker12 = new Blinker(12, 1000, 15); 
 		SCI2Plain.write((byte)'1');
 //		task1 = blinker13;

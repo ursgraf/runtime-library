@@ -34,9 +34,9 @@ public class Task {
 	/** number of activations */
 	public int nofActivations;
 
-	public int minExecTimeInMicro;
+	public long minExecTimeInMicro;
 
-	public int maxExecTimeInMicro;
+	public long maxExecTimeInMicro;
 
 	/** safe=FALSE -> task gets removed on trap, currently not used */
 	public boolean safe;
@@ -81,6 +81,7 @@ public class Task {
 	 */
 	public static void install(Task task) {
 		remove(task);
+//		int temp1 = US.GETGPR(31);
 		if ((task.time < 0) || (task.period < 0)) error(1);
 		if (nofPerTasks + nofReadyTasks >= 32) error(2);
 		else {
@@ -89,9 +90,11 @@ public class Task {
 				task.nextTime = time + task.time*1000;
 				task.nofActivations = 0;
 				task.periodUs = (long)(task.period) * 1000;
-				task.minExecTimeInMicro = 0x7fffffff;
-//			US.ASM("b 0");
+				SCI2Plain.write((byte)'7');
+				task.minExecTimeInMicro = 0x7fffffffffffffffL;
+				SCI2Plain.write((byte)'8');
 				enqueuePeriodicTask(task);
+//				tasks[1] = task;
 			} else {
 				nofReadyTasks++;
 				tasks[tasks.length - nofReadyTasks] = task;
@@ -108,6 +111,7 @@ public class Task {
 			while (task.nextTime < tasks[n >> 1].nextTime) {
 				tasks[n] = tasks[n >> 1]; n = n >> 1;
 			}
+			SCI2Plain.write((byte)'9');
 			tasks[n] = task;
 		}
 	}
@@ -130,17 +134,27 @@ public class Task {
 	}
 
 	private static void requeuePerTask() {
+		SCI2Plain.write((byte)('A'));
 		if (nofPerTasks > 1) {
 			Task head = tasks[1];
 			int fath = 1, son;
 			while (true) {
-				son = fath * 2;
+				son = fath << 1;
+				SCI2Plain.write((byte)('0'+fath));
+				SCI2Plain.write((byte)('0'+son));
 				if (son > nofPerTasks) break;
 				if (tasks[son].nextTime > tasks[son + 1].nextTime) son++; // son = right son
+				SCI2Plain.write((byte)('0'+fath));
+				SCI2Plain.write((byte)('0'+son));
 				if (head.nextTime < tasks[son].nextTime) break;
-				else {tasks[fath] = tasks[son]; fath = son;}
+				else {tasks[fath] = tasks[son]; fath = 2 + son - 2 ;}
+				SCI2Plain.write((byte)('0'+fath));
+				SCI2Plain.write((byte)('0'+son));
+//				else {tasks[fath] = tasks[son]; fath = son;}
 			}
 			tasks[fath] = head;
+			SCI2Plain.write((byte)('B'));
+//		US.ASM("b 0");
 		}
 	}
 
@@ -150,19 +164,16 @@ public class Task {
 		while(true) {
 			long time = Kernel.time();
 			currentTask = tasks[1];
-				int temp1 = US.GETGPR(31);
 			if (currentTask.nextTime < time) {
 				SCI2Plain.write((byte)'3');
 				curTask = 1;
 				currentTask.nofActivations++;
-				SCI2Plain.write((byte)'a');
-				int temp2 = US.GETGPR(31);
-				US.ASM("b 0");
 				currentTask.action();
 				if (currentTask.installed) {
 					currentTask.nextTime += currentTask.periodUs;
 					requeuePerTask();
 				}
+//				US.ASM("b 0");
 			}
 		}
 	}
@@ -173,11 +184,11 @@ public class Task {
 		nofPerTasks = 0;
 		nofReadyTasks = 0;
 		curRdyTask = tasks.length;
-		lowestPrioStub.nextTime = 0x7fffffff;
-		highestPrioStub.nextTime = 0x80000000;
+		lowestPrioStub.nextTime = 0x7fffffffffffffffL;
+		highestPrioStub.nextTime = 0x8000000000000000L;
 		tasks[0] = highestPrioStub;
 		for (int i = 1; i < tasks.length; i++) tasks[i] = lowestPrioStub;
-		Kernel.loopAddr = 0x803324;
+		Kernel.loopAddr = 0x80347c;
 	}
 	
 }
