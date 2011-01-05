@@ -5,26 +5,6 @@ package ch.ntb.inf.deep.unsafe;
  */
 /** Stub of Module SYSTEM */
 public class US {
-	/** get address */
-	public static int ADR(int variable) {
-		return 0;
-	}
-
-	public static int ADR(boolean variable) {
-		return 0;
-	}
-
-	public static int ADR(double variable) {
-		return 0;
-	}
-
-	public static int ADR(float variable) {
-		return 0;
-	}
-
-	public static int ADR(Object object) {
-		return 0;
-	}
 
 	/** put 1 byte: mem[address] = (byte)value */
 	public static void PUT1(int address, int value) {
