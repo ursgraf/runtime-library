@@ -173,33 +173,33 @@ public class Double {
 	public static double intBitsToDouble(int highBits, int lowBits) {
 		double value = 0;
 		if (_$bigEndian) {
-			US.PUT4(US.ADR(value), highBits);
-			US.PUT4(US.ADR(value) + 4, lowBits);
+//			US.PUT4(US.ADR(value), highBits);
+//			US.PUT4(US.ADR(value) + 4, lowBits);
 		} else { // little-endian
-			US.PUT4(US.ADR(value) + 4, highBits);
-			US.PUT4(US.ADR(value), lowBits);
+//			US.PUT4(US.ADR(value) + 4, highBits);
+//			US.PUT4(US.ADR(value), lowBits);
 		}
 		return value;
 	}
 
     public static  int  highPartToIntBits(double arg) {
 		double value = arg;
-		int	highBits;
+		int	highBits = 0;
 		if (_$bigEndian) {
-			highBits = US.GET4(US.ADR(value));
+//			highBits = US.GET4(US.ADR(value));
 		} else { // little-endian
-			highBits = US.GET4(US.ADR(value) + 4);
+//			highBits = US.GET4(US.ADR(value) + 4);
 		}
 		return highBits;
 	}
 
     public static  int  lowPartToIntBits(double arg) {
 		double value = arg;
-		int	lowBits;
+		int	lowBits = 0;
 		if (_$bigEndian) {
-			lowBits = US.GET4(US.ADR(value) + 4);
+//			lowBits = US.GET4(US.ADR(value) + 4);
 		} else { // little-endian
-			lowBits = US.GET4(US.ADR(value));
+//			lowBits = US.GET4(US.ADR(value));
 		}
 		return lowBits;
 	}
@@ -209,8 +209,8 @@ public class Double {
 	 */
 	public static  int  getExponent(double arg) {
 		double x = arg;
-		int  addr;
-		if (_$bigEndian)	addr = US.ADR(x);	else	addr = US.ADR(x) + 6;
+		int  addr = 0;
+//		if (_$bigEndian)	addr = US.ADR(x);	else	addr = US.ADR(x) + 6;
 		return ((US.GET2(addr) >> 4) & 0x7FF) - expOffset;
 	}
 
@@ -221,11 +221,11 @@ public class Double {
 	public static  double  setExponent(double arg, int newExp) {
 		double x = arg;
 		newExp += expOffset;
-		int addr;
+		int addr = 0;
 		if (_$bigEndian)
-			addr = US.ADR(x);
-		else
-			addr = US.ADR(x) + 6;
+//			addr = US.ADR(x);
+//		else
+//			addr = US.ADR(x) + 6;
 		US.PUT2(addr, (US.GET2(addr) & 0x800F) | (newExp << 4));
 		return x;
 	}
@@ -238,8 +238,8 @@ public class Double {
 	 */
 	public static  double  getMantissa(double arg) { // clear sign
 		double x = arg;
-		int  addr;
-		if (_$bigEndian)	addr = US.ADR(x);	else	addr = US.ADR(x) + 6;
+		int  addr = 0;
+//		if (_$bigEndian)	addr = US.ADR(x);	else	addr = US.ADR(x) + 6;
 		int	highBits = US.GET2(addr);
 		if ( (highBits & 0x7FF0)  == 0)	{ // denormalised or +-0
 			x = 0;	highBits = 0;	// x *= twoPow52;	highBits = SYS.GET2(addr) & 0xFFFF; 	causes probles!
@@ -270,7 +270,8 @@ public class Double {
 
 	public static  int  doubleToRawBytes (double arg, char []  chars) {
 		double val = arg;
-		int	adr = US.ADR(val);
+//		int	adr = US.ADR(val);
+		int adr = 0;
 		int	nofBytes = 8;
 		do {
 			nofBytes--;
@@ -297,7 +298,8 @@ public class Double {
 	public static  int  floatToRawBytes (float arg, char []  chars) {
 		float val = arg;
 //		float fvalue = (float)val;
-		int	adr = US.ADR(val);
+//		int	adr = US.ADR(val);
+		int adr = 0;
 		chars[0] = (char)(US.GET1(adr) & 0xFF);
 		chars[1] = (char)(US.GET1(adr + 1) & 0xFF);
 		chars[2] = (char)(US.GET1(adr + 2) & 0xFF);

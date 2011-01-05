@@ -152,11 +152,11 @@ public class Math {
 	 */
 	public static double sqrt(double arg) {
 		double a = arg;
-		int argAdr;
-		if (_$bigEndian)
-			argAdr = US.ADR(a);
-		else
-			argAdr = US.ADR(a) + 6;
+		int argAdr = 0;
+//		if (_$bigEndian)
+//			argAdr = US.ADR(a);
+//		else
+//			argAdr = US.ADR(a) + 6;
 
 		int high = US.GET2(argAdr); // high = Math.abs(a) >>> 32
 		if (high < 0)
