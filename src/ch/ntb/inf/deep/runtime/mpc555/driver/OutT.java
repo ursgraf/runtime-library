@@ -1,7 +1,5 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.unsafe.US;
-
 
 /*changes:
  25.6.07	NTB/TB 	add switchToSCI1 & switchToSCI2
@@ -30,6 +28,9 @@ public class OutT {
 
 	private static final char NUL = '\0', TAB = '\t', CR = '\r', LF = '\n',
 			SPACE = ' ';
+
+	private static final char[] DIGITS = { '0', '1', '2', '3', '4', '5', '6',
+			'7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 	private static char[] valDigits = new char[34];
 	// private static int DOUBLE_PREC = 100000;
@@ -88,11 +89,11 @@ public class OutT {
 	 *            Zeichen, welches ausgegeben werden soll.
 	 */
 	public static void print(char ch) {
-		if (useSCI2) {
+//		if (useSCI2) {
 			SCI2Plain.write((byte) ch);
-		} else {
+/*		} else {
 			SCI1Plain.write((byte) ch);
-		}
+		}*/
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class OutT {
 	 * @param str
 	 *            Zeichen, welches ausgegeben werden soll.
 	 */
-	public static void print(String str) {
+/*	public static void print(String str) {
 		int len = str.length();
 		int pos = 0;
 		if (useSCI2) {
@@ -128,7 +129,7 @@ public class OutT {
 				pos++;
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * Gibt einen String über die serielle Schnittstelle aus. Der Wert
@@ -260,6 +261,7 @@ public class OutT {
 		 * print(val / 10); SCI1.write((byte)(val % 10 + '0'));
 		 */
 		print(val, DECIMAL, 0, SPACE, false);
+
 	}
 
 	/**
@@ -560,15 +562,14 @@ public class OutT {
 	 *            Zahlenbasis am Schluss der dargestellten Zahl angezeigt werden
 	 *            soll.
 	 */
-/*	public static void print(int val, int base, int minWidth, char fillCh, boolean showBase) {
-			
+	public static void print(int val, int base, int minWidth, char fillCh,
+			boolean showBase) {
 		short maxNofDigits = 0, bitPerDigit = 0;
 		int digMask = 0;
 		if (minWidth > 64)
 			minWidth = 40;
 		short n = 0;
 		boolean neg = false;
-//		US.ASM("b 0");
 		if (base == DECIMAL) {
 			maxNofDigits = 10;
 			if (val == 0x80000000) {
@@ -614,7 +615,7 @@ public class OutT {
 					neg = true;
 					val = -val;
 				}
-//				print('E');	// Päng
+				print('E');	// Päng
 				do {
 					valDigits[n] = DIGITS[val % 10];
 					n++;
@@ -688,41 +689,6 @@ public class OutT {
 			print(SPACE);
 			m++;
 		}
-		while (n > 0) {
-			n--;
-			print(valDigits[n]);
-		}
-	}*/
-	public static void print(int val, int base, int minWidth, char fillCh, boolean showBase) {
-		
-//		short maxNofDigits = 0, bitPerDigit = 0;
-//		int digMask = 0;
-//		if (minWidth > 64)
-//			minWidth = 40;
-		short n = 0;
-		boolean neg = false;
-		if (base == DECIMAL) {
-//			maxNofDigits = 10;
-//			if (val == 0x80000000) {
-//			} else {
-//				print('T');
-				if (val < 0) {
-					neg = true;
-					val = -val;
-				}
-//				print('E');	// Päng
-				do {
-					valDigits[n] = (char)(val % 10 + '0');
-					n++;
-					val = val / 10;
-				} while (val > 0);
-//				print('Q');
-//			}
-		} 
-//		if (neg) {
-////			valDigits[n] = '-';
-//			n++;
-//		}
 		while (n > 0) {
 			n--;
 			print(valDigits[n]);
