@@ -11,6 +11,7 @@ public interface ntbMpc555HB{
 	public static final int CMFA_Size = 0x4000;
 	public static final int CMFB_BaseAddr = 0x4000;
 	public static final int CMFB_Size = 0x3000;
+	public static final int excpCodeSize = 0x2000;
 	public static final int cblkCodeBaseOffset = 0x4;
 	public static final int cblkCodeSizeOffset = 0x8;
 	public static final int cblkVarBaseOffset = 0xc;
@@ -27,7 +28,6 @@ public interface ntbMpc555HB{
 	public static final int extRamSize = 0x200000;
 	public static final int extFlashBase = 0x1000000;
 	public static final int extFlashSize = 0x400000;
-	public static final int excpCodeSize = 0x2000;
 
 	//Registermap GPR
 	public static final int R0 = 0x0;
