@@ -9,6 +9,10 @@ public class Kernel implements ntbMpc555HB {
 	static int loopAddr;
 	static int cmdAddr;
 	
+	private static void loop() {	// endless loop
+		while (true);
+	}
+	
 	/** 
 	 * @return system time in us
 	 */
@@ -76,6 +80,9 @@ public class Kernel implements ntbMpc555HB {
 		int state = 0;
 		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr); 
 		while (true) {
+			// !!! Kernel needs to call at least one method in this loop, as the variables in boot
+			// must go into nonvolatile registers
+
 			// get addresses of classes from system table
 			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);
 			if (constBlkBase == 0) break;
@@ -104,12 +111,9 @@ public class Kernel implements ntbMpc555HB {
 					US.PUTSPR(LR, clinitAddr);
 					US.ASM("bclrl always, 0");
 				} else {	// kernel
-					// Kernel needs to call at least one method, as the variables in boot
-					// must go into nonvolatile registers
-//					blink(1);
-					//scheduler := Loop (* kernel *);
+					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/mpc555/Kernel/loop");
 				}
-			} //else blink(2);
+			}
 			state++; 
 			classConstOffset += 4;
 		}
@@ -119,8 +123,6 @@ public class Kernel implements ntbMpc555HB {
 		boot();
 		US.PUTSPR(LR, loopAddr);
 		US.ASM("bclrl always, 0");
-		boolean a = true;
-		while (a) blink(4);
 	}
 
 }

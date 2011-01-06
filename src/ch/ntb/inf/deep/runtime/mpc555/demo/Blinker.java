@@ -19,7 +19,7 @@ public class Blinker extends Task{
 	}
 
 	public void action () {	// Objektmethode, überschrieben
-		SCI2Plain.write((byte)'4');
+		SCI2Plain.write((byte)'.');
 		Mpiosm.out(this.pin, !Mpiosm.in(this.pin));
 		if (this.nofActivations == this.times) Task.remove(this);
 	}

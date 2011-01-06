@@ -78,6 +78,11 @@ public class US {
 	public static void ASM(String instr) {
 	}
 
+	/** get address of method */
+	public static int ADR_OF_METHOD(String name) {
+		return 0;
+	}
+	
 	/** halt exception: program termination, 20 <= haltNr < 256 */
 	public static void HALT(int haltNr) {
 	}
