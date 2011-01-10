@@ -198,8 +198,15 @@ public class Task {
 	}
 
 	static void loop() {
+		int cmd;
 		Task currentTask;
 		while(true) {
+			cmd = Kernel.cmdAddr;
+			if (cmd != 0) {
+				US.PUTSPR(8, cmd);	// use ntb555HB later
+				US.ASM("bclrl always, 0");
+				Kernel.cmdAddr = 0;
+			}
 			long time = Kernel.time();
 			currentTask = tasks[1];
 			if (currentTask.nextTime < time) {
