@@ -13,9 +13,7 @@ public class Blinker extends Task{
 	}
 
 	public void changePeriod (int period) {	// Objektmethode 
-		Task.remove(this);
 		this.period = period;
-		Task.install(this);
 	}
 
 	public void action () {	// Objektmethode, überschrieben

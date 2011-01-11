@@ -7,8 +7,8 @@ import ch.ntb.inf.deep.unsafe.US;
  * 11.11.10	NTB/GRAU	porting from Pascal
  */
 
-public class Task {
-//	public static final int maxNofTasks = 32;
+public class Task { //implements ntbMpc555HB {
+	public static final int maxNofTasks = 32;
 	
 	public static boolean done;	/** previous operation successfully completed */
 
@@ -35,21 +35,8 @@ public class Task {
 	/** number of activations */
 	public int nofActivations;
 
-	public long minExecTimeInMicro;
-
-	public long maxExecTimeInMicro;
-
 	/** safe=FALSE -> task gets removed on trap, currently not used */
 	public boolean safe;
-	
-	/** getTime=TRUE -> nofActivations, minExecTimeInMicro, maxExecTimeInMicro get updated */
-	public boolean getTime;
-	
-	/**  for periodic tasks only: 
-	 * 		if ((period > 0) && coalesce) 
-	 *			if (nextTime < currentTime) nextTime = startTime+period
-	 */ 
-	public boolean coalesce;
 	
 	private boolean installed;
 	private long nextTime;
@@ -91,8 +78,6 @@ public class Task {
 				task.nextTime = time + task.time*1000;
 				task.nofActivations = 0;
 				task.periodUs = (long)(task.period) * 1000;
-				task.minExecTimeInMicro = Long.MAX_VALUE;
-				task.maxExecTimeInMicro = 0;
 				enqueuePeriodicTask(task);
 			} else {
 				nofReadyTasks++;
@@ -128,7 +113,6 @@ public class Task {
 	}
 	
 	private static void removePeriodicTask(Task task) {
-//		int remTaskNo = nofPerTasks + 0;
 		int remTaskNo = nofPerTasks;
 		int fath, son;
 		while (remTaskNo > 0 && tasks[remTaskNo] != task) remTaskNo--;
@@ -151,7 +135,6 @@ public class Task {
 							if (son > nofPerTasks) break;
 							if (tasks[son].nextTime > tasks[son + 1].nextTime) son++; // son = right son
 							if (last.nextTime < tasks[son].nextTime) break;
-//							else {tasks[fath] = tasks[son]; fath = 2 + son - 2 ;}
 							else {tasks[fath] = tasks[son]; fath = son;}
 						}
 					}
@@ -172,7 +155,6 @@ public class Task {
 				if (son > nofPerTasks) break;
 				if (tasks[son].nextTime > tasks[son + 1].nextTime) son++; // son = right son
 				if (last.nextTime < tasks[son].nextTime) break;
-//				else {tasks[fath] = tasks[son]; fath = 2 + son - 2 ;}
 				else {tasks[fath] = tasks[son]; fath = son;}
 			}
 			tasks[fath] = last;
@@ -190,7 +172,6 @@ public class Task {
 				if (son > nofPerTasks) break;
 				if (tasks[son].nextTime > tasks[son + 1].nextTime) son++; // son = right son
 				if (head.nextTime < tasks[son].nextTime) break;
-//				else {tasks[fath] = tasks[son]; fath = 2 + son - 2 ;}
 				else {tasks[fath] = tasks[son]; fath = son;}
 			}
 			tasks[fath] = head;
@@ -214,10 +195,21 @@ public class Task {
 				currentTask.nofActivations++;
 				currentTask.action();
 				if (currentTask.installed) {
-					currentTask.nextTime += currentTask.periodUs;
-					requeuePerTask();
+					if (currentTask.period == 0) {
+						nofReadyTasks++;
+						tasks[tasks.length - nofReadyTasks] = tasks[1];
+						dequeuePeriodicTask();
+					} else {
+						currentTask.nextTime += currentTask.periodUs;
+						requeuePerTask();
+					}
 				}
-//				US.ASM("b 0");
+			} else if (nofReadyTasks > 0) {
+				curRdyTask++;
+				if (curRdyTask >= tasks.length) curRdyTask = tasks.length - nofReadyTasks;
+				currentTask = tasks[curRdyTask];
+				currentTask.nofActivations++;
+				currentTask.action();
 			}
 		}
 	}

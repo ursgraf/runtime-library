@@ -10,7 +10,13 @@ public class Kernel implements ntbMpc555HB {
 	static int cmdAddr;
 	
 	private static void loop() {	// endless loop
-		while (true);
+		while (true) {
+			if (cmdAddr != 0) {
+				US.PUTSPR(LR, cmdAddr);	
+				US.ASM("bclrl always, 0");
+				cmdAddr = 0;
+			}
+		}
 	}
 	
 	/** 
@@ -18,7 +24,7 @@ public class Kernel implements ntbMpc555HB {
 	 */
 	public static long time() {
 		long time = (long)US.GETSPR(TBUread) << 32;
-		time |= US.GETSPR(TBLread);
+		time |= US.GETSPR(TBLread) & 0xffffffffL;
 		return time;
 	}
 	

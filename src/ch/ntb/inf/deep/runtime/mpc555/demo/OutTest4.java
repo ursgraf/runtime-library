@@ -11,9 +11,9 @@ public class OutTest4 {
 		OutT.switchToSCI2();
 		OutT.print('B');
 		OutT.println('A');
-		OutT.println(123);
-		int a = -7463;
-		OutT.println(a);
+//		OutT.println(123);
+//		int a = -7463;
+//		OutT.println(a);
 //		OutT.print(true);
 	}
 }

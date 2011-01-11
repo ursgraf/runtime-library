@@ -12,12 +12,19 @@ class BlinkerApplication {
 		res = Blinker.getNofBlinkers();
 	}
 	
-	static void changePeriod14 () {
+	static void changePeriod14to100 () {
+		Task.remove(blinker14);
 		blinker14.changePeriod(100);
+		Task.install(blinker14);
+	}
+	static void changePeriod14to1000 () {
+		Task.remove(blinker14);
+		blinker14.changePeriod(1000);
+		Task.install(blinker14);
 	}
 	
 	static void changePeriod13 () {
-		if (task1 instanceof Blinker) ((Blinker)task1).changePeriod(100);
+		if (task1 instanceof Blinker) ((Blinker)task1).changePeriod(2000);
 	}
 	
 	static {
@@ -28,6 +35,6 @@ class BlinkerApplication {
 		blinker13 = new Blinker(13, 100, 20); 
 		blinker11 = new Blinker(11, 500, 30); 
 		SCI2Plain.write((byte)'1');
-//		task1 = blinker13;
+		task1 = blinker13;
 	}
 }
