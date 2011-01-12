@@ -615,7 +615,7 @@ public class OutT {
 					neg = true;
 					val = -val;
 				}
-//				print('E');	// Päng
+				print('E');	// NIX Päng
 				do {
 					valDigits[n] = DIGITS[val % 10];
 					n++;
