@@ -1,20 +1,20 @@
 package ch.ntb.inf.deep.runtime.mpc555;
 import ch.ntb.inf.deep.unsafe.*;
 
-/*changes:
- * 11.11.10	NTB/GRAU	creation
+/* changes:
+ * 11.11.10	NTB/Urs Graf	creation
  */
 
 public class Kernel implements ntbMpc555HB {
 	static int loopAddr;
-	static int cmdAddr;
+	static int cmdAddr = -1;
 	
 	private static void loop() {	// endless loop
 		while (true) {
-			if (cmdAddr != 0) {
+			if (cmdAddr != -1) {
 				US.PUTSPR(LR, cmdAddr);	
 				US.ASM("bclrl always, 0");
-				cmdAddr = 0;
+				cmdAddr = -1;
 			}
 		}
 	}
@@ -113,7 +113,6 @@ public class Kernel implements ntbMpc555HB {
 			int clinitAddr = US.GET4(constBlkBase + cblkClinitAddrOffset);
 			if (clinitAddr != -1) {	
 				if (clinitAddr != kernelClinitAddr) {	// skip kernel 
-//					blink(2);
 					US.PUTSPR(LR, clinitAddr);
 					US.ASM("bclrl always, 0");
 				} else {	// kernel
@@ -127,6 +126,7 @@ public class Kernel implements ntbMpc555HB {
 	
 	static {
 		boot();
+		US.ASM("mtspr EIE, r0");
 		US.PUTSPR(LR, loopAddr);
 		US.ASM("bclrl always, 0");
 	}

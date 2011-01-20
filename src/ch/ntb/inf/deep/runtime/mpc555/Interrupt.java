@@ -1,9 +1,8 @@
 package ch.ntb.inf.deep.runtime.mpc555;
 
-/*changes:
+/* changes:
  * 25.11.10	NTB/GRAU	creation
  */
-
 public class Interrupt extends PPCException {
 
 	public int enableRegAdr;
@@ -14,6 +13,9 @@ public class Interrupt extends PPCException {
 
 	static void interrupt() {
 		
+	}
+	
+	public void action() {
 	}
 
 }

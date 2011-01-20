@@ -3,11 +3,11 @@ package ch.ntb.inf.deep.runtime.mpc555;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2Plain;
 import ch.ntb.inf.deep.unsafe.US;
 
-/*changes:
- * 11.11.10	NTB/GRAU	porting from Pascal
+/* changes:
+ * 11.11.10	NTB/Urs Graf	creation
  */
 
-public class Task { //implements ntbMpc555HB {
+public class Task {//implements ntbMpc555HB {
 	public static final int maxNofTasks = 32;
 	
 	public static boolean done;	/** previous operation successfully completed */
@@ -21,8 +21,7 @@ public class Task { //implements ntbMpc555HB {
 	public static int firstErr;
 	
 	private static int nofPerTasks, nofReadyTasks, curRdyTask, curTask;
-//	private static Task[] tasks = new Task[maxNofTasks+2];	// periodic tasks
-	private static Task[] tasks = new Task[32+2];	// periodic tasks
+	private static Task[] tasks = new Task[maxNofTasks+2];	// periodic tasks
 	private static Task lowestPrioStub = new Task(); // to be put at the end of the prioQ when dequeueing a task
 	private static Task highestPrioStub = new Task(); // to be put at the front of the prioQ (periodic Task[0])
 	
@@ -70,8 +69,7 @@ public class Task { //implements ntbMpc555HB {
 	public static void install(Task task) {
 		remove(task);
 		if ((task.time < 0) || (task.period < 0)) error(1);
-		if (nofPerTasks + nofReadyTasks >= 32) error(2);
-//		if (nofPerTasks + nofReadyTasks >= maxNofTasks) error(2);
+		if (nofPerTasks + nofReadyTasks >= maxNofTasks) error(2);
 		else {
 			long time = Kernel.time();
 			if (task.time > 0 || task.period > 0) {
@@ -88,8 +86,7 @@ public class Task { //implements ntbMpc555HB {
 	}
 
 	private static void enqueuePeriodicTask(Task task) {
-//		done = done && (nofPerTasks + nofReadyTasks < maxNofTasks);
-		done = done && (nofPerTasks + nofReadyTasks < 32);
+		done = done && (nofPerTasks + nofReadyTasks < maxNofTasks);
 		if (done) {
 			nofPerTasks++; 
 			int n = nofPerTasks;
@@ -183,10 +180,10 @@ public class Task { //implements ntbMpc555HB {
 		Task currentTask;
 		while(true) {
 			cmd = Kernel.cmdAddr;
-			if (cmd != 0) {
-				US.PUTSPR(8, cmd);	// use ntb555HB later
+			if (cmd != -1) {
+				US.PUTSPR(8, cmd);	
 				US.ASM("bclrl always, 0");
-				Kernel.cmdAddr = 0;
+				Kernel.cmdAddr = -1;
 			}
 			long time = Kernel.time();
 			currentTask = tasks[1];

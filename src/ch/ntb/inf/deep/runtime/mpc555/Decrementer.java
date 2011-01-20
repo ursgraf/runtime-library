@@ -1,7 +1,9 @@
 package ch.ntb.inf.deep.runtime.mpc555;
+import ch.ntb.inf.deep.runtime.mpc555.demo.DecrementerTest;
+import ch.ntb.inf.deep.runtime.mpc555.driver.OutT;
 import ch.ntb.inf.deep.unsafe.*;
 
-/*changes:
+/* changes:
  * 11.11.10	NTB/Urs Graf	creation
  */
 
@@ -17,6 +19,11 @@ public class Decrementer extends PPCException implements ntbMpc555HB {
 		nofDecExceptions++;
 		US.PUTSPR(DEC, dec.decPeriodUs);
 		dec.action();
+	}
+
+	public static void install(Decrementer decrementer) {
+		dec = decrementer;		
+		US.PUTSPR(DEC, dec.decPeriodUs);
 	}
 
 }

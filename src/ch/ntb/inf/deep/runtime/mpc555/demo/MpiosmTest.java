@@ -1,9 +1,9 @@
 package ch.ntb.inf.deep.runtime.mpc555.demo;
-import ch.ntb.inf.deep.runtime.mpc555.*;
-import ch.ntb.inf.deep.runtime.mpc555.driver.Mpiosm;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2Plain;
-import ch.ntb.inf.deep.unsafe.US;
+import ch.ntb.inf.deep.runtime.mpc555.driver.*;
 
+/* changes:
+ * 11.11.10	NTB/Urs Graf	creation
+ */
 class MpiosmTest {
 	
 	static void pin14on () {
