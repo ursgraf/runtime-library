@@ -1,5 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+import ch.ntb.inf.deep.unsafe.US;
+
 
 /*changes:
  25.6.07	NTB/TB 	add switchToSCI1 & switchToSCI2
@@ -89,11 +91,11 @@ public class OutT {
 	 *            Zeichen, welches ausgegeben werden soll.
 	 */
 	public static void print(char ch) {
-//		if (useSCI2) {
+		if (useSCI2) {
 			SCI2Plain.write((byte) ch);
-/*		} else {
+		} else {
 			SCI1Plain.write((byte) ch);
-		}*/
+		}
 	}
 
 	/**
@@ -115,8 +117,10 @@ public class OutT {
 	 * @param str
 	 *            Zeichen, welches ausgegeben werden soll.
 	 */
-/*	public static void print(String str) {
+	public static void print(String str) {
 		int len = str.length();
+		US.ASM("b 0");
+		SCI2Plain.write((byte)(len + '0'));
 		int pos = 0;
 		if (useSCI2) {
 			while (pos < len) {
@@ -129,7 +133,7 @@ public class OutT {
 				pos++;
 			}
 		}
-	}*/
+	}
 	
 	/**
 	 * Gibt einen String über die serielle Schnittstelle aus. Der Wert
@@ -603,7 +607,6 @@ public class OutT {
 					n = 10;
 				}
 			} else {
-//				print('T');
 				if (showBase) {
 					valDigits[0] = '0';
 					valDigits[1] = '1';
@@ -615,13 +618,11 @@ public class OutT {
 					neg = true;
 					val = -val;
 				}
-				print('E');	// NIX Päng
 				do {
 					valDigits[n] = DIGITS[val % 10];
 					n++;
 					val = val / 10;
 				} while (val > 0); // UNTIL val <= 0;
-//				print('Q');
 			}
 		} else {
 			bitPerDigit = 4;
@@ -660,10 +661,11 @@ public class OutT {
 				valDigits[n] = DIGITS[val & digMask]; // digits[ORD(BITS(val)
 				// * digMask)];
 				n++;
-				val = val >>> bitPerDigit; // val = SYS.LSH(val, -
-				// bitPerDigit)
+				val = val >>> bitPerDigit; 
 			} while (val > 0); // UNTIL val <= 0;
 		}
+				US.ASM("b 0");
+		print((byte)'1');
 
 		if (minWidth <= maxNofDigits) {
 			maxNofDigits = (short) minWidth;

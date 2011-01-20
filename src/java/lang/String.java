@@ -1,5 +1,7 @@
 package java.lang;
 
+import ch.ntb.inf.deep.unsafe.US;
+
 
 /**
  * String class for the <code>mpc555</code> Cross environment.
@@ -8,14 +10,16 @@ package java.lang;
  * 
  */
 public class String {
+	/** The count is the number of characters in the String. */
+	protected short count;
+//	protected short bla;
+	
 	/** The value is used for character storage. */
 	protected char value[];
 
 	/** The offset is the first index of the storage that is used. */
 	protected int offset;
 
-	/** The count is the number of characters in the String. */
-	protected int count;
 	
 	// This char arrays are used for valueOf(..)
 	private static char[] m = new char[80];
@@ -72,7 +76,7 @@ public class String {
 				v = originalValue;
 			}
 			this.offset = 0;
-			this.count = size;
+			this.count = (short)size;
 			this.value = v;
 		}
 	}
@@ -91,7 +95,7 @@ public class String {
 		char[] v = new char[size];
 		System.chararraycopy(value, 0, v, 0, size);
 		this.offset = 0;
-		this.count = size;
+		this.count = (short)size;
 		this.value = v;
 	}
 
@@ -116,7 +120,7 @@ public class String {
 		char[] v = new char[count];
 		System.chararraycopy(value, offset, v, 0, count);
 		this.offset = offset;
-		this.count = count;
+		this.count = (short)count;
 		this.value = v;
 	}
 
@@ -184,6 +188,7 @@ public class String {
 	 */
 	public int length() {
 		return count;
+//		return US.GET2(12);
 	}
 
 	/**
