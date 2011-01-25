@@ -7,7 +7,7 @@ import ch.ntb.inf.deep.unsafe.*;
 
 public class Kernel implements ntbMpc555HB {
 	static int loopAddr;
-	static int cmdAddr = -1;
+	static int cmdAddr;
 	
 	private static void loop() {	// endless loop
 		while (true) {
@@ -126,6 +126,7 @@ public class Kernel implements ntbMpc555HB {
 	
 	static {
 		boot();
+		cmdAddr = -1;	// must be after class variables are zeroed by boot
 		US.ASM("mtspr EIE, r0");
 		US.PUTSPR(LR, loopAddr);
 		US.ASM("bclrl always, 0");

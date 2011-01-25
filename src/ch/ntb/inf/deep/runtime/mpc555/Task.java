@@ -7,7 +7,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 11.11.10	NTB/Urs Graf	creation
  */
 
-public class Task {//implements ntbMpc555HB {
+public class Task implements ntbMpc555HB {
 	public static final int maxNofTasks = 32;
 	
 	public static boolean done;	/** previous operation successfully completed */
@@ -181,7 +181,7 @@ public class Task {//implements ntbMpc555HB {
 		while(true) {
 			cmd = Kernel.cmdAddr;
 			if (cmd != -1) {
-				US.PUTSPR(8, cmd);	
+				US.PUTSPR(LR, cmd);	
 				US.ASM("bclrl always, 0");
 				Kernel.cmdAddr = -1;
 			}

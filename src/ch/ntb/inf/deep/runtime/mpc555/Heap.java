@@ -1,9 +1,11 @@
 package ch.ntb.inf.deep.runtime.mpc555;
 
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2Plain;
 import ch.ntb.inf.deep.unsafe.US;
 
-/*changes:
- * 11.11.10	NTB/GRAU	creation
+/* changes:
+ * 11.11.10	NTB/Urs Graf	creation
+ * 22.1.11	Urs Graf		newstring added
  */
 
 public class Heap implements ntbMpc555HB {
@@ -18,7 +20,6 @@ public class Heap implements ntbMpc555HB {
 		US.PUT4(heapPtr + 4, ref);	// write tag
 		ref = heapPtr + 8;
 		heapPtr += ((size + 15) >> 4) << 4;
-//		US.ASM("b 0");
 		return ref;
 	}	
 
@@ -58,10 +59,21 @@ public class Heap implements ntbMpc555HB {
 		return ref;
 	}
 	
+	// called by newstring in java/lang/String
+	public static int newstring(int ref, int len) {
+		int size = len + 8;
+		int addr = heapPtr; 
+		while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
+		US.PUT4(heapPtr + 4, ref);	// write tag
+		ref = heapPtr + 8;
+		heapPtr += ((size + 15) >> 4) << 4;
+		return ref;
+	}
+	
 	static {
 		int heapOffset = US.GET4(sysTabBaseAddr + stHeapOffset);
 		heapBase = US.GET4(sysTabBaseAddr + heapOffset * 4 + 4);
 		heapPtr = heapBase;
 	}
-	
+
 }

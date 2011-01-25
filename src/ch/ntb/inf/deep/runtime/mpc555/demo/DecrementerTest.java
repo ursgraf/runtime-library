@@ -14,6 +14,7 @@ public class DecrementerTest extends Decrementer {
 	}
 	
 	static {
+		OutT.switchToSCI2();
 		DecrementerTest decTest = new DecrementerTest(); 
 		decTest.decPeriodUs = 1000000;
 		Decrementer.install(decTest);

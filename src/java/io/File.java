@@ -267,7 +267,7 @@ public class File {
 		i = 0; f = fileTab[i];	// search for empty place in fileTab
 		while ((i < MaxFiles) && (f != null) && f.valid) {i++; f = fileTab[i];}
 		if (i == MaxFiles) return;
-		this.name = new String(name);
+		this.name = name;
 		this.valid = true;
 		this.filler = 0;
 		this.addr = 0;
