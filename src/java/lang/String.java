@@ -6,10 +6,8 @@ import ch.ntb.inf.deep.unsafe.US;
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation
  */
-public class String {
-	/** count is the number of characters in the string. */
-	protected int count;
-	
+public class String extends BString{
+
 	/** value is used for character storage. */
 	protected char value[];
 

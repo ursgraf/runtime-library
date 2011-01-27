@@ -104,12 +104,12 @@ public class OutT {
 	 * @param bool
 	 *            Boolscher Wert, welcher ausgegeben werden soll.
 	 */
-/*	public static void print(boolean bool) {
+	public static void print(boolean bool) {
 		if (bool)
 			print("true");
 		else
 			print("false");
-	}*/
+	}
 
 	/**
 	 * Gibt einen Literal-String über die serielle Schnittstelle aus.
@@ -119,17 +119,15 @@ public class OutT {
 	 */
 	public static void print(String str) {
 		int len = str.length();
-		US.ASM("b 0");
-		SCI2Plain.write((byte)(len + '0'));
 		int pos = 0;
 		if (useSCI2) {
 			while (pos < len) {
-				SCI2Plain.write((byte) str.charAt(pos));
+				SCI2Plain.write((byte)str.charAt(pos));
 				pos++;
 			}
 		} else {
 			while (pos < len) {
-				SCI1Plain.write((byte) str.charAt(pos));
+				SCI1Plain.write((byte)str.charAt(pos));
 				pos++;
 			}
 		}
@@ -412,10 +410,10 @@ public class OutT {
 	 * @param bool
 	 *            Boolscher Wert, welcher ausgegeben werden soll.
 	 */
-/*	public static void println(boolean bool) {
+	public static void println(boolean bool) {
 		print(bool);
 		println();
-	}*/
+	}
 
 	/**
 	 * Gibt einen Literal-String über die serielle Schnittstelle aus.<br>
@@ -424,10 +422,10 @@ public class OutT {
 	 * @param str
 	 *            Zeichen, welches ausgegeben werden soll.
 	 */
-/*	public static void println(String str) {
+	public static void println(String str) {
 		print(str);
 		println();
-	}*/
+	}
 	
 	/**
 	 * Gibt einen String über die serielle Schnittstelle aus. Der Wert
@@ -577,7 +575,7 @@ public class OutT {
 		if (base == DECIMAL) {
 			maxNofDigits = 10;
 			if (val == 0x80000000) {
-				neg = true;
+//				neg = true;
 				if (showBase) {
 					valDigits[0] = '0';
 					valDigits[1] = '1';
@@ -664,8 +662,6 @@ public class OutT {
 				val = val >>> bitPerDigit; 
 			} while (val > 0); // UNTIL val <= 0;
 		}
-				US.ASM("b 0");
-		print((byte)'1');
 
 		if (minWidth <= maxNofDigits) {
 			maxNofDigits = (short) minWidth;

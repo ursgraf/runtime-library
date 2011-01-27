@@ -12,12 +12,10 @@ public class OutTest4 {
 		OutT.switchToSCI2();
 		OutT.print('B');
 		OutT.println('A');
-		OutT.print("hello world");
-		Object o = null;
-		Object o1 = o;
-//		OutT.println(123);
-//		int a = -7463;
-//		OutT.println(a);
-//		OutT.print(true);
+		OutT.println("hello world ");
+		OutT.println(123);
+		int a = -7463;
+		OutT.println(a);
+		OutT.println(true);
 	}
 }
