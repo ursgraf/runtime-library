@@ -385,9 +385,9 @@ public class OutT {
 	 */
 	public static void println() {
 		if (useSCI2) {
-			SCI2Plain.write((byte) CR);
+			SCI2Plain.write((byte) CR); SCI2Plain.write((byte)LF);
 		} else {
-			SCI1Plain.write((byte) CR); // SCI1.write((byte)lf);
+			SCI1Plain.write((byte) CR);  SCI1Plain.write((byte)LF);
 		}
 	}
 
