@@ -28,7 +28,10 @@ public class String extends BString{
 	public static String allocateString(int ref, char value[]) {
 		int len = value.length * 2;
 		String str = newstring(ref, len);
-		for (int i = 0; i < len; i++) str.value[i] = value[i];
+//		US.ASM("b 0");
+		str.value[0] = 0x1122;
+		US.ASM("b 0");
+//		for (int i = 0; i < len; i++) str.value[i] = value[i];
 		return str;
 	}
 

@@ -23,7 +23,7 @@ public class Heap implements ntbMpc555HB {
 		return ref;
 	}	
 
-	
+	//TODO tag auf Basistyp setzen, size of Object dazunehmen
 	// called by newarray	
 	private static int newPrimTypeArray(int nofElements, int type) {
 		int elementSize;
@@ -41,6 +41,7 @@ public class Heap implements ntbMpc555HB {
 		return ref;
 	}
 	
+	//TODO size of Object dazunehmen
 	// called by anewarray	
 	private static int newRefArray(int nofElements, int ref) {
 		int size = nofElements * 4 + 8;
@@ -53,15 +54,21 @@ public class Heap implements ntbMpc555HB {
 		return ref;
 	}
 	
+	//TODO tag auf Basistyp setzen, size of Object dazunehmen
 	// called by multianewarray	
-	private static int newMultiDimArray(int ref, int dim1, int dim2) {
-		ref = 0;
+	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3, int dim4) {
+		int size = US.GET4(ref) + 8;
+		int addr = heapPtr; 
+		while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
+		US.PUT4(heapPtr + 4, ref);	// write tag
+		ref = heapPtr + 8;
+		heapPtr += ((size + 15) >> 4) << 4;
 		return ref;
 	}
 	
 	// called by newstring in java/lang/String
 	public static int newstring(int ref, int len) {
-		int size = len + 8;
+		int size = (len + 3) >> 2 + 8;
 		int addr = heapPtr; 
 		while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
 		US.PUT4(heapPtr + 4, ref);	// write tag
