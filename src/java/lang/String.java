@@ -26,12 +26,10 @@ public class String extends BString{
 	}
 
 	public static String allocateString(int ref, char value[]) {
-		int len = value.length * 2;
-		String str = newstring(ref, len);
-//		US.ASM("b 0");
-		str.value[0] = 0x1122;
-		US.ASM("b 0");
-//		for (int i = 0; i < len; i++) str.value[i] = value[i];
+		int len = value.length;
+		String str = newstring(ref, len * 2 + 4);	//TODO size of string and object
+		str.count = len;
+		for (int i = 0; i < len; i++) str.value[i] = value[i];
 		return str;
 	}
 
@@ -56,8 +54,8 @@ public class String extends BString{
 	}
 
 	public static String allocateString(int ref, char value[], int offset, int cnt) {
-		int len = value.length * 2;
-		String str = newstring(ref, len);
+		String str = newstring(ref, cnt * 2 + 4);
+		str.count = cnt;
 		for (int i = 0; i < cnt; i++) str.value[i] = value[i+offset];
 		return str;
 	}

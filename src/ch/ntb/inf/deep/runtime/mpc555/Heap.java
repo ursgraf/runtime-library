@@ -57,6 +57,7 @@ public class Heap implements ntbMpc555HB {
 	//TODO tag auf Basistyp setzen, size of Object dazunehmen
 	// called by multianewarray	
 	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3, int dim4) {
+		if (nofDim > 3) US.HALT(20);
 		int size = US.GET4(ref) + 8;
 		int addr = heapPtr; 
 		while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
@@ -68,7 +69,7 @@ public class Heap implements ntbMpc555HB {
 	
 	// called by newstring in java/lang/String
 	public static int newstring(int ref, int len) {
-		int size = (len + 3) >> 2 + 8;
+		int size = len + 8;
 		int addr = heapPtr; 
 		while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
 		US.PUT4(heapPtr + 4, ref);	// write tag
