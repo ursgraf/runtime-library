@@ -17,6 +17,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * <code>open()</code> und <code>close()</code> gestartet bzw. beendet werden.
  * Es kann direkt über die Ausgabemethoden geschrieben werden.
  */
+@Deprecated
 public class OutT {
 
 	public static final boolean hideBase = false, showBase = true;

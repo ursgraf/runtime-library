@@ -8,6 +8,9 @@ import ch.ntb.inf.deep.unsafe.*;
  */
 
 public class SCI2Plain implements ntbMpc555HB {
+	
+	public static SCI2OutputStream out;
+	public static SCI2InputStream in;
 
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
 
@@ -49,5 +52,9 @@ public class SCI2Plain implements ntbMpc555HB {
 		return (byte)data;
 	}
 	
+	static {
+		out = new SCI2OutputStream();
+		in = new SCI2InputStream();
+	}
 	
 }	
