@@ -3,11 +3,12 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.Interrupt;
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
 import ch.ntb.inf.deep.unsafe.US;
+//import ch.ntb.inf.sts.mpc555.Exceptions;
 
 /* 
- * 27.1.2011 NTB/Urs Graf, ported to deep
+ * 31.3.2007 NTB/SP read failure corrected and error states added
+ * 12.2.2007 NTB/SP assigned to Java
  */
-
 /**
  * Interrupt gesteuerter Treiber für das Serial Communication Interface 1 des
  * mpc555.<br>
@@ -17,12 +18,12 @@ import ch.ntb.inf.deep.unsafe.US;
  * Baudrate kommen.<br>
  * Dies kann bei angeschlossenen Endgeräten zu Fehlinterpretationen der
  * gesendeten Bytes führen.<br>
+ * Siehe dazu im <a
+ * href="http://inf.ntb.ch/infoportal/help/topic/ch.ntb.infoportal/resources/embeddedSystems/mpc555/pdfs/MPC555UM.pdf"
+ * target="_blank">MPC555 Manual</a> Table 14-29 im Kapitel 14.8.7.3.
  * </p>
  */
 public class SCI1 extends Interrupt {
-	
-	public static SCI1OutputStream out;
-	public static SCI1InputStream in;
 
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
 
@@ -326,9 +327,5 @@ public class SCI1 extends Interrupt {
 
 //		Exceptions.installInternalIntProc(rxInterrupt, 5);	anpassen
 //		Exceptions.installInternalIntProc(txInterrupt, 5);
-		
-		
-		out = new SCI1OutputStream();
-		in = new SCI1InputStream();
 	}
 }

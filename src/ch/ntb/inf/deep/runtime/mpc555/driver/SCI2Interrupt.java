@@ -25,9 +25,6 @@ import ch.ntb.inf.deep.unsafe.US;
  * </p>
  */
 public class SCI2 extends Interrupt {
-	
-	public static SCI2OutputStream out;
-	public static SCI2InputStream in;
 
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
 
@@ -330,8 +327,5 @@ public class SCI2 extends Interrupt {
 
 //		Exceptions.installInternalIntProc(rxInterrupt, 5);	anpassen
 //		Exceptions.installInternalIntProc(txInterrupt, 5);
-		
-		out = new SCI2OutputStream();
-		in = new SCI2InputStream();
 	}
 }
