@@ -68,9 +68,9 @@ public class OutT {
 	 */
 	public static void open() {
 		if (useSCI2) {
-			SCI2Plain.start(9600, SCI2Plain.NO_PARITY, (short) 8);
+			SCI2.start(9600, SCI2.NO_PARITY, (short) 8);
 		} else {
-			SCI1Plain.start(9600, SCI1Plain.NO_PARITY, (short) 8);
+			SCI1.start(9600, SCI1.NO_PARITY, (short) 8);
 		}
 	}
 
@@ -79,9 +79,9 @@ public class OutT {
 	 */
 	public static void close() {
 		if (useSCI2) {
-			SCI2Plain.stop();
+			SCI2.stop();
 		} else {
-			SCI1Plain.stop();
+			SCI1.stop();
 		}
 	}
 
@@ -93,9 +93,9 @@ public class OutT {
 	 */
 	public static void print(char ch) {
 		if (useSCI2) {
-			SCI2Plain.write((byte) ch);
+			SCI2.write((byte) ch);
 		} else {
-			SCI1Plain.write((byte) ch);
+			SCI1.write((byte) ch);
 		}
 	}
 
@@ -123,12 +123,12 @@ public class OutT {
 		int pos = 0;
 		if (useSCI2) {
 			while (pos < len) {
-				SCI2Plain.write((byte)str.charAt(pos));
+				SCI2.write((byte)str.charAt(pos));
 				pos++;
 			}
 		} else {
 			while (pos < len) {
-				SCI1Plain.write((byte)str.charAt(pos));
+				SCI1.write((byte)str.charAt(pos));
 				pos++;
 			}
 		}
@@ -264,9 +264,9 @@ public class OutT {
 	 */
 	public static void println() {
 		if (useSCI2) {
-			SCI2Plain.write((byte)CR); SCI2Plain.write((byte)LF);
+			SCI2.write((byte)CR); SCI2.write((byte)LF);
 		} else {
-			SCI1Plain.write((byte)CR);  SCI1Plain.write((byte)LF);
+			SCI1.write((byte)CR);  SCI1.write((byte)LF);
 		}
 	}
 
@@ -400,9 +400,9 @@ public class OutT {
 	 */
 	public static void printTab() {
 		if (useSCI2) {
-			SCI2Plain.write((byte)TAB);
+			SCI2.write((byte)TAB);
 		} else {
-			SCI1Plain.write((byte)TAB);
+			SCI1.write((byte)TAB);
 		}
 	}
 

@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2Plain;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
@@ -13,7 +13,7 @@ public class ClassTest3 extends ClassTest2 {
 	static ClassTest3 test3;
 	
 	void send() {
-		SCI2Plain.write((byte)'u');
+		SCI2.write((byte)'u');
 	}
 	
 	public ClassTest3 () {
@@ -21,13 +21,13 @@ public class ClassTest3 extends ClassTest2 {
 	}
 	
 	static {
-		SCI2Plain.start(9600, (byte)0, (short)8);
-		SCI2Plain.write((byte)'0');
+		SCI2.start(9600, (byte)0, (short)8);
+		SCI2.write((byte)'0');
 		test2 = new ClassTest2();
 		test2.send();
 		test3 = new ClassTest3();
 		test3.send();
-		SCI2Plain.write((byte)'1');
+		SCI2.write((byte)'1');
 		run();
 	}
 }

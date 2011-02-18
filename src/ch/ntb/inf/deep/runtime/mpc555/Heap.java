@@ -1,6 +1,5 @@
 package ch.ntb.inf.deep.runtime.mpc555;
 
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2Plain;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:

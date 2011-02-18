@@ -24,7 +24,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * target="_blank">MPC555 Manual</a> Table 14-29 im Kapitel 14.8.7.3.
  * </p>
  */
-public class SCI2 extends Interrupt {
+public class SCI2Interrupt extends Interrupt {
 
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
 
@@ -313,13 +313,13 @@ public class SCI2 extends Interrupt {
 		rxQueue = new ByteFifo(QUEUE_LEN);
 		txQueue = new ByteFifo(QUEUE_LEN);
 
-		rxInterrupt = new SCI2();
+		rxInterrupt = new SCI2Interrupt();
 		rxInterrupt.enableRegAdr = QSMCM.SCC2R1;
 		rxInterrupt.enBit = QSMCM.scc2r1RIE;
 		rxInterrupt.flagRegAdr = QSMCM.SC2SR;
 		rxInterrupt.flag = QSMCM.sc2srRDRF;
 
-		txInterrupt = new SCI2();
+		txInterrupt = new SCI2Interrupt();
 		txInterrupt.enableRegAdr = QSMCM.SCC2R1;
 		txInterrupt.enBit = QSMCM.scc2r1TIE;
 		txInterrupt.flagRegAdr = QSMCM.SC2SR;

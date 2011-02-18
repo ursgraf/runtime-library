@@ -1,7 +1,8 @@
 package ch.ntb.inf.deep.runtime.mpc555.demo;
-import ch.ntb.inf.deep.runtime.mpc555.*;
-import ch.ntb.inf.deep.runtime.mpc555.driver.*;
-import ch.ntb.inf.deep.unsafe.US;
+import ch.ntb.inf.deep.runtime.mpc555.Kernel;
+import ch.ntb.inf.deep.runtime.mpc555.Task;
+import ch.ntb.inf.deep.runtime.mpc555.driver.Mpiosm;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
 /*changes:
  * 10.1.11	NTB/GRAU	creation
@@ -13,7 +14,7 @@ public class TaskTest2 extends Task {
 	static TaskTest2 t1;
 	
 	public void action() {
-		SCI2Plain.write((byte)'.');;
+		SCI2.write((byte)'.');;
 		if (Kernel.time() > startTime + 100000) {
 			Mpiosm.out(pin, !Mpiosm.in(pin));
 			startTime = Kernel.time();
@@ -21,19 +22,19 @@ public class TaskTest2 extends Task {
 	}
 	
 	public TaskTest2(int pin) {
-		SCI2Plain.write((byte)'a');
+		SCI2.write((byte)'a');
 		this.startTime = Kernel.time();
 		this.pin = pin;
 		Mpiosm.init(pin, true);
 		period = 500;
 		time = 50;
 		Task.install(this);
-		SCI2Plain.write((byte)'b');
+		SCI2.write((byte)'b');
 	}
 	
 	static {
-		SCI2Plain.start(9600, (byte)0, (short)8);
-		SCI2Plain.write((byte)'0');
+		SCI2.start(9600, (byte)0, (short)8);
+		SCI2.write((byte)'0');
 //		OutT.switchToSCI2();
 //		OutT.print((byte)'0');
 //		OutT.println((byte)'1');

@@ -8,6 +8,7 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 public class DecrementerTest extends Decrementer {
+	static DecrementerTest decTest; 
 	
 	public void action () {
 		OutT.print('x');
@@ -15,7 +16,7 @@ public class DecrementerTest extends Decrementer {
 	
 	static {
 		OutT.switchToSCI2();
-		DecrementerTest decTest = new DecrementerTest(); 
+		decTest = new DecrementerTest(); 
 		decTest.decPeriodUs = 1000000;
 		Decrementer.install(decTest);
 	}

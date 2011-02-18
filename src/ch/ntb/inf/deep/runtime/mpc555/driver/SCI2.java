@@ -1,13 +1,12 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
-import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
-import ch.ntb.inf.deep.unsafe.*;
+import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
  * 11.11.10	NTB/GRAU	creation
  */
 
-public class SCI2Plain implements ntbMpc555HB {
+public class SCI2 implements ntbMpc555HB {
 	
 	public static SCI2OutputStream out;
 	public static SCI2InputStream in;
@@ -30,7 +29,7 @@ public class SCI2Plain implements ntbMpc555HB {
 		US.PUT2(SCC2R1, 0);	//  TE, RE = 0 
 	}
 	
-	public static void start(int i, byte noParity, short s) {
+	public static void start(int i, short noParity, short s) {
 		US.PUT2(SCC2R0,  130); 	// baud rate 
 		US.PUT2(SCC2R1, 0x0C);	// no parity, 8 data bits, enable tx and rx 
 	}
@@ -50,6 +49,51 @@ public class SCI2Plain implements ntbMpc555HB {
 		while ((status & (1<<RDRF)) == 0);
 		short data = US.GET2(SC2DR);
 		return (byte)data;
+	}
+	
+	public static int availToRead() {
+		return 1;
+	}
+
+	public static int read() {
+		int rec = 0;
+		
+		for(int i = 0; i < 4; i++){
+			rec = (rec << 8) | receive();
+		}	
+		return rec;
+	}
+
+	public static int read(byte[] b) {
+		for(int i = 0; i < b.length; i++){
+			b[i] =  receive();
+		}	
+		return b.length;
+	}
+
+	public static int read(byte[] b, int off, int len) {
+		for(int i = 0; i < len; i++){
+			b[off + i] =  receive();
+		}	
+		return len;
+	}
+
+	public static int availToWrite() {
+		return 1;
+	}
+
+	public static int write(byte[] b) {
+		for(int i = 0; i < b.length; i++){
+			write(b[i]);
+		}
+		return b.length;
+	}
+
+	public static int write(byte[] b, int off, int len) {
+		for(int i = 0; i < len; i++){
+			write(b[off + i]);
+		}
+		return len;
 	}
 	
 	static {
