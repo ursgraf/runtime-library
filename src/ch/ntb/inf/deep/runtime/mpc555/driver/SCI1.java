@@ -80,7 +80,7 @@ public class SCI1 implements ntbMpc555HB {
 	}
 
 	public static int availToWrite() {
-		return 1;
+		return 128;
 	}
 
 	public static int write(byte[] b) {
