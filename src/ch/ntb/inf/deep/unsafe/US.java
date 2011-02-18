@@ -53,7 +53,7 @@ public class US {
 	}
 
 	/** get content of floating point register */
-	public static int GETFPR(int reg) {
+	public static long GETFPR(int reg) {
 		return 0;
 	}
 

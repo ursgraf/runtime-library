@@ -5,8 +5,9 @@ import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
  * 15.05.07	NTB/SP	creation
- * 7.12.17	NTB/GRAU	ported to deep
-*/
+ * 7.12.17	NTB/Urs Graf	ported to deep
+ */
+
 /**
  * constant definitions for QSMCM<br>
  */

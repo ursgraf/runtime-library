@@ -1,7 +1,5 @@
 package ch.ntb.inf.deep.runtime.util;
 
-
-
 /**
  * First in first out <code>byte</code> queue.
  * The size of the queue should be a multiple of 2 minus one (size = 2^x - 1).

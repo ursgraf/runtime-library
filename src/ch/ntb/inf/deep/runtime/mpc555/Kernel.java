@@ -50,7 +50,7 @@ public class Kernel implements ntbMpc555HB {
 	}
 	
 	private static void boot() {
-		blink(1);
+//		blink(1);
 		US.PUT4(SIUMCR, 0x00040000);	// internal arb., no data show cycles, BDM operation, CS functions,
 			// output FREEZE, no lock, use data & address bus, use as RSTCONF, no reserv. logic
 		US.PUT4(PLPRCR, 0x00900000);	// MF = 9, 40MHz operation with 4MHz quarz

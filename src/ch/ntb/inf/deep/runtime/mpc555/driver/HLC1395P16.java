@@ -70,7 +70,7 @@ public class HLC1395P16 extends Task {
 	/**
 	 * Background task loop: Do not call this method!
 	 */
-	public void Do() {
+	public void action() {
 		if (sensAdr >= 0) {// get result
 			resultVal[sensAdr] = (short) (US.GET2(RJURR_A + 2) - US
 					.GET2(RJURR_A)); // dark - val

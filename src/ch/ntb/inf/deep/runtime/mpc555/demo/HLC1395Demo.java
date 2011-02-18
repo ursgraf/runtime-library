@@ -10,11 +10,9 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.OutT;
 
 public class HLC1395Demo extends Task {
 	
-	
 	public void action() {
 		for(int i = 0; i < 4; i++) {
 			OutT.print(HLC1395P16.read(i));
-		//	OutT.print(i);
 			OutT.printTab();
 		}
 		OutT.println();
@@ -25,19 +23,7 @@ public class HLC1395Demo extends Task {
 		HLC1395P16.start();
 		
 		OutT.switchToSCI2();
-		OutT.print('H');
-		OutT.print('L');
-		OutT.print('C');
-		OutT.print('1');
-		OutT.print('3');
-		OutT.print('9');
-		OutT.print('5');
-		OutT.print('-');
-		OutT.print('D');
-		OutT.print('e');
-		OutT.print('m');
-		OutT.print('o');
-		OutT.println();
+		OutT.println("HLC1295-Demo");
 		
 		Task demoTask = new HLC1395Demo();
 		demoTask.period = 1000;

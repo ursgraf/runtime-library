@@ -11,7 +11,8 @@ public class OutTest4 {
 		OutT.print('B');
 		OutT.println('A');
 		OutT.println("hello world");
-//		OutT.println(123);
+		OutT.println(123);
+		OutT.println(-56);
 //		int a = -7463;
 //		OutT.println(a);
 		OutT.println(true);

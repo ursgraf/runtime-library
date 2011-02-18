@@ -134,122 +134,6 @@ public class OutT {
 	}
 	
 	/**
-	 * Gibt einen String über die serielle Schnittstelle aus. Der Wert
-	 * <code>value</code> kann an beliebigen Position im String eingefügt
-	 * werden.<br>
-	 * <ul>
-	 * <li>%d wird ersetzt durch den Wert <code>value</code> in der dezimalen
-	 * Darstellung</li>
-	 * <li>%o wird ersetzt durch den Wert <code>value</code> in der octalen
-	 * Darstellung</li>
-	 * <li>%h wird ersetzt durch den Wert <code>value</code> in der
-	 * hexadezimalen Darstellng</li>
-	 * </ul>
-	 * 
-	 * @param str
-	 *            String der ausgegeben wird.
-	 * @param value
-	 *            Wert der im String eingefügt wird.
-	 */
-/*	public static void printf(String str, int value) {
-		int strlen = str.length();
-		for (int i = 0; i < strlen; i++) {
-			char c = str.charAt(i);
-			if ((c == '%') && ((i + 1) < strlen)) {
-				c = str.charAt(i + 1);
-				switch (c) {
-				case 'd':
-					i++;
-					print(value, DECIMAL, 0, SPACE, false);
-					break;
-				case 'o':
-					i++;
-					print('0');
-					print(value, OCTAL, 0, SPACE, false);
-					break;
-				case 'h':
-					i++;
-					print("0x");
-					print(value, HEXADECIMAL, 0, SPACE, false);
-					break;
-				default:
-					if (useSCI2)
-						SCI2Plain.write((byte) '%');
-					else
-						SCI1Plain.write((byte) '%');
-					break;
-				}
-			} else {
-				if (useSCI2)
-					SCI2Plain.write((byte) c);
-				else
-					SCI1Plain.write((byte) c);
-			}
-		}
-	}*/
-	
-	/**
-	 * Gibt einen String über die serielle Schnittstelle aus. Der Werte
-	 * <code>values</code> können an beliebigen Position im String eingefügt
-	 * werden. Die Reihenfolge der ausgegeben Werte entspricht der Reihenfolge
-	 * der übergebenen Werte.<br>
-	 * <ul>
-	 * <li>%d wird ersetzt durch den Wert <code>value</code> in der dezimalen
-	 * Darstellung</li>
-	 * <li>%o wird ersetzt durch den Wert <code>value</code> in der octalen
-	 * Darstellung</li>
-	 * <li>%h wird ersetzt durch den Wert <code>value</code> in der
-	 * hexadezimalen Darstellng</li>
-	 * </ul>
-	 * 
-	 * @param str
-	 *            String der ausgegeben wird.
-	 * @param value
-	 *            Wert der im String eingefügt wird.
-	 */
-/*	public static void printf(String str, int... values) {
-		int strlen = str.length();
-		int vallen = values.length;
-		int valctr = 0;
-		for (int i = 0; i < strlen; i++) {
-			char c = str.charAt(i);
-			if ((c == '%') && ((i + 1) < strlen && valctr < vallen)) {
-				c = str.charAt(i + 1);
-				switch (c) {
-				case 'd':
-					i++;
-					print(values[valctr], DECIMAL, 0, SPACE, false);
-					valctr++;
-					break;
-				case 'o':
-					print('0');
-					print(values[valctr], OCTAL, 0, SPACE, false);
-					i++;
-					valctr++;
-					break;
-				case 'h':
-					print("0x");
-					print(values[valctr], HEXADECIMAL, 0, SPACE, false);
-					i++;
-					valctr++;
-					break;
-				default:
-					if (useSCI2)
-						SCI2Plain.write((byte) '%');
-					else
-						SCI1Plain.write((byte) '%');
-					break;
-				}
-			} else {
-				if (useSCI2)
-					SCI2Plain.write((byte) c);
-				else
-					SCI1Plain.write((byte) c);
-			}
-		}
-	}*/
-
-	/**
 	 * Gibt eine Integer-Zahl als Dezimalzahl über die serielle Schnittstelle
 	 * aus.
 	 * 
@@ -257,13 +141,7 @@ public class OutT {
 	 *            Integer-Zahl, welche ausgegeben werden soll.
 	 */
 	public static void print(int val) {
-		/*
-		 * if (val < 0) { SCI1.write((byte)'-'); val = - val; if (val ==
-		 * MIN_INT) { SCI1.write((byte)'2'); val = 147483648; } } if (val >= 10)
-		 * print(val / 10); SCI1.write((byte)(val % 10 + '0'));
-		 */
 		print(val, DECIMAL, 0, SPACE, false);
-
 	}
 
 	/**
@@ -290,14 +168,14 @@ public class OutT {
 	 * @param val
 	 *            Double-Zahl, welche ausgegeben werden soll.
 	 */
-/*	public static void print(double val) {
+	public static void print(double val) {
 		int nofChars = Double.doubleToChars(val, 15, chars);
 		int n = 0;
 		while (n < nofChars) {
 			OutT.print(chars[n]);
 			n++;
 		}
-	}*/
+	}
 
 	private static final char esc = 0x1B, ecPrintForm = 0xF0, // print format
 			// for double
@@ -385,9 +263,9 @@ public class OutT {
 	 */
 	public static void println() {
 		if (useSCI2) {
-			SCI2Plain.write((byte) CR); SCI2Plain.write((byte)LF);
+			SCI2Plain.write((byte)CR); SCI2Plain.write((byte)LF);
 		} else {
-			SCI1Plain.write((byte) CR);  SCI1Plain.write((byte)LF);
+			SCI1Plain.write((byte)CR);  SCI1Plain.write((byte)LF);
 		}
 	}
 
@@ -511,19 +389,19 @@ public class OutT {
 	 * @param val
 	 *            Double-Zahl, welche ausgegeben werden soll.
 	 */
-/*	public static void println(double val) {
+	public static void println(double val) {
 		print(val);
 		println();
-	}*/
+	}
 
 	/**
 	 * Gibt ein Tabulator-Zeichen ('\t') über die serielle Schnittstelle aus
 	 */
 	public static void printTab() {
 		if (useSCI2) {
-			SCI2Plain.write((byte) TAB);
+			SCI2Plain.write((byte)TAB);
 		} else {
-			SCI1Plain.write((byte) TAB);
+			SCI1Plain.write((byte)TAB);
 		}
 	}
 
@@ -574,45 +452,46 @@ public class OutT {
 		boolean neg = false;
 		if (base == DECIMAL) {
 			maxNofDigits = 10;
-			if (val == 0x80000000) {
+//			if (val == 0x80000000) {
 //				neg = true;
-				if (showBase) {
-					valDigits[0] = '0';
-					valDigits[1] = '1';
-					valDigits[2] = '%';
-					valDigits[3] = '8';
-					valDigits[4] = '4';
-					valDigits[5] = '6';
-					valDigits[6] = '3';
-					valDigits[7] = '8';
-					valDigits[8] = '4';
-					valDigits[9] = '7';
-					valDigits[10] = '4';
-					valDigits[11] = '1';
-					valDigits[12] = '2';
-					n = 13;
-				} else {
-					valDigits[0] = '8';
-					valDigits[1] = '4';
-					valDigits[2] = '6';
-					valDigits[3] = '3';
-					valDigits[4] = '8';
-					valDigits[5] = '4';
-					valDigits[6] = '7';
-					valDigits[7] = '4';
-					valDigits[8] = '1';
-					valDigits[9] = '2';
-					n = 10;
-				}
-			} else {
-				if (showBase) {
-					valDigits[0] = '0';
-					valDigits[1] = '1';
-					valDigits[2] = '%';
-					n = 3;
-					maxNofDigits = 13;
-				}
+//				if (showBase) {
+//					valDigits[0] = '0';
+//					valDigits[1] = '1';
+//					valDigits[2] = '%';
+//					valDigits[3] = '8';
+//					valDigits[4] = '4';
+//					valDigits[5] = '6';
+//					valDigits[6] = '3';
+//					valDigits[7] = '8';
+//					valDigits[8] = '4';
+//					valDigits[9] = '7';
+//					valDigits[10] = '4';
+//					valDigits[11] = '1';
+//					valDigits[12] = '2';
+//					n = 13;
+//				} else {
+//					valDigits[0] = '8';
+//					valDigits[1] = '4';
+//					valDigits[2] = '6';
+//					valDigits[3] = '3';
+//					valDigits[4] = '8';
+//					valDigits[5] = '4';
+//					valDigits[6] = '7';
+//					valDigits[7] = '4';
+//					valDigits[8] = '1';
+//					valDigits[9] = '2';
+//					n = 10;
+//				}
+//			} else {
+//				if (showBase) {
+//					valDigits[0] = '0';
+//					valDigits[1] = '1';
+//					valDigits[2] = '%';
+//					n = 3;
+//					maxNofDigits = 13;
+//				}
 				if (val < 0) {
+//					print('x');
 					neg = true;
 					val = -val;
 				}
@@ -621,7 +500,7 @@ public class OutT {
 					n++;
 					val = val / 10;
 				} while (val > 0); // UNTIL val <= 0;
-			}
+//			}
 		} else {
 			bitPerDigit = 4;
 			digMask |= 0xf; // digMask = {0..3};
@@ -632,25 +511,25 @@ public class OutT {
 				valDigits[2] = '%';
 				n = 3;
 			}
-			if (base == OCTAL) {
-				bitPerDigit = 3;
-				digMask = 0x7; // digMask = {0..2};
-				maxNofDigits += 11 - 8; // INC(maxNofDigits, 11 - 8);
-				if (showBase) {
-					valDigits[0] = '8';
-					valDigits[1] = '%';
-					n = 2;
-				}
-			} else if (base == BINARY) {
-				bitPerDigit = 1;
-				digMask = 1;
-				maxNofDigits += 32 - 8; // INC(maxNofDigits, 32 - 8);
-				if (showBase) {
-					valDigits[0] = '2';
-					valDigits[1] = '%';
-					n = 2;
-				}
-			}
+//			if (base == OCTAL) {
+//				bitPerDigit = 3;
+//				digMask = 0x7; // digMask = {0..2};
+//				maxNofDigits += 11 - 8; // INC(maxNofDigits, 11 - 8);
+//				if (showBase) {
+//					valDigits[0] = '8';
+//					valDigits[1] = '%';
+//					n = 2;
+//				}
+//			} else if (base == BINARY) {
+//				bitPerDigit = 1;
+//				digMask = 1;
+//				maxNofDigits += 32 - 8; // INC(maxNofDigits, 32 - 8);
+//				if (showBase) {
+//					valDigits[0] = '2';
+//					valDigits[1] = '%';
+//					n = 2;
+//				}
+//			}
 			if (showBase) {
 				maxNofDigits += n;
 			}
