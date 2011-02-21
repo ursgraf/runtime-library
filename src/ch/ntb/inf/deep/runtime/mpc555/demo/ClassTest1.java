@@ -19,7 +19,7 @@ public class ClassTest1 {
 		while (true) {
 			SCI2.write((byte)'x');
 			SCI2.write((byte)a123[i]);
-			i++;
+			i = (i + 1) % 4;
 			for (int i = 0; i < 1000000; i++);
 		}
 	}
@@ -34,7 +34,7 @@ public class ClassTest1 {
 		a123[3] = 68;
 		s1 = (short)(2 + a123[3]);
 		short s2 = a123[1] ;
-		SCI2.write((byte)a123[3]);
+//		SCI2.write((byte)a123[3]);
 		run();
 	}
 }

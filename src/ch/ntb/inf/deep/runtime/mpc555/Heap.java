@@ -58,15 +58,22 @@ public class Heap implements ntbMpc555HB {
 	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3, int dim4) {
 		if (nofDim > 3 || nofDim < 2) US.HALT(20);
 		if (nofDim == 2) {
-//			US.ASM("b 0");
 			int elemSize = US.GET4(ref);
-			int dim1Size = 8 + dim1 * elemSize;
+			int dim1Size = (8 + dim1 * elemSize + 3) >> 2 << 2;	
 			int size = 8 + dim0 * 4 + dim0 * dim1Size;
 			int addr = heapPtr; 
 			while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
 			US.PUT4(heapPtr + 4, ref);	// write tag
+			US.PUT2(heapPtr + 2, dim0);	// write length of dim0
 			ref = heapPtr + 8;
-			for (int i = 0; i < dim0; i++) US.PUT4(ref + i * 4, ref + dim1Size);
+			addr = ref;
+			for (int i = 0; i < dim0; i++) {
+				int elemAddr = ref + 4 * dim0 + 8 + i * dim1Size; 
+				US.PUT4(addr, elemAddr);
+				US.PUT4(elemAddr - 4, ref);	// write tag
+				US.PUT2(elemAddr - 6, dim1);	// write length of dim0
+				addr += 4;
+			}
 			heapPtr += ((size + 15) >> 4) << 4;
 		}
 		return ref;
