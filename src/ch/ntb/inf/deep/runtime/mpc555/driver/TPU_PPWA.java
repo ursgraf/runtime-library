@@ -152,10 +152,10 @@ public class TPU_PPWA implements ntbMpc555HB{
 		int value = 0;
 		if (tpuA) {
 			int lowValue = US.GET2(TPURAM0_A + 0x10 * channel + 0xA);
-			value = lowValue * TPU_A.getCycleTime() / 1000;
+			value = lowValue * TPUA.getCycleTime() / 1000;
 		} else {
 			int lowValue = US.GET2(TPURAM0_B + 0x10 * channel + 0xA);
-			value = lowValue * TPU_B.getCycleTime() / 1000;
+			value = lowValue * TPUB.getCycleTime() / 1000;
 		}
 		return value;
 	}

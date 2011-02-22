@@ -57,7 +57,7 @@ public class StepMotor implements ntbMpc555HB {
 		int shiftl, reg;
 		short s;
 		if(tpuA){
-			int stepPeriodTCR1 = stepPeriod * 1000 / TPU_A.getCycleTime();
+			int stepPeriodTCR1 = stepPeriod * 1000 / TPUA.getCycleTime();
 			
 			//Disable interrupts for first channel
 			s = US.GET2(CIER_A);
@@ -268,7 +268,7 @@ public class StepMotor implements ntbMpc555HB {
 				US.PUT2(reg, s);
 			}
 		}else{
-			int stepPeriodTCR1 = stepPeriod * 1000 / TPU_A.getCycleTime();
+			int stepPeriodTCR1 = stepPeriod * 1000 / TPUA.getCycleTime();
 			
 			//Disable interrupts for first channel
 			s = US.GET2(CIER_B);

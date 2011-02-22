@@ -51,7 +51,7 @@ public class TPU_PWM implements ntbMpc555HB{
 	public static void init(boolean tpuA, int channel, int period, int highTime) {
 		int shift, tpuAdr, s;
 		if(tpuA){
-			TPU_A.init();
+			TPUA.init();
 			shift = (channel * 4) % 16;
 			tpuAdr = CFSR3_A - (channel / 4) * 2;			
 			s = US.GET2(tpuAdr);
@@ -80,7 +80,7 @@ public class TPU_PWM implements ntbMpc555HB{
 			US.PUT2(tpuAdr,s);
 		}
 		else{
-			TPU_B.init();
+			TPUB.init();
 			shift = (channel * 4) % 16;
 			tpuAdr = CFSR3_B - (channel / 4) * 2;			
 			s = US.GET2(tpuAdr);
