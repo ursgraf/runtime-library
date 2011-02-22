@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
-import ch.ntb.inf.deep.runtime.mpc555.driver.Mpiosm;
+import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
 /*changes:
@@ -16,7 +16,7 @@ public class TaskTest2 extends Task {
 	public void action() {
 		SCI2.write((byte)'.');;
 		if (Kernel.time() > startTime + 100000) {
-			Mpiosm.out(pin, !Mpiosm.in(pin));
+			MPIOSM_DIO.out(pin, !MPIOSM_DIO.in(pin));
 			startTime = Kernel.time();
 		}
 	}
@@ -25,7 +25,7 @@ public class TaskTest2 extends Task {
 		SCI2.write((byte)'a');
 		this.startTime = Kernel.time();
 		this.pin = pin;
-		Mpiosm.init(pin, true);
+		MPIOSM_DIO.init(pin, true);
 		period = 500;
 		time = 50;
 		Task.install(this);

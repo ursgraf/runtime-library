@@ -1,18 +1,18 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.unsafe.US;
-
-
 /*changes:
- 25.6.07	NTB/TB 	add switchToSCI1 & switchToSCI2
- 24.8.06	NTB/ED	void print(double val)
- 11.7.06	NTB/SH	void print(double val), 
- void print(int val, int base, int minWidth, char fillCh, boolean showBase)
- 28.3.05	NTB/ED	+printTab()
- 25.6.04	NTB/ED	creation
+ * 18.02.11 NTB/RM	replaced by System.out and System.err -> marked as @deprecated
+ * 25.06.07	NTB/TB 	add switchToSCI1 & switchToSCI2
+ * 24.08.06	NTB/ED	void print(double val)
+ * 11.07.06	NTB/SH	void print(double val),  void print(int val, int base, int minWidth, char fillCh, boolean showBase)
+ * 28.03.05	NTB/ED	printTab() added
+ * 25.06.04	NTB/ED	creation
  */
+
 /**
- * Ausgaben (vom Microcontroller) über die serielle Schnittstelle (SCI1).<br>
+ * <strong>OutT is not longer supportet, pleace use System.out and System.err instead!</strong>
+ * 
+ * Ausgaben (vom Microcontroller) über die serielle Schnittstelle (SCI1 oder SCI2).<br>
  * Für die normale Benutzung muss <code>OutT</code> nicht mittels
  * <code>open()</code> und <code>close()</code> gestartet bzw. beendet werden.
  * Es kann direkt über die Ausgabemethoden geschrieben werden.

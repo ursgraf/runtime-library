@@ -1,20 +1,25 @@
 package ch.ntb.inf.deep.runtime.mpc555.demo;
+import java.io.PrintStream;
+
 import ch.ntb.inf.deep.runtime.mpc555.driver.*;
 
 /*changes:
- * 11.11.10	NTB/Urs Graf	creation
+ * 22.02.11 NTB/Martin Züger	OutT replaced by System.out
+ * 11.11.10	NTB/Urs Graf		creation
  */
 
 public class OutTest4 {
 	static {
-		OutT.switchToSCI2();
-		OutT.print('B');
-		OutT.println('A');
-		OutT.println("hello world");
-		OutT.println(123);
-		OutT.println(-56);
+		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
+		System.out = new PrintStream(SCI2.out);
+		
+		System.out.print('B');
+		System.out.println('A');
+		System.out.println("hello world");
+		System.out.println(123);
+		System.out.println(-56);
 //		int a = -7463;
-//		OutT.println(a);
-		OutT.println(true);
+//		System.out.println(a);
+		System.out.println(true);
 	}
 }

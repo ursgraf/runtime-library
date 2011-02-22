@@ -5,6 +5,7 @@ import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* CHANGES:
+ * 22.02.11 NTB/MZ	renamed to HLC1395Pulsed
  * 08.02.11 NTB/MZ  adapted to the new deep environment
  * 29.04.08	NTB/ED	simplification and efficiency improvement
  * 22.06.06	NTB/HS	whole driver in java, new init method
@@ -25,7 +26,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * <strong>IMPORTANT:</strong> Connect AGnd to Gnd!
  * 
  */
-public class HLC1395P16 extends Task {
+public class HLC1395Pulsed extends Task {
 
 	private static final int USIU = IMB + 0x2FC000;
 	private static final int UIMB = USIU + 0x4000;
@@ -41,7 +42,7 @@ public class HLC1395P16 extends Task {
 
 	public static final byte maxNofSensors = 16, maxAnalogInPortNr = 59;
 
-	private static final HLC1395P16 thisSngTask; // Singleton DistSense Task
+	private static final HLC1395Pulsed thisSngTask; // Singleton DistSense Task
 
 	private static int nofSensors; // Anzahl angeschlossener Sensoren
 	private static int trigPinPat; // Trigger-Pin-Bitmuster
@@ -53,7 +54,7 @@ public class HLC1395P16 extends Task {
 	private static final short[] adrPatTab = new short[maxNofSensors];
 	private static short[] resultVal = new short[16];
 
-	private HLC1395P16() {
+	private HLC1395Pulsed() {
 	}
 
 	/**
@@ -175,7 +176,7 @@ public class HLC1395P16 extends Task {
 	}
 
 	static {
-		thisSngTask = new HLC1395P16();
+		thisSngTask = new HLC1395Pulsed();
 	}
 
 	private static int getNofSensAndPinNumbers(int adr3PinNr, int adr2PinNr,

@@ -43,7 +43,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * <code>init()</code> aufgerufen werden.
  */
 
-public class CharLCD extends Task{
+public class HD44780U extends Task{
 	
 	public static boolean done;
 
@@ -52,7 +52,7 @@ public class CharLCD extends Task{
 	private static int adrCmd;
 	private static boolean lcdDone;
 	private static boolean lcdStatus;
-	private static CharLCD transferTask;
+	private static HD44780U transferTask;
 
 	/* Command - Buffer */
 	private static int lcdCmdBuffLen, lcdCmdBuffOut;
@@ -289,6 +289,6 @@ public class CharLCD extends Task{
 		US.PUT1(BASE, 0x02); 	/* return home */
 		do { } while (US.BIT(BASE, 7));
 		
-		transferTask = new CharLCD(); Task.install(transferTask);
+		transferTask = new HD44780U(); Task.install(transferTask);
 	}
 }

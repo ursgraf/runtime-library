@@ -7,14 +7,14 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.*;
 class MpiosmTest {
 	
 	static void pin14on () {
-		Mpiosm.out(14, true);
+		MPIOSM_DIO.out(14, true);
 	}
 
 	static void pin14off () {
-		Mpiosm.out(14, false);
+		MPIOSM_DIO.out(14, false);
 	}
 	
 	static {
-		Mpiosm.init(14, true);
+		MPIOSM_DIO.init(14, true);
 	}
 }

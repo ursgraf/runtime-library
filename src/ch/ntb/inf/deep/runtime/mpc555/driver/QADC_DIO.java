@@ -13,9 +13,9 @@ import ch.ntb.inf.deep.unsafe.US;
  * the ports.<br>
  * WARNING: Don't initialize the Ports PQB (PQB0 - PQB7 respectively AN0-AN3,AN48-AN51) as output, because
  * these are only input ports.
- * @see mpc555.Mpiosm
+ * @see MPIOSM_DIO.Mpiosm
  */
-public class DIO_ADC implements ntbMpc555HB{
+public class QADC_DIO implements ntbMpc555HB{
 
 	private static int getChannel(int channel){
 		if(channel>15) channel -= 44;

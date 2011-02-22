@@ -21,7 +21,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * MPIOB. Die Pins <i>0..4</i> sind infolge Doppelbelegung als <i>VF0</i>,
  * <i>VF1</i>, <i>VF2</i>, <i>VFLS0</i>, <i>VFLS1</i> beschriftet.
  */
-public class Mpiosm implements ntbMpc555HB {
+public class MPIOSM_DIO implements ntbMpc555HB {
 
 
 	/**

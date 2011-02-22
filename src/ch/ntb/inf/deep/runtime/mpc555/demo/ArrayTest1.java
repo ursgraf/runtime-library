@@ -1,7 +1,10 @@
 package ch.ntb.inf.deep.runtime.mpc555.demo;
-import ch.ntb.inf.deep.runtime.mpc555.driver.OutT;
+
+import java.io.PrintStream;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
 /*changes:
+ * 22.02.11 NTB/Züger	OutT replaced by System.out
  * 11.11.10	NTB/GRAU	creation
  */
 
@@ -13,18 +16,20 @@ public class ArrayTest1 {
 	static short[][] s1 = new short[2][3];
 	
 	static {
-		OutT.switchToSCI2();
-		OutT.println("array test");
-		OutT.println(a4[1]);
-		OutT.println(a23[1][2]);
-		OutT.println(a223[1][0][2]);
+		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
+		System.out = new PrintStream(SCI2.out);
+		
+		System.out.println("array test");
+		System.out.println(a4[1]);
+		System.out.println(a23[1][2]);
+		System.out.println(a223[1][0][2]);
 		i1[1][1] = 100;
-		OutT.println(i1[1][1]);
+		System.out.println(i1[1][1]);
 		short a = s1[0][0];
 		s1[0][0] = 0x11;
 		s1[0][1] = 0x12;
 		s1[1][2] = 0x23;
-		OutT.println(s1[0][1]);
-		OutT.println(s1[1][2]);
+		System.out.println(s1[0][1]);
+		System.out.println(s1[1][2]);
 	}
 }

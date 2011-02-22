@@ -16,7 +16,7 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
  * href="http://inf.ntb.ch/infoportal/help/topic/ch.ntb.infoportal/resources/embeddedSystems/mpc555/pdfs/MPC555RtBoxDoku.pdf"
  * target="_blank">PDF</a> erhältlich.
  */
-public class Box {
+public class RTBox {
 	
 	static final int FQDChannel=6;
 
@@ -37,7 +37,7 @@ public class Box {
 	 *            entspricht einem logischen Signal <code>1</code>.
 	 */
 	public static void dioOut(int channel, boolean level) {
-		DIO.out(true,channel+8,level);
+		TPU_DIO.out(true,channel+8,level);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class Box {
 	 *         eingelesen wird.
 	 */
 	public static boolean dioIn(int channel) {
-		return DIO.in(true,channel);
+		return TPU_DIO.in(true,channel);
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class Box {
 	 * @return Ausgelesener Zählerwert.
 	 */
 	public static int getEncCount() {
-		return FQD.getPosition(true,FQDChannel);
+		return TPU_FQD.getPosition(true,FQDChannel);
 	}
 
 	/**
@@ -107,17 +107,17 @@ public class Box {
 	 *            Wert, mit welchem der Encoder-Zählerwert gesetzt werden soll.
 	 */
 	public static void setEncCount(int pos) {
-		FQD.setPosition(true,FQDChannel,pos);
+		TPU_FQD.setPosition(true,FQDChannel,pos);
 	}
 	
 	static{
 		DAC7614.init();
 		for(int i=0; i<8; i++){
-			DIO.init(true,i,false);
-			DIO.init(true,i+8,true);
+			TPU_DIO.init(true,i,false);
+			TPU_DIO.init(true,i+8,true);
 		}
-		FQD.init(true,FQDChannel);
-		FQD.setPosition(true,FQDChannel,0);
+		TPU_FQD.init(true,FQDChannel);
+		TPU_FQD.setPosition(true,FQDChannel,0);
 		QADC.init(true);
 	}
 }

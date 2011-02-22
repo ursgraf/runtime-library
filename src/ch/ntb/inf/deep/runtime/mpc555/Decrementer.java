@@ -1,7 +1,5 @@
 package ch.ntb.inf.deep.runtime.mpc555;
-import ch.ntb.inf.deep.runtime.mpc555.demo.DecrementerTest;
-import ch.ntb.inf.deep.runtime.mpc555.driver.OutT;
-import ch.ntb.inf.deep.unsafe.*;
+import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation

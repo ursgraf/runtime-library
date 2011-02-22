@@ -41,7 +41,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * das Busy Flag im Statusregister, bis dieses die Beendigung des Auftrags durch<br>
  * das Display signalisiert. Danach geht der Task wieder in den Zustand "I".<br>
  */
-
+@Deprecated
 public class CharLCD2x16 extends Task {
 	public static boolean done;
 

@@ -84,7 +84,7 @@ public class RTBoard implements ntbMpc555HB {
 	 *            <code>true</code>.
 	 */
 	public static void dioInit(int channel, boolean out) {
-		DIO.init(true, channel, out);
+		TPU_DIO.init(true, channel, out);
 	}
 
 
@@ -100,7 +100,7 @@ public class RTBoard implements ntbMpc555HB {
 	 *         <code>channel</code> eingelesen wird.
 	 */
 	public static boolean dioIn(int channel) {
-		return DIO.in(true, channel);
+		return TPU_DIO.in(true, channel);
 	}
 
 
@@ -118,7 +118,7 @@ public class RTBoard implements ntbMpc555HB {
 	 *            entspricht einem logischen Signal <code>1</code>.
 	 */
 	public static void dioOut(int channel, boolean level) {
-		DIO.out(true, channel, level);
+		TPU_DIO.out(true, channel, level);
 	}
 
 
@@ -135,7 +135,7 @@ public class RTBoard implements ntbMpc555HB {
 	 *            dass die LED leuchtet.
 	 */
 	public static void ledOut(int channel, boolean level) {
-		DIO.out(false, 2 * channel + 1, !level);
+		TPU_DIO.out(false, 2 * channel + 1, !level);
 	}
 
 
@@ -155,8 +155,8 @@ public class RTBoard implements ntbMpc555HB {
 	 *            Kanal, auf dem der Encoder initialisiert werden soll
 	 */
 	public static void encInit(int channel) {
-		FQD.init(true, channel);
-		FQD.setPosition(true, channel, 0);
+		TPU_FQD.init(true, channel);
+		TPU_FQD.setPosition(true, channel, 0);
 	}
 
 
@@ -169,7 +169,7 @@ public class RTBoard implements ntbMpc555HB {
 	 * @return Ausgelesener Zaehlerwert.
 	 */
 	public static short getEncCount(int channel) {
-		return FQD.getPosition(true, channel);
+		return TPU_FQD.getPosition(true, channel);
 	}
 
 
@@ -185,7 +185,7 @@ public class RTBoard implements ntbMpc555HB {
 	 *            Wert, mit welchem der Encoder-Zaehlerwert gesetzt werden soll.
 	 */
 	public static void setEncCount(int channel, short pos) {
-		FQD.setPosition(true, channel, pos);
+		TPU_FQD.setPosition(true, channel, pos);
 	}
 
 
@@ -234,7 +234,7 @@ public class RTBoard implements ntbMpc555HB {
    	 initDAC();
 
    	 /* 2) Initialize digital I/Os */
-		for (int i = 0; i < 4; i++) DIO.init(false, i * 2 + 1, true);
+		for (int i = 0; i < 4; i++) TPU_DIO.init(false, i * 2 + 1, true);
 		
 		/* 3) Initialize ADC */
 		initADC();

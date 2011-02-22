@@ -19,7 +19,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * Auf dem Experimentierprint sind die TPU-Pins <i>2x 0..15</i> im Bereich
  * TPU-A und TPU-B zu finden.
  */
-public class DIO implements ntbMpc555HB {
+public class TPU_DIO implements ntbMpc555HB {
 	
 
 	/**

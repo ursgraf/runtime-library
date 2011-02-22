@@ -10,7 +10,7 @@ import ch.ntb.inf.deep.unsafe.US;
 * 
 * @author 09.12.2009 simon.pertschy@ntb.ch
 */
-public class DIO_Mios implements ntbMpc555HB {
+public class MPWMSM_DIO implements ntbMpc555HB {
 
 	/**
 	 * Initialize an MPWM pin as digital I/O.

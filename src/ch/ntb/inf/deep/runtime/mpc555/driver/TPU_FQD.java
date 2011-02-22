@@ -24,7 +24,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * Bei jedem Methodenaufruf kann die gewünschte TPU mittels dem Parameter
  * <code>tpuA</code> gewählt werden.
  */
-public class FQD implements ntbMpc555HB{
+public class TPU_FQD implements ntbMpc555HB{
 
 
 	/**

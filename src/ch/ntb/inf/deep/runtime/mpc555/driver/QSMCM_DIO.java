@@ -21,7 +21,7 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 
-public class DIO_PortQS {
+public class QSMCM_DIO {
 	
 	public static final int QDMISO = 0;
 	public static final int QDMOSI = 1;

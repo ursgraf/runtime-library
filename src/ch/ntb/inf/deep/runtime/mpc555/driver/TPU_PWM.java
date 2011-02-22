@@ -18,7 +18,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * Zeitangaben müssen in ganzzahligen Vielfachen der TPU-Zeitbasis gemacht
  * werden. Ein Zeitzyklus entspricht 0.8 ns.
  */
-public class PWM implements ntbMpc555HB{
+public class TPU_PWM implements ntbMpc555HB{
 
 
 	/** TPU-Zeitbasis: 806 ns */

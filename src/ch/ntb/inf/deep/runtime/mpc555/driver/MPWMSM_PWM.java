@@ -9,7 +9,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * The pins 6,7,8,9 has to be initialized with 16,17,18,19.
  *
  */
-public class Mios implements ntbMpc555HB {
+public class MPWMSM_PWM implements ntbMpc555HB {
 
 	static public final int TIME_BASE = 400;	// time base in ns
 
