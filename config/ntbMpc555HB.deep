@@ -3,7 +3,7 @@
 meta {
 	version = "2010-09-07";
 	description = "NTB MPC555 Headerboard";
-	import = "conifg/MPC555.deep";
+	import = "config/MPC555.deep";
 	
 }
 
