@@ -19,6 +19,7 @@ package java.io;
  * @author simon.pertschy@ntb.ch
  */
 public class PrintStream extends OutputStream{
+	private static final boolean enableCR = true;
 	
 	static final char [ ] chars = new char[32];
 	private OutputStream out;
@@ -55,7 +56,8 @@ public class PrintStream extends OutputStream{
 	 * Terminates the line.
 	 */
 	public void println(){
-		out.write((byte)'\r');
+		if(enableCR) out.write((byte)'\r');
+		out.write((byte)'\n');
 	}
 	
 	
@@ -74,7 +76,8 @@ public class PrintStream extends OutputStream{
 	 */
 	public void println(char c){
 		out.write((byte)c);
-		out.write((byte)'\r');
+		if(enableCR) out.write((byte)'\r');
+		out.write((byte)'\n');
 	}
 
 	
@@ -93,7 +96,8 @@ public class PrintStream extends OutputStream{
 	 */
 	public void println(char chars[]) {
 		print(chars, 0, chars.length);
-		out.write((byte)'\r');
+		if(enableCR) out.write((byte)'\r');
+		out.write((byte)'\n');
 	}
 	
 	
@@ -155,7 +159,8 @@ public class PrintStream extends OutputStream{
 		for (int i = 0; i < len; i++) {
 			out.write((byte) str.charAt(i));
 		}
-		out.write((byte)'\r');
+		if(enableCR) out.write((byte)'\r');
+		out.write((byte)'\n');
 		return len;
 	}
 	
@@ -180,7 +185,8 @@ public class PrintStream extends OutputStream{
 			print("true");
 		else
 			print("false");
-		out.write((byte)'\r');
+		if(enableCR) out.write((byte)'\r');
+		out.write((byte)'\n');
 	}
 	
 	
@@ -215,7 +221,8 @@ public class PrintStream extends OutputStream{
 	 */
 	public void println(int val) {
 		print(val);
-		out.write((byte)'\r');
+		if(enableCR) out.write((byte)'\r');
+		out.write((byte)'\n');
 	}
 	
 	
@@ -236,7 +243,8 @@ public class PrintStream extends OutputStream{
 	 */
 	public void println(float val){
 		print(val);
-		out.write((byte)'\r');
+		if(enableCR) out.write((byte)'\r');
+		out.write((byte)'\n');
 	}
 	
 	
@@ -257,7 +265,8 @@ public class PrintStream extends OutputStream{
 	 */
 	public void println(double val){
 		print(val);
-		out.write((byte)'\r');
+		if(enableCR) out.write((byte)'\r');
+		out.write((byte)'\n');
 	}
 	
 }
