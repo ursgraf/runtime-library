@@ -3,36 +3,39 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
-/*changes:
- * 15.2.2007 NTB/SP assigned to java
- * 09.02.06	NTB/HS	stub creation
+/* Changes:
+ * 01.03.2011	NTB/MZ	methods renamed: out -> set, in -> get
+ * 22.02.2011	NTB/MZ	renamed and adapted to the new deep environment
+ * 15.02.2007	NTB/SP	assigned to java
+ * 09.02.2006	NTB/HS	creation
  */
+
 /**
- * Digital-Ein-/Ausgabe über die Mpiosm-Schnittstelle.<br>
- * Diese Variante ist der Benutzung des DIO-Treiber vorzuziehen, da dadruch
- * keine TPU-A-Pins benutzt werden.<br>
- * Grundsätzlich können die folgenden Operationen auf alle 16 Mpiosm-Pins
- * angewandt werden. <br>
- * Wenn man jedoch den auf dem Print vorhandenen CAN-Controller verwendet,
- * dürfen die Pins 13, 14 und 15 nicht verwendet werden.<br>
- * Es muss jedoch beachtet werden, dass der <code>DistSense</code> Treiber
- * ebenfalls die MPIOB-Schnittstelle benutzt.<br>
- * Auf dem Experimentierprint befinden sich die Pins <i>5..15</i> im Bereich
- * MPIOB. Die Pins <i>0..4</i> sind infolge Doppelbelegung als <i>VF0</i>,
- * <i>VF1</i>, <i>VF2</i>, <i>VFLS0</i>, <i>VFLS1</i> beschriftet.
+ * Driver to use the MPIOSM (MIOS 16-bit parallel port I/O submodule)
+ * as digital in- and outputs. The MPIOSM provides 16 independent I/Os (0..15).
+ * <br><br>
+ * <strong>Additional informations for using this driver with the NTB MPC555
+ * header board:</strong><br>
+ * <ul>
+ * <li>Pin numbers 13 and 14 of the MPIOSM are used for the CAN-Controller on the
+ * header board and must not be used if the controller is assembled!</li>
+ * <li>MPIOSM pin 15 is connected to the led D1 on the header board and can only be
+ * used as an output!</li>
+ * </ul>
+ * For further informations please read the corresponding documentation on the <i>NTB
+ * Infoportal</i>.
  */
 public class MPIOSM_DIO implements ntbMpc555HB {
 
-
+	public static final boolean OUTPUT = true;
+	public static final boolean INPUT = false;
+	
 	/**
-	 * Initialisiert den verlangten Pin als Ein- oder Ausgang.<br>
-	 * Jeder Pin muss vor der ersten Verwendung initialisiert werden.
+	 * Initialize a pin as in- or output.<br>
+	 * You have to initialize a pin before you can use it!
 	 * 
-	 * @param channel
-	 *            Mpiosm-Pin <code>0..15</code>, welcher initialisiert wird.
-	 * @param out
-	 *            <code>true</code> definiert den Mpiosm-Pin als TTL-Ausgang.
-	 *            <code>false</code> definiert den Mpiosm-Pin als TTL-Eingang.
+	 * @param channel	MPIOSM pin to initialize. Allowed numbers are 0..15.
+	 * @param out		Pin usage: <strong>true</strong> configures the pin as output, <strong>false</strong> as input. 
 	 */
 	public static void init(int channel, boolean out) {
 		short s = US.GET2(MPIOSMDDR);
@@ -42,29 +45,22 @@ public class MPIOSM_DIO implements ntbMpc555HB {
 	}
 
 	/**
-	 * Erfasst den Zustand des TTL-Signals an diesem Pin.<br>
+	 * Returns the current state of the TTL signal at the given pin.
 	 * 
-	 * @param channel
-	 *            Mpiosm-Pin, dessen Wert erfasst werden soll.
-	 * @return Funktionswert des gewählten Mpiosm-Pin. <code>true</code>
-	 *         entspricht dabei dem Wert <i>logisch 1</i> während
-	 *         <code>false</code> dem Wert <i>logisch 0</i> entspricht.
+	 * @param channel	MPIOSM pin to capture. Allowed numbers are 0..15.
+	 * @return the current state of the TTL at the given pin. <i>true</i> means logic 1 and <i>false</i> logic 0.
 	 */
-	public static boolean in(int channel) {
+	public static boolean get(int channel) {
 		return (US.GET2(MPIOSMDR) & (1 << channel)) != 0;
 	}
 
 	/**
-	 * Ändert den Zustand eines initialisierten Pins.
+	 * Set the TTL signal at the given pin.
 	 * 
-	 * @param channel
-	 *            Mpiosm-Pin, dessen Wert verändert werden soll.
-	 * @param val
-	 *            Für <code>true</code> wird der Wert <i>logisch 1</i> auf
-	 *            den TTL-Ausgang gelegt. Für <code>false</code> wird der Wert
-	 *            <i>logisch 0</i> auf den TTL-Ausgang gelegt.
+	 * @param channel	MPIOSM pin to set. Allowed numbers are 0..15.
+	 * @param val		Value to set. <i>true</i> means logic 1 and <i>false</i> logic 0.
 	 */
-	public static void out(int channel, boolean val) {
+	public static void set(int channel, boolean val) {
 		short s = US.GET2(MPIOSMDR);
 		if(val) s |= (1 << channel);
 		else s &= ~(1 << channel);

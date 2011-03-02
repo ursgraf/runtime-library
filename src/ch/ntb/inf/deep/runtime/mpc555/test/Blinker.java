@@ -1,4 +1,4 @@
-package ch.ntb.inf.deep.runtime.mpc555.demo;
+package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import ch.ntb.inf.deep.runtime.mpc555.*;
 import ch.ntb.inf.deep.runtime.mpc555.driver.*;
@@ -20,7 +20,7 @@ public class Blinker extends Task{
 	}
 
 	public void action () {	// instance method, overwritten
-		MPIOSM_DIO.out(this.pin, !MPIOSM_DIO.in(this.pin));
+		MPIOSM_DIO.set(this.pin, !MPIOSM_DIO.get(this.pin));
 		if (this.nofActivations == this.times) Task.remove(this);
 	}
 	
@@ -28,7 +28,7 @@ public class Blinker extends Task{
 		this.pin = pin;
 		this.times = times;
 		MPIOSM_DIO.init(pin, true);
-		MPIOSM_DIO.out(pin, false);
+		MPIOSM_DIO.set(pin, false);
 		this.period = period;	
 		Task.install(this);
 		count++;

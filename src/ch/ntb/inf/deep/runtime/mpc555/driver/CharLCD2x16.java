@@ -4,11 +4,12 @@ import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
- * 29.5.2008 NTB/SP variable digits changed to global
- 5.3.2008 NTB/SP Mpiosm.init entfernt, WriteLn korrigiert
- 18.7.07 NTB/TB CP --> JAVA
-  4.4.07 NTB/sp	Anpassung mc68332 --> MPC555
- 24.3.05 ED	Emulationsanweisungen gelöscht
+ * 22.02.11	NTB/MZ	marked as deprecated
+ * 29.05.08	NTB/SP	variable digits changed to global
+ * 05.03.08 NTB/SP	Mpiosm.init entfernt, WriteLn korrigiert
+ * 18.07.07 NTB/TB	CP --> JAVA
+ * 04.04.07 NTB/SP	Anpassung mc68332 --> MPC555
+ * 24.03.05 NTB/ED	Emulationsanweisungen gelöscht
  */
 /**
  * Treiber für das alphanummerische Display-Steckmodul mit 2 Zeilen à 16

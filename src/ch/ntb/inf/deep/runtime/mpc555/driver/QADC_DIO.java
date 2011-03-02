@@ -4,16 +4,14 @@ import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
- * Driver to use the QADC_A and QADC_B module as digital I/O.<br>
+ * Driver to use the QADC-A or QADC-B as digital I/O.<br>
  * Please prefer the <code>Mpiosm</code> module for I/O applications, because
- * it's not possible to use the same QADC Module for ADC and I/0 applications at the same time. <br>
- * To access the module use the <code>channel</code> numbers 0-15. Whereby  Port numbers PQA0-PQA7 correspondents
- * with the <code>channel</code> numbers 8-15.
- * Alternatively it's also possible to use the ADC channel numbers AN0-AN3 and AN48-AN49 for accessing
- * the ports.<br>
- * WARNING: Don't initialize the Ports PQB (PQB0 - PQB7 respectively AN0-AN3,AN48-AN51) as output, because
- * these are only input ports.
- * @see MPIOSM_DIO.Mpiosm
+ * it's not possible to use the same QADC for ADC and I/0 applications at the same time! <br>
+ * To access the module use the <code>channel</code> numbers 0..15. Whereby port numbers
+ * PQA0..PQA7 correspondents with the <code>channel</code> numbers 8..15. Alternatively it's
+ * also possible to use the ADC channel numbers AN0-AN3 and AN48-AN49 for accessing the ports.<br>
+ * <strong>IMPORTANT</strong>: Don't initialize the Ports PQB (PQB0..PQB7 respectively
+ * AN0..AN3 and AN48..AN51) as output, because these are input ports only!
  */
 public class QADC_DIO implements ntbMpc555HB{
 

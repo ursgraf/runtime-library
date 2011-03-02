@@ -3,12 +3,14 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
+/* CHANGES:
+ * 14.04.2009	NTB/SP	creation
+ */
+
 /**
  * Driver for the Maxim512 Digital to Analog Converter.<br>
  * PCS0 is used.
  * 
- * @author NTB 14.04.2009<br>
- *         Simon Pertschy<br>
  */
 public class MAX512 implements ntbMpc555HB {
 	

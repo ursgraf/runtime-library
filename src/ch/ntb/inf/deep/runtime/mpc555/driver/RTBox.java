@@ -12,9 +12,7 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
  * herausgeführt.<br>
  * Ebenso gibt es zwei Anschlüsse für serielle Schnittestellen (RS232) sowie
  * eine parallele Schnittstelle für das Debugging (BDM).<br>
- * Weitere Informationen sind in diesem <a
- * href="http://inf.ntb.ch/infoportal/help/topic/ch.ntb.infoportal/resources/embeddedSystems/mpc555/pdfs/MPC555RtBoxDoku.pdf"
- * target="_blank">PDF</a> erhältlich.
+ * Weitere Informationen sind auf dem Infoportal erhältlich.
  */
 public class RTBox {
 	
@@ -83,7 +81,7 @@ public class RTBox {
 	 * @return Analoges Signal, welches eingelesen wurde.
 	 */
 	public static int analogIn(int channel) {
-		return QADC.read(true,channel+8)-512;
+		return QADC_AIN.read(true,channel+8)-512;
 	}
 
 	/**
@@ -118,6 +116,6 @@ public class RTBox {
 		}
 		TPU_FQD.init(true,FQDChannel);
 		TPU_FQD.setPosition(true,FQDChannel,0);
-		QADC.init(true);
+		QADC_AIN.init(true);
 	}
 }

@@ -1,12 +1,13 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+/* Changes:
+ * 14.09.2009	NTB/SP	creation
+ */
 
 /**
  * Driver for the DS1302Z real time clock.<br>
  * Pin 13, 14 and 15 of the TPUB are used.<br>
  * Before the first write disable the write protection with {@link #setWriteProtection(boolean)}.
- * 
- * @author 14.09.2009 simon.pertschy@ntb.ch
  *
  */
 public class DS1302Z {

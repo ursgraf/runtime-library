@@ -1,17 +1,21 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.util.ByteLiFo;
 
 /*
- * 
  * Changes: 
- * 27.5.2008 NTB/SP: task creation moved to static construct
- * 31.3.2008 NTB/SP: RESET detection added
- * 7.2.2008 NTB/SP: currentRsp failure corrected
+ * 24.02.2011 NTB/MZ:	adapted to the new deep environment
+ * 27.05.2008 NTB/SP:	task creation moved to static construct
+ * 31.03.2008 NTB/SP:	RESET detection added
+ * 07.02.2008 NTB/SP:	currentRsp failure corrected
  */
+
 /**
- * Driver for the Stollmann BlueRS+I Bluetooth Module.<br>
+ * Driver for the <i>Stollmann BlueRS+I</i> Bluetooth Module.<br>
  * 
  * The module supports one emulated serial connection using the Bluetooth Serial
  * Port Profile (SPP). <br>
@@ -51,11 +55,9 @@ import ch.ntb.inf.deep.runtime.util.ByteLiFo;
  */
 public class BlueRS extends Task {
 
-	/**
-	 * Baud rate to connect to the Bluetooth device.
-	 */
-	public static final int BAUD_RATE = 9600;
-
+	public static OutputStream out;
+	public static InputStream in;
+	
 	/**
 	 * The receiver task period.
 	 */
@@ -169,7 +171,7 @@ public class BlueRS extends Task {
 
 	private static boolean connectionInitiated;
 
-	private static boolean debugging = false;
+	private static final boolean dbg = false;
 
 	private static int mode, switchMode;
 
@@ -184,7 +186,6 @@ public class BlueRS extends Task {
 		tmpRsp = new byte[MAX_TMP_RSP_LEN];
 
 		init();
-		SCI2.start(BAUD_RATE, (short) 0, (short) 8);
 	}
 
 	private static boolean compare(byte[] rsp, byte[] rspString, int start,
@@ -224,8 +225,8 @@ public class BlueRS extends Task {
 	 *            the command to send
 	 */
 	public static void sendCommand(byte[] cmd) {
-		SCI2.write(cmd);
-		SCI2.write(CRLF);
+		out.write(cmd);
+		out.write(CRLF);
 		setWaitForResult();
 	}
 
@@ -297,9 +298,9 @@ public class BlueRS extends Task {
 	 */
 	public static void connect(String connectTo) {
 		if (mode == MODE_AT) {
-			SCI2.write(CMD_CONNECT);
-			SCI2.write(connectTo.getBytes());
-			SCI2.write(CRLF);
+			out.write(CMD_CONNECT);
+			out.write(connectTo.getBytes());
+			out.write(CRLF);
 			setWaitForResult();
 		} else {
 			//OutT.print("connect(): wrong mode: ");
@@ -319,9 +320,9 @@ public class BlueRS extends Task {
 	 */
 	public static void connect(byte[] connectTo) {
 		if (mode == MODE_AT) {
-			SCI2.write(CMD_CONNECT);
-			SCI2.write(connectTo);
-			SCI2.write(CRLF);
+			out.write(CMD_CONNECT);
+			out.write(connectTo);
+			out.write(CRLF);
 			setWaitForResult();
 		} else {
 			//OutT.print("connect(): wrong mode: ");
@@ -359,7 +360,7 @@ public class BlueRS extends Task {
 	 */
 	public static void switchToConnectedATMode() {
 		if (mode == MODE_CONNECTED) {
-			SCI2.write(CMD_ESCAPE_SEQUENCE);
+			out.write(CMD_ESCAPE_SEQUENCE);
 			switchMode = MODE_CONNECTED_AT;
 			setWaitForResult();
 		} else {
@@ -377,7 +378,7 @@ public class BlueRS extends Task {
 	 */
 	public static void switchToConfigMode() {
 		if (mode == MODE_AT) {
-			SCI2.write(CMD_ENTER_CONFIG);
+			out.write(CMD_ENTER_CONFIG);
 			switchMode = MODE_CONFIG;
 			setWaitForResult();
 		} else {
@@ -410,7 +411,7 @@ public class BlueRS extends Task {
 	 */
 	public static void returnFromConfigMode() {
 		if (mode == MODE_CONFIG) {
-			SCI2.write(CMD_EXIT_CONFIG);
+			out.write(CMD_EXIT_CONFIG);
 			lastResult = RESULT_OK;
 			mode = MODE_AT;
 		} else {
@@ -447,7 +448,7 @@ public class BlueRS extends Task {
 	public static int availableToSend() {
 		if (mode != MODE_CONNECTED)
 			return -1;
-		return SCI2.availToWrite();
+		return out.freeSpace();
 	}
 
 	/**
@@ -480,7 +481,7 @@ public class BlueRS extends Task {
 	 */
 	public static boolean write(byte[] b, int len) {
 		if (mode == MODE_CONNECTED) {
-			SCI2.write(b, 0, len);
+			out.write(b, 0, len);
 			return true;
 		}
 		return false;
@@ -567,11 +568,11 @@ public class BlueRS extends Task {
 	 */
 	// @Override
 	public void Do() {
-		if (SCI2.availToRead() > 0) {
-			int lenRead = SCI2.read(tmpRsp);
-			if (debugging) {
-				SCI1.write((byte) '*');
-				SCI1.write(tmpRsp, 0, lenRead);
+		if (in.available() > 0) {
+			int lenRead = in.read(tmpRsp);
+			if (dbg) {
+				System.out.print('*');
+				System.out.write(tmpRsp, 0, lenRead);
 			}
 			int tmpIndex;
 			for (tmpIndex = 0; tmpIndex < lenRead; tmpIndex++) {
@@ -710,26 +711,6 @@ public class BlueRS extends Task {
 //			OutT.println(mode);
 			lastResult = RESULT_ERROR;
 		}
-	}
-
-	/**
-	 * Enables or disables debugging output to the Log (SCI1, OutT).<br>
-	 * 
-	 * Debugging messages are disabled by default. All data which is sent from
-	 * the bluetooth module will be written to the Target Log if enabled. All
-	 * debug output will start with a '*' character.
-	 */
-	public static void setDebugging(boolean enable) {
-		debugging = enable;
-	}
-
-	/**
-	 * Returns true if debugging is enabled.<br>
-	 * 
-	 * @return true if debugging is enabled.
-	 */
-	public static boolean isDebuggingEnabled() {
-		return debugging;
 	}
 
 	private static void init() {

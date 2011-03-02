@@ -1,21 +1,20 @@
-
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
+/* Changes:
+ * 15.05.07	NTB/SP	porting from component pascal to java
+ *         	NTB/UG	creation
+ */
 
 /**
- * @author NTB/UG
  * Driver for the digital analog converter DAC7614.
- * With this driver it is possible to drive to DAC7614.
- * PCS0 and PCS1 is used
+ * PCS0 and PCS1 are used.
  */
-/*	changes:
-	15.05.07 NTB/SP	porting from component pascal to java
-*/
-public class DAC7614 implements ntbMpc555HB{
+public class DAC7614 implements ntbMpc555HB {
+
 	/**
-	 * Initalise the QSPI Port and set the output values of the DAC's to zero.
+	 * Initialize the QSPI Port and set the output values of the DAC's to zero.
 	 */
 	public static void init(){
 		US.PUT2(SPCR1, 0x0); 	//disable QSPI 
@@ -41,5 +40,4 @@ public class DAC7614 implements ntbMpc555HB{
 	public static void write(int ch, int val){
 		US.PUT2(TRANRAM + 2 * ch, (ch % 4) * 0x4000 + val);
 	}
-
 }

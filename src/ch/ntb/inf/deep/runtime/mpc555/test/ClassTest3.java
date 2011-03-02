@@ -1,4 +1,4 @@
-package ch.ntb.inf.deep.runtime.mpc555.demo;
+package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 

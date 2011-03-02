@@ -4,35 +4,22 @@ import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
- * Treiber für den Analog-Digital Konverter.<br>
- * Der Treiber muss über die Methode <code>init(..)</code> gestartet werden.
- * Mittels dieser Methode kann bestimmt werden, ob die QADC-A oder QADC-B
- * benutzt werden soll.<br>
- * Es werden alle 16 analogen Eingänge innerhalb von 1 ms ausgewertet und können
- * einzeln über die Methode <code>read(..)</code> ausgelesen werden.<br>
- * Der Wertebereich der Eingänge beträgt: <code>0..3</code> und
- * <code>48..59</code>
+ * Driver for the QADC Module. The module has two queued analog/digital converters
+ * with 16 channels each: QADC-A and QADC-B. The ADC has to be initialized before used.
+ * All 16 channels of an ADC were converted every 1 ms and could be read with the method
+ * <code>read(...)</code>. Allowed channel numbers are 0..3 and 48..59.
  */
-public class QADC implements ntbMpc555HB {
-
+public class QADC_AIN implements ntbMpc555HB {
 
 	private static final int ADDR_OFFSET = 32;
-
 	private static final int CCW_INIT = 0x00C0;
 	private static final int END_OF_QUEUE = 0x003F;
-
+	
 	/**
-	 * Gibt den Wert zurück, welcher über den Analog-Digital Konverter
-	 * eingelesen wurde.
-	 * 
-	 * @param qadcA
-	 *            <code>true</code>: benutzen des QADC-A. <code>false</code>:
-	 *            benutzen des QADC-B.
-	 * @param channel
-	 *            Kanal, dessen Wert eingelessen werden soll. Mögliche Werte
-	 *            sind <code>0..3</code> und <code>48..59</code>.
-	 * @return Konvertierter Wert des Analog-Digtal Konverters für den Kanal
-	 *         <code>channel</code>.
+	 * Returns the converted value of the given ADC channel.
+	 * @param qadcA		<i>true</i> means ADC-A and <i>false</i> means ADC-B.
+	 * @param channel	Channel to read. Allowed channel numbers are 0..3 and 48..59.
+	 * @return			the converted value of the given channel.
 	 */
 	public static short read(boolean qadcA, int channel) {
 		int channelOffset = getAddrForChn(channel);
@@ -44,12 +31,11 @@ public class QADC implements ntbMpc555HB {
 	}
 	
 	/**
-	 * Gibt die Adresse für den entsprechenden Kanal zurück.<br>
-	 * Der zurückgegebene Wert entspricht der korrekten Adresse (Multiplikation mit 2)
+	 * Returns the address of the given channel. The returned value is 
+	 * the correct address (channel number multiplied by two).
 	 * 
-	 * @param channel
-	 *            Kanal, dessen Adresse berechnet werden soll.
-	 * @return Adresse des übergebenen Kanals.
+	 * @param channel	channel of which the address will be calculated.
+	 * @return			address of the given channel.
 	 */
 	private static int getAddrForChn(int channel) {
 		if (channel >= 48) {
@@ -57,15 +43,11 @@ public class QADC implements ntbMpc555HB {
 		}
 		return channel * 2;
 	}
-
+	
 	/**
-	 * Initialisert den Analog-Digital Konverter.<br>
-	 * Mittels dem Parameter <code>qadcA</code> kann bestimmt werden, welcher
-	 * Konverter benutzt werden soll.
+	 * Initialize the analog/digital converter.
 	 * 
-	 * @param qadcA
-	 *            <code>true</code>: benutzen des QADC-A. <code>false</code>:
-	 *            benutzen des QADC-B.
+	 * @param qadcA	<i>true</i> means ADC-A and <i>false</i> means ADC-B.
 	 */
 	public static void init(boolean qadcA) {
 		if (qadcA) {

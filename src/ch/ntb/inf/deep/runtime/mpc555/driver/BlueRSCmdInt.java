@@ -3,9 +3,14 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.util.IntFifo;
 
+/*
+ * Changes:
+ * 13.12.2008	NTB/SP	creation
+ */
+
 /**
- * @author 13.12.2008 NTB/SP Interface for the BlueRS driver to send and receive positive
- *         integer values.
+ * Interface for the BlueRS driver to send and receive positive
+ * integer values.
  */
 public class BlueRSCmdInt extends Task {
 

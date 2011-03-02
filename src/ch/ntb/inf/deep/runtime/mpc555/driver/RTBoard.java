@@ -11,8 +11,8 @@ import ch.ntb.inf.deep.unsafe.US;
  * 
  * @author Graf Urs
  * 
- * <strong>Ã„nderungen</strong>
- * 18.02.2010 M. ZÃ¼ger: Treiber fÃ¼r DAC und ADC angepasst und direkt integriert
+ * <strong>Änderungen</strong>
+ * 18.02.2010 M. Züger: Treiber für DAC und ADC angepasst und direkt integriert
  */
 public class RTBoard implements ntbMpc555HB {
   

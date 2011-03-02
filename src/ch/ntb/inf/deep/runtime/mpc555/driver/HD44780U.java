@@ -3,11 +3,14 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.unsafe.US;
 
-/*changes:
- * 29.5.2008 NTB/SP variable digits changed to global
- * 05.03.08	NTB/SP	assigned to Java
- 24.3.05,ED	Emulationsanweisungen gelöscht
+// TODO Treiber überarbeiten und CharLCD2x16 hier integrieren
+
+/* Changes:
+ * 29.05.2008	NTB/SP	variable digits changed to global
+ * 05.03.2008	NTB/SP	assigned to Java
+ * 24.03.2005	NTB/ED	Emulationsanweisungen gelöscht
  */
+
 /**
  * Treiber für das alphanummerische Display-Steckmodul mit 4 Zeilen à 16
  * Zeichen.<br>

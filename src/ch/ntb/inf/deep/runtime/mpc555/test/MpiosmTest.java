@@ -1,4 +1,4 @@
-package ch.ntb.inf.deep.runtime.mpc555.demo;
+package ch.ntb.inf.deep.runtime.mpc555.test;
 import ch.ntb.inf.deep.runtime.mpc555.driver.*;
 
 /* changes:
@@ -7,11 +7,11 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.*;
 class MpiosmTest {
 	
 	static void pin14on () {
-		MPIOSM_DIO.out(14, true);
+		MPIOSM_DIO.set(14, true);
 	}
 
 	static void pin14off () {
-		MPIOSM_DIO.out(14, false);
+		MPIOSM_DIO.set(14, false);
 	}
 	
 	static {
