@@ -1,7 +1,6 @@
 package java.lang;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 
 public class System {

@@ -1,7 +1,7 @@
 package java.lang;
 
-import ch.ntb.inf.deep.runtime.mpc555.driver.OutT;
 import ch.ntb.inf.deep.unsafe.US;
+
 /* changes:
  * 18.2.11	NTB/Urs Graf	longs added
  */
@@ -141,19 +141,19 @@ public class Double {
 		else if (e > 308)
 			return Double.NaN;
 		e += 307; 
-		OutT.print('1'); 
+//		OutT.print('1'); 
 		r = ten[e / 23];
-		OutT.print('2'); 
+//		OutT.print('2'); 
 		r = ten[e / 23] * tene[e % 23];
-		OutT.print('3'); 
+//		OutT.print('3'); 
 		r = ten[e / 23] * tene[e % 23];
-		OutT.print('4'); 
+//		OutT.print('4'); 
 		r = ten[e / 23] * tene[e % 23];
-		OutT.print('5'); 
+//		OutT.print('5'); 
 
 		int zh = Double.highPartToIntBits(r); 
 		int zl = Double.lowPartToIntBits(r); 
-		OutT.print('R'); OutT.print(zh); OutT.print('\t'); OutT.println(zl);
+//		OutT.print('R'); OutT.print(zh); OutT.print('\t'); OutT.println(zl);
 
 			//		if (((1 << e) & eq[e >>> 5]) != 0) return r;
 //		int E = Double.getExponent(r);
@@ -274,7 +274,7 @@ public class Double {
 		nofChars = 0;
 		if (chars == null) return 0;
 		int high = highPartToIntBits(val);
-		OutT.print('a'); OutT.println(high);
+//		OutT.print('a'); OutT.println(high);
 
 //		if ((high & highINF) == highINF) {
 //			if ((high & highNaN) == highNaN) { // NaN
@@ -300,7 +300,7 @@ public class Double {
 			putChar('-');
 			val = -val;
 		}
-		OutT.print('e'); OutT.println(exp);
+//		OutT.print('e'); OutT.println(exp);
 		int low;
 		if (exp == 0) { // no denormals
 			high = 0;
@@ -315,7 +315,7 @@ public class Double {
 				exp = exp / 1000000 - 1;
 			else
 				exp = exp / 1000000; // modulo division
-			OutT.print('E'); OutT.println(exp);
+//			OutT.print('E'); OutT.println(exp);
 			double z = powOf10(exp + 1);
 			if (val >= z) {
 				val = val / z;
