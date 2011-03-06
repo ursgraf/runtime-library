@@ -53,7 +53,7 @@ public class US {
 	}
 
 	/** get content of floating point register */
-	public static long GETFPR(int reg) {
+	public static double GETFPR(int reg) {
 		return 0;
 	}
 
@@ -67,7 +67,7 @@ public class US {
 	}
 
 	/** write to floating point register */
-	public static void PUTFPR(int reg, int value) {
+	public static void PUTFPR(int reg, double value) {
 	}
 
 	/** write to special purpose register */

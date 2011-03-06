@@ -1,14 +1,12 @@
 package java.lang;
 
-import ch.ntb.inf.deep.unsafe.US;
+import ch.ntb.inf.deep.lowLevel.LL;
 
 /* changes:
- * 18.2.11	NTB/Urs Graf	longs added
+ * 18.2.11	NTB/Urs Graf	ported to deep
  */
 
 public class Double {
-	private static final boolean _$compileForTarget = true; // compile for Target | Host
-	private static final boolean _$bigEndian = true; // big-endian | little-endian
 
 	/**
 	 * A constant holding the positive infinity of type <code>double</code>.
@@ -62,7 +60,6 @@ public class Double {
 	public static final int SIZE = 64;
 
 	private static final int expOffset = 0x3ff;
-	private static double twoPow52 = 1L << 52; // 2^52
 	public static final double INF_EXPONENT = expOffset + 1;
 
 	private static final byte dMaxNofFractionDigits = 15;
@@ -136,62 +133,26 @@ public class Double {
 	 */
 	public static double powOf10(int e) {
 		double r;
-		if (e < -307)
-			return 0;
-		else if (e > 308)
-			return Double.NaN;
+		if (e < -307) return 0;
+		else if (e > 308) return Double.NaN;
 		e += 307; 
-//		OutT.print('1'); 
-		r = ten[e / 23];
-//		OutT.print('2'); 
 		r = ten[e / 23] * tene[e % 23];
-//		OutT.print('3'); 
-		r = ten[e / 23] * tene[e % 23];
-//		OutT.print('4'); 
-		r = ten[e / 23] * tene[e % 23];
-//		OutT.print('5'); 
-
-		int zh = Double.highPartToIntBits(r); 
-		int zl = Double.lowPartToIntBits(r); 
-//		OutT.print('R'); OutT.print(zh); OutT.print('\t'); OutT.println(zl);
-
-			//		if (((1 << e) & eq[e >>> 5]) != 0) return r;
-//		int E = Double.getExponent(r);
-//		r = Double.setExponent(r, 52);
-//		if (((1 << e) & gr[e >>> 5]) != 0) {
-//			r = r - 1;
-//		} else {
-//			r = r + 1; 
-//		}
-//		r = Double.setExponent(r, E);
-//		return r;
-		return 2.5;
-	}
-
-	/*
-	 * public static native long doubleToLongBits(double value); public static
-	 * native double longBitsToDouble(long bits);
-	 */
-
-	public static double intBitsToDouble(int highBits, int lowBits) {
-		double value = 0;
-		if (_$bigEndian) {
-//			US.PUT4(US.ADR(value), highBits);
-//			US.PUT4(US.ADR(value) + 4, lowBits);
-		} else { // little-endian
-//			US.PUT4(US.ADR(value) + 4, highBits);
-//			US.PUT4(US.ADR(value), lowBits);
-		}
-		return value;
+		if (((1 << e) & eq[e >>> 5]) != 0) return r;
+		int E = Double.getExponent(r);
+		r = Double.setExponent(r, 52);
+		if (((1 << e) & gr[e >>> 5]) != 0) r = r - 1;
+		else r = r + 1; 
+		r = Double.setExponent(r, E);
+		return r;
 	}
 
     public static int highPartToIntBits(double arg) {
-		long doubleBits = US.GETFPR(1);	
+		long doubleBits = LL.doubleToBits(arg);	
 		return (int)(doubleBits >> 32);
 	}
 
     public static int lowPartToIntBits(double arg) {
-		long doubleBits = US.GETFPR(1);
+		long doubleBits = LL.doubleToBits(arg);
 		return (int)(doubleBits);
 	}
 
@@ -199,45 +160,20 @@ public class Double {
 	 * Bestimmt den Exponenten (zur Basis 2) des Argumentes.
 	 */
 	public static int getExponent(double arg) {
-		long doubleBits = US.GETFPR(1);
-		short expBits = (short)doubleBits;
-		return ((expBits >> 4) & 0x7ff) - expOffset;
+		int highBits = highPartToIntBits(arg);
+		return ((highBits >> 20) & 0x7ff) - expOffset;
 	}
 
 	/**
 	 * Setzt den Exponenten (zur Basis 2) des Argumentes neu und gibt den neuen
 	 * Wert zurück.
 	 */
-	public static double setExponent(double arg, int newExp) {
-		double x = arg;
+	public static double setExponent(double d, int newExp) {
+		long bits = LL.doubleToBits(d);
 		newExp += expOffset;
-		int addr = 0;
-//		if (_$bigEndian)
-//			addr = US.ADR(x);
-//		else
-//			addr = US.ADR(x) + 6;
-//		US.PUT2(addr, (US.GET2(addr) & 0x800F) | (newExp << 4));
-		return x;
-	}
-
-	/**
-	 * Bestimmt die Mantisse des Argumentes: 1.0 <= mantissa(x) < 2.0
-	 * 
-	 * @param arg
-	 * @return die Mantisse des Argumentes
-	 */
-	public static  double  getMantissa(double arg) { // clear sign
-		double x = arg;
-		int  addr = 0;
-//		if (_$bigEndian)	addr = US.ADR(x);	else	addr = US.ADR(x) + 6;
-		int	highBits = US.GET2(addr);
-		if ( (highBits & 0x7FF0)  == 0)	{ // denormalised or +-0
-			x = 0;	highBits = 0;	// x *= twoPow52;	highBits = SYS.GET2(addr) & 0xFFFF; 	causes probles!
-		}else {
-			highBits = (highBits & 0x000F)  |  (expOffset << 4);	// 
-			US.PUT2(addr, highBits);
-		}
-		return x;
+		bits &= 0x800fffffffffffffL;
+		bits |= (long)(newExp) << 52;
+		return LL.bitsToDouble(bits);
 	}
 
 	private static void putChar(char ch) {
@@ -245,77 +181,40 @@ public class Double {
 		nofChars++;
 	}
 
-	public static int doubleToRawBytes (double arg, char[] chars) {
-		double val = arg;
-//		int	adr = US.ADR(val);
-		int adr = 0;
-		int	nofBytes = 8;
-		do {
-			nofBytes--;
-			chars[nofBytes] = (char) (US.GET1(adr + nofBytes) & 0xFF);
-		} while (nofBytes > 0);
-		return 8;
-	}
-	
-	public static int floatToRawBytes (float arg, char []  chars) {
-		float val = arg;
-//		float fvalue = (float)val;
-//		int	adr = US.ADR(val);
-		int adr = 0;
-		chars[0] = (char)(US.GET1(adr) & 0xFF);
-		chars[1] = (char)(US.GET1(adr + 1) & 0xFF);
-		chars[2] = (char)(US.GET1(adr + 2) & 0xFF);
-		chars[3] = (char)(US.GET1(adr + 3) & 0xFF);
-		return 4;
-	}
-
 	public static int doubleToChars(double val, int nofFractDigits, char[] chars) {
 		gchars = chars;
 		nofChars = 0;
 		if (chars == null) return 0;
 		int high = highPartToIntBits(val);
-//		OutT.print('a'); OutT.println(high);
 
-//		if ((high & highINF) == highINF) {
-//			if ((high & highNaN) == highNaN) { // NaN
-//				putChar('N');
-//				putChar('a');
-//				putChar('N');
-//			} else { // INF
-//				if (high >= 0)
-//					putChar('+');
-//				else
-//					putChar('-');
-//				putChar('I');
-//				putChar('N');
-//				putChar('F');
-//			}
-//			putChar('\0');
-//			gchars = null;
-//			return nofChars;
-//		}
+		if ((high & highINF) == highINF) {
+			if ((high & highNaN) == highNaN) { // NaN
+				putChar('N'); putChar('a');	putChar('N');
+			} else { // INF
+				if (high >= 0) putChar('+');
+				else putChar('-');
+				putChar('I'); putChar('N');	putChar('F');
+			}
+			putChar('\0');
+			gchars = null;
+			return nofChars;
+		}
 
 		int exp = (high & highINF) >> 20;
 		if (exp != 0 && high < 0) {
 			putChar('-');
 			val = -val;
 		}
-//		OutT.print('e'); OutT.println(exp);
 		int low;
 		if (exp == 0) { // no denormals
 			high = 0;
 			low = 0;
-		} else { // x > 2^-1023 ( x >
-			if (nofFractDigits < 1)
-				nofFractDigits = 1;
-			else if (nofFractDigits > 15)
-				nofFractDigits = 15;
+		} else { 
+			if (nofFractDigits < 1) nofFractDigits = 1;
+			else if (nofFractDigits > 15) nofFractDigits = 15;
 			exp = (exp - expOffset) * 301029;
-			if (exp % 1000000 < 0)
-				exp = exp / 1000000 - 1;
-			else
-				exp = exp / 1000000; // modulo division
-//			OutT.print('E'); OutT.println(exp);
+			if (exp % 1000000 < 0) exp = exp / 1000000 - 1;
+			else exp = exp / 1000000; 
 			double z = powOf10(exp + 1);
 			if (val >= z) {
 				val = val / z;
@@ -323,57 +222,47 @@ public class Double {
 			} else {
 				val = val * powOf10(-exp);
 			}
-//
-//			if (val >= 10) {
-//				val = val * 0.1 + 0.5 / powOf10(nofFractDigits);
-//				exp++;
-//			} else {
-//				val = val + 0.5 / powOf10(nofFractDigits);
-//				if (val >= 10) {
-//					val = val * 0.1;
-//					exp++;
-//				}
-//			}
-//
-//			val = val * 1E7;
-//			high = (int) val;
-//			low = (int) ((val - high) * 1E8);
+			if (val >= 10) {
+				val = val * 0.1 + 0.5 / powOf10(nofFractDigits);
+				exp++;
+			} else {
+				val = val + 0.5 / powOf10(nofFractDigits);
+				if (val >= 10) {
+					val = val * 0.1;
+					exp++;
+				}
+			}
+			val = val * 1E7;
+			high = (int) val;
+			low = (int) ((val - high) * 1E8);
 		}
-//
-//		int dig = 15;
-//		while (dig > 7) {
-//			digits[dig] = (char) (low % 10 + '0');
-//			low = low / 10;
-//			dig--;
-//		}
-//		while (dig >= 0) {
-//			digits[dig] = (char) (high % 10 + '0');
-//			high = high / 10;
-//			dig--;
-//		}
-//		putChar(digits[0]);
-//		putChar('.');
-//		dig = 1;
-//		while (dig <= nofFractDigits) {
-//			putChar(digits[dig]);
-//			dig++;
-//		}
-//		putChar('E');
-//		if (exp >= 0)
-//			putChar('+');
-//		else {
-//			putChar('-');
-//			exp = -exp;
-//		}
-//		/*
-//		 * OutT.print('E'); OutT.println(exp);
-//		 */
-//		putChar((char) (exp / 100 % 10 + '0'));
-//		putChar((char) (exp / 10 % 10 + '0'));
-//		putChar((char) (exp % 10 + '0'));
-//
-//		putChar('\0');
-//		gchars = null;
+
+		int dig = 15;
+		while (dig > 7) {
+			digits[dig] = (char) (low % 10 + '0');
+			low = low / 10;
+			dig--;
+		}
+		while (dig >= 0) {
+			digits[dig] = (char) (high % 10 + '0');
+			high = high / 10;
+			dig--;
+		}
+		putChar(digits[0]);
+		putChar('.');
+		dig = 1;
+		while (dig <= nofFractDigits) {
+			putChar(digits[dig]);
+			dig++;
+		}
+		putChar('E');
+		if (exp >= 0) putChar('+');
+		else {putChar('-'); exp = -exp;}
+		putChar((char) (exp / 100 % 10 + '0'));
+		putChar((char) (exp / 10 % 10 + '0'));
+		putChar((char) (exp % 10 + '0'));
+		putChar('\0');
+		gchars = null;
 		return nofChars;
 	}
 }

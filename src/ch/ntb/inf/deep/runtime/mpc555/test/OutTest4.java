@@ -18,6 +18,7 @@ public class OutTest4 {
 		System.out.println("hello world");
 		System.out.println(123);
 		System.out.println(-56);
+		System.out.println(3452395879283579L);
 //		int a = -7463;
 //		System.out.println(a);
 		System.out.println(true);

@@ -97,7 +97,7 @@ operatingsystem {
                     attributes = unsafe, synthetic;
                     id = 0x008;
                 }
-                method GETBIT {
+                method BIT {
                     attributes = unsafe, synthetic;
                     id = 0x009;
                 }
@@ -159,6 +159,14 @@ operatingsystem {
                 method nextPowOf2 {
                     attributes = synthetic;
                     id = 0x105;
+                }
+                method doubleToBits {
+                    attributes = synthetic;
+                    id = 0x106;
+                }    
+                method bitsToDouble {
+                    attributes = synthetic;
+                    id = 0x107;
                 }
         }
 }

@@ -11,11 +11,8 @@ public class FloatTest1 {
 	static float f3 = 4.2f * f2;
 	
 	static {
-		float a = 1.0f;
-//		f1 = a;
-//		a = f3;
-		long l1 = US.GETFPR(1);
-//		double b = 1.0;
+		int i1 = 5;
+		double d1 = i1;
 		US.ASM("b 0");
 	}
 }

@@ -79,10 +79,12 @@ public class String extends BString{
 	 * Copy characters from this string into dst starting at dstBegin. This
 	 * method doesn't perform any range checking.
 	 */
-	void getChars(char dst[], int dstBegin) {
-//		System.chararraycopy(value, offset, dst, dstBegin, count);
+	public void getChars(char dst[], int dstBegin) {
+		for (int i = 0; i < this.count; i++) {
+			dst[dstBegin + i] = this.value[i + i];
+		}
 	}
-	
+	 
 	/**
 	 * Returns the <code>char</code> value at the specified index. An index
 	 * ranges from <code>0</code> to <code>length() - 1</code>. The first

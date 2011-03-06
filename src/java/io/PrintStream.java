@@ -9,9 +9,6 @@
 
 package java.io;
 
-
-
-
 /**
  *
  * {@link OutputStream} adapter to write different data types as a string.
@@ -71,7 +68,7 @@ public class PrintStream extends OutputStream{
 	
 	
 	/**
-	 * Prints a single ascii <code>char</code> (8bit) to the output stream and then terminate the line.
+	 * Prints a single ascii <code>char</code> (8bit) to the output stream and then terminates the line.
 	 * @param c the char to write.
 	 */
 	public void println(char c){
@@ -91,7 +88,7 @@ public class PrintStream extends OutputStream{
 
 	
 	/**
-	 * Prints, if possible, <code>chars.length</code> ascii chars (8bit each char) to the output stream and then terminate the line.
+	 * Prints, if possible, <code>chars.length</code> ascii chars (8bit each char) to the output stream and then terminates the line.
 	 * @param chars the chars to write
 	 */
 	public void println(char chars[]) {
@@ -147,7 +144,7 @@ public class PrintStream extends OutputStream{
 	
 	
 	/**
-	 * Prints a string to the output stream and then terminate the line.
+	 * Prints a string to the output stream and then terminates the line.
 	 * @param str The string to write.
 	 * @return The number of written chars.
 	 */
@@ -177,7 +174,7 @@ public class PrintStream extends OutputStream{
 	}
 	
 	/**
-	 * Prints a boolean as a string to the output stream and then terminate the line.
+	 * Prints a boolean as a string to the output stream and then terminates the line.
 	 * @param b the boolean to write.
 	 */
 	public void println(boolean b) {
@@ -216,7 +213,7 @@ public class PrintStream extends OutputStream{
 	
 	
 	/**
-	 * Prints a integer as a string to the output stream and then terminate the line.
+	 * Prints a integer as a string to the output stream and then terminates the line.
 	 * @param val the integer to write.
 	 */
 	public void println(int val) {
@@ -238,7 +235,7 @@ public class PrintStream extends OutputStream{
 	
 	
 	/**
-	 * Prints a float as a string to the output stream and then terminate the line.
+	 * Prints a float as a string to the output stream and then terminates the line.
 	 * @param val the float to write.
 	 */
 	public void println(float val){
@@ -260,7 +257,7 @@ public class PrintStream extends OutputStream{
 	
 	
 	/**
-	 * Prints a double as a string to the output stream and then terminate the line.
+	 * Prints a double as a string to the output stream and then terminates the line.
 	 * @param val the double to write.
 	 */
 	public void println(double val){
@@ -269,4 +266,68 @@ public class PrintStream extends OutputStream{
 		out.write((byte)'\n');
 	}
 	
+	/**
+	 * Prints a integer in hexadezimal notation as a string to the output stream.
+	 * @param val the integer to write.
+	 */
+	public void printHex(int val) {
+		if (val == 0) out.write((byte) '0');
+		else {
+			int ctr = chars.length;
+			while (val != 0) {
+				char ch = (char) ('0' + (val & 0xf));
+				if (ch > '9') ch += 39;
+				chars[--ctr] = ch;
+				val = val >>> 4;
+			}
+			chars[--ctr] = 'x';
+			chars[--ctr] = '0';
+			for (int i = ctr; i < chars.length; i++)
+				out.write((byte)chars[i]);
+		}
+	}
+	
+	
+	/**
+	 * Prints a integer in hexadezimal notation as a string to the output stream and then terminates the line.
+	 * @param val the integer to write.
+	 */
+	public void printHexln(int val) {
+		printHex(val);
+		if(enableCR) out.write((byte)'\r');
+		out.write((byte)'\n');
+	}
+
+	/**
+	 * Prints a long in hexadezimal notation as a string to the output stream.
+	 * @param val the long to write.
+	 */
+	public void printHex(long val) {
+		if (val == 0) out.write((byte) '0');
+		else {
+			int ctr = chars.length;
+			while (val != 0) {
+				char ch = (char) ('0' + (val & 0xf));
+				if (ch > '9') ch += 39;
+				chars[--ctr] = ch;
+				val = val >>> 4;
+			}
+			chars[--ctr] = 'x';
+			chars[--ctr] = '0';
+			for (int i = ctr; i < chars.length; i++)
+				out.write((byte)chars[i]);
+		}
+	}
+	
+	
+	/**
+	 * Prints a long in hexadezimal notation as a string to the output stream and then terminates the line.
+	 * @param val the long to write.
+	 */
+	public void printHexln(long val) {
+		printHex(val);
+		if(enableCR) out.write((byte)'\r');
+		out.write((byte)'\n');
+	}
+
 }
