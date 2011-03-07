@@ -574,7 +574,7 @@ public class BlueRS extends Task {
 	 * <b>Do not call this method!</b>
 	 */
 	// @Override
-	public void Do() {
+	public void action() {
 		if (in.available() > 0) {
 			int lenRead = in.read(tmpRsp);
 			if (dbg) {

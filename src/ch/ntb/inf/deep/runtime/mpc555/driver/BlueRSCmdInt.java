@@ -75,7 +75,7 @@ public class BlueRSCmdInt extends Task {
 	 * 
 	 * @see mpc555.Task#Do()
 	 */
-	public void Do() {
+	public void action() {
 		switch (status) {
 		case disconnected:
 			if (BlueRS.getMode() == BlueRS.MODE_CONNECTED) {
