@@ -213,7 +213,11 @@ public class BlueRS extends Task {
 	 *            the command to send
 	 */
 	public static void sendCommand(String cmd) {
-		sendCommand(cmd.getBytes());
+		byte[] temp = new byte[cmd.length()];
+		for(int i = 0; i < cmd.length(); i++){
+			temp[i] =(byte)cmd.charAt(i);
+		}
+		sendCommand(temp);
 	}
 
 	/**
@@ -299,7 +303,10 @@ public class BlueRS extends Task {
 	public static void connect(String connectTo) {
 		if (mode == MODE_AT) {
 			out.write(CMD_CONNECT);
-			out.write(connectTo.getBytes());
+			for(int i = 0; i < connectTo.length(); i++){
+				out.write((byte)connectTo.charAt(i));
+			}
+//			out.write(connectTo.getBytes());
 			out.write(CRLF);
 			setWaitForResult();
 		} else {
