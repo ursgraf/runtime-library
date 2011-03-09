@@ -25,6 +25,14 @@ operatingsystem {
         	}
         }
         
+		exception {
+        	class = "ch/ntb/inf/deep/runtime/mpc555/Interrupt";
+        	method interrupt {
+        		attributes = exchnd;
+				offset = 0x500;
+        	}
+        }
+
         exception {
         	class = "ch/ntb/inf/deep/runtime/mpc555/SystemCall";
 			method systemCall {
