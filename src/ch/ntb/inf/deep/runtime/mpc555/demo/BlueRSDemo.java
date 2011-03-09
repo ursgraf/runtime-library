@@ -3,10 +3,12 @@ package ch.ntb.inf.deep.runtime.mpc555.demo;
 import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.BlueRS;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
 
 /* CHANGES:
- * 22.02.11 NTB/Martin Züger	adapted to the new deep environment
+ * 09.03.11 NTB/Roger Millischer	change to SCI1 and fix problem with String.getBytes()
+ * 22.02.11 NTB/Martin Züger		adapted to the new deep environment
  */
 
 /**
@@ -33,18 +35,11 @@ public class BlueRSDemo extends Task {
 
 	static final int MAX_SEND_COUTER = 5;
 
-	static {
-		BlueRS.start();
-		task = new BlueRSDemo();
-		task.period = 100;
-	}
-
 	/**
 	 * Send the reset command module (the module has to be in AT mode).
 	 */
 	public static void bt_reset() {
 		System.out.println("bt.reset()");
-
 		BlueRS.reset();
 	}
 
@@ -53,7 +48,6 @@ public class BlueRSDemo extends Task {
 	 */
 	public static void bt_inquiry() {
 		System.out.println("bt.inquiry(false)");
-
 		BlueRS.inquiry(false);
 	}
 
@@ -62,10 +56,7 @@ public class BlueRSDemo extends Task {
 	 */
 	public static void bt_bdlist() {
 		System.out.println("at**bdlist");
-
-		BlueRS.sendCommand("at**bdlist".getBytes());
-		// BlueRS.sendCommand(new byte[] {'a', 't', '*', '*', 'b', 'd', 'l',
-		// 'i', 's', 't'} );
+		BlueRS.sendCommand("at**bdlist");
 	}
 
 	/**
@@ -73,20 +64,8 @@ public class BlueRSDemo extends Task {
 	 */
 	public static void bt_connect() {
 		System.out.println("bt.connect()");
-
-		// BlueRS.connect(new byte[] {'0', '8', '0', '0', '1', '7', '1', 'A',
-		// 'C', '8', 'E', '5'} ); // iPAQ
-		// BlueRS.connect("0800171AC8E5"); // iPAQ
-		// BlueRS.connect("008025000473"); // Serial Device
-		// BlueRS.connect("0080250111B6"); // team2
-		// BlueRS.connect("0080250114BA"); // My Name
-		// BlueRS.connect("008025010EAD"); // My Name
-		// BlueRS.connect("0009DD108340");
-		// BlueRS.connect(new byte[] {'0', '8', '0', '0', '2', '5', '0', '1',
-		// '0', 'F', 'B', '2'} ); // iPAQ
-		BlueRS.connect("0800171AC8E5");
-		// BlueRS.connect("008025010FB2"); // 2. BlueRS Modul
-		// BlueRS.connect("d3");
+		BlueRS.connect("008025003E46");
+		
 	}
 
 	/**
@@ -106,7 +85,6 @@ public class BlueRSDemo extends Task {
 	 */
 	public static void bt_returnFromAtMode() {
 		System.out.println("bt.returnFromATMode()");
-
 		BlueRS.returnFromATMode();
 	}
 
@@ -115,7 +93,6 @@ public class BlueRSDemo extends Task {
 	 */
 	public static void bt_disconnect() {
 		System.out.println("bt.disconnect()");
-
 		BlueRS.disconnect();
 	}
 
@@ -169,9 +146,7 @@ public class BlueRSDemo extends Task {
 	 */
 	public static void at_enter_conf() {
 		System.out.println("Enter Config");
-
-		BlueRS.sendCommand("atconf".getBytes());
-		// BlueRS.sendCommand(new byte[] {'a', 't', 'c', 'o', 'n', 'f'} );
+		BlueRS.sendCommand("atconf");
 	}
 
 	/**
@@ -190,9 +165,7 @@ public class BlueRSDemo extends Task {
 	 */
 	public static void conf_reset_firmware() {
 		System.out.println("Reset Firmware");
-
-		BlueRS.sendCommand("defa".getBytes());
-		// BlueRS.sendCommand(new byte[] {'d', 'e', 'f', 'a'} );
+		BlueRS.sendCommand("defa");
 	}
 
 	/**
@@ -200,9 +173,7 @@ public class BlueRSDemo extends Task {
 	 */
 	public static void conf_showall() {
 		System.out.println("Show All");
-
-		BlueRS.sendCommand("showall".getBytes());
-		// BlueRS.sendCommand(new byte[] {'s', 'h', 'o', 'w', 'a', 'l', 'l'} );
+		BlueRS.sendCommand("showall");
 	}
 
 	/**
@@ -210,10 +181,7 @@ public class BlueRSDemo extends Task {
 	 */
 	public static void conf_set_dev_name() {
 		System.out.println("set the device name");
-
-		BlueRS.sendCommand("bname=Device Name".getBytes());
-		// BlueRS.sendCommand(new byte[] {'b', 'n', 'a', 'm', 'e', '=', 'D',
-		// 'e', 'v', 'i', 'c', 'e', ' ', 'N', 'a', 'm', 'e'} );
+		BlueRS.sendCommand("bname=Device Name");
 	}
 
 	/**
@@ -221,11 +189,7 @@ public class BlueRSDemo extends Task {
 	 */
 	public static void conf_set_bsname() {
 		System.out.println("set service Name");
-
-		BlueRS.sendCommand("bsname=Serial Port Name".getBytes());
-		// BlueRS.sendCommand(new byte[] {'b', 's', 'n', 'a', 'm', 'e', '=',
-		// 'S', 'e', 'r', 'i', 'a', 'l', ' ', 'P', 'o', 'r', 't', ' ', 'N', 'a',
-		// 'm', 'e'} );
+		BlueRS.sendCommand("bsname=Serial Port Name");
 	}
 
 	/**
@@ -233,9 +197,7 @@ public class BlueRSDemo extends Task {
 	 */
 	public static void conf_set_baud() {
 		System.out.println("set Baudrate to 9600 bit/s");
-
-		BlueRS.sendCommand("br=4".getBytes());
-		// BlueRS.sendCommand(new byte[] {'b', 'r', '=', '4'} );
+		BlueRS.sendCommand("br=4");
 	}
 
 	/**
@@ -243,9 +205,7 @@ public class BlueRSDemo extends Task {
 	 */
 	public static void conf_set_flc() {
 		System.out.println("disable flow control");
-
-		BlueRS.sendCommand("flc=0".getBytes());
-		// BlueRS.sendCommand(new byte[] {'f', 'l', 'c', '=', '0'} );
+		BlueRS.sendCommand("flc=0");
 	}
 
 	// Mögliche Konfigurationsparameter
@@ -289,8 +249,7 @@ public class BlueRSDemo extends Task {
 	public static void conf_save() {
 		System.out.println("Save Config");
 
-		BlueRS.sendCommand("save".getBytes());
-		// BlueRS.sendCommand(new byte[] {'s', 'a', 'v', 'e'} );
+		BlueRS.sendCommand("save");
 	}
 
 	/**
@@ -299,11 +258,10 @@ public class BlueRSDemo extends Task {
 	public static void conf_exit() {
 		System.out.println("Exit Config");
 
-		BlueRS.sendCommand("exit".getBytes());
-		// BlueRS.sendCommand(new byte[] {'e', 'x', 'i', 't'} );
+		BlueRS.sendCommand("exit");
 	}
 
-	public void Do() {
+	public void action() {
 		switch (state) {
 		case STATE_IDLE:
 			// wait 2 sec
@@ -415,7 +373,8 @@ public class BlueRSDemo extends Task {
 	 * Schickt den String "Test".
 	 */
 	public static void write() {
-		BlueRS.write("Test".getBytes(), 4);
+		byte[] test = new byte[]{'t','e','s','t'};
+		BlueRS.write(test, 4);
 	}
 
 	/**
@@ -430,11 +389,19 @@ public class BlueRSDemo extends Task {
 	public static void enableErrorMessages() {
 		BlueRS.enableErrorMessages();
 	}
-	
+
 	static {
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI2.out);
+		SCI1.start(9600, SCI1.NO_PARITY, (short)8);
+		System.out = new PrintStream(SCI1.out);
+				
+		System.out.println("Demo");
+		MPIOSM_DIO.init(15, true); // Init Mpiosm
+		MPIOSM_DIO.set(15, false); // Reset BlueRS
 		BlueRS.start();
+		task = new BlueRSDemo();
+		task.period = 100;
+		startTask();
+		MPIOSM_DIO.set(15, true);
 	}
 
 }

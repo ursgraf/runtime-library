@@ -8,6 +8,7 @@ import ch.ntb.inf.deep.runtime.util.ByteLiFo;
 
 /*
  * Changes: 
+ * 09.03.2011 NTB/RM:	add init to SCI2 and some debug prints
  * 24.02.2011 NTB/MZ:	adapted to the new deep environment
  * 27.05.2008 NTB/SP:	task creation moved to static construct
  * 31.03.2008 NTB/SP:	RESET detection added
@@ -55,8 +56,8 @@ import ch.ntb.inf.deep.runtime.util.ByteLiFo;
  */
 public class BlueRS extends Task {
 
-	public static OutputStream out;
-	public static InputStream in;
+	private static OutputStream out;
+	private static InputStream in;
 	
 	/**
 	 * The receiver task period.
@@ -158,12 +159,16 @@ public class BlueRS extends Task {
 
 	// only used for switchMode
 	private static final int MODE_NONE = 4;
-
+	
+	private static final int maxCmdLength = 128;
+	
+	private static byte[] command = new byte[maxCmdLength];
+	
 	private static byte[] dataBuffer, tmpRsp ;
 	
 	private static ByteLiFo currentRsp;
 
-	private static int currentRspIndex, dataBufferStart, dataBufferEnd;
+	private static int dataBufferStart, dataBufferEnd;
 
 	private static boolean waitForResult, crReceived;
 
@@ -188,15 +193,6 @@ public class BlueRS extends Task {
 		init();
 	}
 
-	private static boolean compare(byte[] rsp, byte[] rspString, int start,
-			int length) {
-		for (int i = 0; i < length; i++) {
-			if (rsp[start + i] != rspString[i])
-				return false;
-		}
-		return true;
-	}
-
 	private static void setWaitForResult() {
 		waitForResult = true;
 		lastResult = RESULT_UNDEFINED;
@@ -213,11 +209,30 @@ public class BlueRS extends Task {
 	 *            the command to send
 	 */
 	public static void sendCommand(String cmd) {
-		byte[] temp = new byte[cmd.length()];
-		for(int i = 0; i < cmd.length(); i++){
-			temp[i] =(byte)cmd.charAt(i);
+		for(int i = 0; i < cmd.length() && i < maxCmdLength; i++){
+			command[i] =(byte)cmd.charAt(i);
 		}
-		sendCommand(temp);
+		sendCommand(command, 0, cmd.length());
+	}
+	
+	/**
+	 * Sends a command to the Bluetooth module.<br>
+	 * 
+	 * Writes, if possible, <code>len</code> bytes starting at
+	 * <code>offset</code> to this output stream.
+	 * 
+	 * @param b
+	 *            the byte array
+	 * @param off
+	 *            the start offset in the data.
+	 * @param len
+	 *            the number of bytes to write
+	 * @return the number of written bytes.
+	 */
+	public static void sendCommand(byte[] cmd, int off, int len){
+		out.write(cmd, off, len);
+		out.write(CRLF);
+		setWaitForResult();
 	}
 
 	/**
@@ -259,7 +274,9 @@ public class BlueRS extends Task {
 			sendCommand(CMD_CONNECTION_ACCEPT);
 			connectionInitiated = false;
 		} else {
-			//OutT.println("connectionAccept(): no connection initiated");
+			if(dbg){
+				System.out.println("connectionAccept(): no connection initiated");
+			}
 			lastResult = RESULT_ERROR;
 		}
 	}
@@ -281,8 +298,10 @@ public class BlueRS extends Task {
 				sendCommand(CMD_INQIRY_NO_SERVICES);
 			}
 		} else {
-			//OutT.print("inquiry(): wrong mode: ");
-			//OutT.println(mode);
+			if(dbg){
+				System.out.print("inquiry(): wrong mode: ");
+				System.out.println(mode);
+			}
 			lastResult = RESULT_ERROR;
 		}
 	}
@@ -306,12 +325,13 @@ public class BlueRS extends Task {
 			for(int i = 0; i < connectTo.length(); i++){
 				out.write((byte)connectTo.charAt(i));
 			}
-//			out.write(connectTo.getBytes());
 			out.write(CRLF);
 			setWaitForResult();
 		} else {
-			//OutT.print("connect(): wrong mode: ");
-			//OutT.println(mode);
+			if(dbg){
+				System.out.print("connect(): wrong mode: ");
+				System.out.println(mode);
+			}
 			lastResult = RESULT_ERROR;
 		}
 	}
@@ -332,8 +352,10 @@ public class BlueRS extends Task {
 			out.write(CRLF);
 			setWaitForResult();
 		} else {
-			//OutT.print("connect(): wrong mode: ");
-			//OutT.println(mode);
+			if(dbg){
+				System.out.print("connect(): wrong mode: ");
+				System.out.println(mode);				
+			}
 			lastResult = RESULT_ERROR;
 		}
 	}
@@ -348,8 +370,10 @@ public class BlueRS extends Task {
 			sendCommand(CMD_DISCONNECT);
 			mode = MODE_AT;
 		} else {
-			//OutT.print("disconnect(): wrong mode: ");
-			//OutT.println(mode);
+			if(dbg){				
+				System.out.print("disconnect(): wrong mode: ");
+				System.out.println(mode);
+			}
 			lastResult = RESULT_ERROR;
 		}
 	}
@@ -371,8 +395,10 @@ public class BlueRS extends Task {
 			switchMode = MODE_CONNECTED_AT;
 			setWaitForResult();
 		} else {
-			//OutT.print("switchToATMode(): wrong mode: ");
-			//OutT.println(mode);
+			if(dbg){				
+				System.out.print("switchToATMode(): wrong mode: ");
+				System.out.println(mode);
+			}
 			lastResult = RESULT_ERROR;
 		}
 	}
@@ -389,8 +415,10 @@ public class BlueRS extends Task {
 			switchMode = MODE_CONFIG;
 			setWaitForResult();
 		} else {
-			//OutT.print("switchToConfigMode(): wrong mode: ");
-			//OutT.println(mode);
+			if(dbg){				
+				System.out.print("switchToConfigMode(): wrong mode: ");
+				System.out.println(mode);
+			}
 			lastResult = RESULT_ERROR;
 		}
 	}
@@ -404,8 +432,10 @@ public class BlueRS extends Task {
 		if (mode == MODE_CONNECTED_AT) {
 			sendCommand(CMD_RETURN_TO_ONLINE_STATUS);
 		} else {
-			//OutT.print("returnFromATMode(): wrong mode: ");
-			//OutT.println(mode);
+			if(dbg){				
+				System.out.print("returnFromATMode(): wrong mode: ");
+				System.out.println(mode);
+			}
 			lastResult = RESULT_ERROR;
 		}
 	}
@@ -422,8 +452,10 @@ public class BlueRS extends Task {
 			lastResult = RESULT_OK;
 			mode = MODE_AT;
 		} else {
-			//OutT.print("returnFromConfigMode(): wrong mode: ");
-			//OutT.println(mode);
+			if(dbg){				
+				System.out.print("returnFromConfigMode(): wrong mode: ");
+				System.out.println(mode);
+			}
 			lastResult = RESULT_ERROR;
 		}
 	}
@@ -438,8 +470,10 @@ public class BlueRS extends Task {
 		if (mode == MODE_AT) {
 			sendCommand(CMD_RESET);
 		} else {
-			//OutT.print("reset(): wrong mode: ");
-			//OutT.println(mode);
+			if(dbg){
+				System.out.print("reset(): wrong mode: ");
+				System.out.println(mode);
+			}
 			lastResult = RESULT_ERROR;
 		}
 	}
@@ -592,55 +626,60 @@ public class BlueRS extends Task {
 				}
 				if (tmpRsp[tmpIndex] == CR) {
 					crReceived = true;
-					// return;
 				} else if (crReceived && (tmpRsp[tmpIndex] == LF)) {
-					
 					crReceived = false;
 					if (mode == MODE_CONNECTED) { // connection mode
 						// check for "NO CARRIER"
-						if (currentRsp.compare(BT_NO_CARRIER, 2, min(lenRead,
-								BT_NO_CARRIER.length))) {
-							//OutT.println("BT_NO_CARRIER");
+						if (currentRsp.compare(BT_NO_CARRIER, 2, min(lenRead, BT_NO_CARRIER.length))) {
+							if(dbg){
+								System.out.println("BT_NO_CARRIER");
+							}
 							mode = MODE_AT;
-						}else if (currentRsp.compare(BT_RESET, 2,
-								BT_RESET.length)) {
-							//OutT.println("BT_RESET");
+						}else if (currentRsp.compare(BT_RESET, 2, BT_RESET.length)) {
+							if(dbg){
+								System.out.println("BT_RESET");
+							}
 							init();
 						}
 					} else { // AT mode
 						// interpret commands
-						if (currentRsp.compare(BT_CONNECT, 2,min(lenRead,
-								BT_CONNECT.length))) {
-							//OutT.println("BT_CONNECT");
+						if (currentRsp.compare(BT_CONNECT, 2,min(lenRead, BT_CONNECT.length))) {
+							if(dbg){
+								System.out.println("BT_CONNECT");
+							}
 							mode = MODE_CONNECTED;
 							lastResult = RESULT_OK;
 							connectionInitiated = false;
 							resetDataBuffer();
 							waitForResult = false;
-						} else if (currentRsp.compare(BT_RING, 2, min(lenRead,
-								BT_RING.length))) {
-							//OutT.println("BT_RING");
+						} else if (currentRsp.compare(BT_RING, 2, min(lenRead, BT_RING.length))) {
+							if(dbg){
+								System.out.println("BT_RING");
+							}
 							lastResult = RESULT_OK;
 							connectionInitiated = true;
 							mode = MODE_AT;
 							waitForResult = false;
-						} else if (currentRsp.compare(BT_NO_CARRIER, 2, min(
-								lenRead, BT_NO_CARRIER.length))) {
-							//OutT.println("BT_NO_CARRIER");
+						} else if (currentRsp.compare(BT_NO_CARRIER, 2, min(lenRead, BT_NO_CARRIER.length))) {
+							if(dbg){
+								System.out.println("BT_NO_CARRIER");
+							}
 							connectionInitiated = false;
 							lastResult = RESULT_ERROR;
 							mode = MODE_AT;
 							waitForResult = false;
-						} else if (currentRsp.compare(BT_NO_ANSWER, 2, min(
-								lenRead, BT_NO_ANSWER.length))) {
-							//OutT.println("BT_NO_ANSWER");
+						} else if (currentRsp.compare(BT_NO_ANSWER, 2, min(lenRead, BT_NO_ANSWER.length))) {
+							if(dbg){
+								System.out.println("BT_NO_ANSWER");
+							}
 							lastResult = RESULT_ERROR;
 							mode = MODE_AT;
 							waitForResult = false;
 							connectionInitiated = false;
-						} else if (currentRsp.compare(BT_RESET, 2,
-								BT_RESET.length)) {
-							//OutT.println("BT_RESET");
+						} else if (currentRsp.compare(BT_RESET, 2, BT_RESET.length)) {
+							if(dbg){
+								System.out.println("BT_RESET");
+							}
 							init();
 						}
 					}
@@ -714,18 +753,25 @@ public class BlueRS extends Task {
 		if (mode == MODE_AT) {
 			sendCommand(CMD_ENABLE_ERROR_CODES);
 		} else {
-//			OutT.print("reset(): wrong mode: ");
-//			OutT.println(mode);
+			if(dbg){				
+				System.out.print("reset(): wrong mode: ");
+				System.out.println(mode);
+			}
 			lastResult = RESULT_ERROR;
 		}
 	}
 
 	private static void init() {
+		//initialize SCI2
+		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
+		//hook SCI2
+		out = SCI2.out;
+		in = SCI2.in;
+		
 		crReceived = false;
 		mode = MODE_AT;
 		connectionInitiated = false;
 		switchMode = MODE_NONE;
-		currentRspIndex = 0;
 		lastResult = RESULT_OK;
 		waitForResult = false;
 		resetDataBuffer();
