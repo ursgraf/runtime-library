@@ -86,9 +86,6 @@ public class Kernel implements ntbMpc555HB {
 		int state = 0;
 		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr); 
 		while (true) {
-			// !!! Kernel needs to call at least one method in this loop, as the variables in boot
-			// must go into nonvolatile registers
-
 			// get addresses of classes from system table
 			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);
 			if (constBlkBase == 0) break;
@@ -109,6 +106,15 @@ public class Kernel implements ntbMpc555HB {
 			int end = varBase + varSize;
 			while (begin < end) {US.PUT4(begin, 0); begin += 4;}
 			
+			state++; 
+			classConstOffset += 4;
+		}
+		classConstOffset = US.GET4(sysTabBaseAddr) * 4 + 4;
+		while (true) {
+			// get addresses of classes from system table
+			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);
+			if (constBlkBase == 0) break;
+
 			// initialize classes
 			int clinitAddr = US.GET4(constBlkBase + cblkClinitAddrOffset);
 			if (clinitAddr != -1) {	
@@ -119,11 +125,17 @@ public class Kernel implements ntbMpc555HB {
 					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/mpc555/Kernel/loop");
 				}
 			}
-			state++; 
+			// the direct call to clinitAddr destroys volatile registers, hence make sure
+			// the variable classConstOffset is forced into nonvolatile register
+			// this is done by call to empty()
+			empty();
 			classConstOffset += 4;
 		}
 	}
 	
+	private static void empty() {
+	}
+
 	static {
 		boot();
 		cmdAddr = -1;	// must be after class variables are zeroed by boot
