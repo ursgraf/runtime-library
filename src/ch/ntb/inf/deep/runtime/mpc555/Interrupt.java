@@ -23,6 +23,7 @@ public class Interrupt extends PPCException implements ntbMpc555HB {
 	private Interrupt next;
 	
 	public void action() {
+		nofUnexpInterrupts++;
 	}
 
 	static void interrupt() {
@@ -38,10 +39,10 @@ public class Interrupt extends PPCException implements ntbMpc555HB {
 		Interrupt currInt = interrupts[15 - bitNr];
 		if ((bitNr & 1) == 1) {		// external interrupt
 			currInt.action();
-			US.PUT2(SIPEND, (short)i);		// clear pending bit
+			US.PUT2(SIPEND, 1 << bitNr);		// clear pending bit
 		} else {	// internal interrupt
 			boolean done = false;
-			while (currInt != null) {
+			while (currInt.next != null && !done) {
 				short sh = US.GET2(currInt.enableRegAdr);
 				if ((sh & (1 << currInt.enBit)) != 0) {
 					sh = US.GET2(currInt.flagRegAdr);
@@ -50,9 +51,10 @@ public class Interrupt extends PPCException implements ntbMpc555HB {
 						done = true;
 					}
 				}
-				if (!done) nofUnexpInterrupts++;
 				currInt = currInt.next;
 			}
+			if (currInt.next == null && !done)
+				currInt.action();	// default handler
 		}
 	}
 
@@ -60,12 +62,14 @@ public class Interrupt extends PPCException implements ntbMpc555HB {
 		if (internal) {
 			interrupt.next = interrupts[2 * level + 1]; 
 			interrupts[2 * level + 1] = interrupt;
+		} else {
+			interrupt.next = interrupts[2 * level]; 
+			interrupts[2 * level] = interrupt;
 		}
-		else interrupts[2 * level] = interrupt;
 	}
 	
 	static {
-		for (int i = 0; i < 16; i++) interrupts[i] = null; 
+		for (int i = 0; i < 16; i++) interrupts[i] = new Interrupt(); 
 		US.PUT4(SIEL, 0xffff0000);	// external ints are edge sensitive, exit low-power modes 
 		US.PUT4(SIPEND, 0xffff0000);	// reset all int requests
 		US.PUT4(SIMASK, 0x7fff0000);	// enable all interrupt levels, except NMI
