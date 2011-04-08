@@ -35,7 +35,7 @@ public class RTBox {
 	 *            entspricht einem logischen Signal <code>1</code>.
 	 */
 	public static void dioOut(int channel, boolean level) {
-		TPU_DIO.out(true,channel+8,level);
+		TPU_DIO.set(true,channel+8,level);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class RTBox {
 	 *         eingelesen wird.
 	 */
 	public static boolean dioIn(int channel) {
-		return TPU_DIO.in(true,channel);
+		return TPU_DIO.get(true,channel);
 	}
 
 	/**

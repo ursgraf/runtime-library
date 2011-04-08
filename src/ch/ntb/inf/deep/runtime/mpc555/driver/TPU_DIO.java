@@ -4,8 +4,9 @@ import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
- * 15.2.07 NTB/SP adapted to java
- 08.02.06	NTB/HS	stub creation
+ * 08.04.2011	NTB/MZ	methods in/out renamed to get/set
+ * 15.02.2007	NTB/SP	adapted to java
+ * 08.02.2006	NTB/HS	stub creation
  */
 /**
  * Digital-Ein-/Ausgabe mit der TPU-A oder TPU-B.<br>
@@ -20,7 +21,6 @@ import ch.ntb.inf.deep.unsafe.US;
  * TPU-A und TPU-B zu finden.
  */
 public class TPU_DIO implements ntbMpc555HB {
-	
 
 	/**
 	 * Initialisiert den verlangten Pin als Ein- oder Ausgang. <br>
@@ -117,7 +117,7 @@ public class TPU_DIO implements ntbMpc555HB {
 	 *         entspricht dabei dem Wert <i>logisch 1</i> während
 	 *         <code>false</code> dem Wert <i>logisch 0</i> entspricht.
 	 */
-	public static boolean in(boolean tpuA, int channel) {
+	public static boolean get(boolean tpuA, int channel) {
 		if(tpuA){
 			return (US.GET2(TPURAM0_A + 0x10 * channel + 2) & (1 << 15)) != 0; 
 		}else{
@@ -138,7 +138,7 @@ public class TPU_DIO implements ntbMpc555HB {
 	 *            den TTL-Ausgang gelegt. Für <code>false</code> wird der Wert
 	 *            <i>logisch 0</i> auf den TTL-Ausgang gelegt.
 	 */
-	public static void out(boolean tpuA, int channel, boolean val) {
+	public static void set(boolean tpuA, int channel, boolean val) {
 		if(tpuA){
 			//Disable all Interrupts
 			short sh = US.GET2(CISR_A);

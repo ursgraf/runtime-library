@@ -100,7 +100,7 @@ public class RTBoard implements ntbMpc555HB {
 	 *         <code>channel</code> eingelesen wird.
 	 */
 	public static boolean dioIn(int channel) {
-		return TPU_DIO.in(true, channel);
+		return TPU_DIO.get(true, channel);
 	}
 
 
@@ -118,7 +118,7 @@ public class RTBoard implements ntbMpc555HB {
 	 *            entspricht einem logischen Signal <code>1</code>.
 	 */
 	public static void dioOut(int channel, boolean level) {
-		TPU_DIO.out(true, channel, level);
+		TPU_DIO.set(true, channel, level);
 	}
 
 
@@ -135,7 +135,7 @@ public class RTBoard implements ntbMpc555HB {
 	 *            dass die LED leuchtet.
 	 */
 	public static void ledOut(int channel, boolean level) {
-		TPU_DIO.out(false, 2 * channel + 1, !level);
+		TPU_DIO.set(false, 2 * channel + 1, !level);
 	}
 
 

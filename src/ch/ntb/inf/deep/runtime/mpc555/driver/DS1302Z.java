@@ -36,20 +36,20 @@ public class DS1302Z {
 	 */
 	private static void write(byte type, byte val){
 		int w = ((val << 8) | (0xFF & type));
-		TPU_DIO.out(tpuB, RST, true);
+		TPU_DIO.set(tpuB, RST, true);
 		TPU_DIO.init(tpuB,IO , true);
 		for(int i = 0x1; i < 0x10000; i<<=1){
-			TPU_DIO.out(tpuB, SCKL, false);
+			TPU_DIO.set(tpuB, SCKL, false);
 			if((w & i) != 0) {
-				TPU_DIO.out(tpuB, IO, true);
+				TPU_DIO.set(tpuB, IO, true);
 			}
 			else {
-				TPU_DIO.out(tpuB, IO, false);
+				TPU_DIO.set(tpuB, IO, false);
 			}
-			TPU_DIO.out(tpuB, SCKL, true);
+			TPU_DIO.set(tpuB, SCKL, true);
 		}
-		TPU_DIO.out(tpuB, SCKL, false);
-		TPU_DIO.out(tpuB, RST, false);
+		TPU_DIO.set(tpuB, SCKL, false);
+		TPU_DIO.set(tpuB, RST, false);
 	}
 	
 	
@@ -60,23 +60,23 @@ public class DS1302Z {
 	 */
 	private static int read(byte type){
 		type |= 0x01;
-		TPU_DIO.out(tpuB, RST, true);
+		TPU_DIO.set(tpuB, RST, true);
 		TPU_DIO.init(tpuB,IO , true);
 		for(int i = 0x1; i < 0x100; i<<=1){
-			TPU_DIO.out(tpuB, SCKL, false);
-			if((type & i) != 0) TPU_DIO.out(tpuB, IO, true);
-			else TPU_DIO.out(tpuB, IO, false);
-			TPU_DIO.out(tpuB, SCKL, true);
+			TPU_DIO.set(tpuB, SCKL, false);
+			if((type & i) != 0) TPU_DIO.set(tpuB, IO, true);
+			else TPU_DIO.set(tpuB, IO, false);
+			TPU_DIO.set(tpuB, SCKL, true);
 		}
 		int val = 0;
 		TPU_DIO.init(tpuB,IO , false);
 		for(int i = 0x1; i < 0x100; i<<=1){
-			TPU_DIO.out(tpuB, SCKL, true);		
-			TPU_DIO.out(tpuB, SCKL, false);	
-			if(TPU_DIO.in(tpuB, IO)) val |= i;	
+			TPU_DIO.set(tpuB, SCKL, true);		
+			TPU_DIO.set(tpuB, SCKL, false);	
+			if(TPU_DIO.get(tpuB, IO)) val |= i;	
 		}
 		TPU_DIO.init(tpuB,IO , false);	
-		TPU_DIO.out(tpuB, RST, false);
+		TPU_DIO.set(tpuB, RST, false);
 		return val;
 	}
 	
@@ -233,7 +233,7 @@ public class DS1302Z {
 	static{
 		TPU_DIO.init(tpuB,RST , true);
 		TPU_DIO.init(tpuB, SCKL, true);
-		TPU_DIO.out(tpuB, RST, false);
-		TPU_DIO.out(tpuB, SCKL, false);
+		TPU_DIO.set(tpuB, RST, false);
+		TPU_DIO.set(tpuB, SCKL, false);
 	}
 }
