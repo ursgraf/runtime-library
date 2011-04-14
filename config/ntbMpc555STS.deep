@@ -145,6 +145,10 @@ operatingsystem {
                     attributes = unsafe, synthetic;
                     id = 0x012;
                 }                
+                method ENABLE_FLOATS {
+                    attributes = unsafe, synthetic;
+                    id = 0x013;
+                }                
         }
         lowlevel {
                 class = "ch/ntb/inf/deep/lowLevel/LL";
