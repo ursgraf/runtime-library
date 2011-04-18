@@ -24,7 +24,7 @@ public class Heap implements ntbMpc555HB {
 
 	//TODO tag auf Basistyp setzen, size of Object dazunehmen
 	// called by newarray	
-	private static int newPrimTypeArray(int nofElements, int type) {
+	private static int newPrimTypeArray(int nofElements, int type, int ref) {
 		int elementSize;
 		if (type == 7 || type == 11) elementSize = 8;
 		else if (type == 6 || type == 10) elementSize = 4;
@@ -33,9 +33,9 @@ public class Heap implements ntbMpc555HB {
 		int size = nofElements * elementSize + 8;
 		int addr = heapPtr; 
 		while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
-		US.PUT4(heapPtr + 4, type);	// write tag
+		US.PUT4(heapPtr + 4, ref);	// write tag
 		US.PUT2(heapPtr + 2, nofElements);	// write length
-		int ref = heapPtr + 8;
+		ref = heapPtr + 8;
 		heapPtr += ((size + 15) >> 4) << 4;
 		return ref;
 	}
