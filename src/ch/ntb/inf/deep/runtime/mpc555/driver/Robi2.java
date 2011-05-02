@@ -13,58 +13,70 @@ import ch.ntb.inf.deep.runtime.mpc555.Task;
  * 
  */
 public class Robi2 extends Task {
-
+	
+	/* Robi2 background task */
+	/*****************************************************************************/
 	static Robi2 robi2BackgroundTask;
 
-	/* Definitions */
+	/* General definitions */
 	/*****************************************************************************/
-	private static final boolean TPUA = true;
-	private static final boolean TPUB = false;
-	private static final boolean QADCA = true;
-	private static final boolean QADCB = false;
-	private static final boolean INPUT = false;
-	private static final boolean OUTPUT = true;
-	private static final boolean Mot_BridgeMode_SM = true;
-	private static final boolean Mot_BridgeMode_LA = false;
+	private static final boolean TPUA = true;				// use TPUA
+	private static final boolean TPUB = false;				// use TPUB
+	private static final boolean QADCA = true;				// use QADCA
+	private static final boolean QADCB = false;				// use QADCB
+	private static final boolean INPUT = false;				// use pin as input
+	private static final boolean OUTPUT = true;				// use pin as output
+	private static final boolean Mot_BridgeMode_SM = true;	// use H-bridge in signed magnitude mode
 
-	/* Pins */
+	/* Pin definitions */
 	/*****************************************************************************/
-	private static final int Mot1_PWMA_Pin = 0;
-	private static final int Mot1_PWMB_Pin = 1;
-	private static final int Mot1_EncA_Pin = 2;
-	private static final int Mot1_EncB_Pin = 3;
-	private static final int Mot2_EncA_Pin = 4;
-	private static final int Mot2_EncB_Pin = 5;
-	private static final int Mot2_PWMA_Pin = 6;
-	private static final int Mot2_PWMB_Pin = 7;
-	private static final int Mot_BridgeMode_Pin = 8;
+	private static final int Mot1_PWMA_Pin = 0;				// Motor 1, PWM channel A
+	private static final int Mot1_PWMB_Pin = 1;				// Motor 1, PWM channel B
+	private static final int Mot1_EncA_Pin = 2;				// Motor 1, Encoder channel A
+	private static final int Mot1_EncB_Pin = 3;				// Motor 1, Encoder channel B
+	private static final int Mot2_EncA_Pin = 4;				// Motor 2, Encoder channel A
+	private static final int Mot2_EncB_Pin = 5;				// Motor 2, Encoder channel B
+	private static final int Mot2_PWMA_Pin = 6;				// Motor 2, PWM channel A
+	private static final int Mot2_PWMB_Pin = 7;				// Motor 2, PWM channel B
+	private static final int Mot_BridgeMode_Pin = 8;		// Motor controller, H bridge mode
 
 	/* Constants */
 	/*****************************************************************************/
-	private static final float ts = 0.005f; // [s]
-	private static final int tpr = 64 * 4; // ticks per rotation
-	private static final int i = 17; // gear transmission ratio
-	private static final float wheelDiameter = 0.0273f; // [m]
-	private static final float scale = (float) Math.PI * wheelDiameter / (tpr * i);
+	private static final float ts = 0.001f;					// Task period in seconds
+	private static final int tpr = 64;						// Encoder ticks per rotation
+	private static final int fqd = 4;						// FQD
+	private static final int i = 17;						// gear transmission ratio
+	private static final float wheelDiameter = 0.0273f;		// Wheel diameter in meter
+	private static final float wheelDistance = 0.167f;		// Wheel distance in meter
+	private static final float scale = (float) Math.PI * wheelDiameter / (tpr * fqd * i);
 	private static final int pwmPeriod = 1000000 / TPU_PWM.TpuTimeUnit;
-	private static final float wheelDistance = 0.167f; // [m]
 
+	private static final float kp = 10f;
+	private static final float tn = 0.02f;
+	private static final float b0 = kp * (1f + ts / (2f * tn));
+	private static final float b1 = kp * (ts / (2f * tn) - 1f);
+
+	public static final float v_max = 0.55f; // [m/s]
+	
 	/* Private variables */
 	/*****************************************************************************/
 	private static float s1 = 0, s2 = 0; // zurückgelegter Weg pro Rad
 	private static float v1 = 0, v2 = 0; // linear speed of each wheel
 	private static short prevPos1 = 0, prevPos2 = 0;
 	private static long lastTime;
+	private static float desiredSpeedLeft = 0, desiredSpeedRight = 0; // [m/s]
+	private static float ev1 = 0, ev2 = 0, ev1old = 0, ev2old = 0;
+	private static float cv1 = 0, cv2 = 0, cv1old = 0, cv2old = 0; 
+	private static float vy_R = 0,	// speed in y direction rel. to the robot (vx_R is always 0)
+		vx_E = 0, vy_E = 0, 		// speed in x and y direction rel. to the environment
+		w_R = 0,					// rotation speed of the robot
+		phi = 0,					// orientation of the robot
+		x = 0, y = 0;				// position of the robot
 
-	private static float vy_R = 0, // speed in y direction rel. to the robot (vx_R is always 0)
-			vx_E = 0, vy_E = 0, // speed in x and y direction rel. to the environment
-			w_R = 0, // rotation speed of the robot
-			phi = 0, // orientation of the robot
-			x = 0, y = 0; // position of the robot
+
+	private static int counter = 0;
 	
-	private static boolean driveMode = Mot_BridgeMode_SM;
-
-	/* Task */
+	/* Background task */
 	/*****************************************************************************/
 
 	private Robi2() {
@@ -73,20 +85,20 @@ public class Robi2 extends Task {
 	}
 
 	/**
+	 * Background Task.
 	 * <p>
-	 * Task method to determine the position.
-	 * </p>
-	 * <p>
-	 * <b>Do not call this method.</b>
+	 * <b>Do not call this method!</b>
 	 * </p>
 	 * 
 	 */
 	public void action() {
+		
+		/* Odometrie */
 		short actualPos, deltaPos;
 
 		// calculate exact time increment
 		long time = Kernel.time();
-		long dt = time - lastTime;
+		float dt = (time - lastTime) * 1e-6f;
 		lastTime = time;
 
 		// calculate distance traveled and speed for each wheel
@@ -112,15 +124,38 @@ public class Robi2 extends Task {
 		phi += w_R * dt;
 
 		// speed relative to the environment
-		vx_E = -vy_R * (float) Math.sin(phi);
+		vx_E = -vy_R * (float)Math.sin(phi);
 
-		vy_E = vy_R * (float) Math.cos(phi);
+		vy_E = vy_R * (float)Math.cos(phi);
 
 		// positions relative to the environment
 		x += vx_E * dt;
 		y += vy_E * dt;
+		
+//		if(counter > 10) {
+//			System.out.println(v1);
+//			counter = 0;
+//		}
+//		counter++;
+		
+		/* Motor controllers */
+		ev1old = ev1;
+		ev2old = ev2;
+		ev1 = desiredSpeedRight - (-v1);
+		ev2 = desiredSpeedLeft - v2;
+		
+		cv1 = cv1old + b0 * ev1 + b1 * ev1old;
+		cv2 = cv2old + b0 * ev2 + b1 * ev2old;
+		
+		
+		setPwmForRightMotor((int)(cv1 * 100 / v_max));
+		setPwmForLeftMotor((int)(cv2 * 100 / v_max));
+		
+		cv1old = cv1;
+		cv2old = cv2;
+		
 	}
-
+	
 	/* LEDs */
 	/*****************************************************************************/
 
@@ -486,6 +521,15 @@ public class Robi2 extends Task {
 	}
 
 	/**
+	 * Returns the current speed of the Robi in his drive direction. The given value is in meter per second [m/s].
+	 * 
+	 *@return speed in meter per second [m/s]   	 
+	 */   
+	public static float getRobiSpeed() {
+    return vy_R;
+  }
+	
+	/**
 	 * Reset the position.<br>
 	 * The current position is the new point of origin.
 	 */
@@ -496,84 +540,62 @@ public class Robi2 extends Task {
 		y = 0;
 	}
 
-	private static int checkMaxSpeed(int speed) {
-		if (speed > 100)
-			return 100;
-		if (speed < -100)
-			return -100;
-		return speed;
+	private static void setPwmForLeftMotor(int dutyCycle) {
+		dutyCycle = checkDutyCycle(dutyCycle);
+		if (dutyCycle >= 0) { // forward
+			TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, 0); // direction
+		} else { // backward
+			TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, pwmPeriod); // direction
+			dutyCycle = dutyCycle + 100;
+		}
+		TPU_PWM.update(TPUB, Mot2_PWMB_Pin, pwmPeriod,
+				(dutyCycle * pwmPeriod) / 100); // speed
 	}
+	
+	private static void setPwmForRightMotor(int dutyCycle) {
+		dutyCycle = checkDutyCycle(dutyCycle);
 
-	/**
-	 * Switch the mode of the H-bridge for both motors to locked antiphase. This will stop both motors!
-	 */
-	public static void switchDriveModeToLA() {
-		stopDrives();
-		driveMode = Mot_BridgeMode_LA;
-		TPU_DIO.set(TPUB, Mot_BridgeMode_Pin, Mot_BridgeMode_LA);
-		TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, pwmPeriod/2); // PWM A -> 0% = full speed forward, 50% = stop, 100% = full speed backward
-		TPU_PWM.update(TPUB, Mot1_PWMB_Pin, pwmPeriod, 0); // PWM B -> doesn't care
-		TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, pwmPeriod/2); // PWM A -> 0% = full speed forward, 50% = stop, 100% = full speed backward
-		TPU_PWM.update(TPUB, Mot2_PWMB_Pin, pwmPeriod, 0); // PWM B -> doesn't care
+		if (dutyCycle >= 0) { // forward
+			TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, 0); // direction
+		} else { // backward
+			TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, pwmPeriod); // direction
+			dutyCycle = dutyCycle + 100;
 		}
+		TPU_PWM.update(TPUB, Mot1_PWMB_Pin, pwmPeriod,
+				(dutyCycle * pwmPeriod) / 100); // speed
 
-	/**
-	 * Switch the mode of the H-bridge for both motors to locked antiphase. This will stop both motors!
-	 */
-	public static void switchDriveModeToSM() {
-		stopDrives();
-		driveMode = Mot_BridgeMode_SM;
-		TPU_DIO.set(TPUB, Mot_BridgeMode_Pin, Mot_BridgeMode_SM);
-		TPU_PWM.update(TPUB, Mot1_PWMB_Pin, pwmPeriod, 0); // PWM B -> speed: if direction is hight, the speed have to be inverted (e.g. 5% -> 95%)
-		TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, 0); // direction
-		TPU_PWM.update(TPUB, Mot2_PWMB_Pin, pwmPeriod, 0); // PWM B -> speed: if direction is hight, the speed have to be inverted (e.g. 5% -> 95%)
-		TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, 0); // direction
-		}
+	}
 	
 	/**
-	 * Set the speed of the left drive in percent.<br>
-	 * The sign defines the direction.
+	 * Sets the speed of the left drive in percent.<br>
+	 * The sign define the direction. A negative value for backwards and a
+	 * positive value for forward.
 	 * 
 	 * @param speed
 	 *            range -100..100
 	 */
 	public static void setLeftDriveSpeed(int speed) {
-		speed = checkMaxSpeed(speed);
-		if(driveMode) { // true means Mot_BridgeMode_SM
-			if (speed >= 0) { // forward
-				TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, 0); // direction
-			} else { // backward
-				TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, pwmPeriod); // direction
-				speed = speed + 100;
-			}
-			TPU_PWM.update(TPUB, Mot2_PWMB_Pin, pwmPeriod, (speed * pwmPeriod) / 100); // speed
-		}
-		else { // false means Mot_BridgeMode_LA
-			TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, (-speed * pwmPeriod / 200) + pwmPeriod / 2);
-		}
+		desiredSpeedLeft = speed * v_max / 100;
+	}
+	
+	public static void setLeftDriveSpeed(float speed) {
+		desiredSpeedLeft = speed;
+	}
+	
+	public static void setRightDriveSpeed(float speed) {
+		desiredSpeedRight = speed;
 	}
 
 	/**
 	 * Sets the speed of the right drive in percent.<br>
-	 * The sign defines the direction.
+	 * The sign define the direction. A negative value for backwards and a
+	 * positive value for forward.
 	 * 
 	 * @param speed
 	 *            range -100..100
 	 */
 	public static void setRightDriveSpeed(int speed) {
-		speed = checkMaxSpeed(speed);
-		if(driveMode) { // true means Mot_BridgeMode_SM
-			if (speed >= 0) { // forward
-				TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, 0); // direction
-			} else { // backward
-				TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, pwmPeriod); // direction
-				speed = speed + 100;
-			}
-			TPU_PWM.update(TPUB, Mot1_PWMB_Pin, pwmPeriod, (speed * pwmPeriod) / 100); // speed
-		}
-		else { // false means Mot_BridgeMode_LA
-			TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, (-speed * pwmPeriod / 200) + pwmPeriod / 2);
-		}
+		desiredSpeedRight = speed * v_max / 100;
 	}
 
 	/**
@@ -613,6 +635,14 @@ public class Robi2 extends Task {
 			setLeftDriveSpeed(0);
 	}
 
+	private static int checkDutyCycle(int speed) {
+		if (speed > 100)
+			return 100;
+		if (speed < -100)
+			return -100;
+		return speed;
+	}
+	
 	/* Misc */
 	/*****************************************************************************/
 
