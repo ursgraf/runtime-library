@@ -241,6 +241,7 @@ public class RTBoardTest extends Task {
 		case sendMessage:
 			state = wait;
 			DAC7614.init();
+			dacCtr = 0;
 			System.out.print("DAC set to ");
 			System.out.print(voltage);
 			System.out.println("V --> Enter");
@@ -251,7 +252,8 @@ public class RTBoardTest extends Task {
 			DAC7614.write(6, (dacCtr));
 			DAC7614.write(7, (dacCtr));
 			if(System.in.read() == contCmd){
-				dacCtr = (dacCtr + 1023) % 5115;
+				dacCtr = (dacCtr + 1024) % 5119;
+				if(dacCtr == 4096) dacCtr--;
 				voltage += 5;
 				if(dacCtr == 0){
 					voltage = -10;
