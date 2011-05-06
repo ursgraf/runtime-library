@@ -1,11 +1,13 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.unsafe.US;
 
-// TODO Treiber überarbeiten und CharLCD2x16 hier integrieren
+
 
 /* Changes:
+ * 06.05.2011	Roger Millischer driver ported to deep, united CharLCD2x16 with this driver
  * 29.05.2008	NTB/SP	variable digits changed to global
  * 05.03.2008	NTB/SP	assigned to Java
  * 24.03.2005	NTB/ED	Emulationsanweisungen gelöscht
@@ -20,11 +22,11 @@ import ch.ntb.inf.deep.unsafe.US;
  * Anschluss am Systembus des mpc555:<br>
  * 
  * <pre>
- *  Systembus:					Display:
- *  D0..7	(Datenleitungen)			D7..0	(Vertauscht!)
- *  R/W'						R/W'
- *  CS2'	(Chip Select 2)				E	(Inverter dazwischen!)
- *  A31	(Adressleitung)				RS	(Data/Instruction)
+ *  Systembus:				Display:
+ *  D0..7 (Datenleitungen)			D7..0(Vertauscht!)
+ *  R/W'					R/W'
+ *  CS2' (Chip Select 2)			E (Inverter dazwischen!)
+ *  A31 (Adressleitung)			RS (Data/Instruction)
  * </pre>
  * 
  * Das Chip Select CS2' wird für einen 8-Bit Port konfiguriert. <br>
@@ -63,7 +65,7 @@ public class HD44780U extends Task{
 
 
 	private static final int BufLen = 64;
-	private static final int lcdMaxRows = 4;
+	private static int lcdMaxRows = 2;
 	private static final int lcdMaxColumns = 16;
 	private static short[] adrCntOfRow = new short[4];
 	private static final int BASE = 0x2000000;
@@ -77,14 +79,13 @@ public class HD44780U extends Task{
 	 * Setzt den Cursor auf die entsprechende Position.
 	 * 
 	 * @param row
-	 *            Zeile, auf welche der Cursor gesetzt werden soll (Bereich
-	 *            0..3)
+	 *            Zeile, auf welche der Cursor gesetzt werden soll 
 	 * @param column
 	 *            Spalte, in welche der Cursor gesetzt werden soll.
 	 */
 	public static void setCursor(int row, int column) {
 		done = true;
-		row = (row % lcdMaxRows); column = (short)(column % lcdMaxColumns);
+		row = (row % lcdMaxRows); column = (column % lcdMaxColumns);
 		cursPos = (row * lcdMaxColumns + column);
 		PutCmd((adrCntOfRow[row]+column));
 	}
@@ -100,11 +101,11 @@ public class HD44780U extends Task{
 	 */
 	public static void wrChar(char ch) {
 		done = true;
-		PutCmd((short)(0x100 + ch));
+		PutCmd((0x100 + ch));
 		cursPos++;
 		if (cursPos % lcdMaxColumns == 0) {
-			cursPos = (byte)(cursPos % (lcdMaxRows * lcdMaxColumns));
-			setCursor((short)(cursPos / lcdMaxColumns), cursPos);
+			cursPos = (cursPos % (lcdMaxRows * lcdMaxColumns));
+			setCursor((cursPos / lcdMaxColumns), cursPos);
 		}
 	}
 
@@ -187,7 +188,7 @@ public class HD44780U extends Task{
 	public static void clearDisplay() {
 		done = true;
 		cursPos = 0;
-		PutCmd((short)1);
+		PutCmd(1);
 	}
 
 	/**
@@ -221,7 +222,7 @@ public class HD44780U extends Task{
 		}
 	}
 	
-	public void Do() {
+	public void action() {
 		if ((lcdStatus == lcdIdle) && !lcdDone) {
 			adrCmd = lcdCmdBuff[lcdCmdBuffOut];
 			US.PUT1(BASE + adrCmd / 0x100, adrCmd);
@@ -238,13 +239,27 @@ public class HD44780U extends Task{
 			}
 		}
 	}
-
+	/**
+	 * temporary method
+	 */
+	private static boolean BIT(int address, int bitNo){//TODO replace with US.BIT
+		int value = US.GET1(address);
+		return ((1 << bitNo) & value) > 0;
+	}
+	
 	/**
 	 * Initialisiert das Display.<br>
 	 * Diese Methode muss vor dem Gebrauch des Displays zwingend aufgerufen
 	 * werden.
 	 */
-	public static void init() {
+	public static void init(int nofRows) {
+		//allowed nofRows 2..4
+		if(nofRows < 2){
+			nofRows = 2;
+		}else if(nofRows > 4){
+			nofRows = 4;
+		}
+		lcdMaxRows = nofRows;
 		done = true;
 		lcdDone = true;
 		lcdStatus = lcdIdle;
@@ -261,36 +276,46 @@ public class HD44780U extends Task{
 		US.PUT4(BR2, 0x2000403);
 		/* base address: 2000000H, 8 bit port, RW, internal transfer ack, no bursts */
 
-		US.PUT4(OR2, 0x0FFFF8EF1);
+		US.PUT4(OR2, 0x0FFFF8EB1);
 		/* address mask: 0FFFF8CF1H für CS endet 1/4 clock früher, CS startet 1/2 clock nach Adresse,  15+2 wait states, Timing relaxed => 2 * wait states */
 		
 		/* init LCD */
 		/*Dreimaliges Initalisieren, da Display z.T. nicht korrekt funktioniert*/
 		US.PUT1(BASE, 0x30);
-		do { } while (US.BIT(BASE, 7));
+		do { } while (BIT(BASE, 7));
+
 		US.PUT1(BASE, 0x30);
-		do { } while (US.BIT(BASE, 7));
+		do { } while (BIT(BASE, 7));
+
 		US.PUT1(BASE, 0x30);
-		do { } while (US.BIT(BASE, 7));
+		do { } while (BIT(BASE, 7));
+
+		
+		US.PUT1(BASE, 0x38); 	/* set 8 Bit, 2 lines, 5*7 dots */
+		do { } while (BIT(BASE, 7));
 
 		US.PUT1(BASE, 0x38); 	/* set 8 Bit, 2 lines, 5*7 dots */
-		do { } while (US.BIT(BASE, 7));
+		do { } while (BIT(BASE, 7));
+
 		US.PUT1(BASE, 0x38); 	/* set 8 Bit, 2 lines, 5*7 dots */
-		do { } while (US.BIT(BASE, 7));
-		US.PUT1(BASE, 0x38); 	/* set 8 Bit, 2 lines, 5*7 dots */
-		do { } while (US.BIT(BASE, 7));
+		do { } while (BIT(BASE, 7));
+
 		
 		US.PUT1(BASE, 0x1); 	/* clear display */
-		do { } while (US.BIT(BASE, 7));
+		do { } while (BIT(BASE, 7));
+
 
 		US.PUT1(BASE, 0x0F); 	/* display on, cursor on, blink on */
-		do { } while (US.BIT(BASE, 7));
+		do { } while (BIT(BASE, 7));
+
 
 		US.PUT1(BASE, 0x06); 	/* increment address, no shift */
-		do { } while (US.BIT(BASE, 7));
+		do { } while (BIT(BASE, 7));
+
 
 		US.PUT1(BASE, 0x02); 	/* return home */
-		do { } while (US.BIT(BASE, 7));
+		do { } while (BIT(BASE, 7));
+
 		
 		transferTask = new HD44780U(); Task.install(transferTask);
 	}
