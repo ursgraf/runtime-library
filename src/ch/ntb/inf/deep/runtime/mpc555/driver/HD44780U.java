@@ -14,38 +14,36 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 /**
- * Treiber für das alphanummerische Display-Steckmodul mit 4 Zeilen à 16
- * Zeichen.<br>
+ * Driver for character display with 2 - 4 rows and 16
+ * columns.<br>
  * Display controller: HD44780U<br>
  * <br>
  * 
- * Anschluss am Systembus des mpc555:<br>
+ * Connected on the system bus of the mpc555:<br>
  * 
  * <pre>
- *  Systembus:				Display:
- *  D0..7 (Datenleitungen)			D7..0(Vertauscht!)
+ *  System bus:				Display:
+ *  D0..7 (data lines)			D7..0(interchanged!)
  *  R/W'					R/W'
- *  CS2' (Chip Select 2)			E (Inverter dazwischen!)
- *  A31 (Adressleitung)			RS (Data/Instruction)
+ *  CS2' (Chip Select 2)			E (use a Inverter between!)
+ *  A31 (address lines)			RS (Data/Instruction)
  * </pre>
  * 
- * Das Chip Select CS2' wird für einen 8-Bit Port konfiguriert. <br>
+ * The chip elect CS2' is for an 8-Bit port configured. <br>
  * <br>
  * 
- * Grundeinstellung: Display On, Cursor On, Blink On, Increment, no shift.<br>
+ * Base setting: Display On, Cursor On, Blink On, Increment, no shift.<br>
  * <br>
  * 
- * Die Aufträge werden in den Puffer <code>buf</code> eingefügt und von dort von einem Task
- * zum Display gesendet. Der Task besitzt die Zustände "IDLE (I)" und "WAITING
- * (W)".<br>
- * Ist dieser Task im Ruhezustand "Idle" und befindet sich ein Auftrag im
- * Puffer, so wird dieser vom Task zum Display gesandt. Der Task geht dabei in
- * den Zustand "W" über. Er prüft durch Polling das Busy Flag im Statusregister,
- * bis dieses die Beendigung des Auftrags durch das Display signalisiert. Danach
- * geht der Task wieder in den Zustand "I".<br>
+ * Instructions are written in the buffer <code>buf</code> and therefrom sends a task it to the display. 
+ * The task have the states "IDLE (I)" and "WAITING (W)".<br>
+ * 
+ * Is that task in the state "Idle" and an instruction is provided in the buffer, so sends the task this to the display. 
+ * And the task goes in the state "W". It checks by polling the busy flag in the state register, if the display have finished
+ * the instruction. After the task goes back in the state "I".<br>
  * <br>
- * Für den Gebrauch dieses Treibers muss zuerst zwingend die Methode
- * <code>init()</code> aufgerufen werden.
+ * To use this driver, the method <code>init(int nofRows)</code> must be called mandatory.
+ * 
  */
 
 public class HD44780U extends Task{
@@ -76,12 +74,12 @@ public class HD44780U extends Task{
 
 
 	/**
-	 * Setzt den Cursor auf die entsprechende Position.
+	 * Sets the cursor on desired destination.
 	 * 
 	 * @param row
-	 *            Zeile, auf welche der Cursor gesetzt werden soll 
+	 *            on which the cursor is set to. 
 	 * @param column
-	 *            Spalte, in welche der Cursor gesetzt werden soll.
+	 *            on which the cursor is set to.
 	 */
 	public static void setCursor(int row, int column) {
 		done = true;
@@ -91,13 +89,10 @@ public class HD44780U extends Task{
 	}
 
 	/**
-	 * Schreibt das Zeichen <code>ch</code> auf das Display.
+	 * Write a character <code>ch</code> on the display.
 	 * 
 	 * @param ch
-	 *            Zeichen, welches geschrieben werden soll.
-	 */
-	/**
-	 * Schreibt das Zeichen ch auf das Display
+	 *            character, which is to write.
 	 */
 	public static void wrChar(char ch) {
 		done = true;
@@ -110,7 +105,7 @@ public class HD44780U extends Task{
 	}
 
 	/**
-	 * Schreibt einen Linefeed.
+	 * Writes a line feed.
 	 */
 	public static void wrLn() {
 		done = true;
@@ -119,16 +114,12 @@ public class HD44780U extends Task{
 	}
 
 	/**
-	 * Schreibt einen Integerwert auf das Display.
+	 * Writes an integer value on the display.
 	 * 
 	 * @param i
-	 *            Integerwert, welcher ausgegeben werden soll.
+	 *            value to write.
 	 * @param fieldLen
-	 *            Anzahl Zeichen, welche für die Ausgabe der Zahl verwendet
-	 *            werden sollen.
-	 */
-	/**
-	 * Schreibt einen Integerwert auf das Display
+	 *            number of characters which should be used to display the value. 
 	 */
 	private static char[] digits = new char[12];
 	public static void wrInt(int i, int fieldLen) {
@@ -183,7 +174,7 @@ public class HD44780U extends Task{
 	}
 
 	/**
-	 * Löscht alle Zeichen auf dem Display.
+	 * Clears the display.
 	 */
 	public static void clearDisplay() {
 		done = true;
@@ -192,16 +183,14 @@ public class HD44780U extends Task{
 	}
 
 	/**
-	 * Verwalten des Displays und der Cursorfunktionen.
+	 * Manages the displays and the cursor functions.
 	 * 
 	 * @param displayOn
-	 *            <code>true</code>: schaltet das Display ein.
+	 *            <code>true</code>: switch on the display.
 	 * @param cursorOn
-	 *            <code>true</code>: Die Position des Cursors wird über einen
-	 *            Unterstrich angezeigt.
+	 *            <code>true</code>: The position of the cursor are displayed with an underline
 	 * @param blinkOn
-	 *            <code>true</code>: Die Position des Cursors wird blinkend
-	 *            hevorgehoben.
+	 *            <code>true</code>: Cursor is blinking
 	 */
 	public static void onOff(boolean displayOn, boolean cursorOn,
 			boolean blinkOn) {
@@ -221,7 +210,9 @@ public class HD44780U extends Task{
 			lcdDone = false;
 		}
 	}
-	
+	/**
+	 *  <b>Do not call this method!</b>
+	 */	
 	public void action() {
 		if ((lcdStatus == lcdIdle) && !lcdDone) {
 			adrCmd = lcdCmdBuff[lcdCmdBuffOut];
@@ -240,7 +231,7 @@ public class HD44780U extends Task{
 		}
 	}
 	/**
-	 * temporary method
+	 * temporary method for internal use only
 	 */
 	private static boolean BIT(int address, int bitNo){//TODO replace with US.BIT
 		int value = US.GET1(address);
@@ -248,9 +239,9 @@ public class HD44780U extends Task{
 	}
 	
 	/**
-	 * Initialisiert das Display.<br>
-	 * Diese Methode muss vor dem Gebrauch des Displays zwingend aufgerufen
-	 * werden.
+	 * Initialisation of the display.<br>
+	 * To use this driver, this method must be called mandatory.
+	 * 
 	 */
 	public static void init(int nofRows) {
 		//allowed nofRows 2..4
