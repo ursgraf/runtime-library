@@ -28,15 +28,6 @@ public class Robi2LineDemo extends Task {
 	}
 
 	public void action() {
-		// Zum testen: 
-		/*
-		OutT.print(Robi2.getDistSensorValue(0)); 
-		OutT.print(' ');
-		OutT.print(Robi2.getDistSensorValue(1));
-		OutT.print(' ');
-		OutT.print('-');
-		OutT.print(' ');
-		*/
 		if (sensors()) {
 			Robi2.stopDrives();
 		} else if (leftFloorSensor() && rightFloorSensor()) {
