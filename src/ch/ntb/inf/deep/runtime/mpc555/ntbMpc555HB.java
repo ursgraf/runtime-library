@@ -7,12 +7,11 @@ public interface ntbMpc555HB{
 	public static final int SRAMA_Size = 0x2800;
 	public static final int SRAMB_BaseAddr = 0x3fc000;
 	public static final int SRAMB_Size = 0x4000;
-	public static final int DUALMAPPED_BaseAddr = 0x0;
-	public static final int DUALMAPPED_Size = 0x2000;
-	public static final int CMFA_BaseAddr = 0x2000;
-	public static final int CMFA_Size = 0x3e000;
+	public static final int CMFA_BaseAddr = 0x0;
+	public static final int CMFA_Size = 0x40000;
 	public static final int CMFB_BaseAddr = 0x40000;
 	public static final int CMFB_Size = 0x30000;
+	public static final int DualMappedSize = 0x2000;
 	public static final int excpCodeSize = 0x2000;
 	public static final int cblkCodeBaseOffset = 0x4;
 	public static final int cblkCodeSizeOffset = 0x8;
