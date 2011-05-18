@@ -1,28 +1,27 @@
 #deep-0
 
 meta {
-	version = "2010-12-02";
+	version = "2011-05-18";
 	description = "Freescale MPC555 (all devices)";
 	import = "config/MPC555-Registermap.deep";
 }
 
 sysconst {
-	IMB = 0x0;										        # Internal Memory Base
+	IMB = 0x0;										# Internal Memory Base
 	
-	SRAMA_BaseAddr = IMB + 0x3F9800;			            # Internal SRAM A Base Address
-	SRAMA_Size = 0x2800;							        # Internal SRAM A Size (10 KiB)
-	SRAMB_BaseAddr = SRAMA_BaseAddr + SRAMA_Size;	        # Internal SRAM B Base Address
-	SRAMB_Size = 0x4000;							        # Internal SRAM B Size (16 KiB)
+	SRAMA_BaseAddr = IMB + 0x3F9800;				# Internal SRAM A Base Address
+	SRAMA_Size = 0x2800;							# Internal SRAM A Size (10 KiB)
+	SRAMB_BaseAddr = SRAMA_BaseAddr + SRAMA_Size;	# Internal SRAM B Base Address
+	SRAMB_Size = 0x4000;							# Internal SRAM B Size (16 KiB)
     
-    DUALMAPPED_BaseAddr = IMB + 0x0; 
-    DUALMAPPED_Size = 0x2000; 
+	CMFA_BaseAddr = IMB + 0x0;						# Internal Flash A Base Address
+	CMFA_Size = 0x40000;							# Internal Flash A Size (256 KiB)
+	CMFB_BaseAddr = CMFA_BaseAddr + CMFA_Size;		# Internal Flash B Base Address
+	CMFB_Size = 0x30000;							# Internal Flash B Size (192 KiB)
+	
+	DualMappedSize = 0x2000;
     
-	CMFA_BaseAddr = DUALMAPPED_BaseAddr + DUALMAPPED_Size; # Internal Flash A Base Address
-	CMFA_Size = 0x3E000;							       # Internal Flash A Size (254 KiB)
-	CMFB_BaseAddr = CMFA_BaseAddr + CMFA_Size;		       # Internal Flash B Base Address
-	CMFB_Size = 0x30000;							       # Internal Flash B Size (192 KiB)
-    
-    excpCodeSize = 0x2000;
+    excpCodeSize = DualMappedSize;
     
     cblkCodeBaseOffset = 4;
     cblkCodeSizeOffset = 8;
@@ -34,9 +33,9 @@ sysconst {
     stHeapOffset = 8;
     stKernelClinitAddr = 12;
 	
-	sysTabBaseAddr = SRAMA_BaseAddr;				      # Base address of the system table segment
-	stackSize = 0x2000;								      # Default stack size
-	heapSize = 0x40000;								      # Default heap size
+	sysTabBaseAddr = SRAMA_BaseAddr;				# Base address of the system table segment
+	stackSize = 0x2000;								# Default stack size
+	heapSize = 0x40000;								# Default heap size
 }
 
 memorymap {
@@ -73,17 +72,6 @@ memorymap {
       	size = stackSize;
       	base = SRAMB_BaseAddr + SRAMB_Size - stackSize ;
     }
-    
-    device DualMapped {
-        attributes = read, write;
-        width = 4; # byte
-        size = DUALMAPPED_Size;
-        base = DUALMAPPED_BaseAddr;
-        technology = ram;
-    }
-        
-
-	
 	
 	# ===== Internal Flash =====
 	device InternalFlash {
@@ -105,15 +93,14 @@ memorymap {
         }
 	}
 		
-	segment InternalFlash.A {
+	segment InternalFlash.DualMapped {
 		base = CMFA_BaseAddr;
-		size = CMFA_Size;
-		
-		segment ExceptionCode {
-			base = CMFA_BaseAddr;
-			size = excpCodeSize;
-			attributes = read, code;
-		}
+		size = DualMappedSize;
+	}
+	
+	segment InternalFlash.A {
+		base = CMFA_BaseAddr + DualMappedSize;
+		size = CMFA_Size - DualMappedSize;
 	}
 	
 	segment InternalFlash.B {
