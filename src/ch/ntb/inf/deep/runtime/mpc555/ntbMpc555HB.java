@@ -7,10 +7,12 @@ public interface ntbMpc555HB{
 	public static final int SRAMA_Size = 0x2800;
 	public static final int SRAMB_BaseAddr = 0x3fc000;
 	public static final int SRAMB_Size = 0x4000;
-	public static final int CMFA_BaseAddr = 0x0;
-	public static final int CMFA_Size = 0x4000;
-	public static final int CMFB_BaseAddr = 0x4000;
-	public static final int CMFB_Size = 0x3000;
+	public static final int DUALMAPPED_BaseAddr = 0x0;
+	public static final int DUALMAPPED_Size = 0x2000;
+	public static final int CMFA_BaseAddr = 0x2000;
+	public static final int CMFA_Size = 0x3e000;
+	public static final int CMFB_BaseAddr = 0x40000;
+	public static final int CMFB_Size = 0x30000;
 	public static final int excpCodeSize = 0x2000;
 	public static final int cblkCodeBaseOffset = 0x4;
 	public static final int cblkCodeSizeOffset = 0x8;
@@ -23,7 +25,7 @@ public interface ntbMpc555HB{
 	public static final int stKernelClinitAddr = 0xc;
 	public static final int sysTabBaseAddr = 0x3f9800;
 	public static final int stackSize = 0x2000;
-	public static final int heapSize = 0x2000;
+	public static final int heapSize = 0x40000;
 	public static final int extRamBase = 0x800000;
 	public static final int extRamSize = 0x200000;
 	public static final int extFlashBase = 0x1000000;
