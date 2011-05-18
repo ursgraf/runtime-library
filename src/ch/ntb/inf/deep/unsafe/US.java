@@ -22,7 +22,7 @@ public class US {
 	public static void PUT8(int address, long value) {
 	}
 
-	/** get bit: return BIT(mem[address], bitNr) */
+	/** get bit: return BIT(mem[address](byte), bitNr) */
 	public static boolean BIT(int address, int bitNr) {
 		return false;
 	}

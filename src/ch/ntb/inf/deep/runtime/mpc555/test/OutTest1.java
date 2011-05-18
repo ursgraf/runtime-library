@@ -3,6 +3,9 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
 /*changes:
  * 11.11.10	NTB/GRAU	creation
+ * Achtung: diese Testklasse funktioniert nicht mit dem interruptgesteuerten
+ * SCI-Treiber, weil clinit hier nie terminiert und die Interrupts erst am 
+ * Schluss der Klasseninitialisierung eingeschaltet werden
  */
 
 public class OutTest1 {

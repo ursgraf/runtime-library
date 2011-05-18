@@ -2,6 +2,7 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.driver.*;
+import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
  * 22.02.11 NTB/Martin Züger	OutT replaced by System.out
@@ -18,9 +19,11 @@ public class OutTest4 {
 		System.out.println("hello world");
 		System.out.println(123);
 		System.out.println(-56);
+		System.out.println(-8.5f);
+		System.out.println(238.5234e-23);
 		System.out.println(3452395879283579L);
-//		int a = -7463;
-//		System.out.println(a);
+		int a = -7463;
+		System.out.println(a);
 		System.out.println(true);
 	}
 }
