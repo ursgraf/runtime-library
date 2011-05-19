@@ -1,0 +1,18 @@
+#deep-0
+
+meta {
+	version = "2011-05-19";
+	description = "Compiler specific constants";
+}
+
+sysconst {
+	cblkCodeBaseOffset = 4;
+	cblkCodeSizeOffset = 8;
+	cblkVarBaseOffset = 12;
+	cblkVarSizeOffset = 16;
+	cblkClinitAddrOffset = 20;
+	cblkNofPtrsOffset = 24;
+	stStackOffset = 4;
+	stHeapOffset = 8;
+	stKernelClinitAddr = 12;
+}

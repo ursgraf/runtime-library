@@ -2,17 +2,6 @@ package ch.ntb.inf.deep.runtime.mpc555;
 
 public interface ntbMpc555HB{
 	//Systemconstants
-	public static final int IMB = 0x0;
-	public static final int SRAMA_BaseAddr = 0x3f9800;
-	public static final int SRAMA_Size = 0x2800;
-	public static final int SRAMB_BaseAddr = 0x3fc000;
-	public static final int SRAMB_Size = 0x4000;
-	public static final int CMFA_BaseAddr = 0x0;
-	public static final int CMFA_Size = 0x40000;
-	public static final int CMFB_BaseAddr = 0x40000;
-	public static final int CMFB_Size = 0x30000;
-	public static final int DualMappedSize = 0x2000;
-	public static final int excpCodeSize = 0x2000;
 	public static final int cblkCodeBaseOffset = 0x4;
 	public static final int cblkCodeSizeOffset = 0x8;
 	public static final int cblkVarBaseOffset = 0xc;
@@ -22,13 +11,25 @@ public interface ntbMpc555HB{
 	public static final int stStackOffset = 0x4;
 	public static final int stHeapOffset = 0x8;
 	public static final int stKernelClinitAddr = 0xc;
-	public static final int sysTabBaseAddr = 0x3f9800;
+	public static final int IMB = 0x0;
+	public static final int SRAMA_BaseAddr = 0x3f9800;
+	public static final int SRAMA_Size = 0x2800;
+	public static final int SRAMB_BaseAddr = 0x3fc000;
+	public static final int SRAMB_Size = 0x4000;
+	public static final int CMFA_BaseAddr = 0x0;
+	public static final int CMFA_Size = 0x40000;
+	public static final int CMFB_BaseAddr = 0x40000;
+	public static final int CMFB_Size = 0x30000;
+	public static final int excpCodeBase = 0x0;
+	public static final int excpCodeSize = 0x2000;
+	public static final int sysTabBaseAddr = 0x2000;
 	public static final int stackSize = 0x2000;
-	public static final int heapSize = 0x40000;
-	public static final int extRamBase = 0x800000;
 	public static final int extRamSize = 0x200000;
-	public static final int extFlashBase = 0x1000000;
+	public static final int extRamBase = 0x800000;
 	public static final int extFlashSize = 0x400000;
+	public static final int extFlashBase = 0x1000000;
+	public static final int dualMappedSize = 0x8000;
+	public static final int heapSize = 0x40000;
 
 	//Registermap GPR
 	public static final int R0 = 0x0;
@@ -505,12 +506,12 @@ public interface ntbMpc555HB{
 	public static final int SRAMMCR_B = 0x380008;
 
 	//Register inital value
+	public static final int DMORinit = 0x7e000000;
+	public static final int DMBRinit = 0x3;
 	public static final int SRR1init = 0x3802;
 	public static final int DERinit = 0x31c3400f;
 	public static final int RSRinit = 0xffffffff;
 	public static final int ICTRLinit = 0x7;
-	public static final int DMORinit = 0x7e000000;
-	public static final int DMBRinit = 0x3;
 	public static final int OR1init = 0xffe00020;
 	public static final int BR1init = 0x800003;
 	public static final int OR0init = 0xffc00020;
