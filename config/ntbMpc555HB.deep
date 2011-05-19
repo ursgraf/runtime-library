@@ -92,10 +92,11 @@ memorymap{
 		base = extFlashBase + excpCodeSize;			# Place system table behind exception code
 		attributes = read, systab;
 	}
-    
-    segment ExternalFlash.Default {					# Default Segment for code, constants and class fields
-      attributes = read, const, code;				# Place it behind the dual mapped memory part
-    }
+
+	segment ExternalFlash.Default {					# Default Segment for code, constants and class fields
+		base = extFlashBase + dualMappedSize;		# Place it behind the dual mapped memory part
+		attributes = read, const, code;
+	}
 }
 
 reginit {
