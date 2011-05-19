@@ -48,7 +48,7 @@ public class QADC_DIO implements ntbMpc555HB{
 	 * @param channel select module pin 0-15 respectively 0-3 and 48-59
 	 * @return the TTL-Signal value of <code>channel</code>
 	 */
-	public static boolean in(boolean qadcA, int channel){
+	public static boolean get(boolean qadcA, int channel){
 		channel=getChannel(channel);
 		if(qadcA){
 			return (US.GET2(PORTQA_A) & (1<< channel)) != 0;
@@ -64,7 +64,7 @@ public class QADC_DIO implements ntbMpc555HB{
 	 * @param channel select module pin 0-15 respectively 0-3 and 48-59
 	 * @param val the TTL-Signal value
 	 */
-	public static void out(boolean qadcA, int channel, boolean val){
+	public static void set(boolean qadcA, int channel, boolean val){
 		channel=getChannel(channel);
 		if(qadcA){
 			if(val) US.PUT2(PORTQA_A, US.GET2(PORTQA_A) | (1 << channel));
