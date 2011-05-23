@@ -57,7 +57,7 @@ public class Kernel implements ntbMpc555HB {
 		int reg;
 		do reg = US.GET4(PLPRCR); while ((reg & (1 << 16)) == 0);	// wait for PLL to lock 
 		US.PUT4(UMCR, 0);	// enable IMB clock, no int. multiplexing, full speed
-		US.PUTSPR(158, 0x800);	// ICTRL: take out of serialized mode
+		US.PUTSPR(158, 0x7);	// ICTRL: take out of serialized mode
 		US.PUTSPR(638, 0x800);	// IMMR: enable internal flash
 		// configure CS for external Flash
 		US.PUT4(BR0, 0x01000003);	// chip select base address reg external Flash,
@@ -74,11 +74,9 @@ public class Kernel implements ntbMpc555HB {
 		US.PUT2(TBSCR, 1); 	// time base, no interrupts, stop time base while freeze, enable
 		short reset = US.GET2(RSR);
 		if ((reset & (1<<5 | 1<<15)) != 0) {	// boot from flash
-			US.PUT4(SYPCR, 0);			// TODO@Urs: check this!
+			US.PUT4(SYPCR, 0xFFFFFF83);	// TODO@Urs: check this!
 			US.PUT4(DMBR, 0x1);			// 0x1: Dual mapping enable, map from address 0, use CS0 -> external Flash
 			US.PUT4(DMOR, 0x7E000000);	// 0x7e000000: Map 32k -> 0x0...0x8000 is dual mapped
-		//	SYS.GET(sysTabAdrRom + stoSysTabSize, sysTabSize);
-		//	SYS.MOVE(sysTabAdrRom, sysTabAdr, sysTabSize)*/
 		}
 		
 //		SetFPSCR;
