@@ -101,6 +101,7 @@ memorymap{
 }
 
 reginit {
+	SYPCR = 0xFFFFFF83;								# Disable Watchdog, enable bus monitor
 	SIUMCR = 0x40000;								# Set Freeze when LWP0 is active
 	BR0 = 0x01000003;								# Set base address for chip select CS0 (external Flash)
 	OR0 = 0xFFC00020; 								# Set address mask for CS0 to 4M, address type mask = 0, 2 + 2 wait states
@@ -123,7 +124,6 @@ targetconfiguration BootFromRam {
             default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;           
     }
     reginit {
-    	SYPCR = 0xFFFFFF83;							# Disable Watchdog, enable bus monitor
 		DMBR = 0x3;									# Dual mapping enable, map from address 0, use CS1 (external RAM)
 		DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
     }
@@ -140,8 +140,7 @@ targetconfiguration BootFromFlash {
             default: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;
     }
     reginit {
-		SYPCR = 0xFFFFFF8F;							# Enable Watchdog for reset after flasing, enable bus monitor
-		DMBR = 0x1;									# Dual mapping enable, map from address 0, use CS0 (external Flash)
+    	DMBR = 0x1;									# Dual mapping enable, map from address 0, use CS0 (external Flash)
 		DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
     }
 }
