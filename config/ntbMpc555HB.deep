@@ -138,7 +138,7 @@ targetconfiguration BootFromFlash {
             default: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;
     }
     reginit {
-		DMBRinit = 0x1;								# Dual mapping enable, map from address 0, use CS0 (external Flash)
-		DMORinit = 0x7E000000;						# Map 32k -> 0x0...0x8000 is dual mapped
+	#	DMBRinit = 0x1;								# Dual mapping enable, map from address 0, use CS0 (external Flash)
+	#	DMORinit = 0x7E000000;						# Map 32k -> 0x0...0x8000 is dual mapped
     }
 }
