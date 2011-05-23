@@ -15,6 +15,7 @@ sysconst {
 	dualMappedSize = 0x8000;						# 32k dual mapped memory
 	
 	heapSize = 0x40000;								# Default heap size
+	SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
 }
 
 memorymap{
@@ -100,15 +101,16 @@ memorymap{
 }
 
 reginit {
-#	SYPCRinit = 0xFFFFFF83;							# Configure Watchdog -> is this necessary?
-	BR0init = 0x01000003;							# Set base address for chip select CS0 (external Flash)
-	OR0init = 0xFFC00020; 							# Set address mask for CS0 to 4M, address type mask = 0, 2 + 2 wait states
-	BR1init = 0x0800003;							# Set base address for chip select CS1 (external RAM)
-	OR1init = 0xFFE00020;							# Set address mask for CS0 to 2M, address type mask = 0, 2 + 2 wait states
-	ICTRLinit = 7;									# ???
-	RSRinit = -1;									# Set reset status register back
-	DERinit = 0x31C3400F;							# Set debug enable register
-	SRR1init = 0x3802;								# Set Machine Status Save/Restore Register 1
+	SYPCR = 0xFFFFFF83;								# Disable Watchdog, enable bus monitor
+	SIUMCR = 0x40000;								# Set Freeze when LWP0 is active
+	BR0 = 0x01000003;								# Set base address for chip select CS0 (external Flash)
+	OR0 = 0xFFC00020; 								# Set address mask for CS0 to 4M, address type mask = 0, 2 + 2 wait states
+	BR1 = 0x0800003;								# Set base address for chip select CS1 (external RAM)
+	OR1 = 0xFFE00020;								# Set address mask for CS0 to 2M, address type mask = 0, 2 + 2 wait states
+	ICTRL = 7;										# ???
+	RSR = -1;										# Set reset status register back
+	DER = 0x31C3400F;								# Set debug enable register
+	SRR1 = SRR1init;								# Set Machine Status Save/Restore Register 1
 }
 
 
@@ -122,8 +124,8 @@ targetconfiguration BootFromRam {
             default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;           
     }
     reginit {
-		DMBRinit = 0x3;								# Dual mapping enable, map from address 0, use CS1 (external RAM)
-		DMORinit = 0x7E000000;						# Map 32k -> 0x0...0x8000 is dual mapped
+		DMBR = 0x3;								# Dual mapping enable, map from address 0, use CS1 (external RAM)
+		DMOR = 0x7E000000;						# Map 32k -> 0x0...0x8000 is dual mapped
     }
 }
 
@@ -138,7 +140,7 @@ targetconfiguration BootFromFlash {
             default: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;
     }
     reginit {
-	#	DMBRinit = 0x1;								# Dual mapping enable, map from address 0, use CS0 (external Flash)
-	#	DMORinit = 0x7E000000;						# Map 32k -> 0x0...0x8000 is dual mapped
+		DMBR = 0x1;								# Dual mapping enable, map from address 0, use CS0 (external Flash)
+		DMOR = 0x7E000000;						# Map 32k -> 0x0...0x8000 is dual mapped
     }
 }

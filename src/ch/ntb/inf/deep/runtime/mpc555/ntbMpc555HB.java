@@ -30,6 +30,7 @@ public interface ntbMpc555HB{
 	public static final int extFlashBase = 0x1000000;
 	public static final int dualMappedSize = 0x8000;
 	public static final int heapSize = 0x40000;
+	public static final int SRR1init = 0x3802;
 
 	//Registermap GPR
 	public static final int R0 = 0x0;
@@ -504,16 +505,4 @@ public interface ntbMpc555HB{
 	public static final int UIPEND = 0x307fa0;
 	public static final int SRAMMCR_A = 0x380000;
 	public static final int SRAMMCR_B = 0x380008;
-
-	//Register inital value
-	public static final int DMORinit = 0x7e000000;
-	public static final int DMBRinit = 0x3;
-	public static final int SRR1init = 0x3802;
-	public static final int DERinit = 0x31c3400f;
-	public static final int RSRinit = 0xffffffff;
-	public static final int ICTRLinit = 0x7;
-	public static final int OR1init = 0xffe00020;
-	public static final int BR1init = 0x800003;
-	public static final int OR0init = 0xffc00020;
-	public static final int BR0init = 0x1000003;
 }
