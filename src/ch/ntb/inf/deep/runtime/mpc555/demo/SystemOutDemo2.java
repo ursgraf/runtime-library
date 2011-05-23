@@ -30,7 +30,7 @@ public class SystemOutDemo2 extends Task {
 		System.out.print("System.out demo (SCI2)");
 		
 		// Create and install the demo task
-		Task t = new SystemOutDemo1();
+		Task t = new SystemOutDemo2();
 		t.period = 500;
 		Task.install(t);
 	}
