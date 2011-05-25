@@ -145,8 +145,6 @@ public class HLC1395Pulsed extends Task {
 		US.PUT2(QADCMCR_A, 0);
 		// internal multiplexing, use ETRIG1 for queue1, QCLK = 2 MHz
 		US.PUT2(QACR0_A, 0x00B7);
-		// disable queue2, queue 2 begins at 16
-		US.PUT2(QACR2_A, 0x0010);
 
 		// pause after conversion, max sample time, use inputChannel
 		US.PUT2(CCW_A, 0x02C0 + analogInChn);
