@@ -60,23 +60,23 @@ memorymap{
 		memorytype = "Am29LV160d";
 		attributes = read;
 		
-		memorysector BB0 {							# First sector is used for dual mapping
+		memorysector BS_0 {							# First sector is used for dual mapping
 			base = extFlashBase;
 			sectorsize = 0x08000;					# 32k
 		}
-		memorysector BB1 {
+		memorysector BS_1 {
 			base = extFlashBase + 0x08000;
 			sectorsize = 0x04000;					# 16k
 		}
-		memorysector BB2 {
+		memorysector BS_2 {
 			base = extFlashBase + 0x0C000;
 			sectorsize = 0x04000;					# 16k
 		}
-		memorysector BB3 {
+		memorysector BS_3 {
 			base = extFlashBase + 0x10000;
 			sectorsize = 0x10000;					# 64k
 		}
-		memorysectorarray DB {
+		memorysectorarray DS {
 			base = extFlashBase + 0x20000;
 			sectorsize = 0x20000;					# 128k
 			nofsectors = 31;						# 31 * 128k = 3968k
