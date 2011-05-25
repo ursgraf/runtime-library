@@ -8,7 +8,7 @@ public class SpeedController4DCMotor {
 	
 	private int pwmChannelA, pwmChannelB;
 	private boolean pwmTPUA;
-	private int encChannelA, encChannelB;
+	private int encChannelA;
 	private boolean encTPUA;
 	
 	private static final int pwmPeriod = 1000000 / TPU_PWM.TpuTimeUnit; 
@@ -23,8 +23,8 @@ public class SpeedController4DCMotor {
 	private long time = 0, lastTime = 0;
 	private float dt;
 	private short actualPos, deltaPos, prevPos; // [enc ticks]
-	private float speed = 0;					// [rad/s]
-	private float e = 0, e_1 = 0;				// [rad/s]
+	private float speed = 0;					// [1/s]
+	private float e = 0, e_1 = 0;				// [1/s]
 	
 	/**
 	 * Create a new speed conroller for a DC motor.
@@ -40,7 +40,7 @@ public class SpeedController4DCMotor {
 	 */
 	public SpeedController4DCMotor(float ts, int pwmChannelA, boolean useTPUA4PWM, int encChannelA, boolean useTPUA4Enc, int encTPR, float umax, float i, float kp, float tn) {
 		// set parameters
-		this.scale = (float)((encTPR * fqd * i) / (2 * Math.PI));
+		this.scale = (float)((2 * Math.PI) / (encTPR * fqd * i));
 		this.b0 = kp * (1f + ts / (2f * tn));
 		this.b1 = kp * (ts / (2f * tn) - 1f);
 		this.umax = umax;
@@ -54,10 +54,8 @@ public class SpeedController4DCMotor {
 		
 		// initialize FQD channels
 		this.encChannelA = encChannelA;
-		this.encChannelB = encChannelA + 1;
 		this.encTPUA = useTPUA4Enc;
 		TPU_FQD.init(useTPUA4Enc, encChannelA);
-		TPU_FQD.init(useTPUA4Enc, encChannelA + 1);
 	}
 
 	public void run() {
@@ -73,12 +71,13 @@ public class SpeedController4DCMotor {
 		
 		// Calculate control value
 		e = desiredSpeed - speed;
-		controlValue = prevControlValue + b0 * speed + b1 * e_1;
+		controlValue = prevControlValue + b0 * e + b1 * e_1;
 		
 		// Update PWM
-		setPWM((int)(controlValue * 100 / umax));
+		setPWM(controlValue / umax);
 		
-		// Save actual speed and control value for the next round
+		// Save actual values for the next round
+		prevPos = actualPos;
 		e_1 = e;
 		prevControlValue = controlValue;
 	}
@@ -87,24 +86,28 @@ public class SpeedController4DCMotor {
 		this.desiredSpeed = v;
 	}
 	
-	private static int checkDutyCycle(int speed) {
-		if (speed > 100)
-			return 100;
-		if (speed < -100)
-			return -100;
+	public float getActualSpeed() {
 		return speed;
 	}
 	
-	private void setPWM(int dutyCycle) {
-		dutyCycle = checkDutyCycle(dutyCycle);
+	private static float limitDutyCycle(float d) {
+		if (d > 1)
+			return 1;
+		if (d < -1)
+			return -1;
+		return d;
+	}
+	
+	private void setPWM(float dutyCycle) {
+		dutyCycle = limitDutyCycle(dutyCycle);
 
 		if (dutyCycle >= 0) { // forward
 			TPU_PWM.update(pwmTPUA, pwmChannelA, pwmPeriod, 0); // direction
 		} else { // backward
 			TPU_PWM.update(pwmTPUA, pwmChannelA, pwmPeriod, pwmPeriod); // direction
-			dutyCycle = dutyCycle + 100;
+			dutyCycle = dutyCycle + 1;
 		}
-		TPU_PWM.update(pwmTPUA, pwmChannelB, pwmPeriod,	(dutyCycle * pwmPeriod) / 100); // speed
+		TPU_PWM.update(pwmTPUA, pwmChannelB, pwmPeriod,	(int)(dutyCycle * pwmPeriod)); // speed
 	}
 	
 }
