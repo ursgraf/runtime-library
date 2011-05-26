@@ -4,10 +4,11 @@ import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
- * 14.04.09 NTB/SP Method desiredPosition removed
- * 24.02.09 NTB/SP TPU_A position failure corrected
- * 06.03.08 NTB/SP assigned to java
- * 18.05.06	NTB/HS	stub creation
+ * 26.05.11	NTB/MILR	drive ramp by start and stop
+ * 14.04.09 NTB/SP		Method desiredPosition removed
+ * 24.02.09 NTB/SP		TPU_A position failure corrected
+ * 06.03.08 NTB/SP		assigned to java
+ * 18.05.06	NTB/HS		stub creation
  */
 /**
  * Schrittmotoransteuerung mit der TPU-A oder TPU-B.<br>
@@ -32,7 +33,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 
  */
 public class StepMotor implements ntbMpc555HB {
-
+	private static int openSteps;
 
 	/**
 	 * Initialisiert den Schrittmotor-Treiber.<br>
@@ -514,7 +515,7 @@ public class StepMotor implements ntbMpc555HB {
 			short pos = US.GET2(TPURAM0_B + 0x10 * channel + 2);
 			//Set disired position
 			US.PUT2(TPURAM0_B + 0x10 * channel,(short) pos + steps);
-			
+					
 			//Move Request (Host Service Request) (Master only)
 			shiftl = (channel % 8) * 2;
 			reg = HSRR1_B - (channel / 8) * 2;
@@ -573,6 +574,7 @@ public class StepMotor implements ntbMpc555HB {
 				s |= (1 << shiftl);
 				US.PUT2(reg,s);
 			}
+						
 		}else{
 			int shiftl,reg;
 			short s;
@@ -608,6 +610,7 @@ public class StepMotor implements ntbMpc555HB {
 				US.PUT2(reg,s);
 			}
 		}
+		move(tpuA, openSteps, channel);
 	}
 
 	/**
@@ -624,8 +627,15 @@ public class StepMotor implements ntbMpc555HB {
 	 * @param channel
 	 *            TPU-Startpin.
 	 */
-	public static void stop(boolean tpuA, boolean fullStep, int channel) {
+	public static void stop(boolean tpuA, boolean fullStep, int channel) {		
 		if(tpuA){
+			if(!finished(tpuA, channel)){
+				//save openSteps 
+				short desPos = US.GET2(TPURAM0_A + 0x10 * channel);
+				move(tpuA, 16, channel);
+				while(!finished(tpuA, channel)); //wait 
+				openSteps = desPos - US.GET2(TPURAM0_A + 0x10 * channel + 2);			
+			}
 			int shiftl, reg;
 			short s;
 			//Set priority null
@@ -656,6 +666,13 @@ public class StepMotor implements ntbMpc555HB {
 				US.PUT2(reg,s);
 			}
 		}else{
+			if(finished(tpuA, channel)){
+				//save openSteps 
+				short desPos = US.GET2(TPURAM0_B + 0x10 * channel);
+				move(tpuA, 16, channel);
+				while(!finished(tpuA, channel)); //wait 
+				openSteps = desPos - US.GET2(TPURAM0_B + 0x10 * channel + 2);
+			}
 			int shiftl, reg;
 			short s;
 			//Set priority null
@@ -739,6 +756,7 @@ public class StepMotor implements ntbMpc555HB {
 	 *            TPU-Startpin.
 	 */
 	public static void reset(boolean tpuA, int channel) {
+		openSteps = 0;
 		if(tpuA){
 			//Get current position
 			short pos = US.GET2(TPURAM0_A + 0x10 * channel + 2);
