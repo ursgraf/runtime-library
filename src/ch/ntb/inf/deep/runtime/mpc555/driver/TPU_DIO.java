@@ -3,37 +3,26 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
-/*changes:
+/* changes:
  * 08.04.2011	NTB/MZ	methods in/out renamed to get/set
  * 15.02.2007	NTB/SP	adapted to java
  * 08.02.2006	NTB/HS	stub creation
  */
 /**
- * Digital-Ein-/Ausgabe mit der TPU-A oder TPU-B.<br>
- * Falls möglich ist der <code>Mpiosm</code> Treiber für die digitale Ein- /
- * Ausgabe zu benutzen. Da diverse andere Treiber die TPU Kanäle nutzen, kann es
- * sein dass durch den <code>DIO</code> Treiber unnötig Pins benutzt werden.<br>
- * Grundsätzlich können die folgenden Operationen auf alle 2x 16 TPU-Pins
- * angewandt werden. <br>
- * Es muss jedoch beachtet werden, dass andere Treiber ebenfalls die TPU-A oder
- * TPU-B benutzen können.<br>
- * Auf dem Experimentierprint sind die TPU-Pins <i>2x 0..15</i> im Bereich
- * TPU-A und TPU-B zu finden.
+ * Driver to use a channel of the TPU (A or B) as a GPIO.<br/>
+ * Each 16 channels of both time processing units can be used as
+ * general purpose in- or output.
  */
 public class TPU_DIO implements ntbMpc555HB {
 
 	/**
-	 * Initialisiert den verlangten Pin als Ein- oder Ausgang. <br>
-	 * Jeder Pin muss vor der ersten Verwendung initialisiert werden.
+	 * Initialize an channel as a general purpose in- our output. 
 	 * 
-	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
-	 * @param channel
-	 *            TPU-Pin <code>0..15</code>, welcher initialisiert wird.
-	 * @param out
-	 *            <code>true</code> definiert den TPU-Pin als TTL-Ausgang.
-	 *            <code>false</code> definiert den TPU-Pin als TTL-Eingang.
+	 * @param tpuA		<code>true</code>: use TPU-A,
+	 * 					<code>false</code>: use TPU-B.
+	 * @param channel	TPU channel to initialize. Allowed values are 0..15.
+	 * @param out		<code>true</code> initializes the channel as a digital output.
+	 * 					<code>false</code> initializes the channel as a digital input.
 	 */
 	public static void init(boolean tpuA, int channel, boolean out) {
 		if(tpuA){
@@ -106,16 +95,12 @@ public class TPU_DIO implements ntbMpc555HB {
 	}
 
 	/**
-	 * Erfasst den Zustand des TTL-Signals an diesem Pin. <br>
+	 * Returns the current state of the TTL signal at the given TPU channel.
 	 * 
-	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
-	 * @param channel
-	 *            TPU-Pin, dessen Wert erfasst werden soll.
-	 * @return Funktionswert des gewählten TPU-Pin. <code>true</code>
-	 *         entspricht dabei dem Wert <i>logisch 1</i> während
-	 *         <code>false</code> dem Wert <i>logisch 0</i> entspricht.
+	 * @param channel	TPU pin to capture. Allowed numbers are 0..15.
+	 * @param tpuA		<code>true</code>: use TPU-A,
+	 * 					<code>false</code>: use TPU-B.
+	 * @return 			the current state of the TTL at the given pin. <i>true</i> means logic 1 and <i>false</i> logic 0.
 	 */
 	public static boolean get(boolean tpuA, int channel) {
 		if(tpuA){
@@ -126,17 +111,12 @@ public class TPU_DIO implements ntbMpc555HB {
 	}
 
 	/**
-	 * Ändert den Zustand eines initialisierten Pins.
+	 * Set the TTL signal at the given pin.
 	 * 
-	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
-	 * @param channel
-	 *            TPU-Pin, dessen Wert verändert werden soll.
-	 * @param val
-	 *            Für <code>true</code> wird der Wert <i>logisch 1</i> auf
-	 *            den TTL-Ausgang gelegt. Für <code>false</code> wird der Wert
-	 *            <i>logisch 0</i> auf den TTL-Ausgang gelegt.
+	 * @param channel	TPU pin to set. Allowed numbers are 0..15.
+	 * @param tpuA		<code>true</code>: use TPU-A,
+	 * 					<code>false</code>: use TPU-B.
+	 * @param val		Value to set. <i>true</i> means logic 1 and <i>false</i> logic 0.
 	 */
 	public static void set(boolean tpuA, int channel, boolean val) {
 		if(tpuA){

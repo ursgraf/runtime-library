@@ -3,50 +3,42 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
-/*changes:
- * 10.1.2008 NTB/SP	to java ported
- * 08.02.06	NTB/HS	stub creation
+/* changes:
+ * 26.05.2011	NTB/MZ,	JavaDoc updated
+ * 07.12.2010	NTB/UG,	adapted to the new board interface file
+ * 25.11.2010	NTB/UG,	ported to deep
+ * 10.01.2008	NTB/SP,	to java ported
+ * 08.02.2006	NTB/HS,	stub creation
  */
+
 /**
- * PulsWeiten-Modulation (PWM) mit der TPU-A oder TPU-B.<br>
- * Grundsätzlich können die folgenden Operationen auf alle 2x 16 TPU-Pins
- * angewandt werden. <br>
- * Es muss jedoch beachtet werden, dass andere Treiber ebenfalls die TPU-A oder
- * TPU-B benutzen können.<br>
- * Auf dem Experimentierprint sind die TPU-Pins <i>2x 0..15</i> im Bereich
- * TPU-A und TPU-B zu finden.<br>
- * Zeitangaben müssen in ganzzahligen Vielfachen der TPU-Zeitbasis gemacht
- * werden. Ein Zeitzyklus entspricht 0.8 ns.
+ * Driver to using the TPU for generating pulse width modulated (PWM) signals.<br />
+ * All 32 channels (2 x 16) can be used for this. All time data have to be a multiple of the
+ * TPU time base (806 ns).
  */
 public class TPU_PWM implements ntbMpc555HB{
 
 
-	/** TPU-Zeitbasis: 806 ns */
-	public static final int TpuTimeUnit = 806;
+	/** TPU time base in nano seconds [ns]. */
+	public static final int tpuTimeBase = 806;
 
 	/**
-	 * Initialisiert den verlangten TPU-Pin als PWM-Kanal. <br>
-	 * Jeder Kanal muss vor der ersten Verwendung initialisiert werden.<br>
-	 * <code>period</code> und <code>highTime</code> liegen im Wertebereich
-	 * des Integers.<br>
-	 * Zur Definitiion der <code>periode</code> sollte eine Konstante des Typs
-	 * <code>int</code> angelegt werden.<br>
-	 * z.B. für eine Periodenlänge von 50 us (20 kHz):<br>
-	 * <code>final short pwmPeriod = 50000 / TpuTimeUnit;</code>
+	 * Initialize a TPU channels for generating PWM signals.<br>
+	 * Every channel has to be initialized before using it!
+	 * Remember: <code>period</code> and <code>highTime</code> are
+	 * 32 bit values!<br>
+	 * The period time should be defined as an integer constant.
+	 * Example for a period time of <i>T = 50 us (f = 20 kHz)</i>:
+	 * <code>private final int pwmPeriod = 50000 / TpuTimeUnit;</code>
 	 * 
-	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
-	 * @param channel
-	 *            TPU-Pin <code>0..15</code>, welcher initialisiert wird.
-	 * @param period
-	 *            Periodenlänge des TPU-Signals. Ist ein Vielfaches von
-	 *            <code>TpuTimeUnit</code>.
-	 * @param highTime
-	 *            Länge, über welche das TPU-Signal eingeschaltet ist.
-	 *            <code>highTime</code> ist ein Vielfaches von
-	 *            <code>TpuTimeUnit</code> und sollte kleiner gleich
-	 *            <code>period</code> sein.
+	 * @param tpuA		<code>true</code>: use TPU-A,
+	 * 					<code>false</code>: use TPU-B.
+	 * @param channel	TPU channel to initialize. Allowed values
+	 * 					are 0..15.
+	 * @param period	Period time as a multiple of the TPU time base 
+	 * @param highTime	PWM signal high time as a multiple of the TPU
+	 * 					time base. It has to be less or equal then
+	 * 					the period time!
 	 */
 	public static void init(boolean tpuA, int channel, int period, int highTime) {
 		int shift, tpuAdr, s;
@@ -79,7 +71,7 @@ public class TPU_PWM implements ntbMpc555HB{
 			s |= 1 << shift;
 			US.PUT2(tpuAdr,s);
 		}
-		else{
+		else {
 			TPUB.init();
 			shift = (channel * 4) % 16;
 			tpuAdr = CFSR3_B - (channel / 4) * 2;			
@@ -111,23 +103,17 @@ public class TPU_PWM implements ntbMpc555HB{
 	}
 
 	/**
-	 * Legt Periodenlänge und High-Time des Signals neu fest. <br>
-	 * Vor dem Benutzen eines Kanals muss dieser über die Methode
-	 * <code>init(..)</code> initialisiert werden.
+	 * Update the parameters of a PWM signal at a TPU channel.<br>
+	 * Every channel has to be initialized before using it!
 	 * 
-	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
-	 * @param channel
-	 *            TPU-Pin <code>0..15</code>, welcher benutzt wird.
-	 * @param period
-	 *            Periodenlänge des TPU-Signals. Ist ein Vielfaches von
-	 *            <code>TpuTimeUnit</code>.
-	 * @param highTime
-	 *            Länge, über welche das TPU-Signal eingeschaltet ist.
-	 *            <code>highTime</code> ist ein Vielfaches von
-	 *            <code>TpuTimeUnit</code> und sollte kleiner gleich
-	 *            <code>period</code> sein.
+	 * @param tpuA		<code>true</code>: use TPU-A,
+	 * 					<code>false</code>: use TPU-B.
+	 * @param channel	TPU channel to initialize. Allowed values
+	 * 					are 0..15.
+	 * @param period	Period time as a multiple of the TPU time base 
+	 * @param highTime	PWM signal high time as a multiple of the TPU
+	 * 					time base. It has to be less or equal then
+	 * 					the period time!
 	 */
 	public static void update(boolean tpuA, int channel, int period,
 			int highTime) {
@@ -145,6 +131,5 @@ public class TPU_PWM implements ntbMpc555HB{
 			//Define time of period
 			US.PUT2(adr + 6, period);
 		}
-		
 	}
 }

@@ -5,19 +5,21 @@ import ch.ntb.inf.deep.unsafe.US;
 
 /*
  * changes:
+ * 22.02.2011 NTB/MZ, renamed to TPUA
+ * 07.12.2010 NTB/UG, adapted to the new board interface file
+ * 25.11.2010 NTB/UG, ported to deep
  * 18.02.2008 NTB/SP, assigned to java
  */
 
 /**
- * TPU Klasse für die TPU-B Anschlüsse.
+ * Driver for the TPU B.
  */
 public class TPUB implements ntbMpc555HB {
 
 	/**
-	 * Gibt die TCR1 Zykluszeit zurück.<br>
-	 * Dies bei einem IMB-Clock von 40 MHz.
+	 * Returns the TCR1 cycle time.
 	 * 
-	 * @return Aktuelle TCR1 Zykluszeit.
+	 * @return The current TCR1 cycle time.
 	 */
 	public static int getCycleTime() {
 		int prescale = 1;

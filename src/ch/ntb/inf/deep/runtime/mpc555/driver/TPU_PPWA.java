@@ -6,7 +6,7 @@ import ch.ntb.inf.deep.unsafe.US;
 /**
  * Perioden- / Pulsweiten-Messung (PPWA) mit der TPU-A oder TPU-B.<br>
  * Es kann die Hightime oder die Periode des Signals gemessen.<br>
- * Grundsätzlich können die folgenden Operationen auf alle 2x 16 TPU-Pins
+ * Grundsaetzlich können die folgenden Operationen auf alle 2x 16 TPU-Pins
  * angewandt werden. <br>
  * Es muss jedoch beachtet werden, dass andere Treiber ebenfalls die TPU-A oder
  * TPU-B benutzen können.<br>
@@ -26,7 +26,7 @@ public class TPU_PPWA implements ntbMpc555HB{
 	 *            TPU-Pin <code>0..15</code>, welcher initialisiert wird.
 	 * @param pulseWidth
 	 *            <code>true</code>: Messen der Pulsweite. <code>false</code>:
-	 *            Messen der Periodenlänge.
+	 *            Messen der Periodenlaenge.
 	 */
 	public static void init(boolean tpuA, int channel, boolean pulseWidth) {
 		if (tpuA) {
@@ -134,12 +134,12 @@ public class TPU_PPWA implements ntbMpc555HB{
 
 	/**
 	 * Auslesen des zuletzt gemessenen Wertes.<br>
-	 * Die Werte werden über die TPU permanent aktualisiert. Mittels dieser
+	 * Die Werte werden ueber die TPU permanent aktualisiert. Mittels dieser
 	 * Methode kann der zuletzt gemessene Wert ausgelesen werden.<br>
 	 * <br>
 	 * Die Werte sind in &micro;s.<br>
 	 * Da direkt innerhalb der Methode die Umrechnung bzgl. der verwendeten
-	 * CycleTime durchgeführt wird, ist keine weitere Umrechnung nötig.
+	 * CycleTime durchgefuehrt wird, ist keine weitere Umrechnung nötig.
 	 * 
 	 * @param tpuA
 	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
