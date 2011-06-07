@@ -1,83 +1,94 @@
+Config                              = MetaBlock { ConstantsBlock | MemoryMapBlock | RegisterMapBlock | TargetConfigurationBlock | RegInitBlock | ProjectBlock | OperatingSystemBlock | SysConstBlock } .
 
-Digit                               = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" .
-HexDigit                            = Digit | "a" | "b" | "c" | "d" | "e" | "f" | "A" | "B" | "C" | "D" | "E" | "F" .
-IntNumber                           = ( Digit {Digit} ) | ( "0" ( "x" | "X") HexDigit {HexDigit} ) .
+MetaBlock                           = "meta" "{" VersionAssigment FileDescAssigment [ImportAssigment] "}" .
+ConstantsBlock                      = "constants" "{" {VarAssigment} "}" .
+MemoryMapBlock                      = "memorymap" "{" {DeviceBlock | SegmentBlock | RegInitBlock | ModulesBlock | SegmentArray } "}" .
+RegisterMapBlock                    = "registermap" "{" { RegisterBlock } "}" . 
+TargetConfigurationBlock            = "targetconfiguration" Designator "{" ModulesBlock | RegInitBlock | SystemTableBlock  "}" .
+RegInitBlock                        = "reginit" "{" { VarAssigment } "}" .
+ProjectBlock                        = "project" "{" { RootClassAssignments | LibPathAssignment | DebugLevelAssignment | PrintLevelAssignment } "}" .
+OperatingSystemBlock                = "operatingsystem" "{" { SystemClassBlock } "}" .
+SysConstBlock                       = "sysconst" "{" {VarAssigment} "}" .
 
-Letter                              = a...z | A...Z | "_" .
-String                              = '"' {any character except " } '"'.
-Designator                          = Letter {Letter | Digit} .
+DeviceBlock                         = "device" Designator "{" [AttributeAssigment] [BaseAssigment] [WidthAssigment] [SizeAssigment][TechnologyAssignment] [MemorytypeAssignment] [Memorysector] [MemorysectorArray] "}" .
+SegmentBlock                        = "segment" SegmentDesignator "{" ([AttributeAssigment] [BaseAssigment] [WidthAssigment] [SizeAssigment]) {SegmentArray | SegmentBlock} "}".
+ModulesBlock                        = "modules" "{" { ModuleAssignment } "}" .
+SegmentArray                        = "segmentarray" SegmentDesignator  "{" SegmentSizeAssignment [AttributeAssigment] [BaseAssigment] [ArraySizeAssignment][WidhtAssignment][NofSegmentAssignment] "}" .
+RegisterBlock                       = "register" Designator "{" TypeAssignment AddressAssignment SizeAssignment [registerRepresentationAssignment] "}" . 
+SystemTableBlock 					= "system" "{" ModuleAssignment {ModuleAssignment} "}" .
+SystemClassBlock					= ("kernel" | "heap" | "us" | "exception" | "lowlevel" | "exceptionbaseclass") "{" ClassAssignment [MethodBlock] "}" .
+MethodBlock                         = "method" Designator "{" { AttributeAssignment | IdAssignment | OffsetAssignment } "}" .
+Memorysector                        = "memorysector" Designator "{" ([BaseAssigment] [SectorSizeAssignment])"}".
+MemorysectorArray                   = "memorysectorarray" Designator "{"  SectorSizeAssignment BaseAssigment NofSectorAssignment "}" .
 
-EnumSeparator                       = "," .
-AssignOp                            = "=" .
-EndToken                            = ";" .
+VersionAssigment                    = "version" AssignOp String EndToken .
+FileDescAssigment                   = "description" AssignOp String EndToken .
+ImportAssigment                     = "import" AssignOp StringEnum EndToken .
 
-Attribute                           = ContentAttribute | "read" | "write" .
-ContentAttribute                    = "const" | "code" | "var" | "heap" | "stack" | "systab" .
-Type                                = "GPR" | "FPR" | "SPR" | "gpr" | "fpr" | "spr" | "new" | "NEW" | "unsafe" | "UNSAFE" | "safe" | "SAFE".
-RegisterRep                         = "hex" | "dez" | "bin" | "float" | "Hex" | "Dez" | "Bin" | "Float" .
-SystemModules                       = "kernel" | "interrupts" | "exceptions" | "heap" | "default"  .
-Technology                          = "RAM" | "FLASH" .
+VarAssigment                        = Designator AssignOp Expression  EndToken .
+RootClassAssignments                = "rootClasses" AssignOp StringEnum EndToken .
+LibPathAssignment                   = "libpath" AssignOp StringEnum EndToken .
+DebugLevelAssignment                = "debugLevel" AssignOp IntNumber EndToken .
+PrintLevelAssignment                = "printlevel" AssignOp IntNumber EndToken .
+
+AttributeAssigment                  = "attributes" AssignOp AttributeEnum EndToken .
+BaseAssigment                       = "base" AssignOp Expression EndToken .
+WidthAssigment                      = "width" AssignOp Expression  EndToken .
+SizeAssigment                       = "size" AssignOp Expression EndToken .
+TechnologyAssignment                = "technology" AssignOp Technology EndToken .
+
+MemorytypeAssignment                = "memorytype" AssignOp String EndToken .
+ModuleAssignment					= (SystemModules | ConcatenatedDesignator ){EnumSeparator (SystemModules | ConcatenatedDesignator ) }  ":" ContentAttribute "@" SegmentDesignator {EnumSeparator ContentAttribute "@" SegmentDesignator} EndToken .
+SegmentSizeAssignment               = "segmentsize" AssingOp Expression EndToken .
+ArraySizeAssignment                 = "arraysize" AssignOp Expression EndToken . 
+NofSegmentAssignment                = "nofsegments" AssignOp Expression EndToken .
+TypeAssignment                      = "type" AssignOp Type EndToken .
+AddressAssignment                   = "addr" AssignOp Expression EndToken .
+RegisterRepresentationAssignment    = "repr" AssignOp RegisterRep EndToken . 
+ClassAssignment                     = "class" AssignOp String EndToken . 
+IdAssignment						= "id" AssignOp Expression EndToken .
+OffsetAssignment					= "offset" AssignOp Expression EndToken .
+SectorSizeAssignment				= "sectorsize" AssignOp Expression EndToken .
+NofSectorAssignment                 = "nofsectors" AssignOp Expression EndToken .
 
 AttributeEnum                       = Attribute { EnumSeparator Attribute } .
 StringEnum                          = String { EnumSeparator String } .
 SegmentDesignator                   = Designator { "." Designator }  .
 ConcatenatedDesignator              = Designator { ("." | "/") Designator } [".*" | "/*"] .
-ConcatenatedDesignatorEnum          = ConcatenatedDesignator { EnumSeparator ConcatenatedDesignator} .
 
-Factor                              = IntNumber | "(" Expression ")" | Designator .
-Term                                = Factor { ( "*" | "/" ) Factor } .
+Designator                          = Letter {Letter | Digit} .
+String                              = '"' {any character except " } '"'.
+Letter                              = a...z | A...Z | "_" | "<" | ">" .
+
 Expression                          = Term { ( "+" | "-" ) Term } .
+Term                                = Factor { ( "*" | "/" ) Factor } .
+Factor                              = IntNumber | "(" Expression ")" | Designator .
 
-VarAssigment                        = Designator AssignOp Expression  EndToken .
-VersionAssigment                    = "version" AssignOp String EndToken .
-FileDescAssigment                   = "description" AssignOp String EndToken .
-ImportAssigment                     = "import" AssignOp StringEnum EndToken .
-AttributeAssigment                  = "attributes" AssignOp AttributeEnum EndToken .
-WidthAssigment                      = "width" AssignOp Expression  EndToken .
-SizeAssigment                       = "size" AssignOp Expression EndToken .
-SegmentSizeAssignment               = "segmentsize" AssingOp Expression EndToken .
-ArraySizeAssignment                 = "arraysize" AssignOp Expression EndToken . 
-NofSegmentAssignment                = "nofsegments" AssignOp Expression EndToken .
-NofSectorAssignment                 = "nofsectors" AssignOp Expression EndToken .
-BaseAssigment                       = "base" AssignOp Expression EndToken .
-RegAssigment                        = Designator AssignOp Expression EndToken .
-AddressAssignment                   = "addr" AssignOp Expression EndToken .
-RegisterRepresentationAssignment    = "repr" AssignOp RegisterRep EndToken . 
-TypeAssignment                      = "type" AssignOp Type EndToken .
-LibPathAssignment                   = "libpath" AssignOp String EndToken .
-TargetConfigurationAssignment       = "targetconfiguration" AssignOp Designator EndToken .
-ByteCodeAssignment                  = "bc" AssignOp IntNumber EndToken .
-MemorytypeAssignment                = "memorytype" AssignOp String .
-TechnologyAssignment                = "technology" AssignOp Technology .
+Attribute                           = ContentAttribute | MethodAttribute | "read" | "write" .
+ContentAttribute                    = "const" | "code" | "var" | "heap" | "stack" | "systab" .
+MethodAttribute                     = "new" | "NEW" | "unsafe" | "UNSAFE" | "synthetic" | "SYNTEHTIC" | "exchnd" | "EXCHND" .
 
-MethodBlock                         = "method" Designator "{" TypeAssignment [ByteCodeAssignment] "}" .
-KernelModule                        = "kernel" "{" ClassAssignment [MethodBlock] "}" .
-HeapModule                          = "heap" "{" ClassAssignment [MethodBlock] "}" . 
-HwdModule                           = "interrupt" "{" ClassAssignment [MethodBlock] "}" .
-ExceptionModule                     = "exception" "{" ClassAssignment [MethodBlock] "}".
-BitOpsModule                        = "bitops" "{" ClassAssignment [MethodBlock] "}" .
+Type								= RegisterType | SpezialRegisterType .
+RegisterType                        = "GPR" | "FPR" | "SPR" | "IOR"| "gpr" | "fpr" | "spr" | "ior".
+SpezialRegisterType                 = "CR" | "MSR" | "FPSCR" .
 
-ClassAssignment                     = "class" AssignOp Designator { "."|"/" Designator } EndToken . 
-RootClassAssignments                = "rootClasses" AssignOp StringEnum EndToken .
-PrintLevelAssignment                = "printlevel" AssignOp IntNumber EndToken .
-DebugLevelAssignment                = "debugLevel" AssignOp IntNumber EndToken .
+RegisterRep                         = "hex" | "dez" | "bin" | "Hex" | "Dez" | "Bin" .
+SystemModules                       = "kernel" | "exceptions" | "heap" | "default" | "systemtable" .
+Technology                          = "RAM" | "FLASH" .
 
-MetaBlock                           = "meta" "{" VersionAssigment FileDescAssigment [ImportAssigment] "}" .
-ConstantsBlock                      = "constants" "{" {VarAssigment} "}" .
-SysConstBlock                       = "sysconst" "{" {VarAssigment} "}" .
-DeviceBlock                         = "device" Designator "{" [AttributeAssigment] [BaseAssigment] [WidthAssigment] [SizeAssigment][TechnologyAssignment] [MemorytypeAssignment] [Memorysector] [MemorysectorArray] "}" .
-RegInitBlock                        = "reginit" "{" { RegAssigment } "}" .
-RegisterBlock                       = "register" Designator "{" TypeAssignment AddressAssignment SizeAssignment [registerRepresentationAssignment] "}" . 
-SegmentBlock                        = "segment" SegmentDesignator "{" ([AttributeAssigment] [BaseAssigment] [WidthAssigment] [SizeAssigment]) {SegmentArray | SegmentBlock} "}".
-Memorysector                        = "memorysector" Designator "{" ([BaseAssigment] [SizeAssigment])"}".
-MemorysectorArray                   = "memorysectorarray" Designator "{"  SizeAssignment BaseAssigment NofSectorAssignment "}" .
-SegmentArray                        = "segmentarray" Designator  "{" SegmentSizeAssignment [AttributeAssigment] [BaseAssigment] [ArraySizeAssignment][WidhtAssignment][NofSegmentAssignment] "}" .
-MemoryMapBlock                      = "memorymap" "{" {DeviceBlock | SegmentBlock | RegInitBlock | ModulesBlock } "}" .
-RegisterMapBlock                    = "registermap" "{" { RegisterBlock } "}" . 
-ModulesBlock                        = "modules" "{" {(SystemModules | ConcatenatedDesignatorEnum ) ":" ContentAttribute "@" SegmentDesignator {EnumSeparator ContentAttribute "@" SegmentDesignator} EndToken } "}" . 
-TargetConfigurationBlock            = "targetconfiguration" Designator "{" ModulesBlock "}" .
-ProjectBlock                        = "project" "{" RootClassAssignments LibPathAssignment targetConfigurationAssignment DebugLevelAssignment PrintLevelAssignment "}" .
-OperatingSystemBlock                = "operatingsystem" "{" KernelAssignment HeapAssignment InterruptAssignment ExceptionAssignment "}" .
+EnumSeparator                       = "," .
+AssignOp                            = "=" .
+EndToken                            = ";" .
 
-Config                              = MetaBlock { ProjectBlock | ConstantsBlock | SysConstBlock | MemoryMapBlock | RegisterMapBlock | TargetConfigurationBlock | RegInitBlock | OperatingSystemBlock } .
+Digit                               = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" .
+HexDigit                            = Digit | "a" | "b" | "c" | "d" | "e" | "f" | "A" | "B" | "C" | "D" | "E" | "F" .
+IntNumber                           = ( Digit {Digit} ) | ( "0" ( "x" | "X") HexDigit {HexDigit} ) .
+
+
+
+
+
+
+
+
 
