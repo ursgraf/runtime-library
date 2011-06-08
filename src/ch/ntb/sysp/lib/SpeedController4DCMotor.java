@@ -11,23 +11,25 @@ public class SpeedController4DCMotor {
 	private int encChannelA;
 	private boolean encTPUA;
 	
-	private static final int pwmPeriod = 50000 / TPU_PWM.tpuTimeBase; // 1000000
-	private static final int fqd = 4;
+	private static final int pwmPeriod = 50000 / TPU_PWM.tpuTimeBase;	// period time of the PWM signal as multiple of the TPU time base
+	private static final int fqd = 4;			// factor for fast quadrature decoding
 	
-	private float scale;
-	private float b0, b1;
-	private float umax;
+	private float scale;						// scaling factor [rad/tick]
+	private float b0, b1;						// controller coefficients
+	private float umax;							// [V]
 	
-	private float desiredSpeed = 0, controlValue = 0, prevControlValue = 0;
+	private float desiredSpeed = 0,				// [1/s]
+		controlValue = 0,						// [V]
+		prevControlValue = 0;					// [V]
 	
-	private long time = 0, lastTime = 0;
-	private float dt;
-	private short actualPos, deltaPos, prevPos; // [enc ticks]
+	private long time = 0, lastTime = 0;		// [us]
+	private float dt;							// [s]
+	private short actualPos, deltaPos, prevPos; // [ticks]
 	private float speed = 0;					// [1/s]
 	private float e = 0, e_1 = 0;				// [1/s]
 	
 	/**
-	 * Create a new speed conroller for a DC motor.
+	 * Create a new speed controller for a DC motor.
 	 * @param ts task period in seconds [s]
 	 * @param pwmChannelA TPU channel for the first PWM signal. For the second PWM signal the channel of the first + 1 will be used.
 	 * @param useTPUA4PWM Time processing unit to use for PWM signals: true for TPU-A and false for TPU-B.
@@ -58,6 +60,10 @@ public class SpeedController4DCMotor {
 		TPU_FQD.init(useTPUA4Enc, encChannelA);
 	}
 
+	
+	/**
+	 * Controller task method. Call this method periodically with the given period time (ts)!
+	 */
 	public void run() {
 		// calculate exact time increment
 		time = Kernel.time();
@@ -82,10 +88,18 @@ public class SpeedController4DCMotor {
 		prevControlValue = controlValue;
 	}
 	
+	/**
+	 * Set desired speed.
+	 * @param v desired speed in radian per second [1/s]
+	 */
 	public void setDesiredSpeed(float v) {
 		this.desiredSpeed = v;
 	}
 	
+	
+	/** Returns the current speed.
+	 * @return current speed in radian per second [1/s]
+	 */
 	public float getActualSpeed() {
 		return speed;
 	}

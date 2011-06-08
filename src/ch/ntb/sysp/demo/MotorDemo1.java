@@ -18,17 +18,17 @@ import ch.ntb.sysp.lib.SpeedController4DCMotor;
  */
 public class MotorDemo1 extends Task {
 	
-	private static final float ts = 0.001f;
-	private static final int pwmChannelA = 0;
-	private static final boolean useTPUA4PWM = true;
-	private static final int encChannelA = 2;
-	private static final boolean useTPUA4Enc = true;
-	private static final int encTPR = 64; 
-	private static final float umax = 5;
-	private static final float i = 17; 
-	private static final float kp = 2; 
-	private static final float tn = 0.01f;
-	private static final float maxSpeed = 20;
+	private static final float ts = 0.001f;				// task period [s]
+	private static final int pwmChannelA = 0;			// channel for PWM signal A
+	private static final boolean useTPUA4PWM = true;	// use TPU-A for PWM signals
+	private static final int encChannelA = 2;			// channel for encoder signal A
+	private static final boolean useTPUA4Enc = true;	// use TPU-A for encoder signals
+	private static final int encTPR = 64; 				// number of impulse per rotation of the encoder [ticks] 
+	private static final float umax = 5;				// maximum voltage [V]
+	private static final float i = 17;					// gear transmission ratio
+	private static final float kp = 2;					// controller gain factor
+	private static final float tn = 0.01f;				// time constant of the controller (equal to the mechanical time constant of the connected DC motor)
+	private static final float maxSpeed = 20;			// maximum speed [1/s]
 	
 	private static boolean auto = false;
 	private static short counter = 0;
@@ -37,6 +37,9 @@ public class MotorDemo1 extends Task {
 	
 	private MotorDemo1() {}
 	
+	/* (non-Javadoc)
+	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
+	 */
 	public void action() {
 		if(counter > 2000) {
 			if(auto) {
@@ -53,40 +56,67 @@ public class MotorDemo1 extends Task {
 		controller.run();
 	}
 	
+	
+	/**
+	 * Command: Stop motor.
+	 */
 	public static void stop() {
 		controller.setDesiredSpeed(0);
 		System.out.println("Speed set to 0");
 	}
 	
+	/**
+	 * Command: Rotate motor with full speed in anticlockwise direction.
+	 */
 	public static void fullLeft() {
 		controller.setDesiredSpeed(maxSpeed);
 		System.out.print("Speed set to ");
-		System.out.println(maxSpeed);
+		System.out.print(maxSpeed);
+		System.out.println(" 1/s");
 	}
 	
+	/**
+	 * Command: Rotate motor with half speed in anticlockwise direction.
+	 */
 	public static void halfLeft() {
 		controller.setDesiredSpeed(maxSpeed / 2);
 		System.out.print("Speed set to ");
-		System.out.println(maxSpeed / 2);
+		System.out.print(maxSpeed / 2);
+		System.out.println(" 1/s");
 	}
 	
+	/**
+	 * Command: Rotate motor with full speed in clockwise direction.
+	 */
 	public static void fullRight() {
 		controller.setDesiredSpeed(-maxSpeed);
 		System.out.print("Speed set to ");
-		System.out.println(-maxSpeed);
+		System.out.print(-maxSpeed);
+		System.out.println(" 1/s");
 	}
 	
+	/**
+	 * Command: Rotate motor with half speed in clockwise direction.
+	 */
 	public static void halfRight() {
 		controller.setDesiredSpeed(-maxSpeed / 2);
 		System.out.print("Speed set to ");
-		System.out.println(-maxSpeed / 2);
+		System.out.print(-maxSpeed / 2);
+		System.out.println(" 1/s");
 	}
 	
+	
+	/**
+	 * Command: Disable automatic demo mode.
+	 */
 	public static void disableAutoMode() {
 		auto = false;
 		System.out.println("Automatic demo mode disabled");
 	}
 	
+	/**
+	 * Command: Enable automatic demo mode.
+	 */
 	public static void enableAutoMode() {
 		auto = true;
 		System.out.println("Automatic demo mode enabled");
