@@ -11,7 +11,7 @@ public class SpeedController4DCMotor {
 	private int encChannelA;
 	private boolean encTPUA;
 	
-	private static final int pwmPeriod = 1000000 / TPU_PWM.TpuTimeUnit; 
+	private static final int pwmPeriod = 50000 / TPU_PWM.tpuTimeBase; // 1000000
 	private static final int fqd = 4;
 	
 	private float scale;

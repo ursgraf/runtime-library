@@ -9,8 +9,8 @@ import ch.ntb.sysp.lib.SpeedController4DCMotor;
  * Demo application for motor controller. <br/>
  * Use the Maxon Motor Module with a RE-max13 and connect it as follows:
  * <ul>
- *   <li>PWM A (Left): TPU A, Channel 0</li>
- *   <li>PWM B (Right): TPU A, Channel 1</li>
+ *   <li>PWM A (Right): TPU A, Channel 0</li>
+ *   <li>PWM B (Left): TPU A, Channel 1</li>
  *   <li>Encoder A: TPU A, Channel 2</li>
  *   <li>Encoder B: TPU A, Channel 3</li>
  * </ul>
@@ -26,7 +26,7 @@ public class MotorDemo1 extends Task {
 	private static final int encTPR = 64; 
 	private static final float umax = 5;
 	private static final float i = 17; 
-	private static final float kp = 1; 
+	private static final float kp = 2; 
 	private static final float tn = 0.01f;
 	private static final float maxSpeed = 20;
 	
