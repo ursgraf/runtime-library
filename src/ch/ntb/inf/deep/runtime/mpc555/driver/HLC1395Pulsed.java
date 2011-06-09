@@ -73,8 +73,7 @@ public class HLC1395Pulsed extends Task {
 	 */
 	public void action() {
 		if (sensAdr >= 0) {// get result
-			resultVal[sensAdr] = (short) (US.GET2(RJURR_A + 2) - US
-					.GET2(RJURR_A)); // dark - val
+			resultVal[sensAdr] = (short) (US.GET2(RJURR_A + 2) - US.GET2(RJURR_A)); // dark - val
 		}
 		sensAdr++;
 		period = 1;

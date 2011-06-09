@@ -49,7 +49,7 @@ public class Robi2 extends Task {
 	private static final float wheelDiameter = 0.0273f;		// Wheel diameter in meter
 	private static final float wheelDistance = 0.167f;		// Wheel distance in meter
 	private static final float scale = (float) Math.PI * wheelDiameter / (tpr * fqd * i);
-	private static final int pwmPeriod = 1000000 / TPU_PWM.TpuTimeUnit;
+	private static final int pwmPeriod = 1000000 / TPU_PWM.tpuTimeBase;
 
 	private static final float kp = 10f;
 	private static final float tn = 0.02f;
