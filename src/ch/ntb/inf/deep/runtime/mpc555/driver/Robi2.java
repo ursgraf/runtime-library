@@ -4,12 +4,18 @@ import java.lang.Math;
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 
+/* Changes:
+ * 26.05.2011	NTB/MZ	controller type changed to PI, JavaDoc updated
+ * 02.05.2011	NTB/MZ	bug fixes
+ * 22.03.2011	NTB/RM	adapted to deep
+ * 13.09.2010	NTB/MZ	motor controllers added
+ * 20.08.2010	NTB/MZ	initial version
+ */
+
 /**
  * This driver is used for the Robi2. Robi2 use basically the MPC555 processor.
- * Therefrom the TPUB, QADC, MPIOSM. The driver initialize all required modules
- * automatically.
- * 
- * @author Martin Zueger, Roger Millischer
+ * Of this, the TPU B, the QADC A and the MPIOSM are used. The driver initialize
+ * all required modules automatically.
  * 
  */
 public class Robi2 extends Task {
@@ -45,42 +51,42 @@ public class Robi2 extends Task {
 	private static final float ts = 0.001f;					// Task period in seconds
 	private static final int tpr = 64;						// Encoder ticks per rotation
 	private static final int fqd = 4;						// FQD
-	private static final int i = 17;						// gear transmission ratio
+	private static final int i = 17;						// Gear transmission ratio
 	private static final float wheelDiameter = 0.0273f;		// Wheel diameter in meter
 	private static final float wheelDistance = 0.167f;		// Wheel distance in meter
-	private static final float scale = (float) Math.PI * wheelDiameter / (tpr * fqd * i);
-	private static final int pwmPeriod = 1000000 / TPU_PWM.tpuTimeBase;
+	private static final float scale = -(float)Math.PI * wheelDiameter / (tpr * fqd * i);
+	private static final int pwmPeriod = 20000 / TPU_PWM.tpuTimeBase;
 
-	private static final float kp = 10f;
+	private static final float kp = 2f;
 	private static final float tn = 0.02f;
 	private static final float b0 = kp * (1f + ts / (2f * tn));
 	private static final float b1 = kp * (ts / (2f * tn) - 1f);
 
-	public static final float v_max = 0.55f; // [m/s]
+	public static final float v_max = 0.45f; // [m/s]
+	public static final float u_max = 7.5f; // [V]
 	
 	/* Private variables */
 	/*****************************************************************************/
-	private static float s1 = 0, s2 = 0; // zurückgelegter Weg pro Rad
+	private static float s1 = 0, s2 = 0; // traveled distance of each wheel
 	private static float v1 = 0, v2 = 0; // linear speed of each wheel
 	private static short prevPos1 = 0, prevPos2 = 0;
-	private static long lastTime;
+	private static long time, lastTime; // [us]
+	private static float dt; // [s]
 	private static float desiredSpeedLeft = 0, desiredSpeedRight = 0; // [m/s]
-	private static float ev1 = 0, ev2 = 0, ev1old = 0, ev2old = 0;
-	private static float cv1 = 0, cv2 = 0, cv1old = 0, cv2old = 0; 
-	private static float vy_R = 0,	// speed in y direction rel. to the robot (vx_R is always 0)
-		vx_E = 0, vy_E = 0, 		// speed in x and y direction rel. to the environment
-		w_R = 0,					// rotation speed of the robot
-		phi = 0,					// orientation of the robot
-		x = 0, y = 0;				// position of the robot
+	private static float ev1 = 0, ev2 = 0, ev1old = 0, ev2old = 0; // [m/s]
+	private static float cv1 = 0, cv2 = 0, cv1old = 0, cv2old = 0; // [m/s]
+	private static float vy_R = 0,	// speed in y direction relative to the robot (vx_R is always 0) [m/s]
+		vx_E = 0, vy_E = 0, 		// speed in x and y direction relative to the environment [m/s]
+		w_R = 0,					// rotation speed of the robot [rad/s]
+		phi = 0,					// orientation of the robot [rad]
+		x = 0, y = 0;				// position of the robot [m]
 
-
-	private static int counter = 0;
 	
 	/* Background task */
 	/*****************************************************************************/
 
 	private Robi2() {
-		this.period = (int) (1000 * ts);
+		this.period = (int)(1000 * ts);
 		Task.install(this);
 	}
 
@@ -97,19 +103,19 @@ public class Robi2 extends Task {
 		short actualPos, deltaPos;
 
 		// calculate exact time increment
-		long time = Kernel.time();
-		float dt = (time - lastTime) * 1e-6f;
+		time = Kernel.time();
+		dt = (time - lastTime) * 1e-6f;	// [s]
 		lastTime = time;
 
 		// calculate distance traveled and speed for each wheel
 		actualPos = TPU_FQD.getPosition(TPUB, Mot1_EncA_Pin);
-		deltaPos = (short) (actualPos - prevPos1);
+		deltaPos = (short)(actualPos - prevPos1);
 		prevPos1 = actualPos;
 		s1 += deltaPos * scale;
 		v1 = deltaPos * scale / dt;
 
 		actualPos = TPU_FQD.getPosition(TPUB, Mot2_EncA_Pin);
-		deltaPos = (short) (-(actualPos - prevPos2));
+		deltaPos = (short)(actualPos - prevPos2);
 		prevPos2 = actualPos;
 		s2 += deltaPos * scale;
 		v2 = deltaPos * scale / dt;
@@ -132,25 +138,20 @@ public class Robi2 extends Task {
 		x += vx_E * dt;
 		y += vy_E * dt;
 		
-//		if(counter > 10) {
-//			System.out.println(v1);
-//			counter = 0;
-//		}
-//		counter++;
-		
 		/* Motor controllers */
-		ev1old = ev1;
-		ev2old = ev2;
-		ev1 = desiredSpeedRight - (-v1);
+		ev1 = desiredSpeedRight - v1;
 		ev2 = desiredSpeedLeft - v2;
 		
 		cv1 = cv1old + b0 * ev1 + b1 * ev1old;
-		cv2 = cv2old + b0 * ev2 + b1 * ev2old;
+		cv2 = cv2old + b0 * ev2 + b1 * ev2old;	
 		
+		setPwmForRightMotor(cv1  / v_max);
+		setPwmForLeftMotor(cv2 / v_max);
 		
-		setPwmForRightMotor((int)(cv1 * 100 / v_max));
-		setPwmForLeftMotor((int)(cv2 * 100 / v_max));
+		//System.out.println(v1);
 		
+		ev1old = ev1;
+		ev2old = ev2;
 		cv1old = cv1;
 		cv2old = cv2;
 		
@@ -160,7 +161,7 @@ public class Robi2 extends Task {
 	/*****************************************************************************/
 
 	/**
-	 * Activate all three position LEDs (white)
+	 * Enable all three position LEDs (white)
 	 */
 	public static void activatePosLEDs() {
 		for (int i = 12; i < 15; i++)
@@ -168,7 +169,7 @@ public class Robi2 extends Task {
 	}
 
 	/**
-	 * Deactivate all three position LEDs (white)
+	 * Disable all three position LEDs (white)
 	 */
 	public static void deactivatePosLEDs() {
 		for (int i = 12; i < 15; i++)
@@ -188,9 +189,7 @@ public class Robi2 extends Task {
 	}
 
 	/**
-	 * <p>
 	 * Set the state of head position LED (LED16).
-	 * </p>
 	 * 
 	 * @param state
 	 *            the state of LED16 (true = on, false = off)
@@ -200,9 +199,7 @@ public class Robi2 extends Task {
 	}
 
 	/**
-	 * <p>
 	 * Get the state of head position LED (LED16).
-	 * </p>
 	 * 
 	 * @return the state of LED16 (true = on, false = off)
 	 */
@@ -211,9 +208,7 @@ public class Robi2 extends Task {
 	}
 
 	/**
-	 * <p>
 	 * Set the state of the rear left position LED (LED17).
-	 * </p>
 	 * 
 	 * @param state
 	 *            the state of LED17 (true = on, false = off)
@@ -223,9 +218,7 @@ public class Robi2 extends Task {
 	}
 
 	/**
-	 * <p>
 	 * Get the state of the rear left position LED (LED17).
-	 * </p>
 	 * 
 	 * @return the state of LED17. (true = on, false = off)
 	 */
@@ -234,9 +227,7 @@ public class Robi2 extends Task {
 	}
 
 	/**
-	 * <p>
 	 * Set the state of the rear right position LED (LED18).
-	 * </p>
 	 * 
 	 * @param state
 	 *            the state of LED18 (true = on, false = off)
@@ -246,9 +237,7 @@ public class Robi2 extends Task {
 	}
 
 	/**
-	 * <p>
 	 * Get the state of the rear right position LED (LED18).
-	 * </p>
 	 * 
 	 * @return the state of LED18 (true = off, false = on)
 	 */
@@ -335,11 +324,9 @@ public class Robi2 extends Task {
 	 * <li><code>getPatternLED(3,2)</code> gets the state of LED13</li><br>
 	 * </ul></p>
 	 * 
-	 * @param r
-	 *            row of the LED (range 0..3);
-	 * @param c
-	 *            column of the LED (range 0..2)
-	 * @return the state of the LED (true = on, false = off)
+	 * @param r		row of the LED (range 0..3);
+	 * @param c		column of the LED (range 0..2)
+	 * @return		the state of the LED (true = on, false = off)
 	 */
 	public static boolean getPatternLED(int r, int c) {
 		boolean state = false;
@@ -403,17 +390,14 @@ public class Robi2 extends Task {
 	/**
 	 * Set the state of the center LED (the blue one).
 	 * 
-	 * @param state
-	 *            the state of the blue center LED (true = on, false = off)
+	 * @param state		the state of the blue center LED (true = on, false = off)
 	 */
 	public static void setCenterLED(boolean state) {
 		TPU_DIO.set(true, 15, !state);
 	}
 
 	/**
-	 * <p>
 	 * Get the state of the center LED (the blue one).
-	 * </p>
 	 * 
 	 * @return the state of the blue center LED (true = on, false = off)
 	 */
@@ -455,17 +439,16 @@ public class Robi2 extends Task {
 	/*****************************************************************************/
 
 	/**
-	 * Read the converted value of a choosen distance sensor.
+	 * Read the converted value of a chosen distance sensor.
 	 * 
-	 * @param sensor
-	 *            the sensor which should be read (range 0..15)
-	 * @return converted value (range 0..1023)
+	 * @param sensor	the sensor which should be read (range 0..15)
+	 * @return			converted value (range 0..1023)
 	 */
 	public static int getDistSensorValue(int sensor) {
 		return HLC1395Pulsed.read(sensor);
 	}
 
-	/* Drive */
+	/* Drive and odometry */
 	/*****************************************************************************/
 
 	/**
@@ -539,32 +522,6 @@ public class Robi2 extends Task {
 		x = 0;
 		y = 0;
 	}
-
-	private static void setPwmForLeftMotor(int dutyCycle) {
-		dutyCycle = checkDutyCycle(dutyCycle);
-		if (dutyCycle >= 0) { // forward
-			TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, 0); // direction
-		} else { // backward
-			TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, pwmPeriod); // direction
-			dutyCycle = dutyCycle + 100;
-		}
-		TPU_PWM.update(TPUB, Mot2_PWMB_Pin, pwmPeriod,
-				(dutyCycle * pwmPeriod) / 100); // speed
-	}
-	
-	private static void setPwmForRightMotor(int dutyCycle) {
-		dutyCycle = checkDutyCycle(dutyCycle);
-
-		if (dutyCycle >= 0) { // forward
-			TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, 0); // direction
-		} else { // backward
-			TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, pwmPeriod); // direction
-			dutyCycle = dutyCycle + 100;
-		}
-		TPU_PWM.update(TPUB, Mot1_PWMB_Pin, pwmPeriod,
-				(dutyCycle * pwmPeriod) / 100); // speed
-
-	}
 	
 	/**
 	 * Sets the speed of the left drive in percent.<br>
@@ -608,7 +565,7 @@ public class Robi2 extends Task {
 	 *            range -100..100
 	 */
 	public static void setDrivesSpeedEqual(int speed) {
-			setRightDriveSpeed(-speed);
+			setRightDriveSpeed(speed);
 			setLeftDriveSpeed(speed);
 	}
 
@@ -623,7 +580,7 @@ public class Robi2 extends Task {
 	 *            range -100..100
 	 */
 	public static void setDrivesSpeedAntidormic(int speed) {
-			setRightDriveSpeed(speed);
+			setRightDriveSpeed(-speed);
 			setLeftDriveSpeed(speed);
 	}
 
@@ -634,13 +591,50 @@ public class Robi2 extends Task {
 			setRightDriveSpeed(0);
 			setLeftDriveSpeed(0);
 	}
+	
+	/**
+	 * Update the PWM signal for the left motor to a given duty cycle.
+	 * @param dutyCycle		the new duty cycle (-1..1). 
+	 */
+	private static void setPwmForLeftMotor(float dutyCycle) {
+		dutyCycle = limitDutyCycle(dutyCycle);
+		if (dutyCycle >= 0) { // forward
+			TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, 0); // direction
+		} else { // backward
+			TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, pwmPeriod); // direction
+			dutyCycle = dutyCycle + 1;
+		}
+		TPU_PWM.update(TPUB, Mot2_PWMB_Pin, pwmPeriod, (int)(dutyCycle * pwmPeriod)); // speed
+	}
+	
+	/**
+	 * Update the PWM signal for the right motor to a given duty cycle.
+	 * @param dutyCycle		the new duty cycle (-1..1). 
+	 */
+	private static void setPwmForRightMotor(float dutyCycle) {
+		dutyCycle = limitDutyCycle(dutyCycle);
 
-	private static int checkDutyCycle(int speed) {
-		if (speed > 100)
-			return 100;
-		if (speed < -100)
-			return -100;
-		return speed;
+		if (dutyCycle >= 0) { // forward
+			TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, 0); // direction
+		} else { // backward
+			TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, pwmPeriod); // direction
+			dutyCycle = dutyCycle + 1;
+		}
+		TPU_PWM.update(TPUB, Mot1_PWMB_Pin, pwmPeriod, (int)(dutyCycle * pwmPeriod)); // speed
+
+	}
+	
+	/**
+	 * Limit the duty cycle to allowed values.
+	 * @param d	duty cycle to limit
+	 * @return	limited duty cycle
+	 */
+	private static float limitDutyCycle(float d) {
+		if (d > 1)
+			return 1;
+		if (d < -1)
+			return -1;
+		return d;
 	}
 	
 	/* Misc */
@@ -653,12 +647,10 @@ public class Robi2 extends Task {
 	 */
 	public static float getBatteryVoltage() {
 		return 10f / 1023f * QADC_AIN.read(QADCB, 1);
-		// return QADC.read(QADCB, 1);
 	}
 
 	/* Static constructor */
 	/*****************************************************************************/
-
 	static {
 
 		// Initialize all LEDs
