@@ -1,19 +1,22 @@
 package java.lang;
 
+import ch.ntb.inf.deep.lowLevel.LL;
+import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
- 04.09.09	NTB/MZ	ceil, floor, fix, class moved to java.lang
- 27.10.06	NTB/ED	SYS.ADR(param)	==> SYS.ADR(locVar)
- 25.08.06	NTB/ED	powOf10, sqrt
- 14.08.04	NTB/ED	creation, powOf10, powIntExp
+ 30.06.11	NTB/Urs Graf	ported to deep
+ 04.09.09	NTB/MZ			ceil, floor, fix, class moved to java.lang
+ 27.10.06	NTB/ED			SYS.ADR(param)	==> SYS.ADR(locVar)
+ 25.08.06	NTB/ED			powOf10, sqrt
+ 14.08.04	NTB/ED			creation, powOf10, powIntExp
  */
 
 public class Math {
 	private static final boolean _$bigEndian = true; // big-endian
 
 	/**
-	 * Keine Instanzen zulassen.
+	 * do not allow instances.
 	 */
 	private Math() {
 	}
@@ -47,11 +50,11 @@ public class Math {
 	 */
 
 	/**
-	 * Potenzberechnung
+	 * Calculation of power with exponent being an integer value
 	 * 
-	 * @param base Basis
-	 * @param exp Exponent
-	 * @return Potenz base<sup>exp</sup>.
+	 * @param base base
+	 * @param exp exponent
+	 * @return power base<sup>exp</sup>.
 	 */
 	public static double powIntExp(double base, int exp) {
 		double p = 1.0;
@@ -69,10 +72,10 @@ public class Math {
 	}
 
 	/**
-	 * Gibt den Betrag des Arguments zurück.<br>
+	 * Returns absolute value<br>
 	 * 
 	 * @param a
-	 * @return Betrag
+	 * @return absolute value
 	 */
 	public static int abs(int a) {
 		if (a < 0)
@@ -81,10 +84,10 @@ public class Math {
 	}
 
 	/**
-	 * Gibt den Betrag des Arguments zurück.<br>
+	 * Returns absolute value<br>
 	 * 
 	 * @param a
-	 * @return Betrag
+	 * @return absolute value
 	 */
 	public static double abs(double a) {
 		if (a < 0)
@@ -93,11 +96,11 @@ public class Math {
 	}
 
 	/**
-	 * Bestimmt den Maximalwert der beiden Argumente.<br>
+	 * Returns maximum value<br>
 	 * 
 	 * @param a
 	 * @param b
-	 * @return b, falls b > a, sonst a
+	 * @return b if b > a, else a
 	 */
 	public static int max(int a, int b) {
 		if (b > a)
@@ -106,11 +109,11 @@ public class Math {
 	}
 
 	/**
-	 * Bestimmt den Maximalwert der beiden Argumente.<br>
+	 * Returns maximum value<br>
 	 * 
 	 * @param a
 	 * @param b
-	 * @return b, falls b > a, sonst a
+	 * @return b if b > a, else a
 	 */
 	public static double max(double a, double b) {
 		if (b > a)
@@ -119,11 +122,11 @@ public class Math {
 	}
 
 	/**
-	 * Bestimmt den Minimalwert der beiden Argumente.<br>
+	 * Returns minimum value<br>
 	 * 
 	 * @param a
 	 * @param b
-	 * @return b, falls b < a, sonst a
+	 * @return b if b < a, else a
 	 */
 	public static int min(int a, int b) {
 		if (b < a)
@@ -132,11 +135,11 @@ public class Math {
 	}
 
 	/**
-	 * Bestimmt den Minimalwert der beiden Argumente.<br>
+	 * Returns minimum value<br>
 	 * 
 	 * @param a
 	 * @param b
-	 * @return b, falls b < a, sonst a
+	 * @return b if b < a, else a
 	 */
 	public static double min(double a, double b) {
 		if (b < a)
@@ -145,51 +148,40 @@ public class Math {
 	}
 
 	/**
-	 * Berechnung der Quadratwurzel.<br>
+	 * Calculates square root.<br>
 	 * 
 	 * @param arg
-	 * @return Quadratwurzel
+	 * @return square root
 	 */
 	public static double sqrt(double arg) {
 		double a = arg;
-		int argAdr = 0;
-//		if (_$bigEndian)
-//			argAdr = US.ADR(a);
-//		else
-//			argAdr = US.ADR(a) + 6;
-
-		int high = US.GET2(argAdr); // high = Math.abs(a) >>> 32
-		if (high < 0)
+		long bits = LL.doubleToBits(a); 
+		int e = (int)(bits >>> 52);
+		if ((e & 0x800) == 0x800)
 			return Double.NaN;
-		if ((high & 0x7FF0) == 0x7FF0)
+		if ((e & 0x7FF) == 0x7FF)
 			return a;
 
-		int seDiv2 = 0;
-		/*
-		 * allow denormalized numbers if (a < Double.MIN_VALUE_NORM) { //
-		 * denormalized number a = a * twoPow52; high = SYS.GET2(argAdr); seDiv2
-		 * = -26 << 4; }
-		 */
-		if (high < 0x0010)
-			return 0.0; // a < Double.MIN_VALUE_NORM: denormalized number
+		if (e < 0x0010)
+			return 0.0; 
 
-		int sexp = high - (dExpOffset << 4); // sexp: shifted exponent without
-												// offset
-		seDiv2 += (sexp >> 1) & (-1 << 4);
-		int seMod2 = sexp & (1 << 4);
-		high = (high & ((1 << 4) - 1)) + seMod2 + (dExpOffset << 4);
-		US.PUT2(argAdr, high);
+		int exp = e - dExpOffset; // exponent without offset
+		int expDiv2 = exp >> 1;
+		int expMod2 = exp & 1;
+		exp = expMod2 + dExpOffset;
+		bits = bits & 0xfffffffffffffL | ((long)(exp) << 52);
+		a = LL.bitsToDouble(bits);
 
-		double ar = a; // load a in reg ar
-		double xa = (ar + 1) / 2;
-		double xn = (xa + ar / xa) / 2;
-		xa = (xn + ar / xn) / 2; // 1
-		xn = (xa + ar / xa) / 2; // 2
-		xa = (xn + ar / xn) / 2; // 3
-		xn = (xa + ar / xa) / 2; // 4
-		a = (xn + ar / xn) / 2; // 5
-		// high = SYS.GET2(argAdr); SYS.PUT2(argAdr, high + seDiv2);
-		US.PUT2(argAdr, US.GET2(argAdr) + seDiv2);
+		double xa = (a + 1) / 2;
+		double xn = (xa + a / xa) / 2;
+		xa = (xn + a / xn) / 2; // 1
+		xn = (xa + a / xa) / 2; // 2
+		xa = (xn + a / xn) / 2; // 3
+		xn = (xa + a / xa) / 2; // 4
+		a = (xn + a / xn) / 2; // 5
+		bits = LL.doubleToBits(a);
+		bits += (long)expDiv2 << 52;
+		a = LL.bitsToDouble(bits);
 		return a;
 	}
 
@@ -213,12 +205,12 @@ public class Math {
 	 * @return the cosine of the argument.
 	 */
 	public static double cos(double arg) {
-		if (Double.getExponent(arg) == Double.INF_EXPONENT)
+		if (Double.getExponent(arg) == (int)Double.INF_EXPONENT)
 			return Double.NaN;
 
 		if (arg < 0)
 			arg = -arg;
-		arg = arg % (2 * Math.PI);
+		arg = arg % twoPI;
 
 		int quadrant = (int) (arg / pio2);
 		switch (quadrant) {
@@ -264,7 +256,7 @@ public class Math {
 	 * @return the sine of the argument.
 	 */
 	public static double sin(double arg) {
-		if (Double.getExponent(arg) == Double.INF_EXPONENT)
+		if (Double.getExponent(arg) == (int)Double.INF_EXPONENT)
 			return Double.NaN;
 
 		arg = arg % twoPI;
@@ -348,7 +340,7 @@ public class Math {
 	 * @return the tangent of the argument.
 	 */
 	public static double tan(double arg) {
-		if (Double.getExponent(arg) == Double.INF_EXPONENT)
+		if (Double.getExponent(arg) == (int)Double.INF_EXPONENT)
 			return Double.NaN;
 
 		arg = arg % PI;

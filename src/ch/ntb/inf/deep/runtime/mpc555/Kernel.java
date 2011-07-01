@@ -41,7 +41,6 @@ public class Kernel implements ntbMpc555HB {
 			for (int k = 0; k < delay; k++);
 		}
 		for (int k = 0; k < (10 * delay + nTimes * 2 * delay); k++);
-//		for (int k = 0; k < (2000000); k++);
 	}
 
 
@@ -74,9 +73,9 @@ public class Kernel implements ntbMpc555HB {
 		US.PUT2(TBSCR, 1); 	// time base, no interrupts, stop time base while freeze, enable
 		short reset = US.GET2(RSR);
 		if ((reset & (1<<5 | 1<<15)) != 0) {	// boot from flash
-			US.PUT4(SYPCR, 0xFFFFFF83);	// TODO@Urs: check this!
-			US.PUT4(DMBR, 0x1);			// 0x1: Dual mapping enable, map from address 0, use CS0 -> external Flash
-			US.PUT4(DMOR, 0x7E000000);	// 0x7e000000: Map 32k -> 0x0...0x8000 is dual mapped
+			US.PUT4(SYPCR, 0xffffff83);	// bus monitor time out, enable bus monitor, disable watchdog
+			US.PUT4(DMBR, 0x1);			// dual mapping enable, map from address 0, use CS0 -> external Flash
+			US.PUT4(DMOR, 0x7e000000);	// map 32k -> 0x0...0x8000
 		}
 		
 //		SetFPSCR;
