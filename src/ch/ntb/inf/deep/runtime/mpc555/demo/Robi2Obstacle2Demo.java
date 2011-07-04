@@ -40,9 +40,11 @@ public class Robi2Obstacle2Demo extends Task {
 					state = 1;
 					Robi2.stopDrives();
 					if(turnLeft){
-						Robi2.setDrivesSpeedAntidormic(-80);
+						Robi2.setRightDriveSpeed(-80);
+						Robi2.setLeftDriveSpeed(-80);
 					}else{
-						Robi2.setDrivesSpeedAntidormic(80);
+						Robi2.setRightDriveSpeed(80);
+						Robi2.setLeftDriveSpeed(80);
 					}
 				}
 				break;
@@ -50,7 +52,8 @@ public class Robi2Obstacle2Demo extends Task {
 				if (! hasBarrier()) {
 					state = 0;
 					Robi2.stopDrives(); 
-					Robi2.setDrivesSpeedEqual(60);
+					Robi2.setRightDriveSpeed(-60);
+					Robi2.setLeftDriveSpeed(60);
 				}
 				break;
 			default: 

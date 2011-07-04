@@ -53,7 +53,7 @@ public class Robi2 extends Task {
 	private static final int fqd = 4;						// FQD
 	private static final int i = 17;						// Gear transmission ratio
 	private static final float wheelDiameter = 0.0273f;		// Wheel diameter in meter
-	private static final float wheelDistance = 0.167f;		// Wheel distance in meter
+	public static final float wheelDistance = 0.167f;		// Wheel distance in meter
 	private static final float scale = -(float)Math.PI * wheelDiameter / (tpr * fqd * i);
 	private static final int pwmPeriod = 20000 / TPU_PWM.tpuTimeBase;
 
@@ -68,7 +68,7 @@ public class Robi2 extends Task {
 	/* Private variables */
 	/*****************************************************************************/
 	private static float s1 = 0, s2 = 0; // traveled distance of each wheel
-	private static float v1 = 0, v2 = 0; // linear speed of each wheel
+	public static float v1 = 0, v2 = 0; // linear speed of each wheel
 	private static short prevPos1 = 0, prevPos2 = 0;
 	private static long time, lastTime; // [us]
 	private static float dt; // [s]
