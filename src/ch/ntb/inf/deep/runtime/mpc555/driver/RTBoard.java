@@ -195,14 +195,11 @@ public class RTBoard implements ntbMpc555HB {
 		US.PUT1(PQSPAR, 0x013);  // use PCS1, MOSI, MISO for QSPI 
 		US.PUT1(DDRQS, 0x016);   //SCK, MOSI, PCS1 output; MISO is input 
 		US.PUT2(PORTQS, 0x0FF);  //all Pins, in case QSPI disabled, are high 
-		US.PUT2(SPCR0, 0x08302); // QSPI is master, 16 bits per transfer, inactive state of SCLK is high (CPOL=1), data changed on leading edge (CPHA=1), clock = 10s MHz 
+		US.PUT2(SPCR0, 0x08302); // QSPI is master, 16 bits per transfer, inactive state of SCLK is high (CPOL=1), data changed on leading edge (CPHA=1), clock = 10MHz 
 		US.PUT2(SPCR2, 0x4300);  // no interrupts, wraparound mode, NEWQP=0, ENDQP=03 
-		for(int i=0; i<4; i++) US.PUT1(COMDRAM + i, 0x4D); //disable chip select after transfer, use bits in SPCR0, use PCS1 
+		for(int i=0; i<4; i++) US.PUT1(COMDRAM + i, 0x6D); //disable chip select after transfer, use bits in SPCR0, use PCS1 
 		for(int i=0; i<4; i++) US.PUT2(TRANRAM + 2 * i, i * 0x4000 + 2048);
-		US.PUT2(SPCR1, 0x8000);  // enable QSPI
-		US.PUT1(DDRQS, 0x36);
-		US.PUT1(PQSPAR, 0x33);
-		US.PUT1(COMDRAM, 0x49);
+		US.PUT2(SPCR1, 0x08010);	//enable QSPI, delay 13us after transfer
 	}
 
 
