@@ -50,7 +50,7 @@ public class RTBoard implements ntbMpc555HB {
    *            werden soll.
    */
   public static void analogOut(int channel, float val) {
-    US.PUT2(TRANRAM + 2 * channel, (channel % 4) * 0x4000 + (int)(val / 10 * 2047.5f + 2047.5f));
+    US.PUT2(TRANRAM + 2 * channel, (channel % 4) * 0x4000 + ((int)(val / 10 * 2047.5f + 2047.5f) & 0xfff));
 }
 
 	/**
@@ -68,7 +68,7 @@ public class RTBoard implements ntbMpc555HB {
 	 */
   public static void analogPowerOut(int channel, float val) {
     channel += 2;
-    US.PUT2(TRANRAM + 2 * channel, (channel % 4) * 0x4000 + (int)(val / 10 * 2047.5f + 2047.5f));
+    US.PUT2(TRANRAM + 2 * channel, (channel % 4) * 0x4000 + ((int)(val / 10 * 2047.5f + 2047.5f) & 0xfff));
   }
 
 
