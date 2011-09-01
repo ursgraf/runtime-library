@@ -5,6 +5,9 @@ import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* CHANGES:
+ * 31.08.11 NTB/MZ	JavaDoc updated
+ * 09.06.11 NTB/RM	TpuTimeUnit renamed to tpuTimeBase
+ * 25.05.11 NTB/RM	conflict with QADC_AIN driver fixed
  * 22.02.11 NTB/MZ	renamed to HLC1395Pulsed
  * 08.02.11 NTB/MZ  adapted to the new deep environment
  * 29.04.08	NTB/ED	simplification and efficiency improvement
@@ -21,7 +24,8 @@ import ch.ntb.inf.deep.unsafe.US;
  * QADC-A. 4 of the digital outputs are used as address channels and the fifth
  * one is the trigger signal. The analog input is used to read the sensor
  * values. It is highly recommended to neither use the channels AN0...AN3 nor
- * the channels AN48...AN51 because this pins have a RC input filter.
+ * the channels AN48...AN51 because this pins have on some NTB MPC555-Headerboards
+ * a RC input filter.
  * 
  * <strong>IMPORTANT:</strong> Connect AGnd to Gnd!
  * 
@@ -40,28 +44,23 @@ public class HLC1395Pulsed extends Task {
 			RJURR_A = UIMB + 0x4A80, LJSRR_A = UIMB + 0x4B00,
 			LJURR_A = UIMB + 0x4B80;
 
-	public static final byte maxNofSensors = 16, maxAnalogInPortNr = 59;
-
+	private static final byte maxNofSensors = 16, maxAnalogInPortNr = 59;
 	private static final HLC1395Pulsed thisSngTask; // Singleton DistSense Task
+	private static int nofSensors; // Number of connected sensors
+	private static int trigPinPat; // trigger pin bit pattern
+	private static int outPinPat; // bit pattern for all address pins and the trigger pin
+	private static int sensAdr; // sensor address
 
-	private static int nofSensors; // Anzahl angeschlossener Sensoren
-	private static int trigPinPat; // Trigger-Pin-Bitmuster
-	private static int outPinPat; // Bitmuster mit allen Adress-Pins und
-									// Trigger-Pin
-	private static int sensAdr;
-
-	// Adress-Bitmuster-Tabelle, adrPatTab[s]: Adresspin-Muster für Sensor s
+	// Address pattern table, adrPatTab[s]: address bit pattern for sensor s
 	private static final short[] adrPatTab = new short[maxNofSensors];
 	private static short[] resultVal = new short[16];
 
-	private HLC1395Pulsed() {
-	}
+	private HLC1395Pulsed() {}
 
 	/**
-	 * Returns the converted value of the given sensor number
+	 * Read the value of the given sensor number
 	 * 
-	 * @param channel
-	 *            channel/sensor number
+	 * @param channel	channel/sensor number
 	 * @return converted value
 	 */
 	public static short read(int channel) {
@@ -102,6 +101,17 @@ public class HLC1395Pulsed extends Task {
 		}
 	}
 
+	/**
+	 * Initialize sensors.
+	 * 
+	 * @param numberOfSensors	Number of connected sensors: 0 < numberOfSensors <= 16
+	 * @param pinNumbers		Pin numbers of the 4 address pins and of the trigger pin.
+	 * 							Use 4 bits per pin in the following order: trgPin, adr3Pin,
+	 * 							adr2Pin, adr1Pin, adr0Pin. Example: 0xF85AC means trgPin =
+	 * 							MPIOB15, adr3Pin = MPIOB8, adr2Pin =  MPIOB5, adr1Pin =
+	 * 							MPIOB10 and adr0Pin = MPIOB12.
+	 * @param analogInChn		Pin number for the analog input channel (ANx).
+	 */
 	public static void init(int numberOfSensors, int pinNumbers, int analogInChn) {
 		if (numberOfSensors > maxNofSensors)
 			numberOfSensors = maxNofSensors;
@@ -156,24 +166,37 @@ public class HLC1395Pulsed extends Task {
 	}
 
 	/**
-	 * Unterbricht das Auslesen der Sensoren.
+	 * Initialize sensors.
+	 * 
+	 * @param addr3Pin		MPIOB pin for the address lane 3.
+	 * @param addr2Pin		MPIOB pin for the address lane 2.
+	 * @param addr1Pin		MPIOB pin for the address lane 1.
+	 * @param addr0Pin		MPIOB pin for the address lane 0.
+	 * @param trgPin		MPIOB pin for the trigger signal.
+	 * @param analogInPin	ADC-A channel for the sensor signal.
+	 */
+	public static void init(int addr3Pin, int addr2Pin, int addr1Pin,
+			int addr0Pin, int trgPin, int analogInPin) {
+		int val = getNofSensAndPinNumbers(addr3Pin, addr2Pin, addr1Pin,
+				addr0Pin, trgPin);
+		init(val >> 20, val, analogInPin); // nofSens = val >> 20;
+	}
+	
+	/**
+	 * Stop reading sensors.
 	 */
 	public static void stop() {
 		Task.remove(thisSngTask);
 	}
 
 	/**
-	 * Startet das Auslesen der Sensoren.<br>
-	 * Muss nach der Initialisierung oder nach einem Aufruf von
-	 * <code>stop()</code> aufgerufen werden.
+	 * Start reading sensors.<br>
+	 * This method must be called after the initialization
+	 * or after a call of <code>stop()</stop>.
 	 */
 	public static void start() {
 		thisSngTask.period = 1;
 		Task.install(thisSngTask);
-	}
-
-	static {
-		thisSngTask = new HLC1395Pulsed();
 	}
 
 	private static int getNofSensAndPinNumbers(int adr3PinNr, int adr2PinNr,
@@ -201,10 +224,8 @@ public class HLC1395Pulsed extends Task {
 		return pinNumbers | (nofSens << 20);
 	}
 
-	public static void init(int addr3Pin, int addr2Pin, int addr1Pin,
-			int addr0Pin, int trgPin, int analogInPin) {
-		int val = getNofSensAndPinNumbers(addr3Pin, addr2Pin, addr1Pin,
-				addr0Pin, trgPin);
-		init(val >> 20, val, analogInPin); // nofSens = val >> 20;
+	static {
+		thisSngTask = new HLC1395Pulsed();
 	}
+	
 }
