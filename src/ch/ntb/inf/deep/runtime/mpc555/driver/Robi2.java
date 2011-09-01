@@ -145,8 +145,8 @@ public class Robi2 extends Task {
 		cv1 = cv1old + b0 * ev1 + b1 * ev1old;
 		cv2 = cv2old + b0 * ev2 + b1 * ev2old;	
 		
-		setPwmForRightMotor(cv1  / v_max);
-		setPwmForLeftMotor(cv2 / v_max);
+		setPwmForRightMotor(cv1  / u_max);
+		setPwmForLeftMotor(cv2 / u_max);
 		
 		//System.out.println(v1);
 		
