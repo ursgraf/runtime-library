@@ -29,7 +29,7 @@ public class Robi2LineDemo extends Task {
 
 	public void action() {
 		if (sensors()) {
-			Robi2.stopDrives();
+			Robi2.stop();
 		} else if (leftFloorSensor() && rightFloorSensor()) {
 			Robi2.setRightDriveSpeed(50);
 			Robi2.setLeftDriveSpeed(100);
@@ -40,13 +40,17 @@ public class Robi2LineDemo extends Task {
 			Robi2.setRightDriveSpeed(-50);
 			Robi2.setLeftDriveSpeed(-100);
 		}else{
-			Robi2.setDrivesSpeedEqual(80);					
+			Robi2.drive(80);					
 		}
 	}
 	
-	static { 
+	static {
 		Robi2LineDemo task = new Robi2LineDemo();
 		task.period = 0;
 		Task.install(task);
+		
+		for(int i = 0; i < 4; i++ ) {
+			Robi2.setPatternLED(i, 1, true);
+		}
 	}
 }

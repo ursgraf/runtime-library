@@ -10,11 +10,13 @@ import ch.ntb.inf.deep.unsafe.US;
  * 8 digitale Ein-/Ausgaenge auf Buchsen herausgefuehrt.
  * 
  * @author Graf Urs
- * 
- * <strong>Änderungen</strong>
- * 1.5.2011 Urs Graf: Fehler in DACinit korrigiert
- * 18.02.2010 M. Züger: Treiber für DAC und ADC angepasst und direkt integriert
  */
+
+/* Changes:
+ * 01.05.2011 Urs Graf: Fehler in DACinit korrigiert
+ * 18.02.2010 M. Zueger: Treiber fuer DAC und ADC angepasst und direkt integriert
+ */
+
 public class RTBoard implements ntbMpc555HB {
   
   private static final int ADDR_OFFSET = 64;

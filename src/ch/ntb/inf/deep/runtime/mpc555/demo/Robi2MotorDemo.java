@@ -6,10 +6,10 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.Robi2;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
 
 /* Changes:
+ * 02.09.2011	NTB/MZ	Adapted to the changes in the Robi2 driver
  * 26.05.2011	NTB/MZ	enhanced and JavaDoc updated
  * 11.05.2011	NTB/RM	initial version
  */
-
 
 /**
  * Robi2 Motor Demo. Use the given commands to control the Robi.
@@ -27,7 +27,7 @@ public class Robi2MotorDemo extends Task {
 	 * Drive forward with full speed.
 	 */
 	public static void driveFullSpeedForward() {
-		Robi2.setDrivesSpeedAntidormic(100);
+		Robi2.drive(100);
 		System.out.println("Drive forward (100%)");
 	}
 	
@@ -35,7 +35,7 @@ public class Robi2MotorDemo extends Task {
 	 * Drive forward with half speed.
 	 */
 	public static void driveHalfSpeedForward() {
-		Robi2.setDrivesSpeedAntidormic(50);
+		Robi2.drive(50);
 		System.out.println("Drive forward (50%)");
 	}
 
@@ -43,7 +43,7 @@ public class Robi2MotorDemo extends Task {
 	 * Drive backward with full speed.
 	 */
 	public static void driveFullSpeedBackward() {
-		Robi2.setDrivesSpeedAntidormic(-100);
+		Robi2.drive(-100);
 		System.out.println("Drive backward (100%)");
 	}
 	
@@ -51,7 +51,7 @@ public class Robi2MotorDemo extends Task {
 	 * Drive backward with half speed.
 	 */
 	public static void driveHalfSpeedBackward() {
-		Robi2.setDrivesSpeedAntidormic(-50);
+		Robi2.drive(-50);
 		System.out.println("Drive backward (50%)");
 	}
 	
@@ -59,7 +59,7 @@ public class Robi2MotorDemo extends Task {
 	 * Turn right around (clockwise).
 	 */
 	public static void turnRight() {
-		Robi2.setDrivesSpeedEqual(100);
+		Robi2.turn(100);
 		System.out.println("Rotating clockwise");
 	}
 	
@@ -67,7 +67,7 @@ public class Robi2MotorDemo extends Task {
 	 * Turn left around (anticlockwise).
 	 */
 	public static void turnLeft() {
-		Robi2.setDrivesSpeedEqual(-100);
+		Robi2.turn(-100);
 		System.out.println("Rotating anticlockwise");
 	}
 
@@ -75,7 +75,7 @@ public class Robi2MotorDemo extends Task {
 	 * Stop both motors.
 	 */
 	public static void stop() {
-		Robi2.stopDrives() ;
+		Robi2.stop() ;
 		System.out.println("Stop");
 	}
 	

@@ -5,6 +5,7 @@ import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 
 /* Changes:
+ * 02.09.2011	NTB/MZ	Bug fixes, anti wind-up implemented
  * 26.05.2011	NTB/MZ	controller type changed to PI, JavaDoc updated
  * 02.05.2011	NTB/MZ	bug fixes
  * 22.03.2011	NTB/RM	adapted to deep
@@ -52,29 +53,29 @@ public class Robi2 extends Task {
 	private static final int tpr = 64;						// Encoder ticks per rotation
 	private static final int fqd = 4;						// FQD
 	private static final int i = 17;						// Gear transmission ratio
-	private static final float wheelDiameter = 0.0273f;		// Wheel diameter in meter
+	public static final float wheelDiameter = 0.0273f;		// Wheel diameter in meter
 	public static final float wheelDistance = 0.167f;		// Wheel distance in meter
 	private static final float scale = -(float)Math.PI * wheelDiameter / (tpr * fqd * i);
 	private static final int pwmPeriod = 20000 / TPU_PWM.tpuTimeBase;
 
-	private static final float kp = 2f;
-	private static final float tn = 0.02f;
-	private static final float b0 = kp * (1f + ts / (2f * tn));
-	private static final float b1 = kp * (ts / (2f * tn) - 1f);
+	private static final float k_P = 100f;
+	private static final float t_I = 0.01f;
 
-	public static final float v_max = 0.45f; // [m/s]
-	public static final float u_max = 7.5f; // [V]
+	public static final float v_max = 0.5f; // [m/s]
+	private static final float u_max = 7.5f; // [V]
+	private static final float u_min = -u_max; // [V]
 	
 	/* Private variables */
 	/*****************************************************************************/
-	private static float s1 = 0, s2 = 0; // traveled distance of each wheel
-	public static float v1 = 0, v2 = 0; // linear speed of each wheel
+	private static float s_R = 0, s_L = 0; // traveled distance of each wheel
+	private static float v_R = 0, v_L = 0; // linear speed of each wheel
 	private static short prevPos1 = 0, prevPos2 = 0;
 	private static long time, lastTime; // [us]
 	private static float dt; // [s]
-	private static float desiredSpeedLeft = 0, desiredSpeedRight = 0; // [m/s]
-	private static float ev1 = 0, ev2 = 0, ev1old = 0, ev2old = 0; // [m/s]
-	private static float cv1 = 0, cv2 = 0, cv1old = 0, cv2old = 0; // [m/s]
+	private static float w_k_L = 0, w_k_R = 0; // [m/s]
+	private static float e_k_L = 0, e_k_R = 0, e_k1_L = 0, e_k1_R = 0; // [m/s]
+	private static float u_k_L = 0, u_k_R = 0, u_Pk_L = 0, u_Pk_R = 0, u_Ik_L = 0, u_Ik_R = 0,
+	u_Ik1_L = 0, u_Ik1_R = 0, u_Dk_L = 0, u_Dk_R = 0; // [m/s]
 	private static float vy_R = 0,	// speed in y direction relative to the robot (vx_R is always 0) [m/s]
 		vx_E = 0, vy_E = 0, 		// speed in x and y direction relative to the environment [m/s]
 		w_R = 0,					// rotation speed of the robot [rad/s]
@@ -111,20 +112,20 @@ public class Robi2 extends Task {
 		actualPos = TPU_FQD.getPosition(TPUB, Mot1_EncA_Pin);
 		deltaPos = (short)(actualPos - prevPos1);
 		prevPos1 = actualPos;
-		s1 += deltaPos * scale;
-		v1 = deltaPos * scale / dt;
+		s_R += deltaPos * scale;
+		v_R = deltaPos * scale / dt;
 
 		actualPos = TPU_FQD.getPosition(TPUB, Mot2_EncA_Pin);
 		deltaPos = (short)(actualPos - prevPos2);
 		prevPos2 = actualPos;
-		s2 += deltaPos * scale;
-		v2 = deltaPos * scale / dt;
+		s_L += deltaPos * scale;
+		v_L = deltaPos * scale / dt;
 
 		// speed in y direction of the robot
-		vy_R = (v1 + v2) / 2;
+		vy_R = (v_R + v_L) / 2;
 
 		// rotation speed of the robot
-		w_R = (v1 - v2) / wheelDistance;
+		w_R = (v_R - v_L) / wheelDistance;
 
 		// orientation of the robot
 		phi += w_R * dt;
@@ -139,22 +140,49 @@ public class Robi2 extends Task {
 		y += vy_E * dt;
 		
 		/* Motor controllers */
-		ev1 = desiredSpeedRight - v1;
-		ev2 = desiredSpeedLeft - v2;
 		
-		cv1 = cv1old + b0 * ev1 + b1 * ev1old;
-		cv2 = cv2old + b0 * ev2 + b1 * ev2old;	
+		// control deviation
+		e_k_L = w_k_L - v_L;
+		e_k_R = w_k_R - v_R;
 		
-		setPwmForRightMotor(cv1  / u_max);
-		setPwmForLeftMotor(cv2 / u_max);
+		// control value (P part only)
+		u_Pk_L = k_P * e_k_L;
+		u_Pk_R = k_P * e_k_R;
 		
-		//System.out.println(v1);
+		// control value (I part only)
+		u_Ik_L = u_Ik1_L + k_P * dt / t_I * e_k1_L;
+		u_Ik_R = u_Ik1_R + k_P * dt / t_I * e_k1_R;
 		
-		ev1old = ev1;
-		ev2old = ev2;
-		cv1old = cv1;
-		cv2old = cv2;
+		// control value (P + I)
+		u_k_L = u_Pk_L + u_Ik_L;
+		u_k_R = u_Pk_R + u_Ik_R;
 		
+		// anti wind up
+		if(u_k_L > u_max) u_Ik_L = u_max - u_Pk_L;
+		else if(u_k_L < u_min) u_Ik_L = u_min - u_Pk_L; 
+		
+		if(u_k_R > u_max) u_Ik_R = u_max - u_Pk_R;
+		else if( u_k_R < u_min) u_Ik_R = u_min - u_Pk_R;
+		
+		// control value (D part only
+//		u_Dk_L = k_P / dt * (e_k_L - e_k1_L);
+//		u_Dk_R = k_P / dt * (e_k_R - e_k1_R);
+		u_Dk_L = 0;
+		u_Dk_R = 0;
+		
+		// control value (P, I and D part)
+		u_k_L = u_k_L + u_Dk_L;
+		u_k_R = u_k_R + u_Dk_R;	
+		
+		// set PWM signal to control value
+		setPwmForLeftMotor(u_k_L / u_max);
+		setPwmForRightMotor(u_k_R  / u_max);
+		
+		// store necessary values for next loop
+		e_k1_L = e_k_L;
+		e_k1_R = e_k_R;
+		u_Ik1_L = u_Ik_L;
+		u_Ik1_R = u_Ik_R;
 	}
 	
 	/* LEDs */
@@ -405,6 +433,11 @@ public class Robi2 extends Task {
 		return !TPU_DIO.get(true, 15);
 	}
 
+	public static void enableAllLEDs() {
+		for (int i = 0; i < 16; i++)
+			TPU_DIO.set(true, i, false);
+	}
+	
 	/**
 	 * Turn <u>all</u> LEDs off.
 	 */
@@ -442,10 +475,11 @@ public class Robi2 extends Task {
 	 * Read the converted value of a chosen distance sensor.
 	 * 
 	 * @param sensor	the sensor which should be read (range 0..15)
-	 * @return			converted value (range 0..1023)
+	 * @return			converted value (range 0..1023), -1 = failed.
 	 */
 	public static int getDistSensorValue(int sensor) {
-		return HLC1395Pulsed.read(sensor);
+		if(sensor >= 0 && sensor < 16)	return HLC1395Pulsed.read(sensor);
+		return -1;
 	}
 
 	/* Drive and odometry */
@@ -509,16 +543,16 @@ public class Robi2 extends Task {
 	 *@return speed in meter per second [m/s]   	 
 	 */   
 	public static float getRobiSpeed() {
-    return vy_R;
-  }
+		return vy_R;
+	}
 	
 	/**
 	 * Reset the position.<br>
 	 * The current position is the new point of origin.
 	 */
 	public static void resetPos() {
-		s1 = 0;
-		s2 = 0;
+		s_R = 0;
+		s_L = 0;
 		x = 0;
 		y = 0;
 	}
@@ -528,21 +562,22 @@ public class Robi2 extends Task {
 	 * The sign define the direction. A negative value for backwards and a
 	 * positive value for forward.
 	 * 
-	 * @param speed
-	 *            range -100..100
+	 * @param speed		range: -100..100
 	 */
 	public static void setLeftDriveSpeed(int speed) {
-		desiredSpeedLeft = speed * v_max / 100;
+		w_k_L = speed * v_max / 100;
 	}
 	
+	/**
+	 * Sets the speed of the left drive in meter per second [m/s].<br>
+	 * The sign define the direction. A negative value for backwards and a
+	 * positive value for forward.
+	 * @param speed		range: -v_max...v_max
+	 */
 	public static void setLeftDriveSpeed(float speed) {
-		desiredSpeedLeft = speed;
+		w_k_L = speed;
 	}
 	
-	public static void setRightDriveSpeed(float speed) {
-		desiredSpeedRight = speed;
-	}
-
 	/**
 	 * Sets the speed of the right drive in percent.<br>
 	 * The sign define the direction. A negative value for backwards and a
@@ -552,7 +587,17 @@ public class Robi2 extends Task {
 	 *            range -100..100
 	 */
 	public static void setRightDriveSpeed(int speed) {
-		desiredSpeedRight = speed * v_max / 100;
+		w_k_R = speed * v_max / 100;
+	}
+
+	/**
+	 * Sets the speed of the right drive in meter per second [m/s].<br>
+	 * The sign define the direction. A negative value for backwards and a
+	 * positive value for forward.
+	 * @param speed		range: -v_max...v_max
+	 */
+	public static void setRightDriveSpeed(float speed) {
+		w_k_R = speed;
 	}
 
 	/**
@@ -561,14 +606,25 @@ public class Robi2 extends Task {
 	 * The sign define the direction. A negative value for backwards and a
 	 * positive value for forward.
 	 * 
-	 * @param speed
-	 *            range -100..100
+	 * @param speed range: -100..100
 	 */
-	public static void setDrivesSpeedEqual(int speed) {
-			setRightDriveSpeed(speed);
+	public static void drive(int speed) {
+			setRightDriveSpeed(-speed);
 			setLeftDriveSpeed(speed);
 	}
-
+	
+	
+	/**
+	 * Set the speed and direction of both drives so that they rotates in the same direction.
+	 * The sign define the direction. A negative value for backwards and a positive value for forward.
+	 * @param speed range: -100..100
+	 */
+	@Deprecated
+	public static void setDriveSpeedEqual(int speed) {
+		setRightDriveSpeed(-speed);
+		setLeftDriveSpeed(speed);
+	}
+	
 	/**
 	 * Set the speed and direction of both drives so that they rotates
 	 * antidormic.<br>
@@ -576,18 +632,31 @@ public class Robi2 extends Task {
 	 * A positive value turns clockwise, a negative value turns
 	 * counterclockwise.
 	 * 
-	 * @param speed
-	 *            range -100..100
+	 * @param speed range: -100..100
 	 */
-	public static void setDrivesSpeedAntidormic(int speed) {
-			setRightDriveSpeed(-speed);
+	public static void turn(int speed) {
+			setRightDriveSpeed(speed);
 			setLeftDriveSpeed(speed);
 	}
+	
+	
+	/**
+	 * Set the speed and direction of both drives so that they rotates antidormic.
+	 * The sign define the direction of the rotation of the Robi2.
+	 * A positive value turns clockwise, a negative value turns counterclockwise.
+	 * @param speed range: -100..100
+	 */
+	@Deprecated
+	public static void setDrivesSpeedAntidormic(int speed) {
+		setRightDriveSpeed(speed);
+		setLeftDriveSpeed(speed);
+	}
 
+	
 	/**
 	 * Stop both drives
 	 */
-	public static void stopDrives() {
+	public static void stop() {
 			setRightDriveSpeed(0);
 			setLeftDriveSpeed(0);
 	}

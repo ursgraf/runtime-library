@@ -8,8 +8,6 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.Robi2;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
 
-
-
 /**
  * This Class is used to test the Robi2 hardware.<br>
  * The different test cases can chosen by the hex-switch.<br>
@@ -84,7 +82,7 @@ public class Robi2Test extends Task {
 			System.out.print("Switchpos:");
 			System.out.println(mode);
 			if(oldMode == 0x2){//was drive
-				Robi2.stopDrives();
+				Robi2.stop();
 			}
 			if(oldMode == 0x3){//was led
 				Robi2.disableAllLEDs();
@@ -141,83 +139,83 @@ public class Robi2Test extends Task {
 		case 0x2: // Drive
 			switch (driveState) {
 			case 0: // forward
-				Robi2.setDrivesSpeedEqual(80);
+				Robi2.drive(80);
 				driveState = 1;
 				break;
 			case 1: // turn right
-				Robi2.setDrivesSpeedAntidormic(-58);
+				Robi2.turn(28);
 				driveState = 2;
 				break;
 			case 2:// forward
-				Robi2.setDrivesSpeedEqual(80);
+				Robi2.drive(80);
 				driveState = 3;
 				break;
 			case 3: // turn right
-				Robi2.setDrivesSpeedAntidormic(-58);
+				Robi2.turn(28);
 				driveState = 4;
 				break;
 			case 4:// forward
-				Robi2.setDrivesSpeedEqual(80);
+				Robi2.drive(80);
 				driveState = 5;
 				break;
 			case 5: // turn right
-				Robi2.setDrivesSpeedAntidormic(-58);
+				Robi2.turn(28);
 				driveState = 6;
 				break;
 			case 6: // forward
-				Robi2.setDrivesSpeedEqual(80);
+				Robi2.drive(80);
 				driveState = 7;
 				break;
 			case 7: // stop
-				Robi2.stopDrives();
+				Robi2.stop();
 				driveState = 8;
 				break;
 			case 8: // Backward
-				Robi2.setDrivesSpeedEqual(-80);
+				Robi2.drive(-80);
 				driveState = 9;
 				break;
 			case 9: // turn left
-				Robi2.setDrivesSpeedAntidormic(58);
+				Robi2.turn(-28);
 				driveState = 10;
 				break;
 			case 10: // Backward
-				Robi2.setDrivesSpeedEqual(-80);
+				Robi2.drive(-80);
 				driveState = 11;
 				break;
 			case 11: // turn left
-				Robi2.setDrivesSpeedAntidormic(58);
+				Robi2.turn(-28);
 				driveState = 12;
 				break;
 			case 12: // Backward
-				Robi2.setDrivesSpeedEqual(-80);
+				Robi2.drive(-80);
 				driveState = 13;
 				break;
 			case 13: // turn left
-				Robi2.setDrivesSpeedAntidormic(58);
+				Robi2.turn(-28);
 				driveState = 14;
 				break;
 			case 14: // Backward
-				Robi2.setDrivesSpeedEqual(-80);
+				Robi2.drive(-80);
 				driveState = 15;
 				break;
 			case 15: // stop
-				Robi2.stopDrives();
+				Robi2.stop();
 				driveState = 16;
 				break;
 			case 16: // turn fast
-				Robi2.setDrivesSpeedAntidormic(100);
+				Robi2.turn(100);
 				driveState = 17;
 				break;
 			case 17: // stop
-				Robi2.stopDrives();
+				Robi2.stop();
 				driveState = 18;
 				break;
 			case 18: // trun fast backward
-				Robi2.setDrivesSpeedAntidormic(-100);
+				Robi2.turn(-100);
 				driveState = 19;
 				break;
 			case 19: // stop
-				Robi2.stopDrives();
+				Robi2.stop();
 				driveState = 0;
 				break;
 
