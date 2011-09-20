@@ -2,8 +2,14 @@ package java.lang;
 
 import ch.ntb.inf.deep.lowLevel.LL;
 
-/* changes:
- * 18.2.11	NTB/Urs Graf	ported to deep
+/**
+ * The {@code Double} class wraps a value of the primitive type
+ * {@code double} in an object. An object of type {@code Double}
+ * contains a single field whose type is {@code double}.
+ * 
+ * changes:
+ * 20.9.2011	NTB/Urs Graf	ported to deep
+ *
  */
 
 public class Double {
@@ -265,4 +271,49 @@ public class Double {
 		gchars = null;
 		return nofChars;
 	}
+
+	/**
+	 * Returns a {@code Double} instance representing the specified
+	 * {@code double} value.
+	 * If a new {@code Double} instance is not required, this method
+	 * should generally be used in preference to the constructor
+	 * {@link #Double(double)}, as this method is likely to yield
+	 * significantly better space and time performance by caching
+	 * frequently requested values.
+	 *
+	 * @param  d a double value.
+	 * @return a {@code Double} instance representing {@code d}.
+	 * @since  1.5
+	 */
+	public static Double valueOf(double d) {
+		return new Double(d);
+	}
+
+	/**
+	 * The value of the {@code Double}.
+	 *
+	 * @serial
+	 */
+	private final double value;
+
+	/**
+	 * Constructs a newly allocated {@code Double} object that
+	 * represents the primitive {@code double} argument.
+	 *
+	 * @param   value   the value to be represented by the {@code Double}.
+	 */
+	public Double(double value) {
+		this.value = value;
+	}
+
+	/**
+	 * Returns the {@code double} value of this
+	 * {@code Double} object.
+	 *
+	 * @return the {@code double} value represented by this object
+	 */
+	public double doubleValue() {
+		return (double)value;
+	}
+
 }

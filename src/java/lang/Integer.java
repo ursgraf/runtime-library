@@ -2,10 +2,12 @@ package java.lang;
 
 
 /**
- * Class which handles special integer operations.
+ * The {@code Integer} class wraps a value of the primitive type
+ * {@code int} in an object. An object of type {@code Integer}
+ * contains a single field whose type is {@code int}.
  * 
- * @author simon.pertschy@ntb.ch
- * Creation: October 2009
+ * changes:
+ * 20.9.2011	NTB/Urs Graf	ported to deep
  *
  */
 public class Integer {
@@ -58,10 +60,98 @@ private static char str[] = new char[11];
 		}	
 		return len + off;
 	}
-	
-//	public static void printf(char ... s){
-//		int i = s.length;
-//		int b = s[0];
-//	}
-	
+
+	//	public static void printf(char ... s){
+	//		int i = s.length;
+	//		int b = s[0];
+	//	}
+
+	/**
+	 * Returns an {@code Integer} instance representing the specified
+	 * {@code int} value.  If a new {@code Integer} instance is not
+	 * required, this method should generally be used in preference to
+	 * the constructor {@link #Integer(int)}, as this method is likely
+	 * to yield significantly better space and time performance by
+	 * caching frequently requested values.
+	 *
+	 * This method will always cache values in the range -128 to 127,
+	 * inclusive, and may cache other values outside of this range.
+	 *
+	 * @param  i an {@code int} value.
+	 * @return an {@code Integer} instance representing {@code i}.
+	 * @since  1.5
+	 */
+	public static Integer valueOf(int i) {
+		//	             assert IntegerCache.high >= 127;
+		//	             if (i >= IntegerCache.low && i <= IntegerCache.high)
+		//	                 return IntegerCache.cache[i + (-IntegerCache.low)];
+		return new Integer(i);
+	}
+
+	/**
+	 * The value of the {@code Integer}.
+	 *
+	 * @serial
+	 */
+	private final int value;
+
+	/**
+	 * Constructs a newly allocated {@code Integer} object that
+	 * represents the specified {@code int} value.
+	 *
+	 * @param   value   the value to be represented by the
+	 *                  {@code Integer} object.
+	 */
+	public Integer(int value) {
+		this.value = value;
+	}
+
+	/**
+	 * Returns the value of this {@code Integer} as a
+	 * {@code byte}.
+	 */
+	public byte byteValue() {
+		return (byte)value;
+	}
+
+	/**
+	 * Returns the value of this {@code Integer} as a
+	 * {@code short}.
+	 */
+	public short shortValue() {
+		return (short)value;
+	}
+
+	/**
+	 * Returns the value of this {@code Integer} as an
+	 * {@code int}.
+	 */
+	public int intValue() {
+		return value;
+	}
+
+	/**
+	 * Returns the value of this {@code Integer} as a
+	 * {@code long}.
+	 */
+	public long longValue() {
+		return (long)value;
+	}
+
+	/**
+	 * Returns the value of this {@code Integer} as a
+	 * {@code float}.
+	 */
+	public float floatValue() {
+		return (float)value;
+	}
+
+	/**
+	 * Returns the value of this {@code Integer} as a
+	 * {@code double}.
+	 */
+	public double doubleValue() {
+		return (double)value;
+	}
+
 }
