@@ -4,7 +4,6 @@ import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.HLC1395Pulsed;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
 /* CHANGES:
@@ -38,8 +37,8 @@ public class HLC1395Test extends Task {
 		HLC1395Pulsed.init(4, 0x50076, 59); // initialize 4 sensors (addrPin0 = MPIOB6, addrPin1 = MPIOB7, trgPin = MPIOB5, analogInPin = AN59)
 		HLC1395Pulsed.start();
 		
-		// Initialize SCI1 and set stdout to SCI1
-		SCI2.start(9600, SCI1.NO_PARITY, (short)8);
+		// Initialize SCI2 and set stdout to SCI1
+		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI2.out);
 		
 		System.out.println("HLC1295-Test");
@@ -52,9 +51,9 @@ public class HLC1395Test extends Task {
 		System.out.println();
 		System.out.println("1:\t2:\t3:\t4:");
 		
-		// Create and install demo task
-		Task demoTask = new HLC1395Test();
-		demoTask.period = 1000;
-		Task.install(demoTask);
+		// Create and install task
+		Task t = new HLC1395Test();
+		t.period = 1000;
+		Task.install(t);
 	}
 }
