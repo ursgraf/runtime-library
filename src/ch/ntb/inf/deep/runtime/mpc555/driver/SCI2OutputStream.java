@@ -2,13 +2,16 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import java.io.OutputStream;
 
+/* Changes:
+ * 13.10.2011	Martin Zueger	JavaDoc fixed
+ * 06.01.2010	Simon Pertschy	initial version
+ */
 
 /**
  *
  * Stream to write bytes to the SCI2.
- * Don't forget to open the SCI2 before using this stream.
+ * Don't forget to initialize the SCI2 before using this stream.
  * 
- * @author 06.01.2010 simon.pertschy@ntb.ch
  */
 public class SCI2OutputStream extends OutputStream{
 

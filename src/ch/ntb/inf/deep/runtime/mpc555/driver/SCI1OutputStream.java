@@ -2,13 +2,16 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import java.io.OutputStream;
 
+/* Changes:
+ * 13.10.2011	Martin Zueger	reset() implemented, JavaDoc fixed
+ * 06.01.2010	Simon Pertschy	initial version
+ */
 
 /**
  *
  * Stream to write bytes to the SCI1.
- * Don't forget to open the SCI1 before using this stream.
+ * Don't forget to initialize the SCI1 before using this stream.
  * 
- * @author 06.01.2010 simon.pertschy@ntb.ch
  */
 public class SCI1OutputStream extends OutputStream{
 
@@ -23,7 +26,7 @@ public class SCI1OutputStream extends OutputStream{
 	 * @see java.io.OutputStream#reset()
 	 */
 	public void reset() {
-	 //TODO add SCI1.reset()
+		SCI1.clear();
 	}
 
 	/* (non-Javadoc)

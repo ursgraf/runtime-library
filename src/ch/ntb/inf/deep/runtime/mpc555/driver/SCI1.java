@@ -5,30 +5,28 @@ import ch.ntb.inf.deep.runtime.util.ByteFifo;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*
- * 8.3.2011 NTB/Urs Graf  ported to deep
- * 31.3.2007 NTB/SP read failure corrected and error states added
- * 12.2.2007 NTB/SP assigned to Java
+ * 13.10.2011	NTB/Martin Zueger	reset() implemented, JavaDoc fixed
+ * 08.03.2011	NTB/Urs Graf		ported to deep
+ * 31.03.2007	NTB/Simon Pertschy	read failure corrected and error states added
+ * 12.02.2007	NTB/Simon Pertschy	assigned to Java
  */
 
 /**
- * Interrupt gesteuerter Treiber für das Serial Communication Interface 2 des
- * mpc555.<br>
- * <p>
- * <b>Achtung:</b><br>
- * Je nach eingestellter Baudrate kann es zu Abweichungen in der effektiven
- * Baudrate kommen.<br>
- * Dies kann bei angeschlossenen Endgeräten zu Fehlinterpretationen der
- * gesendeten Bytes führen.<br>
- * Siehe dazu im <a
- * href="http://inf.ntb.ch/infoportal/help/topic/ch.ntb.infoportal/resources/embeddedSystems/mpc555/pdfs/MPC555UM.pdf"
- * target="_blank">MPC555 Manual</a> Table 14-29 im Kapitel 14.8.7.3.
+ * <p>Interrupt controlled driver for the <i>Serial Communicatin Interface 1</i>
+ * of the Freescale MPC555.</p>
+ * <p><b>Remember:</b><br>
+ * Depending on the baudrate configured, the effective baudrate can be different.
+ * This may cause miss interpretation of the bytes sent at the receiver! For more
+ * details, please consider table 14-29 in chapter 14.8.7.3 in the <a href=
+ * "http://www.ntb.ch/infoportal/_media/embedded_systems:mpc555:mpc555_usermanual.pdf"
+ * >MPC555 User's manual</a>.
  * </p>
  */
 public class SCI1 extends Interrupt {
 
 	public static SCI1OutputStream out;
 	public static SCI1InputStream in;
-	static int a = 0, b = 0, c = 0, d = 0;
+	private static int d = 0;
 	
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
 
@@ -45,8 +43,12 @@ public class SCI1 extends Interrupt {
 	private static Interrupt rxInterrupt, txInterrupt;
 
 	private static short portStat; // just for saving flag portOpen
-	public static short scc1r1; // content of SCC1R1
+	private static short scc1r1; // content of SCC1R1
 
+	private static int currentBaudRate = 9600;
+	private static short currentParity = NO_PARITY;
+	private static short currentDataBits = 8;
+	
 	/*
 	 * rxQueue: the receive queue, head points to the front item, tail to tail
 	 * item plus 1: head=tail -> empty q head is moved by the interrupt proc
@@ -61,8 +63,11 @@ public class SCI1 extends Interrupt {
 	private static ByteFifo txQueue;
 	private static boolean txDone;
 
-	public static int intCtr;
+	private static int intCtr;
 
+	/* (non-Javadoc)
+	 * @see ch.ntb.inf.deep.runtime.mpc555.Interrupt#action()
+	 */
 	public void action() {
 		intCtr++;
 		if (this == rxInterrupt) {
@@ -89,24 +94,33 @@ public class SCI1 extends Interrupt {
 		}
 	}
 
+	/**
+	 * Clear the receive buffer.
+	 */
 	public static void clearReceiveBuffer() {
 		rxQueue.clear();
 	}
 
-	public static void clearTransmittBuffer() {
+	/**
+	 * Clear the transmit buffer.
+	 */
+	public static void clearTransmitBuffer() {
 		scc1r1 &= ~(1 << QSMCM.scc1r1TIE);
 		US.PUT2(QSMCM.SCC1R1, scc1r1);
 		txQueue.clear();
 		txDone = true;
 	}
-
+	
+	/**
+	 * Clear the receive and transmit buffers.
+	 */
 	public static void clear() {
 		clearReceiveBuffer();
-		clearTransmittBuffer();
+		clearTransmitBuffer();
 	}
 
 	/**
-	 * Stoppt das Serial Communication Interface.<br>
+	 * Stop the <i>Serial Communication Interface 1</i>.
 	 */
 	public static void stop() {
 		clear();
@@ -115,22 +129,24 @@ public class SCI1 extends Interrupt {
 	}
 
 	/**
-	 * Startet und initialisiert das Serial Communication Interface.<br>
-	 * Diese Methode muss vor der Verwendung der SCI aufgerufen werden. Die
-	 * Anzahl Stop Bits kann nicht gewählt werden. Standardmässig ist 1 Stop Bit
-	 * eingestellt.
+	 * <p>Initialize and start the <i>Serial Communication Interface 1</i>.</p>
+	 * <p>This method have to be called before using the SCI1! The number of
+	 * stop bits can't be set. There is always one stop bit!<p>
 	 * 
 	 * @param baudRate
-	 *            Baudrate im Bereich von 64 bis 500'000 bits/sec.
+	 *            The baud rate. Allowed Range: 64 to 500'000 bits/s.
 	 * @param parity
-	 *            Parity bits. Gültige Werte sind 0..2(4) (0 = no parity, 1 =
-	 *            odd parity, 2 = even parity)
+	 *            Parity bits configuration. Possible values: {@link #NO_PARITY},
+	 *            {@link #ODD_PARITY} or {@link #EVEN_PARITY}.
 	 * @param data
-	 *            Anzahl Data Bits. Gültige Werte sind 7..9. Fall 9 Data Bits
-	 *            gewählt werden steht kein parity Bit zur Verfügung.
+	 *            Number of data bits. Allowed values are 7 to 9 bits. If you
+	 *            choose 9 data bits, than is no parity bit more available!
 	 */
 	public static void start(int baudRate, short parity, short data) {
 		stop();
+		currentBaudRate = baudRate;
+		currentParity = parity;
+		currentDataBits = data;
 		short scbr = (short) ((CLOCK / baudRate + 16) / 32);
 		if (scbr <= 0)
 			scbr = 1;
@@ -152,53 +168,58 @@ public class SCI1 extends Interrupt {
 		US.PUT2(QSMCM.SCC1R0, scbr);
 		US.PUT2(QSMCM.SCC1R1, scc1r1);
 		portStat |= (1 << PORT_OPEN);
-		short status = US.GET2(QSMCM.SC1SR); // Clear status register
+		US.GET2(QSMCM.SC1SR); // Clear status register
 	}
 
 	/**
-	 * Gibt die Port Status Bits zurück.<br>
-	 * Jedes Bit repräsentiert ein Flag (z.B. {@link #FLAG_PORT_OPEN}).
+	 * Check the port status. Returns the port status bits.<br>
+	 * Every bit is representing a flag (e.g. {@link #FLAG_PORT_OPEN}).
 	 * 
-	 * @return die Port Status Bits
+	 * @return the port status bits.
 	 */
 	public static short portStatus() {
 		return (short) (portStat | US.GET2(QSMCM.SC1SR));
 	}
 
 	/**
-	 * Gibt die Anzahl Bytes zurück, welche sich im Lese-Puffer befinden.<br>
+	 * Returns the number of bytes available in the receive buffer.
 	 * 
-	 * @return die Anzahl Bytes, welche sich im Lese-Puffer befinden
+	 * @return number of bytes in the receive buffer.
 	 */
 	public static int availToRead() {
 		return rxQueue.availToRead();
 	}
 
 	/**
-	 * Gibt der verfügbare Platz im Sende-Puffer in Bytes zurück.<br>
-	 * Diese Anzahl kann in einem nicht blockierenden Transfer gesendet werden.
+	 * Returns the number of free bytes available in the transmit buffer.
+	 * It is possible, to send the returned number of bytes in one
+	 * nonblocking transfer.
 	 * 
-	 * @return der verfügbare Platz im Sende-Puffer in Bytes
+	 * @return the available free bytes in the transmit buffer.
 	 */
 	public static int availToWrite() {
 		return txQueue.availToWrite();
 	}
 
 	/**
-	 * Liest eine Anzahl Bytes.<br>
-	 * Der Aufruf ist nicht blockierend (im Gegensatz zu Java Streams).
+	 * Reads the given number of bytes from the SCI1. A call of
+	 * this method is not blocking!
 	 * 
 	 * @param b
-	 *            In dieses Array werden die gelesenen Daten geschrieben.
+	 *            Byte Array to write the received data.
 	 * @param off
-	 *            Ab diesem Offset wird in das Array geschrieben.
+	 *            Offset in the array to start writing the data.
 	 * @param len
-	 *            Länge der zu lesenden Daten.
-	 * @return die Anzahl gelesener Bytes. 0 falls keine Daten verfügbar oder
-	 *         <code>len</code> = 0. {@link #LENGTH_NEG_ERR} falls
-	 *         <code>len</code> negativ ist. {@link #OFFSET_NEG_ERR} falls
-	 *         <code>off</code> negativ ist. {@link #NULL_POINTER_ERR} falls
-	 *         <code>b == null</code>.
+	 *            Length (number of bytes) to read.
+	 * @return the number of bytes read. 0 if there were no data
+	 *            available to read or if the given number of bytes
+	 *            was zero (len == 0).
+	 *            {@link #LENGTH_NEG_ERR} if the given number of
+	 *            bytes was negative (len < 0).
+	 *            {@link #OFFSET_NEG_ERR} if the given offset was
+	 *            negative (off < 0).
+	 *            {@link #NULL_POINTER_ERR} if the array reference
+	 *            was null (b == null).
 	 */
 	public static int read(byte[] b, int off, int len) {
 		if (b == null)
@@ -223,46 +244,50 @@ public class SCI1 extends Interrupt {
 	}
 
 	/**
-	 * Liest eine Anzahl Bytes.<br>
-	 * Der Aufruf ist nicht blockierend (im Gegensatz zu Java Streams).
+	 * Reads the given number of bytes from the SCI1. A call of
+	 * this method is not blocking!
 	 * 
 	 * @param b
-	 *            In dieses Array werden die gelesenen Daten geschrieben.
-	 * @return die Anzahl gelesener Bytes. 0 falls keine Daten verfügbar oder
-	 *         <code>len</code> = 0. {@link #NULL_POINTER_ERR} falls
-	 *         <code>b == null</code>.
+	 *            Byte Array to write the received data.
+	 * @return the number of bytes read. 0 if there were no data
+	 *            available to read or if the length of the array
+	 *            was zero (b.length == 0).
+	 *            {@link #NULL_POINTER_ERR} if the array reference
+	 *            was null (b == null).
 	 */
 	public static int read(byte[] b) {
 		return read(b, 0, b.length);
 	}
 
 	/**
-	 * Liest ein Byte.<br>
-	 * Der Aufruf ist nicht blockierend (im Gegensatz zu Java Streams).
+	 * Reads one byte from the SCI1. A call of
+	 * this method is not blocking!
 	 * 
-	 * @return datum oder {@link mpc555.util.ByteFifo#NO_DATA} falls keine Daten
-	 *         verfügbar sind.
+	 * @return byte read or {@link mpc555.util.ByteFifo#NO_DATA} if
+	 *             no data was available.
 	 */
-	public static int read() {
+	public static byte read() {
 		return rxQueue.dequeue();
 	}
 
 	/**
-	 * Schreibt eine Anzahl Bytes in den Sende-Puffer.<br>
-	 * Der Aufruf ist nicht blockierend. Es werden soviele Bytes geschrieben,
-	 * wie im Sende-Puffer Platz haben.
+	 * Writes a given number of bytes into the transmit buffer.
+	 * A call of this method is not blocking! There will only as
+	 * many bytes written, which are free in the buffer.
 	 * 
 	 * @param b
-	 *            Bytes welche gesendet werden.
+	 *            Array of bytes to send.
 	 * @param off
-	 *            Ab diesem Offset in <code>b</code> werden die Daten
-	 *            gesendet.
+	 *            Offset to the data which should be sent.
 	 * @param len
-	 *            Länge der zu senden Daten.
-	 * @return Anzahl der gesendeten Daten. {@link #LENGTH_NEG_ERR} falls
-	 *         <code>len</code> negativ ist. {@link #OFFSET_NEG_ERR} falls
-	 *         <code>off</code> negativ ist. {@link #NULL_POINTER_ERR} falls
-	 *         <code>b == null</code>.
+	 *            Number of bytes to send.
+	 * @return the number of bytes written.
+	 *            {@link #LENGTH_NEG_ERR} if the given number of
+	 *            bytes was negative (len < 0).
+	 *            {@link #OFFSET_NEG_ERR} if the given offset was
+	 *            negative (off < 0).
+	 *            {@link #NULL_POINTER_ERR} if the array reference
+	 *            was null (b == null).
 	 */
 	public static int write(byte[] b, int off, int len) {
 		if (b == null)
@@ -284,26 +309,32 @@ public class SCI1 extends Interrupt {
 	}
 
 	/**
-	 * Schreibt eine Anzahl Bytes in den Sende-Puffer.<br>
-	 * Der Aufruf ist nicht blockierend. Es werden soviele Bytes geschrieben,
-	 * wie im Sende-Puffer Platz haben.
+	 * Writes a given number of bytes into the transmit buffer.
+	 * A call of this method is not blocking! There will only as
+	 * many bytes written, which are free in the buffer.
 	 * 
 	 * @param b
-	 *            Bytes welche gesendet werden.
-	 * @return Anzahl der gesendeten Daten. {@link #NULL_POINTER_ERR} falls
-	 *         <code>b == null</code>.
+	 *            Array of bytes to send.
+	 * @param off
+	 *            Offset to the data which should be sent.
+	 * @param len
+	 *            Number of bytes to send.
+	 * @return the number of bytes written.
+	 *            {@link #NULL_POINTER_ERR} if the array reference
+	 *            was null (b == null).
 	 */
 	public static int write(byte[] b) {
 		return write(b, 0, b.length);
 	}
 
 	/**
-	 * Schreibt ein Byte in den Sende-Puffer.<br>
-	 * Der Aufruf ist blockierend. Das heisst, dass die Methode nicht terminiert
-	 * solange keinen Platz im Puffer vorhanden ist.
+	 * Writes a given byte into the transmit buffer.
+	 * A call of this method is blocking! That means
+	 * this method won't terminate until the byte is
+	 * written to the buffer!
 	 * 
 	 * @param b
-	 *            Zu sendendes Byte
+	 *            Byte to write.
 	 */
 	public static void write(byte b) {
 		while (txQueue.availToWrite() <= 0);
@@ -311,6 +342,15 @@ public class SCI1 extends Interrupt {
 		startTransmission();
 	}
 
+	/**
+	 * Resets the SCI1. This means, the SCI will be
+	 * stopped and reinitialized with the same configuration.
+	 */
+	public static void reset() {
+		stop();
+		start(currentBaudRate, currentParity, currentDataBits);
+	}
+	
 	static {
 		out = new SCI1OutputStream();
 		in = new SCI1InputStream();

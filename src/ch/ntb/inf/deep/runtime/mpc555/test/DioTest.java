@@ -5,10 +5,12 @@ import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPWMSM_DIO;
+import ch.ntb.inf.deep.runtime.mpc555.driver.QADC_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_DIO;
 
 /* CHANGES:
+ * 12.10.2011	NTB/MZ	QADC test added
  * 04.10.2011	NTB/MZ	MPWM test added
  * 26.09.2011	NTB/MZ	Created (based on HLC1395Demo)
  */
@@ -17,7 +19,7 @@ public class DioTest extends Task {
 	private static final int print = 0, waitForInput = 1, inputTest = 2, outputTest = 3;
 	private static final boolean IN = false, OUT = true;
 	private static final boolean ON = true, OFF = false;
-	private static final boolean TPUA = true, TPUB = false;
+	private static final boolean TPUA = true, TPUB = false, QADCA = true, QADCB = false;
 	private static final String HI = "HI";
 	private static final String LO = "LO";
 	private static final int periodTime = 250;
@@ -53,6 +55,19 @@ public class DioTest extends Task {
 		for(int i = 0; i < 10; i++) {
 			MPWMSM_DIO.init(i, out);
 		}
+		
+		// QADC-A
+		for(int i = 0; i < 16; i++) {
+			QADC_DIO.init(QADCA, i, out);
+		}
+		
+		// QADC-B
+		for(int i = 0; i < 16; i++) {
+			QADC_DIO.init(QADCB, i, out);
+		}
+		
+		// MDA
+		// TODO: implement this
 	}
 	
 	private static void toggleLEDs() {
@@ -75,6 +90,19 @@ public class DioTest extends Task {
 		for(int i = 0; i < 10; i++) {
 			MPWMSM_DIO.set(i, !ledStat);
 		}
+		
+		// QADC-A
+		for(int i = 0; i < 16; i++) {
+			QADC_DIO.set(QADCA, i, !ledStat);
+		}
+		
+		// QADC-B
+		for(int i = 0; i < 16; i++) {
+			QADC_DIO.set(QADCB, i, !ledStat);
+		}
+		
+		// MDA
+		// TODO: implement this
 		
 		ledStat = !ledStat;
 	}
@@ -121,6 +149,27 @@ public class DioTest extends Task {
 			System.out.print(getState(MPWMSM_DIO.get(i)));
 			System.out.print('\t');
 		}
+		
+		// QADC-A
+		System.out.println("QADC-A:");
+		for(int i = 0; i < 16; i++) {
+			System.out.print(i);
+			System.out.print(": ");
+			System.out.print(getState(QADC_DIO.get(QADCA, i)));
+			System.out.print('\t');
+		}
+		
+		// QADC-B
+		System.out.println("QADC-B:");
+		for(int i = 0; i < 16; i++) {
+			System.out.print(i);
+			System.out.print(": ");
+			System.out.print(getState(QADC_DIO.get(QADCB, i)));
+			System.out.print('\t');
+		}
+		
+		// MDA
+		// TODO: implement this
 	}
 	
 	private static void inputTest() {
