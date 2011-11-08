@@ -33,18 +33,12 @@ public class Byte {
 	 * @see java.lang.Integer#toString(int)
 	 */
 	public static String toString(byte b) {
-//		return Integer.toString((int)b, 10);
 		return Integer.toString((int)b);
 	}
 
 	/**
 	 * Returns a {@code Byte} instance representing the specified
 	 * {@code byte} value.
-	 * If a new {@code Byte} instance is not required, this method
-	 * should generally be used in preference to the constructor
-	 * {@link #Byte(byte)}, as this method is likely to yield
-	 * significantly better space and time performance since
-	 * all byte values are cached.
 	 *
 	 * @param  b a byte value.
 	 * @return a {@code Byte} instance representing {@code b}.
@@ -74,7 +68,7 @@ public class Byte {
 	}
 
 	/**
-	 * Returns the value of this {@code Integer} as a
+	 * Returns the value of this {@code Byte} as a
 	 * {@code byte}.
 	 */
 	public byte byteValue() {
@@ -82,7 +76,7 @@ public class Byte {
 	}
 
 	/**
-	 * Returns the value of this {@code Integer} as a
+	 * Returns the value of this {@code Byte} as a
 	 * {@code short}.
 	 */
 	public short shortValue() {
@@ -90,7 +84,7 @@ public class Byte {
 	}
 
 	/**
-	 * Returns the value of this {@code Integer} as an
+	 * Returns the value of this {@code Byte} as an
 	 * {@code int}.
 	 */
 	public int intValue() {
@@ -98,7 +92,7 @@ public class Byte {
 	}
 
 	/**
-	 * Returns the value of this {@code Integer} as a
+	 * Returns the value of this {@code Byte} as a
 	 * {@code long}.
 	 */
 	public long longValue() {
@@ -106,7 +100,7 @@ public class Byte {
 	}
 
 	/**
-	 * Returns the value of this {@code Integer} as a
+	 * Returns the value of this {@code Byte} as a
 	 * {@code float}.
 	 */
 	public float floatValue() {
@@ -114,7 +108,7 @@ public class Byte {
 	}
 
 	/**
-	 * Returns the value of this {@code Integer} as a
+	 * Returns the value of this {@code Byte} as a
 	 * {@code double}.
 	 */
 	public double doubleValue() {

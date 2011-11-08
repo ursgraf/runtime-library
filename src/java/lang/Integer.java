@@ -11,8 +11,19 @@ package java.lang;
  *
  */
 public class Integer {
+    /**
+     * A constant holding the minimum value an <code>int</code> can
+     * have, -2<sup>31</sup>.
+     */
+    public static final int   MIN_VALUE = 0x80000000;
 
-private static char str[] = new char[11];
+    /**
+     * A constant holding the maximum value an <code>int</code> can
+     * have, 2<sup>31</sup>-1.
+     */
+    public static final int   MAX_VALUE = 0x7fffffff;
+
+    private static char str[] = new char[11];
 	
 	/**
 	 * Converts a <code>integer</code> to a String.
@@ -61,30 +72,15 @@ private static char str[] = new char[11];
 		return len + off;
 	}
 
-	//	public static void printf(char ... s){
-	//		int i = s.length;
-	//		int b = s[0];
-	//	}
-
 	/**
 	 * Returns an {@code Integer} instance representing the specified
-	 * {@code int} value.  If a new {@code Integer} instance is not
-	 * required, this method should generally be used in preference to
-	 * the constructor {@link #Integer(int)}, as this method is likely
-	 * to yield significantly better space and time performance by
-	 * caching frequently requested values.
-	 *
-	 * This method will always cache values in the range -128 to 127,
-	 * inclusive, and may cache other values outside of this range.
+	 * {@code int} value.  
 	 *
 	 * @param  i an {@code int} value.
 	 * @return an {@code Integer} instance representing {@code i}.
 	 * @since  1.5
 	 */
 	public static Integer valueOf(int i) {
-		//	             assert IntegerCache.high >= 127;
-		//	             if (i >= IntegerCache.low && i <= IntegerCache.high)
-		//	                 return IntegerCache.cache[i + (-IntegerCache.low)];
 		return new Integer(i);
 	}
 
