@@ -57,7 +57,6 @@ public class Heap implements ntbMpc555HB {
 		return ref;
 	}	
 
-	//TODO tag auf Basistyp setzen, size of Object dazunehmen
 	// called by newarray	
 	private static int newPrimTypeArray(int nofElements, int type, int ref) {
 		int elementSize;
@@ -75,7 +74,6 @@ public class Heap implements ntbMpc555HB {
 		return ref;
 	}
 	
-	//TODO size of Object dazunehmen
 	// called by anewarray	
 	private static int newRefArray(int nofElements, int ref) {
 		int size = nofElements * 4 + 8;
@@ -88,7 +86,6 @@ public class Heap implements ntbMpc555HB {
 		return ref;
 	}
 	
-	//TODO tag auf Basistyp setzen, size of Object dazunehmen
 	// called by multianewarray	
 	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3, int dim4) {
 		if (nofDim > 3 || nofDim < 2) US.HALT(20);
@@ -100,16 +97,27 @@ public class Heap implements ntbMpc555HB {
 			while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
 			US.PUT4(heapPtr + 4, ref);	// write tag
 			US.PUT2(heapPtr + 2, dim0);	// write length of dim0
+			int dim1Ref = US.GET4(ref + 4);
+			if (dim1Ref == -1) dim1Ref = ref;
 			ref = heapPtr + 8;
 			addr = ref;
 			for (int i = 0; i < dim0; i++) {
-				int elemAddr = ref + 4 * dim0 + 8 + i * dim1Size; 
+				int elemAddr = ref + 4 * dim0 + i * dim1Size + 8; 
 				US.PUT4(addr, elemAddr);
-				US.PUT4(elemAddr - 4, ref);	// write tag
+				US.PUT4(elemAddr - 4, dim1Ref);	// write tag
 				US.PUT2(elemAddr - 6, dim1);	// write length of dim0
 				addr += 4;
 			}
 			heapPtr += ((size + 15) >> 4) << 4;
+		} else {	// nofDim == 3
+			int elemSize = US.GET4(ref);
+			int dim2Size = (8 + dim2 * elemSize + 3) >> 2 << 2;	
+			int size = 8 + dim0 * 4 + dim0 * (8 + dim1 * 4) + dim0 * dim1 * dim2Size;
+			int addr = heapPtr; 
+			while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
+			US.PUT4(heapPtr + 4, ref);	// write tag
+			US.PUT2(heapPtr + 2, dim0);	// write length of dim0
+			
 		}
 		return ref;
 	}
