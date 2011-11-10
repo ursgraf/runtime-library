@@ -44,24 +44,27 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.Robi2;
  * with obstacles.
  */
 public class Robi2ObstacleDemo extends Task {
+	private static final short threshold = 70;
+	private static final short turnSpeed = 100;
+	private static final short driveSpeed = 60;
 	short state = 0;
 	boolean turnLeft = false;
 	
 	private boolean hasBarrier() {
 		boolean hasBarrier = false;
 		for (int i = 4; i < 7; i++) {
-			if (Robi2.getDistSensorValue(i) > 100) {
+			if (Robi2.getDistSensorValue(i) > threshold) {
 				hasBarrier = true;
 				turnLeft = false;
 			}
 		}
 		for (short i = 10; i < 13; i++) {
-			if (Robi2.getDistSensorValue(i) > 100) {
+			if (Robi2.getDistSensorValue(i) > threshold) {
 				hasBarrier = true;
 				turnLeft = true;
 			}
 		}
-		if (Robi2.getDistSensorValue(2) > 100) {
+		if (Robi2.getDistSensorValue(2) > threshold) {
 				hasBarrier = true;
 				turnLeft = true;
 			}
@@ -77,12 +80,12 @@ public class Robi2ObstacleDemo extends Task {
 				if (hasBarrier()) {
 					state = 1;
 					Robi2.stop();
-					if(turnLeft){
-						Robi2.setRightDriveSpeed(-80);
-						Robi2.setLeftDriveSpeed(-80);
-					}else{
-						Robi2.setRightDriveSpeed(80);
-						Robi2.setLeftDriveSpeed(80);
+					if(turnLeft) {
+						Robi2.setRightDriveSpeed(-turnSpeed);
+						Robi2.setLeftDriveSpeed(-turnSpeed);
+					} else {
+						Robi2.setRightDriveSpeed(turnSpeed);
+						Robi2.setLeftDriveSpeed(turnSpeed);
 					}
 				}
 				break;
@@ -90,8 +93,8 @@ public class Robi2ObstacleDemo extends Task {
 				if (! hasBarrier()) {
 					state = 0;
 					Robi2.stop(); 
-					Robi2.setRightDriveSpeed(-60);
-					Robi2.setLeftDriveSpeed(60);
+					Robi2.setRightDriveSpeed(-driveSpeed);
+					Robi2.setLeftDriveSpeed(driveSpeed);
 				}
 				break;
 			default: 
@@ -101,12 +104,13 @@ public class Robi2ObstacleDemo extends Task {
 		}
 	}
 	
-	static { 
+	static {
 		// Task initialization
 		Robi2ObstacleDemo task = new Robi2ObstacleDemo();
 		task.period = 0;
 		Task.install(task);
 		
+		// Enable some LEDs
 		for(int i = 0; i < 4; i++ ) {
 			Robi2.setPatternLED(i, 0, true);
 			Robi2.setPatternLED(i, 2, true);
