@@ -87,7 +87,7 @@ public class Heap implements ntbMpc555HB {
 	}
 	
 	// called by multianewarray	
-	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3, int dim4) {
+	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3) {
 		if (nofDim > 3 || nofDim < 2) US.HALT(20);
 		if (nofDim == 2) {
 			int elemSize = US.GET4(ref);
@@ -111,18 +111,38 @@ public class Heap implements ntbMpc555HB {
 			heapPtr += ((size + 15) >> 4) << 4;
 		} else {	// nofDim == 3
 			int elemSize = US.GET4(ref);
+			int dim1Size = 8 + dim1 * 4;	
 			int dim2Size = (8 + dim2 * elemSize + 3) >> 2 << 2;	
-			int size = 8 + dim0 * 4 + dim0 * (8 + dim1 * 4) + dim0 * dim1 * dim2Size;
+			int size = 8 + dim0 * 4 + dim0 * dim1Size + dim0 * dim1 * dim2Size;
 			int addr = heapPtr; 
 			while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
-			US.PUT4(heapPtr + 4, ref);	// write tag
+			US.PUT4(heapPtr + 4, ref);	// write tag of dim0
 			US.PUT2(heapPtr + 2, dim0);	// write length of dim0
-			
+			int dim1Ref = US.GET4(ref + 4);
+			if (dim1Ref == -1) dim1Ref = ref;
+			int dim2Ref = US.GET4(dim1Ref + 4);
+			if (dim2Ref == -1) dim2Ref = ref;
+			ref = heapPtr + 8;
+			addr = ref;
+			for (int i = 0; i < dim0; i++) {
+				int elem1Addr = ref + 4 * dim0 + i * dim1Size + 8; 
+				US.PUT4(addr, elem1Addr);
+				US.PUT4(elem1Addr - 4, dim1Ref);	// write tag of dim1
+				US.PUT2(elem1Addr - 6, dim1);	// write length of dim1
+				for (int j = 0; j < dim1; j++) {
+					int elem2Addr = ref + 4 * dim0 + dim0 * dim1Size + j * dim2Size + 8; 
+					US.PUT4(elem1Addr, elem2Addr);
+					US.PUT4(elem2Addr - 4, dim2Ref);	// write tag of dim2
+					US.PUT2(elem2Addr - 6, dim2);	// write length of dim2
+					elem1Addr += 4;
+				}
+				addr += 4;
+			}
+			heapPtr += ((size + 15) >> 4) << 4;
 		}
 		return ref;
 	}
 	
-	//TODO tag auf Basistyp setzen, size of String dazunehmen
 	// called by newstring in java/lang/String
 	public static int newstring(int ref, int len) {
 		int size = len + 8;
