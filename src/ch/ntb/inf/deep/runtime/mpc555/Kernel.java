@@ -37,7 +37,8 @@ package ch.ntb.inf.deep.runtime.mpc555;
 import ch.ntb.inf.deep.unsafe.*;
 
 /* changes:
- * 11.11.10	NTB/Urs Graf	creation
+ * 23.11.11	NTB/Martin Züger	classConstOffset
+ * 11.11.10	NTB/Urs Graf		creation
  */
 
 public class Kernel implements ntbMpc555HB {
@@ -114,7 +115,7 @@ public class Kernel implements ntbMpc555HB {
 		}
 		
 //		SetFPSCR;
-		int classConstOffset = US.GET4(sysTabBaseAddr) * 4 + 4;
+		int classConstOffset = US.GET4(sysTabBaseAddr);
 		int state = 0;
 		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr); 
 		while (true) {
@@ -141,7 +142,7 @@ public class Kernel implements ntbMpc555HB {
 			state++; 
 			classConstOffset += 4;
 		}
-		classConstOffset = US.GET4(sysTabBaseAddr) * 4 + 4;
+		classConstOffset = US.GET4(sysTabBaseAddr);
 		while (true) {
 			// get addresses of classes from system table
 			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);
