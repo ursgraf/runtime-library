@@ -40,6 +40,7 @@ import ch.ntb.inf.deep.unsafe.US;
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation
  * 22.1.11	Urs Graf		newstring added
+ * 1.1.11	Urs Graf		two- and three dimensional arrays supported
  */
 
 public class Heap implements ntbMpc555HB {
@@ -90,7 +91,7 @@ public class Heap implements ntbMpc555HB {
 	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3) {
 		if (nofDim > 3 || nofDim < 2) US.HALT(20);
 		if (nofDim == 2) {
-			int elemSize = US.GET4(ref);
+			int elemSize = US.GET4(ref) & 0xffff;	// mask array type bit
 			int dim1Size = (8 + dim1 * elemSize + 3) >> 2 << 2;	
 			int size = 8 + dim0 * 4 + dim0 * dim1Size;
 			int addr = heapPtr; 
@@ -110,7 +111,7 @@ public class Heap implements ntbMpc555HB {
 			}
 			heapPtr += ((size + 15) >> 4) << 4;
 		} else {	// nofDim == 3
-			int elemSize = US.GET4(ref);
+			int elemSize = US.GET4(ref) & 0xffff;	// mask array type bit
 			int dim1Size = 8 + dim1 * 4;	
 			int dim2Size = (8 + dim2 * elemSize + 3) >> 2 << 2;	
 			int size = 8 + dim0 * 4 + dim0 * dim1Size + dim0 * dim1 * dim2Size;
