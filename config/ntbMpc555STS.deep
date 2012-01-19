@@ -180,5 +180,13 @@ operatingsystem {
                     attributes = synthetic;
                     id = 0x107;
                 }
+                method imDelegI1Mm {
+                    attributes = synthetic;
+                    id = 0x108;
+                }
+                method imDelegIiMm {
+                    attributes = synthetic;
+                    id = 0x109;
+                }
         }
 }
