@@ -44,13 +44,14 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
 public class ArrayTest3 {
 	static short[][] a1 = new short[4][3];
-//	static short[][] a2 = {{1,2},{3,4}};
+	static short[][] a2 = {{1,2},{3,4}};
 	static int[][][] a3 = new int[3][2][4];
-//	static int[][][] a4 = {
-//							{{1,2,3,4},{11,12,13,14}},
-//							{{101,102,103,104},{111,112,113,114}},
-//							{{201,202,203,204},{211,212,213,214}}
-//						  };
+	static int[][][] a4 = {
+							{{1,2,3,4},{11,12,13,14}},
+							{{101,102,103,104},{111,112,113,114}},
+							{{201,202,203,204},{211,212,213,214}}
+						  };
+	static Object a5;
 
 	static {
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
@@ -69,7 +70,6 @@ public class ArrayTest3 {
 		a1[3][0] = 400;
 		a1[3][1] = 401;
 		a1[3][2] = 402;
-
-		System.out.println("done");
 	}
 }
+

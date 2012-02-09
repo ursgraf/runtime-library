@@ -69,7 +69,7 @@ public class Heap implements ntbMpc555HB {
 		int addr = heapPtr; 
 		while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
 		US.PUT4(heapPtr + 4, ref);	// write tag
-		US.PUT2(heapPtr + 2, nofElements);	// write length
+		US.PUT4(heapPtr, 0x800000 | nofElements);	// write length and array bit
 		ref = heapPtr + 8;
 		heapPtr += ((size + 15) >> 4) << 4;
 		return ref;
@@ -81,7 +81,7 @@ public class Heap implements ntbMpc555HB {
 		int addr = heapPtr; 
 		while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
 		US.PUT4(heapPtr + 4, ref);	// write tag
-		US.PUT2(heapPtr + 2, nofElements);	// write length
+		US.PUT4(heapPtr, 0x800000 | nofElements);	// write length and array bit
 		ref = heapPtr + 8;
 		heapPtr += ((size + 15) >> 4) << 4;
 		return ref;
@@ -97,15 +97,15 @@ public class Heap implements ntbMpc555HB {
 			int addr = heapPtr; 
 			while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
 			US.PUT4(heapPtr + 4, ref);	// write tag
-			US.PUT2(heapPtr + 2, dim0);	// write length of dim0
-			int dim1Ref = US.GET4(ref + 16);
+			US.PUT4(heapPtr, 0x800000 | dim0);	// write length of dim0 and array bit
+			int dim1Ref = US.GET4(ref + 12);
 			ref = heapPtr + 8;
 			addr = ref;
 			for (int i = 0; i < dim0; i++) {
 				int elemAddr = ref + 4 * dim0 + i * dim1Size + 8; 
 				US.PUT4(addr, elemAddr);
 				US.PUT4(elemAddr - 4, dim1Ref);	// write tag
-				US.PUT2(elemAddr - 6, dim1);	// write length of dim0
+				US.PUT4(elemAddr - 8, 0x800000 | dim1);	// write length of dim1 and array bit
 				addr += 4;
 			}
 			heapPtr += ((size + 15) >> 4) << 4;
@@ -117,21 +117,21 @@ public class Heap implements ntbMpc555HB {
 			int addr = heapPtr; 
 			while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
 			US.PUT4(heapPtr + 4, ref);	// write tag of dim0
-			US.PUT2(heapPtr + 2, dim0);	// write length of dim0
-			int dim1Ref = US.GET4(ref + 16);
-			int dim2Ref = US.GET4(ref + 20);
+			US.PUT4(heapPtr, 0x800000 | dim0);	// write length of dim0 and array bit
+			int dim1Ref = US.GET4(ref + 12);
+			int dim2Ref = US.GET4(ref + 16);
 			ref = heapPtr + 8;
 			addr = ref;
 			for (int i = 0; i < dim0; i++) {
 				int elem1Addr = ref + 4 * dim0 + i * dim1Size + 8; 
 				US.PUT4(addr, elem1Addr);
 				US.PUT4(elem1Addr - 4, dim1Ref);	// write tag of dim1
-				US.PUT2(elem1Addr - 6, dim1);	// write length of dim1
+				US.PUT4(elem1Addr - 8, 0x800000 | dim1);	// write length of dim1 and array bit
 				for (int j = 0; j < dim1; j++) {
 					int elem2Addr = ref + 4 * dim0 + dim0 * dim1Size + (dim1 * i + j) * dim2Size + 8; 
 					US.PUT4(elem1Addr, elem2Addr);
 					US.PUT4(elem2Addr - 4, dim2Ref);	// write tag of dim2
-					US.PUT2(elem2Addr - 6, dim2);	// write length of dim2
+					US.PUT4(elem2Addr - 8, 0x800000 | dim2);	// write length of dim2 and array bit
 					elem1Addr += 4;
 				}
 				addr += 4;
