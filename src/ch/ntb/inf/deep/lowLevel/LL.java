@@ -46,10 +46,4 @@ public class LL {
 	public static double bitsToDouble(long val) {
 		return 0;
 	}
-	
-	public void imDelegI1Mm(){
-	}
-
-	public void imDelegIiMm(){
-	}
 }
