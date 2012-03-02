@@ -236,7 +236,7 @@ public class Double {
 				else putChar('-');
 				putChar('I'); putChar('N');	putChar('F');
 			}
-			putChar('\0');
+//			putChar('\0');
 			gchars = null;
 			return nofChars;
 		}
@@ -302,7 +302,7 @@ public class Double {
 		putChar((char) (exp / 100 % 10 + '0'));
 		putChar((char) (exp / 10 % 10 + '0'));
 		putChar((char) (exp % 10 + '0'));
-		putChar('\0');
+		//putChar('\0');
 		gchars = null;
 		return nofChars;
 	}
