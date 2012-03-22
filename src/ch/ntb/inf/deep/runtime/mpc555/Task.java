@@ -39,9 +39,10 @@ import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation
+ * 20.3.12	NTB/Urs Graf	Interface Actionable added
  */
 
-public class Task implements ntbMpc555HB {
+public class Task implements Actionable, ntbMpc555HB {
 	public static final int maxNofTasks = 32;
 	
 	public static boolean done;	/** previous operation successfully completed */
@@ -54,10 +55,11 @@ public class Task implements ntbMpc555HB {
 	 */
 	public static int firstErr;
 	
-	private static int nofPerTasks, nofReadyTasks, curRdyTask, curTask;
+	private static int nofPerTasks, nofReadyTasks, curRdyTask, curTask, nofActionables;
 	private static Task[] tasks = new Task[maxNofTasks+2];	// periodic tasks
 	private static Task lowestPrioStub = new Task(); // to be put at the end of the prioQ when dequeueing a task
 	private static Task highestPrioStub = new Task(); // to be put at the front of the prioQ (periodic Task[0])
+	private static Actionable[] actionables = new Actionable[maxNofTasks];	
 	
 	/** time:	0 <= time : start time in ms from install time */
 	public int time;
@@ -74,8 +76,22 @@ public class Task implements ntbMpc555HB {
 	private boolean installed;
 	private long nextTime;
 	private long periodUs;
+	private int actionable = -1;
 
+	/**
+	 * Creates a new <i>Task</i>. <br>
+	 * It's action method will be called by the task scheduler
+	 */
 	public Task() {
+	}
+	
+	/**
+	 * Creates a new <i>Task</i>. <br>
+	 * The action method of the parameter <i>Actionable<i> will be called by the task scheduler
+	 */
+	public Task(Actionable act) {
+		actionable = nofActionables;
+		actionables[nofActionables++] = act;
 	}
 	
 	static void error(int n) {
@@ -84,21 +100,20 @@ public class Task implements ntbMpc555HB {
 	}
 
 	/**
-	 * action to be performed by the task
+	 * Aaction to be performed by the task
 	 */
 	public void action() {
 	}
 
 	/**
-	 * returns system time in milliseconds, time starts at powerup
+	 * Returns system time in milliseconds, time starts at powerup
 	 */
 	public static int time() {
-//		return (int)(Kernel.time() / 1000);
-		return (int)(Kernel.time() >> 10);
+		return (int)(Kernel.time() / 1000);
 	}
 
 	/**
-	 * installs a new <i>Task</i>. <br>
+	 * Installs a new <i>Task</i>. <br>
 	 */
 	public static void install(Task task) {
 		remove(task);
@@ -131,7 +146,7 @@ public class Task implements ntbMpc555HB {
 		}
 	}
 
-	/** removes an installed task */
+	/** Removes an installed task */
 	public static void remove(Task task) {
 		int remTaskNo = tasks.length - nofReadyTasks;
 		while ((remTaskNo < tasks.length) && (tasks[remTaskNo] != task)) remTaskNo++;
@@ -224,7 +239,8 @@ public class Task implements ntbMpc555HB {
 			if (currentTask.nextTime < time) {
 				curTask = 1;
 				currentTask.nofActivations++;
-				currentTask.action();
+				if (currentTask.actionable < 0)	currentTask.action();
+				else actionables[currentTask.actionable].action();
 				if (currentTask.installed) {
 					if (currentTask.period == 0) {
 						nofReadyTasks++;
@@ -240,7 +256,8 @@ public class Task implements ntbMpc555HB {
 				if (curRdyTask >= tasks.length) curRdyTask = tasks.length - nofReadyTasks;
 				currentTask = tasks[curRdyTask];
 				currentTask.nofActivations++;
-				currentTask.action();
+				if (currentTask.actionable < 0)	currentTask.action();
+				else actionables[currentTask.actionable].action();
 			}
 		}
 	}
