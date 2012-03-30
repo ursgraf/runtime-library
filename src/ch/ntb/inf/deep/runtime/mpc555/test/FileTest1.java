@@ -41,6 +41,7 @@ import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
 import ch.ntb.inf.deep.runtime.mpc555.driver.AM29LV160;
 import ch.ntb.inf.deep.runtime.mpc555.driver.FFS;
 import ch.ntb.inf.deep.runtime.mpc555.driver.File;
+import ch.ntb.inf.deep.runtime.mpc555.driver.Rider;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 import ch.ntb.inf.deep.unsafe.US;
@@ -51,17 +52,33 @@ import ch.ntb.inf.deep.unsafe.US;
 
 public class FileTest1 implements ntbMpc555HB {
 	
+	static void createFile1() {
+		File f1 = new File("test1.txt");
+		Rider r1 = new Rider();
+		r1.set(f1, 0);
+		r1.writeInt(0x11223344);
+		f1.register();
+		System.out.println("test1.txt created");
+	}
+	
+	static void createFile2() {
+		File f1 = new File("test2.txt");
+		Rider r1 = new Rider();
+		r1.set(f1, 0);
+		r1.writeInt(0x11223344 * 2);
+		f1.register();
+		System.out.println("test2.txt created");
+	}
+	
+	static void outDir() {
+		FFS.outDir();
+	}
+	
 	static {
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI2.out);
 		System.out.println("file test");
 		FFS.init();
-		outDir();
 	}
 
-	private static void outDir() {
-		System.out.println("output directory");
-
-		
-	}
 }

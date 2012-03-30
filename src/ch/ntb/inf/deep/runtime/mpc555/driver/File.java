@@ -45,12 +45,12 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
  */
 public class File {
 
-	boolean valid;	// indicates if file in directory is valid
-	byte filler;	// filler for last byte as flash is 2byte organized
 	public String name;	// name of file
-	int addr;	// absolute address of first block of file in flash
 	public int len;	// length of file
-	public int blocks[];	// block numbers occupied by this file
+	byte filler;	// filler for last byte as flash is 2byte organized
+	int addr;	// absolute address of first block of file in flash
+	int blocks[];	// block numbers occupied by this file
+	boolean valid;	// indicates if file in directory is valid
 
 	/**
 	 * returns address of first block of file

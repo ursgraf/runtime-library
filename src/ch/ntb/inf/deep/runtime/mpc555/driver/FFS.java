@@ -49,21 +49,22 @@ import ch.ntb.inf.deep.unsafe.US;
  * Sets aside part of the onboard flash for a file system
  */
 public class FFS implements ntbMpc555HB {
-	static final int devAddr = extFlashBase; // external flash address, 16MB 
-	static final int fsOffset = 0x200000; // start of file system in flash, 2MB 
-	static final int key = 0x12345678; 	// key for file system 
-	static final int sectorSize = 0x20000; // size of sectors, 128K 
+	private static final boolean dbg = false;
+	private static final int devAddr = extFlashBase; // external flash address, 16MB 
+	private static final int fsOffset = 0x200000; // start of file system in flash, 2MB 
+	private static final int key = 0x12345678; 	// key for file system 
+	private static final int sectorSize = 0x20000; // size of sectors, 128K 
+	private static final int NumOfSectors = 16;	// total number of sectors for file system
 	static final int maxFiles = 16;	// maximum files in file system
 	static final int maxBlocksPerFile = 16;	// maximum number of blocks per file
 	static final int blockSize = 0x2000;	// block size (8 kB)
 	static final int BlocksPerSector = FFS.sectorSize / blockSize;	// number of blocks per sector (16)
-	static final int NumOfSectors = 16;	// total number of sectors for file system
 	static final int numOfBlocks = NumOfSectors * BlocksPerSector;	// total number of blocks for file system
 
 	static File[] fileTab; 	//  table of files
 	static boolean[] freeBlocks;	// free and erased blocks in flash 
 	static boolean[] usedBlocks; 	// blocks containing files
-	static boolean fileDirExists; 	// indicates whether file system exists in flash and could be read 
+	private static boolean fileDirExists; 	// indicates whether file system exists in flash and could be read 
 
 	/**
 	 * erases a sector in the flash
@@ -139,61 +140,55 @@ public class FFS implements ntbMpc555HB {
 	 */
 	private static void readDir () {
 		int  sector, offset; 
-		System.out.println("searching for file directory"); 
-
+		if (dbg) System.out.println("searching for file directory"); 
 		offset = 0; sector = 0;
 		int val = FFS.readInt(sector, offset);
 		if (val == key) {	// FS exists 
-			System.out.println("file directory exists"); 
+			if (dbg) System.out.println("file directory exists"); 
 			offset += 4;	
 			for (int i = 0; i < numOfBlocks; i++) {
 				short data = FFS.readShort(sector, offset);	
 				freeBlocks[i] = (data == 0)? false: true;
 				offset += 2;
 			}
-			helperReadDir(sector, offset);
+			char[] ch = new char[32];
+			for (int i = 0; i < maxFiles; i++) {
+				boolean valid = (FFS.readShort(sector, offset) == 0)? false: true; offset += 2;
+				if (valid) {	// file is valid in directory
+					if (dbg) {System.out.print("file "); System.out.print(i); System.out.print(" is valid: ");} 
+					byte filler = (byte)FFS.readShort(sector, offset); offset += 2;
+						for (int k = 0; k < 32; k++) {
+							ch[k] = (char)FFS.readShort(sector, offset);
+							offset += 2;
+						}
+					int n;
+					for (n = 0; ch[n] != 0 && n < 32; n++);
+					String name = new String(ch, 0, n);
+					if (dbg) System.out.println(name);
+					File f = new File(name);	// file does not yet exist and will be created in FileTab 
+					// file info is read from flash
+					f.valid = valid;
+					f.filler = filler;
+					f.addr = FFS.readInt(sector, offset); 
+					offset += 4;
+					f.len = FFS.readInt(sector, offset); 
+					offset += 4;
+					for (int k = 0; k < maxBlocksPerFile; k++) {
+						f.blocks[k] = FFS.readInt(sector, offset);
+						int num = f.blocks[k];
+						if ((num >= 0) && (num < numOfBlocks)) usedBlocks[num] = true;
+						offset += 4;
+					}	
+				} else {
+					offset += 74 + 4 * maxBlocksPerFile;
+				}
+			}
 			fileDirExists = true;
 		} else {	// no existing FS 
-			System.out.println("no directory found"); 
-//			formatAll();
+			if (dbg) System.out.println("no directory found"); 
+			formatAll();
 			fileDirExists = false;
 		} 
-	}
-
-	private static void helperReadDir(int sector, int offset) {
-		char[] ch = new char[32];
-		for (int i = 0; i < maxFiles; i++) {
-			boolean valid = (FFS.readShort(sector, offset) == 0)? false: true; offset += 2;
-			if(valid == false) {
-				offset += 74 + 4 * maxBlocksPerFile;
-			} else {	// file is valid in directory
-				System.out.print("file "); System.out.print(i); System.out.print(" is valid: "); 
-				byte filler = (byte)FFS.readShort(sector, offset); offset += 2;
-					for (int k = 0; k < 32; k++) {
-						ch[k] = (char)FFS.readShort(sector, offset);
-						offset += 2;
-					}
-				int n;
-				for (n = 0; ch[n] != 0 && n < 32; n++);
-				String name = new String(ch, 0, n);
-				System.out.println(name);
-				File f = new File(name);	// file does not yet exist and will be created in FileTab 
-				// file info is read from flash
-				f.valid = valid;
-				f.filler = filler;
-				f.addr = FFS.readInt(sector, offset); 
-				offset += 4;
-				f.len = FFS.readInt(sector, offset); 
-				offset += 4;
-				System.out.println(f.len);
-				for (int k = 0; k < maxBlocksPerFile; k++) {
-					f.blocks[k] = FFS.readInt(sector, offset);
-					int num = f.blocks[k];
-					if ((num >= 0) && (num < numOfBlocks)) usedBlocks[num] = true;
-					offset += 4;
-				}	
-			} 
-		}
 	}
 
 	/**
@@ -201,8 +196,6 @@ public class FFS implements ntbMpc555HB {
 	 */
 	static void writeDir () {
 		int offset, sector, i, k;
-		//byte val;
-		//short data;
 		FFS.eraseSector(0);
 		offset = 4; sector = 0;
 		for (i = 0; i < numOfBlocks; i++) {
@@ -273,7 +266,7 @@ public class FFS implements ntbMpc555HB {
 	}
 
 	/**
-	 * erases flash, initialises file system 
+	 * erases flash, initializes file system 
 	 */
 	public static void formatAll () {
 		freeBlocks[0] = false; usedBlocks[0] = false; 	// reserved for file directory 
@@ -302,6 +295,7 @@ public class FFS implements ntbMpc555HB {
 		for (int i = BlocksPerSector; i < numOfBlocks; i++) usedBlocks[i] = false;
 		readDir();
 	}
+	
 	
 	// methods for debugging purposes *
 	public static void showFreeBlocks () {

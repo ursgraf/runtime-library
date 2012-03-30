@@ -54,15 +54,15 @@ public class Rider {
 	 * result of last operation 
 	 * = 0, operation successful
 	 * = 1, end of file reached
-	 * = 2, if file does not exist
+	 * = 2, file does not exist
 	 * = 3, no blocks left in file system
 	 * = 4, max number of blocks for this file is exceeded
-	 * = 5, not writing to end of file
+	 * = 5, writing not at end of file
 	 */
 	public int res;
 	
-	File f;	// file associated with rider
-	int offset;	// position of rider
+	private File f;	// file associated with rider
+	private int offset;	// position of rider
 	
 	/**
 	 * sets rider at position
