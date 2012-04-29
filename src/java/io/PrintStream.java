@@ -253,6 +253,40 @@ public class PrintStream extends OutputStream{
 		out.write((byte)'\n');
 	}
 	
+	/**
+	 * Prints a long as a string to the output stream.
+	 * @param val the long to write.
+	 */
+	public void print(long val) {
+		if (val == 0) out.write((byte) '0');
+		else {
+			boolean neg = false;
+			if (val < 0) {
+				neg = true;
+				val *= -1;
+			}
+			int ctr = chars.length;
+			while (val != 0) {
+				chars[--ctr] = (char) ('0' + (val % 10));
+				val /= 10;
+			}
+			if (neg)
+				chars[--ctr] = '-';
+			for (int i = ctr; i < chars.length; i++)
+				out.write((byte)chars[i]);
+		}
+	}
+	
+	
+	/**
+	 * Prints a long as a string to the output stream and then terminates the line.
+	 * @param val the long to write.
+	 */
+	public void println(long val) {
+		print(val);
+		if(enableCR) out.write((byte)'\r');
+		out.write((byte)'\n');
+	}
 	
 	/**
 	 * Prints a float as a string to the output stream.
