@@ -44,8 +44,8 @@ class Reset extends PPCException implements ntbMpc555HB {
 	
 	static void reset() {
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset * 4);
-		int stackSize = US.GET4(sysTabBaseAddr + stackOffset * 4 + 4);
+		int stackBase = US.GET4(sysTabBaseAddr + stackOffset);
+		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 4);
 		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
 		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
 		US.PUTSPR(SRR0, kernelClinitAddr);
