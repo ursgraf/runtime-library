@@ -368,7 +368,7 @@ public class Heap implements ntbMpc555HB {
 	
 	static {
 		int heapOffset = US.GET4(sysTabBaseAddr + stHeapOffset);
-		heapBase = US.GET4(sysTabBaseAddr + heapOffset * 4 + 4);
+		heapBase = US.GET4(sysTabBaseAddr + heapOffset);
 		heapPtr = heapBase;
 		heapSize = US.GET4(sysTabBaseAddr + heapOffset * 4 + 8);
 		heapEnd = heapBase + heapSize;
