@@ -59,8 +59,13 @@ public class Kernel implements ntbMpc555HB {
 	 * @return system time in us
 	 */
 	public static long time() {
-		long time = (long)US.GETSPR(TBUread) << 32;
-		time |= US.GETSPR(TBLread) & 0xffffffffL;
+		int high1, high2, low;
+		do {
+			high1 = US.GETSPR(TBUread); 
+			low = US.GETSPR(TBLread);
+			high2 = US.GETSPR(TBUread); 
+		} while (high1 != high2);
+		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
 		return time;
 	}
 	
@@ -80,8 +85,21 @@ public class Kernel implements ntbMpc555HB {
 	}
 
 
-	private static short FCS(int begin, int end) {
-		return 0;
+	private static int FCS(int begin, int end) {
+		int crc  = 0xffffffff;  // initial content
+		final int poly = 0xedb88320;  // reverse polynomial 0x04c11db7
+		int addr = begin;
+		while (addr < end) {
+			byte b = US.GET1(addr);
+			int temp = (crc ^ b) & 0xff;
+			for (int i = 0; i < 8; i++) { // read 8 bits one at a time
+				if ((temp & 1) == 1) temp = (temp >>> 1) ^ poly;
+				else temp = (temp >>> 1);
+			}
+			crc = (crc >>> 8) ^ temp;
+			addr++;
+		}
+		return crc;
 	}
 	
 	private static void boot() {
@@ -114,7 +132,7 @@ public class Kernel implements ntbMpc555HB {
 			US.PUT4(DMOR, 0x7e000000);	// map 32k -> 0x0...0x8000
 		}
 		
-//		SetFPSCR;
+//		set FPSCR;
 		int classConstOffset = US.GET4(sysTabBaseAddr);
 		int state = 0;
 		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr); 
@@ -126,11 +144,6 @@ public class Kernel implements ntbMpc555HB {
 			// check integrity of constant block for each class
 			int constBlkSize = US.GET4(constBlkBase);
 			if (FCS(constBlkBase, constBlkBase + constBlkSize) != 0) while(true) blink(1);
-
-			// check integrity of code block for each class
-			int codeBase = US.GET4(constBlkBase + cblkCodeBaseOffset);
-			int codeSize = US.GET4(constBlkBase + cblkCodeSizeOffset);
-			if (FCS(codeBase, codeBase + codeSize) != 0) while(true) blink(2);
 
 			// initialize class variables
 			int varBase = US.GET4(constBlkBase + cblkVarBaseOffset);
