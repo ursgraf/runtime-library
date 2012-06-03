@@ -59,13 +59,15 @@ public class Heap implements ntbMpc555HB {
 	private static int heapBase;	// address of start of heap
 	private static int heapSize;	// size of heap in bytes
 	private static int heapEnd;		// address of end of heap
-	static private int freeHeap;	// size of free heap in bytes
-	static private int heapPtr;		// used for allocation before Heap class is initialized
-	static private int nofRoots;	// number of roots in all classes
-	static private int[] roots;		// addresses of roots in all classes
-	static private int[] freeBlocks;	// free blocks have size minBlockSize, 2*minBlockSize, 
+	private static int freeHeap;	// size of free heap in bytes
+	private static int heapPtr;		// used for allocation before Heap class is initialized
+	private static int threshold;	// limit, when gc is started 
+	private static boolean mark;	// phase of gc
+	private static int nofRoots;	// number of roots in all classes
+	private static int[] roots;		// addresses of roots in all classes
+	private static int[] freeBlocks;	// free blocks have size minBlockSize, 2*minBlockSize, 
 										// 3*minBlockSize .. 6*minBlockSize, greater than 7*minBlockSize
-	static private int[] nofFreeBlocks;	// counter for debugging purposes
+	private static int[] nofFreeBlocks;	// counter for debugging purposes
 	
 	static int nofSweepFreeBlock, nofSweepMarkedBlock, nofSweepCollBlock;
 	static int currBlock;
@@ -169,34 +171,6 @@ public class Heap implements ntbMpc555HB {
 					}
 				}
 			}
-
-//			int elemSize = US.GET4(ref) & 0xffff;	// mask array type bit and dimension
-//			int dim1Size = 8 + dim1 * 4;	
-//			int dim2Size = (8 + dim2 * elemSize + 3) >> 2 << 2;	
-//			int size = 8 + dim0 * 4 + dim0 * dim1Size + dim0 * dim1 * dim2Size;
-//			addr = heapPtr; 
-//			while (addr < heapPtr + size) {US.PUT4(addr, 0); addr += 4;}
-//			US.PUT4(heapPtr + 4, ref);	// write tag of dim0
-//			US.PUT4(heapPtr, 0x800000 | dim0);	// write length of dim0 and array bit
-//			int dim1Ref = US.GET4(ref + 12);
-//			int dim2Ref = US.GET4(ref + 16);
-//			ref = heapPtr + 8;
-//			addr = ref;
-//			for (int i = 0; i < dim0; i++) {
-//				int elem1Addr = ref + 4 * dim0 + i * dim1Size + 8; 
-//				US.PUT4(addr, elem1Addr);
-//				US.PUT4(elem1Addr - 4, dim1Ref);	// write tag of dim1
-//				US.PUT4(elem1Addr - 8, 0x800000 | dim1);	// write length of dim1 and array bit
-//				for (int j = 0; j < dim1; j++) {
-//					int elem2Addr = ref + 4 * dim0 + dim0 * dim1Size + (dim1 * i + j) * dim2Size + 8; 
-//					US.PUT4(elem1Addr, elem2Addr);
-//					US.PUT4(elem2Addr - 4, dim2Ref);	// write tag of dim2
-//					US.PUT4(elem2Addr - 8, 0x800000 | dim2);	// write length of dim2 and array bit
-//					elem1Addr += 4;
-//				}
-//				addr += 4;
-//			}
-//			heapPtr += ((size + 15) >> 4) << 4;
 		}
 		return addr;
 	}
@@ -215,8 +189,8 @@ public class Heap implements ntbMpc555HB {
 
 	private static int getBlock(int size) {
 		int addr;
-		int i = size / minBlockSize;
 		int blockSize = ((size + minBlockSize - 1) >> 4) << 4;
+		int i = blockSize / minBlockSize - 1;
 		if (i >= nofFreeLists) i = nofFreeLists - 1;
 		// search free block in free block list
 		if (freeBlocks == null) { // there is no free list at the very beginning
@@ -224,13 +198,18 @@ public class Heap implements ntbMpc555HB {
 			heapPtr += blockSize;
 			freeHeap -= blockSize;
 		} else {
+			if (freeHeap < threshold) {
+				if (mark) mark(); else sweep();
+				mark = !mark;
+			}
 			while (freeBlocks[i] == 0 && i < nofFreeLists - 1) i++;
 			if (i < nofFreeLists - 1) {	
 				addr = freeBlocks[i];	// unlink block from list
 				freeBlocks[i] = US.GET4(addr + 4);	
 				nofFreeBlocks[i]--;
-				freeHeap -= blockSize;
-				int restBlockSize = (i+1) * minBlockSize - blockSize;	// put rest into free list
+				int freeBlockSize = (i+1) * minBlockSize;
+				freeHeap -= freeBlockSize;
+				int restBlockSize = freeBlockSize - blockSize;	// put rest into free list
 				i = restBlockSize / minBlockSize;
 				if (i > 0) {	// there is a rest block
 					i--;
@@ -243,16 +222,18 @@ public class Heap implements ntbMpc555HB {
 				}
 			} else {	// get block from list with block size >= 128 Bytes
 				addr = freeBlocks[nofFreeLists - 1];
+				if (addr == 0) while (true) Kernel.blink(5);	// no block in list 
 				int freeBlockSize = US.GET4(addr) & 0xffffff;
-				int last = addr;
-				while (blockSize > freeBlockSize) {	// search block which is bit enough
-					last = addr;
+				int prev = addr;
+				while (blockSize > freeBlockSize) {	// search block which is big enough
+					prev = addr;
 					addr = US.GET4(addr + 4);
+					if (addr == 0) while (true) Kernel.blink(5);	// no block left 
 					freeBlockSize = US.GET4(addr) & 0xffffff;
 				}
 				// unlink block
-				if (last == addr) freeBlocks[nofFreeLists - 1] = US.GET4(addr + 4);	// first block in list
-				else US.PUT4(last + 4, US.GET4(addr + 4));
+				if (prev == addr) freeBlocks[nofFreeLists - 1] = US.GET4(addr + 4);	// first block in list
+				else US.PUT4(prev + 4, US.GET4(addr + 4));
 				freeHeap -= freeBlockSize;
 				nofFreeBlocks[nofFreeLists - 1]--;
 				// put rest in free list
@@ -288,15 +269,23 @@ public class Heap implements ntbMpc555HB {
 			US.PUT4(obj - 8, heapInfo | (1 << 31));	// mark
 			if (heapInfo << 8 >= 0) {	// no array
 				if (dbg) nofMarkedRegObjs++;
-//				// read all ref field in typedesc
-//				// traverse(ref);
+				// follow references in the object
+				int tag = US.GET4(obj - 4);
+				int refsAddr = tag + US.GET4(tag + 8);
+				int nofRefs = US.GET4(refsAddr);
+				refsAddr += 4;
+				for (int i = 0; i < nofRefs; i++) {
+					int offset = US.GET4(refsAddr + i * 4);
+					int ref = US.GET4(obj + offset);
+					if (ref != 0) traverse(ref);
+				}
 			} else {	// array
 				if (heapInfo << 15 >= 0) {	// array of references
 					if (dbg) nofMarkedRefArrays++;
 					int len = heapInfo & 0xffff;
 					for (int i = 0; i < len; i++) {
 						int ref = US.GET4(obj + i * 4);
-						traverse(ref);
+						if (ref != 0) traverse(ref);
 					}
 				} else {	// array of primitives, don't follow
 					if (dbg) nofMarkedPrimArrays++;
@@ -305,9 +294,9 @@ public class Heap implements ntbMpc555HB {
 		}
 	}
 
-	public static void sweep() {
+	public static void sweep() {	// call to sweep only after marking
 		int blockSize, collBlockAddr = 0, collBlockSize = 0;
-		nofSweepFreeBlock = 0; nofSweepMarkedBlock = 0; nofSweepCollBlock = 0;
+		if (dbg) {nofSweepFreeBlock = 0; nofSweepMarkedBlock = 0; nofSweepCollBlock = 0;}
 		currBlock = heapBase;
 		while (currBlock < heapEnd) {
 			int heapInfo = US.GET4(currBlock);
@@ -324,7 +313,7 @@ public class Heap implements ntbMpc555HB {
 					}
 				blockSize = heapInfo & 0xffffff;
 				currBlock += blockSize;
-				nofSweepFreeBlock++;
+				if (dbg) nofSweepFreeBlock++;
 			} else {	// block is marked as used or block to be collected
 				if (heapInfo < 0) {	// object is marked
 					if (collBlockSize > 0) {	// close collected block till now and add to free list
@@ -338,7 +327,7 @@ public class Heap implements ntbMpc555HB {
 						collBlockSize = 0;
  					}
 					US.PUT4(currBlock, heapInfo & ~(1 << 31));	// unmark
-					nofSweepMarkedBlock++;
+					if (dbg) nofSweepMarkedBlock++;
 				}
 				// find block size
 				if (heapInfo << 8 >= 0) {	// no array
@@ -359,7 +348,7 @@ public class Heap implements ntbMpc555HB {
 				if (heapInfo >= 0) {	// add to collected block
 					if (collBlockSize == 0) collBlockAddr = currBlock;
 					collBlockSize += blockSize;
-					nofSweepCollBlock++;
+					if (dbg) nofSweepCollBlock++;
 				}
 				currBlock += blockSize;
 			} // end of block is marked or block to be collected
@@ -401,6 +390,9 @@ public class Heap implements ntbMpc555HB {
 		// whole heap is one big free block
 		US.PUT4(heapPtr, (1 << 30) | freeHeap);	// set free bit
 		US.PUT4(heapPtr + 4, 0);	// next field is null
+		// int i = heapPtr + 8; while (i < heapEnd) {US.PUT4(i, 0); i += 4;} // initialize heap, nice for debugging
+		threshold = heapSize / 3;
+		mark = true;
 		freeBlocks[nofFreeLists - 1] = heapPtr;
 		nofFreeBlocks[nofFreeLists - 1] = 1;	
 	}

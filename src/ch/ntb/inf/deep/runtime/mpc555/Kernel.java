@@ -42,6 +42,7 @@ import ch.ntb.inf.deep.unsafe.*;
  */
 
 public class Kernel implements ntbMpc555HB {
+	final static int stackEndPattern = 0xee22dd33;
 	static int loopAddr;
 	static int cmdAddr;
 	
@@ -84,6 +85,14 @@ public class Kernel implements ntbMpc555HB {
 		for (int k = 0; k < (10 * delay + nTimes * 2 * delay); k++);
 	}
 
+	/** 
+	 * blinks LED on MPIOSM pin 15 if stack end was overwritten
+	 */
+	public static void checkStack() { 
+		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
+		int stackBase = US.GET4(sysTabBaseAddr + stackOffset);
+		if (US.GET4(stackBase) != stackEndPattern) while (true) blink(3);
+	}
 
 	private static int FCS(int begin, int end) {
 		int crc  = 0xffffffff;  // initial content
@@ -133,6 +142,12 @@ public class Kernel implements ntbMpc555HB {
 		}
 		
 //		set FPSCR;
+		
+		// mark stack end with specific pattern
+		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
+		int stackBase = US.GET4(sysTabBaseAddr + stackOffset);
+		US.PUT4(stackBase, stackEndPattern);
+
 		int classConstOffset = US.GET4(sysTabBaseAddr);
 		int state = 0;
 		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr); 
