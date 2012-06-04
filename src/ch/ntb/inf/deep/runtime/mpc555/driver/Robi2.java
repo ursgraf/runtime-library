@@ -40,6 +40,7 @@ import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 
 /* Changes:
+ * 16.03.2012   NTB/UN  Fixed orientation
  * 02.09.2011	NTB/MZ	Bug fixes, anti wind-up implemented
  * 26.05.2011	NTB/MZ	controller type changed to PI, JavaDoc updated
  * 02.05.2011	NTB/MZ	bug fixes
@@ -117,7 +118,7 @@ public class Robi2 extends Task {
 		phi = 0,					// orientation of the robot [rad]
 		x = 0, y = 0;				// position of the robot [m]
 
-	
+
 	/* Background task */
 	/*****************************************************************************/
 
@@ -157,13 +158,13 @@ public class Robi2 extends Task {
 		v_L = deltaPos * scale / dt;
 
 		// speed in y direction of the robot
-		vy_R = (v_R + v_L) / 2;
-
+		vy_R = (v_L - v_R) / 2;
+		
 		// rotation speed of the robot
-		w_R = (v_R - v_L) / wheelDistance;
+		w_R = (v_R + v_L) / wheelDistance;
 
 		// orientation of the robot
-		phi += w_R * dt;
+		phi -= w_R * dt;
 
 		// speed relative to the environment
 		vx_E = -vy_R * (float)Math.sin(phi);
@@ -522,8 +523,8 @@ public class Robi2 extends Task {
 
 	/**
 	 * Returns the x position of the Robi2 referenced to the point of origin.<br>
-	 * The points of origin is set, where the Robi2 stood at the start time of
-	 * the program
+	 * The point of origin is set, where the Robi2 stood at the start time of
+	 * the program or resetPos has been called.
 	 * 
 	 * @return the difference of the x-coordinate to the point of origin
 	 */
@@ -533,8 +534,8 @@ public class Robi2 extends Task {
 
 	/**
 	 * Returns the x position of the Robi2 referenced to the point of origin.<br>
-	 * The points of origin is set, where the Robi2 stood at the start time of
-	 * the program
+	 * The point of origin is set, where the Robi2 stood at the start time of
+	 * the program or resetPos has been called.
 	 * 
 	 * @return the difference of the y-coordinate to the point of origin
 	 */
@@ -545,8 +546,8 @@ public class Robi2 extends Task {
 	/**
 	 * Returns the orientation of the Robi2 referenced to the orientation of the
 	 * point of origin.<br>
-	 * The points of origin is set, where the Robi2 stood at the start time of
-	 * the program
+	 * The point of origin is set, where the Robi2 stood at the start time of
+	 * the program or resetPos has been called.
 	 * 
 	 * @return the difference of the orientation to the point of origin
 	 */
@@ -590,6 +591,7 @@ public class Robi2 extends Task {
 		s_L = 0;
 		x = 0;
 		y = 0;
+		phi = 0.0f;
 	}
 	
 	/**
