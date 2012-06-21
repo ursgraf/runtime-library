@@ -35,6 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555;
 
+import ch.ntb.inf.deep.runtime.ppc.PPCException;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:

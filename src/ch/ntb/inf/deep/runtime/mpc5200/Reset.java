@@ -33,11 +33,24 @@
  *
  */
 
-package ch.ntb.inf.deep.runtime.mpc555;
+package ch.ntb.inf.deep.runtime.mpc5200;
+import ch.ntb.inf.deep.runtime.ppc.PPCException;
+import ch.ntb.inf.deep.unsafe.*;
 
 /* changes:
- * 11.11.10	NTB/Urs Graf	creation
+ * 21.6.12	NTB/GRAU	creation
  */
 
-class PPCException {
+class Reset extends PPCException implements ntbMpc5200HB {
+	
+	static void reset() {
+		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
+		int stackBase = US.GET4(sysTabBaseAddr + stackOffset);
+		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 4);
+		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
+		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
+		US.PUTSPR(SRR0, kernelClinitAddr);
+		US.PUTSPR(SRR1, SRR1init);
+		US.ASM("rfi");
+	}
 }

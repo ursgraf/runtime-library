@@ -11,7 +11,7 @@ operatingsystem {
         }
         
         exceptionbaseclass {
-        	class = "ch/ntb/inf/deep/runtime/mpc555/PPCException";
+        	class = "ch/ntb/inf/deep/runtime/ppc/PPCException";
         }
         
 		exception {
