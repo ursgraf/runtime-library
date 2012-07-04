@@ -34,14 +34,15 @@
  */
 
 package ch.ntb.inf.deep.runtime.mpc555;
-import ch.ntb.inf.deep.unsafe.*;
+import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
+import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
  * 23.11.11	NTB/Martin Züger	classConstOffset
  * 11.11.10	NTB/Urs Graf		creation
  */
 
-public class Kernel implements ntbMpc555HB {
+public class Kernel implements ntbMpc555HB, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
 	static int loopAddr;
 	static int cmdAddr;

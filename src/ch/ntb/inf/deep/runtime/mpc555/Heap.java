@@ -35,9 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555;
 
-import java.io.PrintStream;
-
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
@@ -47,7 +45,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 1.5.12	Urs Graf		GC added
  */
 
-public class Heap implements ntbMpc555HB {
+public class Heap implements ntbMpc555HB, IdeepCompilerConstants {
 	private static final boolean dbg = true;
 	private static final int minBlockSize = 16;	// smallest block size to allocate
 	private static final int nofFreeLists = 8;	// free blocks are kept in multiple lists

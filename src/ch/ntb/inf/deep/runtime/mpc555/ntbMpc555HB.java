@@ -1,16 +1,10 @@
 package ch.ntb.inf.deep.runtime.mpc555;
 
-public interface ntbMpc555HB{
-	//Systemconstants
-	public static final int cblkCodeBaseOffset = 0x4;
-	public static final int cblkCodeSizeOffset = 0x8;
-	public static final int cblkVarBaseOffset = 0xc;
-	public static final int cblkVarSizeOffset = 0x10;
-	public static final int cblkClinitAddrOffset = 0x14;
-	public static final int cblkNofPtrsOffset = 0x18;
-	public static final int stStackOffset = 0x4;
-	public static final int stHeapOffset = 0x8;
-	public static final int stKernelClinitAddr = 0xc;
+// Auto generated file (2012-07-04 12:34:46)
+
+public interface ntbMpc555HB {
+
+	// System constants of CPU MPC555
 	public static final int IMB = 0x0;
 	public static final int SRAMA_BaseAddr = 0x3f9800;
 	public static final int SRAMA_Size = 0x2800;
@@ -24,6 +18,8 @@ public interface ntbMpc555HB{
 	public static final int excpCodeSize = 0x2000;
 	public static final int sysTabBaseAddr = 0x2000;
 	public static final int stackSize = 0x2000;
+
+	// System constants of board ntbMpc555HB
 	public static final int extRamSize = 0x200000;
 	public static final int extRamBase = 0x800000;
 	public static final int extFlashSize = 0x400000;
@@ -32,7 +28,7 @@ public interface ntbMpc555HB{
 	public static final int heapSize = 0x40000;
 	public static final int SRR1init = 0x3802;
 
-	//Registermap GPR
+	// Registermap GPR
 	public static final int R0 = 0x0;
 	public static final int R1 = 0x1;
 	public static final int R2 = 0x2;
@@ -66,7 +62,7 @@ public interface ntbMpc555HB{
 	public static final int R30 = 0x1e;
 	public static final int R31 = 0x1f;
 
-	//Registermap FPR
+	// Registermap FPR
 	public static final int FPR0 = 0x0;
 	public static final int FPR1 = 0x1;
 	public static final int FPR2 = 0x2;
@@ -100,7 +96,7 @@ public interface ntbMpc555HB{
 	public static final int FPR30 = 0x1e;
 	public static final int FPR31 = 0x1f;
 
-	//Registermap SPR
+	// Registermap SPR
 	public static final int SPR1 = 0x1;
 	public static final int XER = 0x1;
 	public static final int SPR8 = 0x8;
@@ -220,7 +216,7 @@ public interface ntbMpc555HB{
 	public static final int SPR1022 = 0x3fe;
 	public static final int FPECR = 0x3fe;
 
-	//Registermap IOR
+	// Registermap IOR
 	public static final int SIUMCR = 0x2fc000;
 	public static final int SYPCR = 0x2fc004;
 	public static final int SWSR = 0x2fc00e;
