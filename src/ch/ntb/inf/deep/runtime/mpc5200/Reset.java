@@ -34,6 +34,7 @@
  */
 
 package ch.ntb.inf.deep.runtime.mpc5200;
+import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
 import ch.ntb.inf.deep.runtime.ppc.PPCException;
 import ch.ntb.inf.deep.unsafe.*;
 
@@ -41,7 +42,7 @@ import ch.ntb.inf.deep.unsafe.*;
  * 21.6.12	NTB/GRAU	creation
  */
 
-class Reset extends PPCException implements ntbMpc5200HB {
+class Reset extends PPCException implements ntbMpc5200HB, IdeepCompilerConstants {
 	
 	static void reset() {
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);

@@ -34,13 +34,14 @@
  */
 
 package ch.ntb.inf.deep.runtime.mpc5200;
+import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
 import ch.ntb.inf.deep.unsafe.*;
 
 /* changes:
  * 21.6.12	NTB/Urs Graf		creation
  */
 
-public class Kernel implements ntbMpc5200HB {
+public class Kernel implements ntbMpc5200HB, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
 	static int loopAddr;
 	static int cmdAddr;
@@ -70,22 +71,23 @@ public class Kernel implements ntbMpc5200HB {
 	}
 	
 	/** 
-	 * blinks LED on MPIOSM pin 15, nTimes with approx. 100us high time and 100us low time, blocks for 1s
+	 * blinks LED on GPIO_WKUP_7, nTimes with approx. 100us high time and 100us low time, blocks for 1s
 	 */
 	public static void blink(int nTimes) { 
-		US.PUT2(MPIOSMDDR, US.GET2(MPIOSMDDR) | 0x8000);
+		US.PUT4(GPWER, US.GET4(GPWER) | 0x80000000);	// enable GPIO use
+		US.PUT4(GPWDDR, US.GET4(GPWDDR) | 0x80000000);	// make output
 		int delay = 200000;
 		for (int i = 0; i < nTimes; i++) {
-			US.PUT2(MPIOSMDR, US.GET2(MPIOSMDR) | 0x8000);
+			US.PUT4(GPWOUT, US.GET4(GPWOUT) | 0x80000000);
 			for (int k = 0; k < delay; k++);
-			US.PUT2(MPIOSMDR, US.GET2(MPIOSMDR) & ~0x8000);
+			US.PUT4(GPWOUT, US.GET4(GPWOUT) & ~0x80000000);
 			for (int k = 0; k < delay; k++);
 		}
 		for (int k = 0; k < (10 * delay + nTimes * 2 * delay); k++);
 	}
 
 	/** 
-	 * blinks LED on MPIOSM pin 15 if stack end was overwritten
+	 * blinks LED on GPIO_WKUP_7 if stack end was overwritten
 	 */
 	public static void checkStack() { 
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
@@ -112,33 +114,43 @@ public class Kernel implements ntbMpc5200HB {
 	
 	private static void boot() {
 //		blink(1);
-		US.PUT4(SIUMCR, 0x00040000);	// internal arb., no data show cycles, BDM operation, CS functions,
-			// output FREEZE, no lock, use data & address bus, use as RSTCONF, no reserv. logic
-		US.PUT4(PLPRCR, 0x00900000);	// MF = 9, 40MHz operation with 4MHz quarz
-		int reg;
-		do reg = US.GET4(PLPRCR); while ((reg & (1 << 16)) == 0);	// wait for PLL to lock 
-		US.PUT4(UMCR, 0);	// enable IMB clock, no int. multiplexing, full speed
-		US.PUTSPR(158, 0x7);	// ICTRL: take out of serialized mode
-		US.PUTSPR(638, 0x800);	// IMMR: enable internal flash
-		// configure CS for external Flash
-		US.PUT4(BR0, 0x01000003);	// chip select base address reg external Flash,
-		// base address = 1000000H, 32 bit port, no write protect, WE activ, no burst accesses, valid 
-		US.PUT4(OR0, 0x0ffc00020);	// address mask = 4MB, adress type mask = 0,
-		// CS normal timing, CS and addr. same timing, 2 wait states
-		// configure CS for external RAM 
-		US.PUT4(BR1, 0x00800003); 	// chip select base address reg external RAM,
-		// base address = 800000H, 32 bit port, no write protect, WE activ, no burst accesses, valid
-		US.PUT4(OR1, 0x0ffe00020);		//address mask = 2MB, adress type mask = 0,
-		// CS normal timing, CS and addr. same timing, 2 wait states
-		US.PUT2(PDMCR, 0); 	// configure pads, slow slew rate, enable pull-ups 
-		US.PUT4(SCCR, 0x081210300); 	// enable clock out and engineering clock, EECLK = 10MHz 
-		US.PUT2(TBSCR, 1); 	// time base, no interrupts, stop time base while freeze, enable
-		short reset = US.GET2(RSR);
-		if ((reset & (1<<5 | 1<<15)) != 0) {	// boot from flash
-			US.PUT4(SYPCR, 0xffffff83);	// bus monitor time out, enable bus monitor, disable watchdog
-			US.PUT4(DMBR, 0x1);			// dual mapping enable, map from address 0, use CS0 -> external Flash
-			US.PUT4(DMOR, 0x7e000000);	// map 32k -> 0x0...0x8000
-		}
+//		US.PUT4(SIUMCR, 0x00040000);	// internal arb., no data show cycles, BDM operation, CS functions,
+//			// output FREEZE, no lock, use data & address bus, use as RSTCONF, no reserv. logic
+//		US.PUT4(PLPRCR, 0x00900000);	// MF = 9, 40MHz operation with 4MHz quarz
+//		int reg;
+//		do reg = US.GET4(PLPRCR); while ((reg & (1 << 16)) == 0);	// wait for PLL to lock 
+//		US.PUT4(UMCR, 0);	// enable IMB clock, no int. multiplexing, full speed
+//		US.PUTSPR(158, 0x7);	// ICTRL: take out of serialized mode
+//		US.PUTSPR(638, 0x800);	// IMMR: enable internal flash
+
+		// configure memory base address
+		US.PUT4(MBAR, 0x0000f000);	// base address is now 0xf0000000
+		// configure CS0 for boot flash 
+		US.PUT4(CS0START, 0x0000ff00);	// start address = 0xff000000
+		US.PUT4(CS0STOP, 0x0000ffff); 	// stop address = 0xffffffff, size = 16MB
+		US.PUT4(CS0CR, 0x0008fd00);	// 8 wait states, multiplexed, ack, enabled, 25 addr. lines, 16 bit data, rw
+		US.PUT4(IPBI, 0x00010001);	// enable CS0, disable CSboot, enable wait states
+		US.PUT4(CSCR, 0x01000000);	// CS master enable
+		
+		// configure CS for SDRAM 
+		US.PUT4(SDRAMCS0, 0x0000001a);	// 128MB, start at 0
+		
+		// configure SDRAM controller for DDR 133MHz 
+		US.PUT4(SDRAMCONFIG1, 0x73722930);	// config 1	
+		US.PUT4(SDRAMCONFIG2, 0x47770000);	// config 2
+		US.PUT4(SDRAMCONTROL, 0xe15f0f02);	
+	
+		
+
+//		US.PUT2(PDMCR, 0); 	// configure pads, slow slew rate, enable pull-ups 
+//		US.PUT4(SCCR, 0x081210300); 	// enable clock out and engineering clock, EECLK = 10MHz 
+//		US.PUT2(TBSCR, 1); 	// time base, no interrupts, stop time base while freeze, enable
+//		short reset = US.GET2(RSR);
+//		if ((reset & (1<<5 | 1<<15)) != 0) {	// boot from flash
+//			US.PUT4(SYPCR, 0xffffff83);	// bus monitor time out, enable bus monitor, disable watchdog
+//			US.PUT4(DMBR, 0x1);			// dual mapping enable, map from address 0, use CS0 -> external Flash
+//			US.PUT4(DMOR, 0x7e000000);	// map 32k -> 0x0...0x8000
+//		}
 		
 //		set FPSCR;
 		
@@ -182,7 +194,7 @@ public class Kernel implements ntbMpc5200HB {
 					US.PUTSPR(LR, clinitAddr);
 					US.ASM("bclrl always, 0");
 				} else {	// kernel
-					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/mpc555/Kernel/loop");
+					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/mpc5200/Kernel/loop");
 				}
 			}
 			// the direct call to clinitAddr destroys volatile registers, hence make sure
@@ -199,7 +211,7 @@ public class Kernel implements ntbMpc5200HB {
 	static {
 		boot();
 		cmdAddr = -1;	// must be after class variables are zeroed by boot
-		US.ASM("mtspr EIE, r0");
+//		US.ASM("mtspr EIE, r0");
 		US.PUTSPR(LR, loopAddr);
 		US.ASM("bclrl always, 0");
 	}
