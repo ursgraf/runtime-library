@@ -41,7 +41,7 @@ import ch.ntb.inf.deep.unsafe.*;
  * 21.6.12	NTB/Urs Graf		creation
  */
 
-public class Kernel implements ntbMpc5200HB, IdeepCompilerConstants {
+public class Kernel implements phyCoreMpc5200tiny, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
 	static int loopAddr;
 	static int cmdAddr;

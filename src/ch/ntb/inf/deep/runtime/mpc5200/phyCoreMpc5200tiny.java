@@ -1,29 +1,26 @@
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-public interface ntbMpc5200HB{
-	//Systemconstants
+// Auto generated file (2012-07-25 10:24:49)
+
+public interface phyCoreMpc5200tiny {
+
+	// System constants of CPU MPC5200
 	public static final int IMB = 0x0;
-	public static final int SRAMA_BaseAddr = 0x3f9800;
-	public static final int SRAMA_Size = 0x2800;
-	public static final int SRAMB_BaseAddr = 0x3fc000;
-	public static final int SRAMB_Size = 0x4000;
-	public static final int CMFA_BaseAddr = 0x0;
-	public static final int CMFA_Size = 0x40000;
-	public static final int CMFB_BaseAddr = 0x40000;
-	public static final int CMFB_Size = 0x30000;
+	public static final int SRAM_BaseAddr = 0xf0008000;
+	public static final int SRAM_Size = 0x4000;
 	public static final int excpCodeBase = 0x0;
 	public static final int excpCodeSize = 0x2000;
 	public static final int sysTabBaseAddr = 0x2000;
 	public static final int stackSize = 0x2000;
-	public static final int extRamSize = 0x200000;
-	public static final int extRamBase = 0x800000;
-	public static final int extFlashSize = 0x400000;
-	public static final int extFlashBase = 0x1000000;
-	public static final int dualMappedSize = 0x8000;
-	public static final int heapSize = 0x40000;
+
+	// System constants of board phyCoreMpc5200tiny
+	public static final int extRamSize = 0x8000000;
+	public static final int extRamBase = 0x0;
+	public static final int extFlashSize = 0x1000000;
+	public static final int extFlashBase = 0xff000000;
 	public static final int SRR1init = 0x3802;
 
-	//Registermap GPR
+	// Registermap GPR
 	public static final int R0 = 0x0;
 	public static final int R1 = 0x1;
 	public static final int R2 = 0x2;
@@ -57,7 +54,7 @@ public interface ntbMpc5200HB{
 	public static final int R30 = 0x1e;
 	public static final int R31 = 0x1f;
 
-	//Registermap FPR
+	// Registermap FPR
 	public static final int FPR0 = 0x0;
 	public static final int FPR1 = 0x1;
 	public static final int FPR2 = 0x2;
@@ -91,7 +88,7 @@ public interface ntbMpc5200HB{
 	public static final int FPR30 = 0x1e;
 	public static final int FPR31 = 0x1f;
 
-	//Registermap SPR
+	// Registermap SPR
 	public static final int SPR1 = 0x1;
 	public static final int XER = 0x1;
 	public static final int SPR8 = 0x8;
@@ -211,7 +208,7 @@ public interface ntbMpc5200HB{
 	public static final int SPR1022 = 0x3fe;
 	public static final int FPECR = 0x3fe;
 
-	//Registermap IOR
+	// Registermap IOR
 	public static final int SIUMCR = 0x2fc000;
 	public static final int SYPCR = 0x2fc004;
 	public static final int SWSR = 0x2fc00e;
@@ -496,4 +493,7 @@ public interface ntbMpc5200HB{
 	public static final int UIPEND = 0x307fa0;
 	public static final int SRAMMCR_A = 0x380000;
 	public static final int SRAMMCR_B = 0x380008;
+	public static final int GPWER = 0xc00;
+	public static final int GPWDDR = 0xc08;
+	public static final int GPWOUT = 0xc0c;
 }

@@ -45,7 +45,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 1.5.12	Urs Graf		GC added
  */
 
-public class Heap implements ntbMpc5200HB, IdeepCompilerConstants {
+public class Heap implements phyCoreMpc5200tiny, IdeepCompilerConstants {
 	private static final boolean dbg = false;
 	private static final int minBlockSize = 16;	// smallest block size to allocate
 	private static final int nofFreeLists = 8;	// free blocks are kept in multiple lists

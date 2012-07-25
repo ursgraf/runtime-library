@@ -41,7 +41,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 21.6.12	NTB/Urs Graf	creation
  */
 
-public class Task implements Actionable, ntbMpc5200HB {
+public class Task implements Actionable, phyCoreMpc5200tiny {
 	public static final int maxNofTasks = 32;
 	
 	public static boolean done;	/** previous operation successfully completed */

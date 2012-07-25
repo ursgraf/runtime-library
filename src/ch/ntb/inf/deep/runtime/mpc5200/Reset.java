@@ -42,7 +42,7 @@ import ch.ntb.inf.deep.unsafe.*;
  * 21.6.12	NTB/GRAU	creation
  */
 
-class Reset extends PPCException implements ntbMpc5200HB, IdeepCompilerConstants {
+class Reset extends PPCException implements phyCoreMpc5200tiny, IdeepCompilerConstants {
 	
 	static void reset() {
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
