@@ -2430,5 +2430,58 @@ cpu MPC5200 {
 			addr = 0x0C0C;
 			size = 4;
 		}
+		
+		# dummy entries -> pleace update!!!
+		
+		register MBAR {
+			type = IOR;
+			addr = 0x0;
+			size = 4;
+		}
+		register CS0START {
+			type = IOR;
+			addr = 0x0;
+			size = 4;
+		}
+		register CS0STOP {
+			type = IOR;
+			addr = 0x0;
+			size = 4;
+		}
+		register CS0CR {
+			type = IOR;
+			addr = 0x0;
+			size = 4;
+		}
+		register IPBI {
+			type = IOR;
+			addr = 0x0;
+			size = 4;
+		}
+		register CSCR {
+			type = IOR;
+			addr = 0x0;
+			size = 4;
+		}
+		register SDRAMCS0 {
+			type = IOR;
+			addr = 0x0;
+			size = 4;
+		}
+		register SDRAMCONFIG1 {
+			type = IOR;
+			addr = 0x0;
+			size = 4;
+		}
+		register SDRAMCONFIG2 {
+			type = IOR;
+			addr = 0x0;
+			size = 4;
+		}
+		register SDRAMCONTROL {
+			type = IOR;
+			addr = 0x0;
+			size = 4;
+		}
 	}
 }

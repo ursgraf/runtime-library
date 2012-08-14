@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-// Auto generated file (2012-07-25 10:24:49)
+// Auto generated file (2012-08-14 13:10:08)
 
 public interface phyCoreMpc5200tiny {
 
@@ -496,4 +496,14 @@ public interface phyCoreMpc5200tiny {
 	public static final int GPWER = 0xc00;
 	public static final int GPWDDR = 0xc08;
 	public static final int GPWOUT = 0xc0c;
+	public static final int MBAR = 0x0;
+	public static final int CS0START = 0x0;
+	public static final int CS0STOP = 0x0;
+	public static final int CS0CR = 0x0;
+	public static final int IPBI = 0x0;
+	public static final int CSCR = 0x0;
+	public static final int SDRAMCS0 = 0x0;
+	public static final int SDRAMCONFIG1 = 0x0;
+	public static final int SDRAMCONFIG2 = 0x0;
+	public static final int SDRAMCONTROL = 0x0;
 }
