@@ -10,10 +10,18 @@ board phyCoreMpc5200tiny {
 	cputype = MPC5200;
 	
 	sysconst {
-		extRamSize   = 0x8000000;						# 128M external RAM
 		extRamBase   = 0x0;						        # starting at 0x0
-		extFlashSize = 0x1000000;						# 16M external Flash
+		extRamSize   = 0x8000000;						# 128M external RAM
+	
 		extFlashBase = 0xFF000000;						# starting at 0xFF000000
+		extFlashSize = 0x1000000;						# 16M external Flash
+
+		excpCodeBase = extFlashBase;					# Base address for exception code
+		excpCodeSize = 0x2000;							# Exception code size
+		
+		sysTabBaseAddr = excpCodeBase + excpCodeSize;	# Place system table behind exception code
+		
+		reservedSpaceSize = 0x8000;
 		
 		SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
 	}
@@ -29,17 +37,7 @@ board phyCoreMpc5200tiny {
 			attributes = read, write;
 		}
 		
-		segment ExternalRam.ExceptionCode {				# Exception code in dual mapped address space
-			base = extRamBase;
-			size = excpCodeSize;
-		}
-
-		segment ExternalRam.SysTab {					# System table in dual mapped address space
-			base = extRamBase + excpCodeSize;			# Place system table behind exception code
-			size = excpCodeSize;
-		}
-
-		segment ExternalRam.Default {					# Default Segment for code, constants and class fields
+		segment ExternalRam.Default {
 			base = extRamBase;
 			attributes = read, write, const, code, var;
 		}
@@ -51,22 +49,22 @@ board phyCoreMpc5200tiny {
 		}
 		
 		# ===== External Flash =====
-#		device ExternalFlash {							# External flash device configuration
-#			base = extFlashBase;
-#			size = extFlashSize;
-#			width = 4;
-#			technology = flash;
-#			memorytype = "IntelStrata";
-#			attributes = read;
-#			
-#			memorysector BS_0 {							# First sector is used for dual mapping
-#				base = extFlashBase;
-#				sectorsize = 0x08000;					# 32k
-#			}
-#			memorysector BS_1 {
-#				base = extFlashBase + 0x08000;
-#				sectorsize = 0x04000;					# 16k
-#			}
+		device ExternalFlash {							# External flash device configuration
+			base = extFlashBase;
+			size = extFlashSize;
+			width = 4;
+			technology = flash;
+			memorytype = "IntelStrata";
+			attributes = read;
+			
+			memorysector Sec0 {							# First sector is used exception code and system table
+				base = extFlashBase;
+				sectorsize = 0x08000;					# 32k
+			}
+			memorysector Sec1 {
+				base = extFlashBase + 0x08000;
+				sectorsize = 0x04000;					# 16k
+			}
 #			memorysector BS_2 {
 #				base = extFlashBase + 0x0C000;
 #				sectorsize = 0x04000;					# 16k
@@ -80,66 +78,41 @@ board phyCoreMpc5200tiny {
 #				sectorsize = 0x20000;					# 128k
 #				nofsectors = 31;						# 31 * 128k = 3968k
 #			}
-#		}
-#		
-#		segment ExternalFlash.ExceptionCode {			# Exception code in dual mapped address space
-#			base = extFlashBase;
-#			size = excpCodeSize;
-#			attributes = read, code;
-#		}
-#		  
-#		segment ExternalFlash.SysTab {					# Default Segment for code, constants and class fields
-#			base = extFlashBase + excpCodeSize;			# Place system table behind exception code
-#			attributes = read, systab;
-#		}
-#
-#		segment ExternalFlash.Default {					# Default Segment for code, constants and class fields
-#			base = extFlashBase + dualMappedSize;		# Place it behind the dual mapped memory part
-#			attributes = read, const, code;
-#		}
+		}
+		
+		segment ExternalFlash.ExceptionCode {			# Exception code
+			base = extFlashBase;
+			size = excpCodeSize;
+			attributes = read, code;
+		}
+		  
+		segment ExternalFlash.SysTab {					# Default Segment for code, constants and class fields
+			base = sysTabBaseAddr;						# Place system table behind exception code
+			attributes = read, systab;
+		}
+
+		segment ExternalFlash.Default {					# Default Segment for code, constants and class fields
+			base = extFlashBase + reservedSpaceSize;	# Place it behind the exception code and the system table
+			attributes = read, const, code;
+		}
 	}
 	
-	reginit {
-		SYPCR = 0xFFFFFF83;								# Disable Watchdog, enable bus monitor
-		SIUMCR = 0x40000;								# Set Freeze when LWP0 is active
-		BR0 = 0x01000003;								# Set base address for chip select CS0 (external Flash)
-		OR0 = 0xFFC00020; 								# Set address mask for CS0 to 4M, address type mask = 0, 2 + 2 wait states
-		BR1 = 0x0800003;								# Set base address for chip select CS1 (external RAM)
-		OR1 = 0xFFE00020;								# Set address mask for CS0 to 2M, address type mask = 0, 2 + 2 wait states
-		ICTRL = 7;										# ???
-		RSR = -1;										# Set reset status register back
-		DER = 0x31C3400F;								# Set debug enable register
-		SRR1 = SRR1init;								# Set Machine Status Save/Restore Register 1
-	}
+#	reginit {
+#		
+#	}
 
-	targetconfiguration BootFromRam {
+	targetconfiguration DefaultBoot {
 		system {
-			systemtable: systab@InternalRam.SysTab;
+			systemtable: systab@ExternalFlash.SysTab;
 		}
 		modules {
-				kernel, heap: code@InternalRam.Code, const@InternalRam.Constants, var@InternalRam.Variables; 
-				exception: code@ExternalRam.ExceptionCode, const@InternalRam.Constants, var@InternalRam.Variables;
-				default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;           
+			kernel, heap: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;
+			exception: code@ExternalFlash.ExceptionCode, const@ExternalFlash.Default, var@ExternalRam.Default;
+			default: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;           
 		}
-		reginit {
-			DMBR = 0x3;									# Dual mapping enable, map from address 0, use CS1 (external RAM)
-			DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
-		}
+#		reginit {
+#			
+#		}
 	}
 
-#	targetconfiguration BootFromFlash {
-#		system {
-#			systemtable: systab@ExternalFlash.SysTab;
-#		}
-#		
-#		modules {
-#				kernel, heap: code@ExternalFlash.Default, const@ExternalFlash.Default, var@InternalRam.Variables;
-#				exception: code@ExternalFlash.ExceptionCode, const@ExternalFlash.Default, var@InternalRam.Variables;
-#				default: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;
-#		}
-#		reginit {
-#			DMBR = 0x1;									# Dual mapping enable, map from address 0, use CS0 (external Flash)
-#			DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
-#		}
-#	}
 }

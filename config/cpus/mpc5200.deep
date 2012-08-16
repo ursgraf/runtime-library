@@ -14,47 +14,25 @@ cpu MPC5200 {
 		
 		SRAM_BaseAddr = IMB + 0xF0008000;				# Internal SRAM Base Address
 		SRAM_Size = 0x4000;								# Internal SRAM Size (16K)
-				
-		excpCodeBase = IMB;								# Base address for exception code
-		excpCodeSize = 0x2000;							# Exception code size
-		
-		sysTabBaseAddr = IMB + excpCodeSize;			# Place system table behind exception code
-		
+						
 		stackSize = 0x2000;								# Default stack size
 	}
 	
 	memorymap {
 
 		# ===== Internal RAM =====
-		device InternalRam {
+		device InternalSRAM {
 			attributes = read, write;
 			width = 4; # byte
 			size = SRAM_Size;
 			base = SRAM_BaseAddr;
 			technology = ram;
 		}
-		
-		segment InternalRam.SysTab {
-			base = sysTabBaseAddr;
-			attributes = read, write, systab;
-		}
-		
-		segment InternalRam.Constants {
-			attributes = read, write, const;
-		}
-		
-		segment InternalRam.Code {
-			attributes = read, write, code;
-		}
-		
-		segment InternalRam.Variables {
-			attributes = read, write, var;
-		}
-		
-		segment InternalRam.Stack {
+				
+		segment InternalSRAM.Stack {
 			attributes = read, write, stack;
 			size = stackSize;
-			base = SRAM_BaseAddr + SRAM_Size - stackSize ;
+			base = SRAM_BaseAddr;
 		}
 	}
 	

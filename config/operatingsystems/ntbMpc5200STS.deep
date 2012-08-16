@@ -155,13 +155,13 @@ operatingsystem ntbMpc5200STS {
     	}
     }
     
-	exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/Interrupt";
-    	method interrupt {
-    		attributes = exchnd;
-			offset = 0x500;
-    	}
-    }
+#	exception {
+#    	class = "ch/ntb/inf/deep/runtime/mpc5200/Interrupt";
+#    	method interrupt {
+#    		attributes = exchnd;
+#			offset = 0x500;
+#    	}
+#    }
 
     exception {
     	class = "ch/ntb/inf/deep/runtime/mpc5200/SystemCall";
@@ -174,13 +174,13 @@ operatingsystem ntbMpc5200STS {
 		}
 	}
 
-	exception {
-		class = "ch/ntb/inf/deep/runtime/mpc5200/Decrementer";
-		method decrementer {
-			attributes = exchnd;
-			offset = 0x900;
-		}
-	}
+#	exception {
+#		class = "ch/ntb/inf/deep/runtime/mpc5200/Decrementer";
+#		method decrementer {
+#			attributes = exchnd;
+#			offset = 0x900;
+#		}
+#	}
 	
 	kernel {
 		class = "ch/ntb/inf/deep/runtime/mpc5200/Kernel";
