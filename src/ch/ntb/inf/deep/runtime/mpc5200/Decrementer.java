@@ -34,28 +34,31 @@
  */
 
 package ch.ntb.inf.deep.runtime.mpc5200;
-import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
-import ch.ntb.inf.deep.runtime.ppc.PPCException;
-import ch.ntb.inf.deep.unsafe.*;
 
-/* changes:
- * 21.6.12	NTB/GRAU	creation
+import ch.ntb.inf.deep.runtime.ppc.PPCException;
+import ch.ntb.inf.deep.unsafe.US;
+
+/*changes:
+ * 23.8.2012	NTB/Urs Graf	creation
  */
 
-class Reset extends PPCException implements phyCoreMpc5200tiny, IdeepCompilerConstants {
+public class Decrementer extends PPCException implements phyCoreMpc5200tiny {
+	public static int nofDecExceptions;
+	public static Decrementer dec = new Decrementer();
+	public int decPeriodUs = -1; 	// use longest period per default
 	
-	static void reset() {
-//		US.ASM("li r2,0x22");
-//		US.ASM("li r3,0x33");
-//		US.ASM("li r4,0x44");
-		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset);
-		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 4);
-		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
-		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
-		US.PUTSPR(SRR0, kernelClinitAddr);
-		US.PUTSPR(SRR1, SRR1init);
-//		US.ASM("b 0");
-		US.ASM("rfi");
+	public void action() {	
 	}
+
+	static void decrementer() {
+		nofDecExceptions++;
+		US.PUTSPR(DEC, dec.decPeriodUs);
+		dec.action();
+	}
+
+	public static void install(Decrementer decrementer) {
+		dec = decrementer;		
+		US.PUTSPR(DEC, dec.decPeriodUs);
+	}
+
 }

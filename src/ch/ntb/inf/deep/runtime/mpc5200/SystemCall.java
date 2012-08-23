@@ -46,7 +46,9 @@ public class SystemCall extends PPCException {
 
 	static void systemCall() {
 		nofScExceptions++;
-		while (true) Kernel.blink(3);
+		while (true) {
+			Kernel.blink(1); Kernel.blink(4);
+		}
 	}
 
 }

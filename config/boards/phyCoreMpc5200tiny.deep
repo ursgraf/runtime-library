@@ -17,11 +17,16 @@ board phyCoreMpc5200tiny {
 		extFlashSize = 0x1000000;						# 16M external Flash
 
 		excpCodeBase = extFlashBase;					# Base address for exception code
-		excpCodeSize = 0x2000;							# Exception code size
+		excpCodeSize = 0x3000;							# Exception code size
+		#Martin, warum haben exc code Base steigende adressen?
 		
-		sysTabBaseAddr = excpCodeBase + excpCodeSize;	# Place system table behind exception code
+#		sysTabBaseAddr = excpCodeBase + excpCodeSize;	# Place system table behind exception code
+		sysTabBaseAddr = excpCodeSize;	# Place system table behind exception code
 		
 		reservedSpaceSize = 0x8000;
+		
+		stackSize = 0x2000;								# Default stack size
+		heapSize = 0x40000;								# Default heap size
 		
 		SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
 	}
@@ -37,13 +42,30 @@ board phyCoreMpc5200tiny {
 			attributes = read, write;
 		}
 		
-		segment ExternalRam.Default {
+		segment ExternalRam.ExceptionCode {			# Exception code
 			base = extRamBase;
+			size = excpCodeSize;
+			attributes = read, code;
+		}
+		  
+		segment ExternalRam.SysTab {					# Default Segment for code, constants and class fields
+			base = extRamBase + excpCodeSize;						# Place system table behind exception code
+			attributes = read, systab;
+		}
+
+		segment ExternalRam.Default {
+#			base = extRamBase + excpCodeSize;
 			attributes = read, write, const, code, var;
 		}
 
+		segment ExternalRam.Stack {
+			attributes = read, write, stack;
+			size = stackSize;
+			base = extRamBase + extRamSize - stackSize;	# Place it at the end of the device
+		}
+
 		segment ExternalRam.Heap {						# Default Segment for the heap
-			base = extRamBase + extRamSize - heapSize;	# Place it at the end of the device
+			base = extRamBase + extRamSize - stackSize - heapSize;
 			size = heapSize;
 			attributes = read, write, heap;
 		}
@@ -92,7 +114,7 @@ board phyCoreMpc5200tiny {
 		}
 
 		segment ExternalFlash.Default {					# Default Segment for code, constants and class fields
-			base = extFlashBase + reservedSpaceSize;	# Place it behind the exception code and the system table
+#			base = extFlashBase + reservedSpaceSize;	# Place it behind the exception code and the system table
 			attributes = read, const, code;
 		}
 	}
@@ -109,6 +131,20 @@ board phyCoreMpc5200tiny {
 			kernel, heap: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;
 			exception: code@ExternalFlash.ExceptionCode, const@ExternalFlash.Default, var@ExternalRam.Default;
 			default: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;           
+		}
+#		reginit {
+#			
+#		}
+	}
+	
+	targetconfiguration RamOnlyBoot {
+		system {
+			systemtable: systab@ExternalRam.SysTab;
+		}
+		modules {
+			kernel, heap: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;
+			exception: code@ExternalRam.ExceptionCode, const@ExternalRam.Default, var@ExternalRam.Default;
+			default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;           
 		}
 #		reginit {
 #			

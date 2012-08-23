@@ -2,7 +2,7 @@
 
 meta {
 	version = "2010-12-02";
-	description = "Despription file fot he NTB deep simple tasking system for MPC555";
+	description = "Despription file for the NTB deep simple tasking system for MPC555";
 }
 
 operatingsystem ntbMpc555STS {
@@ -163,17 +163,6 @@ operatingsystem ntbMpc555STS {
     	}
     }
 
-    exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc555/SystemCall";
-		method systemCall {
-    		attributes = exchnd;
-    		offset = 0x800;
-		}
-			method <init> {
-			attributes = synthetic;
-		}
-	}
-
 	exception {
 		class = "ch/ntb/inf/deep/runtime/mpc555/Decrementer";
 		method decrementer {
@@ -182,6 +171,17 @@ operatingsystem ntbMpc555STS {
 		}
 	}
 	
+    exception {
+    	class = "ch/ntb/inf/deep/runtime/mpc555/SystemCall";
+		method systemCall {
+    		attributes = exchnd;
+    		offset = 0xc00;
+		}
+			method <init> {
+			attributes = synthetic;
+		}
+	}
+
 	kernel {
 		class = "ch/ntb/inf/deep/runtime/mpc555/Kernel";
 	}

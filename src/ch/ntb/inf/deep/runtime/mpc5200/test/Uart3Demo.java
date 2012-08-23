@@ -33,29 +33,39 @@
  *
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200;
-import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
-import ch.ntb.inf.deep.runtime.ppc.PPCException;
-import ch.ntb.inf.deep.unsafe.*;
+package ch.ntb.inf.deep.runtime.mpc5200.test;
 
-/* changes:
- * 21.6.12	NTB/GRAU	creation
+import java.io.PrintStream;
+
+import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
+import ch.ntb.inf.deep.runtime.mpc5200.Task;
+
+
+/**
+ * Demo for System.out using UART on PCS3.
  */
-
-class Reset extends PPCException implements phyCoreMpc5200tiny, IdeepCompilerConstants {
+public class Uart3Demo extends Task {
 	
-	static void reset() {
-//		US.ASM("li r2,0x22");
-//		US.ASM("li r3,0x33");
-//		US.ASM("li r4,0x44");
-		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset);
-		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 4);
-		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
-		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
-		US.PUTSPR(SRR0, kernelClinitAddr);
-		US.PUTSPR(SRR1, SRR1init);
-//		US.ASM("b 0");
-		US.ASM("rfi");
+	public void action() {
+		// Write a single character to the stdout
+		System.out.print(':');
+	}
+
+	static {
+		// Initialize UART (9600 8N1)
+//		UART3.start(9600, SCI2.NO_PARITY, (short)8);
+		UART3.start();
+		
+		// Use the SCI2 for stdout and stderr
+		System.out = new PrintStream(UART3.out);
+		System.err = System.out;
+		
+		// Print a string to the stdout
+		System.out.print("System.out demo (UART3)");
+		
+		// Create and install the demo task
+		Task t = new Uart3Demo();
+		t.period = 500;
+		Task.install(t);
 	}
 }

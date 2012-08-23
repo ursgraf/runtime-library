@@ -2,7 +2,7 @@
 
 meta {
 	version = "2012-08-14";
-	description = "Despription file fot he NTB deep simple tasking system for MPC5200";
+	description = "Despription file for the NTB deep simple tasking system for MPC5200";
 }
 
 operatingsystem ntbMpc5200STS {
@@ -155,6 +155,17 @@ operatingsystem ntbMpc5200STS {
     	}
     }
     
+    exception {
+    	class = "ch/ntb/inf/deep/runtime/mpc5200/MachineCheck";
+		method machineCheck {
+    		attributes = exchnd;
+    		offset = 0x200;
+		}
+			method <init> {
+			attributes = synthetic;
+		}
+	}
+
 #	exception {
 #    	class = "ch/ntb/inf/deep/runtime/mpc5200/Interrupt";
 #    	method interrupt {
@@ -164,8 +175,19 @@ operatingsystem ntbMpc5200STS {
 #    }
 
     exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/SystemCall";
-		method systemCall {
+    	class = "ch/ntb/inf/deep/runtime/mpc5200/ProgramExc";
+		method programExc {
+    		attributes = exchnd;
+    		offset = 0x700;
+		}
+			method <init> {
+			attributes = synthetic;
+		}
+	}
+
+    exception {
+    	class = "ch/ntb/inf/deep/runtime/mpc5200/FloatingPointUnavailable";
+		method floatingPointUnavailable {
     		attributes = exchnd;
     		offset = 0x800;
 		}
@@ -174,14 +196,25 @@ operatingsystem ntbMpc5200STS {
 		}
 	}
 
-#	exception {
-#		class = "ch/ntb/inf/deep/runtime/mpc5200/Decrementer";
-#		method decrementer {
-#			attributes = exchnd;
-#			offset = 0x900;
-#		}
-#	}
+	exception {
+		class = "ch/ntb/inf/deep/runtime/mpc5200/Decrementer";
+		method decrementer {
+			attributes = exchnd;
+			offset = 0x900;
+		}
+	}
 	
+    exception {
+    	class = "ch/ntb/inf/deep/runtime/mpc5200/SystemCall";
+		method systemCall {
+    		attributes = exchnd;
+    		offset = 0xc00;
+		}
+			method <init> {
+			attributes = synthetic;
+		}
+	}
+
 	kernel {
 		class = "ch/ntb/inf/deep/runtime/mpc5200/Kernel";
 	}

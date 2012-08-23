@@ -33,29 +33,56 @@
  *
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200;
-import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
-import ch.ntb.inf.deep.runtime.ppc.PPCException;
-import ch.ntb.inf.deep.unsafe.*;
+package ch.ntb.inf.deep.runtime.mpc5200.driver;
 
-/* changes:
- * 21.6.12	NTB/GRAU	creation
+import java.io.OutputStream;
+
+/* Changes:
+ * 13.10.2011	Martin Zueger	JavaDoc fixed
+ * 06.01.2010	Simon Pertschy	initial version
  */
 
-class Reset extends PPCException implements phyCoreMpc5200tiny, IdeepCompilerConstants {
+/**
+ *
+ * Stream to write bytes to the SCI2.
+ * Don't forget to initialize the SCI2 before using this stream.
+ * 
+ */
+public class UART3OutputStream extends OutputStream{
+
+	/* (non-Javadoc)
+	 * @see java.io.OutputStream#freeSpace()
+	 */
+	public int freeSpace() {
+		return UART3.availToWrite();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.io.OutputStream#reset()
+	 */
+	public void reset() {
+	 //TODO add UART3.reset()
+	}
+
+	/* (non-Javadoc)
+	 * @see java.io.OutputStream#write(byte)
+	 */
+	public void write(byte b) {
+		UART3.write(b);
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see java.io.OutputStream#write(byte[])
+	 */
+	public int write(byte b[]){
+		return UART3.write(b);
+	}
 	
-	static void reset() {
-//		US.ASM("li r2,0x22");
-//		US.ASM("li r3,0x33");
-//		US.ASM("li r4,0x44");
-		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset);
-		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 4);
-		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
-		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
-		US.PUTSPR(SRR0, kernelClinitAddr);
-		US.PUTSPR(SRR1, SRR1init);
-//		US.ASM("b 0");
-		US.ASM("rfi");
+	/* (non-Javadoc)
+	 * @see java.io.OutputStream#write(byte[], int, int)
+	 */
+	public int write(byte b[], int off, int len){
+		return UART3.write(b, off, len);
 	}
 }
