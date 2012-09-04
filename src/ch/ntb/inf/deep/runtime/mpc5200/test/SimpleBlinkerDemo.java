@@ -6,7 +6,7 @@ import ch.ntb.inf.deep.unsafe.US;
 
 /**
  * Simple blinker application demo.
- * Blinks the LED on the eval board. The LED will be toggled every half second.
+ * Connect an LED to pin MPIOSM12. The LED will be toggled every half second.
  */
 public class SimpleBlinkerDemo extends Task implements phyCoreMpc5200tiny{
 
@@ -20,7 +20,7 @@ public class SimpleBlinkerDemo extends Task implements phyCoreMpc5200tiny{
 		
 		// Create and install the task
 		SimpleBlinkerDemo t = new SimpleBlinkerDemo();
-		t.period = 500;
+		t.period = 1000;
 		Task.install(t);
 	}
 

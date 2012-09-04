@@ -720,7 +720,34 @@ cpu MPC5200 {
 			size = 4;
 		}
 		
-		# GPIO Registers
+		# Interrupt controller registers
+		register ICTLPIMR {
+			type = IOR;
+			addr = MemBaseAddr + 0x0500;
+			size = 4;
+		}
+		register ICTLPPR1 {
+			type = IOR;
+			addr = MemBaseAddr + 0x0504;
+			size = 4;
+		}
+		register ICTLPPR2 {
+			type = IOR;
+			addr = MemBaseAddr + 0x0508;
+			size = 4;
+		}
+		register ICTLPPR3 {
+			type = IOR;
+			addr = MemBaseAddr + 0x050c;
+			size = 4;
+		}
+		register ICTLEER {
+			type = IOR;
+			addr = MemBaseAddr + 0x0510;
+			size = 4;
+		}
+		
+		# GPIO registers
 		register GPSPCR {
 			type = IOR;
 			addr = MemBaseAddr + 0x0b00;
@@ -754,7 +781,7 @@ cpu MPC5200 {
 			size = 4;
 		}
 		
-		# PSC Registers
+		# PSC Registers, offset has to be added to the base address of the corresponding PSC
 		register PSCMR1 {
 			type = IOR;
 			addr = 0;
@@ -805,13 +832,18 @@ cpu MPC5200 {
 			addr = 0x40;
 			size = 4;
 		}
+		register PSCTFNUM {
+			type = IOR;
+			addr = 0x5c;
+			size = 2;
+		}
 		register PSCTFCNTL {
 			type = IOR;
 			addr = 0x88;
 			size = 1;
 		}
 		
-		# MSCAN Registers
+		# MSCAN Registers, offset has to be added to the base address of the corresponding PSC		
 		register CANCTL0 {
 			type = IOR;
 			addr = 0x0;
@@ -970,6 +1002,76 @@ cpu MPC5200 {
 		register CANTXFG {
 			type = IOR;
 			addr = 0x60;
+			size = 1;
+		}
+		register CANTXIR0 {
+			type = IOR;
+			addr = 0x60;
+			size = 1;
+		}
+		register CANTXIR1 {
+			type = IOR;
+			addr = 0x61;
+			size = 1;
+		}
+		register CANTXIR2 {
+			type = IOR;
+			addr = 0x64;
+			size = 1;
+		}
+		register CANTXIR3 {
+			type = IOR;
+			addr = 0x65;
+			size = 1;
+		}
+		register CANTXDSR0 {
+			type = IOR;
+			addr = 0x68;
+			size = 1;
+		}
+		register CANTXDSR1 {
+			type = IOR;
+			addr = 0x69;
+			size = 1;
+		}
+		register CANTXDSR2 {
+			type = IOR;
+			addr = 0x6c;
+			size = 1;
+		}
+		register CANTXDSR3 {
+			type = IOR;
+			addr = 0x6d;
+			size = 1;
+		}
+		register CANTXDSR4 {
+			type = IOR;
+			addr = 0x70;
+			size = 1;
+		}
+		register CANTXDSR5 {
+			type = IOR;
+			addr = 0x71;
+			size = 1;
+		}
+		register CANTXDSR6 {
+			type = IOR;
+			addr = 0x74;
+			size = 1;
+		}
+		register CANTXDSR7 {
+			type = IOR;
+			addr = 0x75;
+			size = 1;
+		}
+		register CANTXDLR {
+			type = IOR;
+			addr = 0x78;
+			size = 1;
+		}
+		register CANTXTBPR {
+			type = IOR;
+			addr = 0x79;
 			size = 1;
 		}
 	}

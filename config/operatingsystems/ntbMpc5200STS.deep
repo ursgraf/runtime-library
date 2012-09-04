@@ -166,13 +166,13 @@ operatingsystem ntbMpc5200STS {
 		}
 	}
 
-#	exception {
-#    	class = "ch/ntb/inf/deep/runtime/mpc5200/Interrupt";
-#    	method interrupt {
-#    		attributes = exchnd;
-#			offset = 0x500;
-#    	}
-#    }
+	exception {
+    	class = "ch/ntb/inf/deep/runtime/mpc5200/Interrupt";
+    	method interrupt {
+    		attributes = exchnd;
+			offset = 0x500;
+    	}
+    }
 
     exception {
     	class = "ch/ntb/inf/deep/runtime/mpc5200/ProgramExc";

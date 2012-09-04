@@ -33,25 +33,42 @@
  *
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200;
-import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
-import ch.ntb.inf.deep.runtime.ppc.PPCException;
-import ch.ntb.inf.deep.unsafe.*;
+package ch.ntb.inf.deep.runtime.mpc5200.test;
+
+import java.io.PrintStream;
+
+import ch.ntb.inf.deep.runtime.mpc5200.Decrementer;
+import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
+import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
- * 21.6.12	NTB/GRAU	creation
+ * 24.8.2012	NTB/Urs Graf		creation
  */
 
-class Reset extends PPCException implements phyCoreMpc5200tiny, IdeepCompilerConstants {
+/**
+ * Simple demo application how to use the Decrementer.
+ * This application simply outputs the character 'x' 
+ * over the UART3 for each decrementer exception.
+ */
+public class DecrementerDemo extends Decrementer {
+	static DecrementerDemo decTest; 
 	
-	static void reset() {
-		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset);
-		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 4);
-		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
-		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
-		US.PUTSPR(SRR0, kernelClinitAddr);
-		US.PUTSPR(SRR1, SRR1init);
-		US.ASM("rfi");
+	/* (non-Javadoc)
+	 * @see ch.ntb.inf.deep.runtime.mpc5200.Decrementer#action()
+	 */
+	public void action () {
+		System.out.print('x');
+	}
+	
+	static {
+		// Initialize the UART3 (9600 8N1) and use it for System.out
+		UART3.start(9600, UART3.NO_PARITY, (short)8);
+		System.out = new PrintStream(UART3.out);
+		
+		// Create and install the Decrementer demo
+		System.out.println("decrementer started");
+		decTest = new DecrementerDemo(); 
+		decTest.decPeriodUs = 33000000;	// gives 1s with XLB clock = 132MHz
+		Decrementer.install(decTest);
 	}
 }

@@ -40,7 +40,6 @@ import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
 import ch.ntb.inf.deep.runtime.mpc5200.Task;
 
-
 /**
  * Demo for System.out using UART on PCS3.
  */
@@ -48,13 +47,12 @@ public class Uart3Demo extends Task {
 	
 	public void action() {
 		// Write a single character to the stdout
-		System.out.print(':');
+		System.out.print('.');
 	}
 
 	static {
 		// Initialize UART (9600 8N1)
-//		UART3.start(9600, SCI2.NO_PARITY, (short)8);
-		UART3.start();
+		UART3.start(9600, UART3.NO_PARITY, (short)8);
 		
 		// Use the SCI2 for stdout and stderr
 		System.out = new PrintStream(UART3.out);

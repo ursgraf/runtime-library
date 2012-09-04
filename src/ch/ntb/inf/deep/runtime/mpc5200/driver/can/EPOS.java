@@ -33,8 +33,8 @@ public class EPOS {
 						
 	public int getStatus() {
 		CANopen.sendSDO(this.driveId, (short)0x6041, (byte)0, 0, 4);
-		byte data[] = CAN.getMsgBuf(CAN.rx1BufNo);
-		int status = (((data[11]<<8) & 0xff00) + (data[10] & 0xff));
+		byte data[] = CAN1.getMsgBuf(CAN1.rx1BufNo);
+		int status = (((data[9]<<8) & 0xff00) + (data[8] & 0xff));
 		return status;
 	}
 		
@@ -84,7 +84,7 @@ public class EPOS {
 	}
 	
 	static {
-		CAN.init();
+		CAN1.init();
 		
 	}
 	
@@ -141,7 +141,7 @@ public class EPOS {
 			
 	public static void readStatusword() {
 		CANopen.sendSDO(drive1.driveId, (short)0x6041, (byte)0, 0, 4);
-		byte data[] = CAN.getMsgBuf(CAN.rx1BufNo);
+		byte data[] = CAN1.getMsgBuf(CAN1.rx1BufNo);
 		int status = drive1.getStatus();
 		CANopen.printSDOAnswer();
 		System.out.print("status = "); System.out.printHexln(status);

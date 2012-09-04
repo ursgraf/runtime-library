@@ -76,7 +76,7 @@ public class Kernel implements phyCoreMpc5200tiny, IdeepCompilerConstants {
 	public static void blink(int nTimes) { 
 		US.PUT4(GPWER, US.GET4(GPWER) | 0x80000000);	// enable GPIO use
 		US.PUT4(GPWDDR, US.GET4(GPWDDR) | 0x80000000);	// make output
-		int delay = 200000;
+		int delay = 300000;
 		for (int i = 0; i < nTimes; i++) {
 			US.PUT4(GPWOUT, US.GET4(GPWOUT) & ~0x80000000);
 			for (int k = 0; k < delay; k++);
@@ -113,7 +113,7 @@ public class Kernel implements phyCoreMpc5200tiny, IdeepCompilerConstants {
 	}
 	
 	private static void boot() {
-		blink(4);
+//		blink(4);
 //		US.PUT4(MBAR, MemBaseAddr >> 16);	// switch memory base address
 		US.PUT4(XLBACR, 0x00002006);	// time base enable, data and address timeout enable
 //		US.PUT4(SIUMCR, 0x00040000);	// internal arb., no data show cycles, BDM operation, CS functions,
@@ -207,7 +207,9 @@ public class Kernel implements phyCoreMpc5200tiny, IdeepCompilerConstants {
 	static {
 		boot();
 		cmdAddr = -1;	// must be after class variables are zeroed by boot
-//		US.ASM("mtspr EIE, r0");	// not available on the 5200
+		US.ASM("mfmsr r0");	// enable interrupts
+		US.PUTGPR(0, US.GETGPR(0) | (1 << 15));
+		US.ASM("mtmsr r0");	
 		US.PUTSPR(LR, loopAddr);
 		US.ASM("bclrl always, 0");
 	}

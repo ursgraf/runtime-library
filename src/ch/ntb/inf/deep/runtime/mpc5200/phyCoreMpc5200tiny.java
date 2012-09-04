@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-// Auto generated file (2012-08-23 13:58:38)
+// Auto generated file (2012-09-04 15:02:35)
 
 public interface phyCoreMpc5200tiny {
 
@@ -22,10 +22,10 @@ public interface phyCoreMpc5200tiny {
 	public static final int extRamSize = 0x8000000;
 	public static final int extFlashBase = 0xff000000;
 	public static final int extFlashSize = 0x1000000;
-	public static final int excpCodeBase = 0xff000000;
-	public static final int excpCodeSize = 0x3000;
-	public static final int sysTabBaseAddr = 0x3000;
-	public static final int reservedSpaceSize = 0x8000;
+	public static final int excpCodeFlashBase = 0xff000000;
+	public static final int excpCodeRamBase = 0x0;
+	public static final int excpCodeSize = 0x4000;
+	public static final int sysTabBaseAddr = 0x4000;
 	public static final int stackSize = 0x2000;
 	public static final int heapSize = 0x40000;
 	public static final int SRR1init = 0x3802;
@@ -167,6 +167,11 @@ public interface phyCoreMpc5200tiny {
 	public static final int CSCR = 0xf0000318;
 	public static final int CSSR = 0xf000031c;
 	public static final int CSBCR = 0xf0000328;
+	public static final int ICTLPIMR = 0xf0000500;
+	public static final int ICTLPPR1 = 0xf0000504;
+	public static final int ICTLPPR2 = 0xf0000508;
+	public static final int ICTLPPR3 = 0xf000050c;
+	public static final int ICTLEER = 0xf0000510;
 	public static final int GPSPCR = 0xf0000b00;
 	public static final int GPWER = 0xf0000c00;
 	public static final int GPWDDR = 0xf0000c08;
@@ -183,6 +188,7 @@ public interface phyCoreMpc5200tiny {
 	public static final int PSCCTUR = 0x18;
 	public static final int PSCCTLR = 0x1c;
 	public static final int PSCSICR = 0x40;
+	public static final int PSCTFNUM = 0x5c;
 	public static final int PSCTFCNTL = 0x88;
 	public static final int CANCTL0 = 0x0;
 	public static final int CANCTL1 = 0x1;
@@ -216,4 +222,18 @@ public interface phyCoreMpc5200tiny {
 	public static final int CANIDMR7 = 0x3d;
 	public static final int CANRXFG = 0x40;
 	public static final int CANTXFG = 0x60;
+	public static final int CANTXIR0 = 0x60;
+	public static final int CANTXIR1 = 0x61;
+	public static final int CANTXIR2 = 0x64;
+	public static final int CANTXIR3 = 0x65;
+	public static final int CANTXDSR0 = 0x68;
+	public static final int CANTXDSR1 = 0x69;
+	public static final int CANTXDSR2 = 0x6c;
+	public static final int CANTXDSR3 = 0x6d;
+	public static final int CANTXDSR4 = 0x70;
+	public static final int CANTXDSR5 = 0x71;
+	public static final int CANTXDSR6 = 0x74;
+	public static final int CANTXDSR7 = 0x75;
+	public static final int CANTXDLR = 0x78;
+	public static final int CANTXTBPR = 0x79;
 }

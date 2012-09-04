@@ -1,6 +1,5 @@
 package ch.ntb.inf.deep.runtime.mpc5200.driver.can;
 
-import ch.ntb.inf.deep.unsafe.US;
 
 public class CANopen {
 	private static final byte SDOrObject1Byte = 0x40;
@@ -15,6 +14,7 @@ public class CANopen {
 	private static final short PDO1_COB = 0x180;	// COB-ID for TxPDO 1
 	private static final short bootUpMsg = 0x700;	// COB-ID for boot up message
 	private static final short sync_COB = 0x080;	// COB-ID for synch signal
+	private static final int txBufNo = 0;
 	
 	private static byte[] data = new byte[8];
 
@@ -29,7 +29,7 @@ public class CANopen {
 	}
 			
 	public static void sendSDO(byte id, short index, byte subIndex, int val, int len) {
-		CAN.setMsgBufRx1(0, sc_SDO_COB | id, false, data);	// set receive msg buffer to search for SDO answer
+		CAN1.setMsgBufRx(0, sc_SDO_COB | id, false, data);	// set receive msg buffer to search for SDO answer
 		switch (len) {
 		case 4:
 			setSDO(SDOrObject1Byte, index, subIndex, val, 4);
@@ -46,8 +46,8 @@ public class CANopen {
 		default:
 			break;
 		}
-		CAN.setMsgBufTx(len, cs_SDO_COB | id, false, data);	
-		CAN.waitForTransferComplete(CAN.rx1BufNo);	// wait for answer
+		CAN1.setTxBuf(len, cs_SDO_COB | id, false, data);	
+		CAN1.waitForRxComplete();	// wait for answer
 	}
 	
 	// network management: enter pre-operational protocol
@@ -55,8 +55,8 @@ public class CANopen {
 	public static void sendMsg0NMTenterPreOp(int id) {
 		data[0] = (byte)0x80;
 		data[1] = (byte)id;
-		CAN.setMsgBufTx(2, 0, false, data);	
-		CAN.waitForTransferComplete(CAN.txBufNo);	// wait for end of transfer
+		CAN1.setTxBuf(2, 0, false, data);	
+		CAN1.waitForTxComplete(txBufNo);	// wait for end of transfer
 	}
 			
 	// network management: reset communication protocol
@@ -64,8 +64,8 @@ public class CANopen {
 	public static void sendMsg0NMTresetComm(int id) {
 		data[0] = (byte)0x82;
 		data[1] = (byte)id;
-		CAN.setMsgBufTx(2, 0, false, data);	
-		CAN.waitForTransferComplete(CAN.txBufNo);	// wait for end of transfer
+		CAN1.setTxBuf(2, 0, false, data);	
+		CAN1.waitForTxComplete(txBufNo);	// wait for end of transfer
 	}
 			
 	// network management: reset node protocol
@@ -73,17 +73,17 @@ public class CANopen {
 	public static void sendMsg0NMTresetNode(int id) {
 		data[0] = (byte)0x81;
 		data[1] = (byte)id;
-		CAN.setMsgBufTx(2, 0, false, data);	
-		CAN.waitForTransferComplete(CAN.txBufNo);	// wait for end of transfer
+		CAN1.setTxBuf(2, 0, false, data);	
+		CAN1.waitForTxComplete(txBufNo);	// wait for end of transfer
 	}
-			
+		
 	// network management: start remote node protocol
 	// id: 1..127, 0->all nodes
 	public static void sendMsg0NMTstartRemoteNode(int id) {
 		data[0] = (byte)0x01;
 		data[1] = (byte)id;
-		CAN.setMsgBufTx(2, 0, false, data);	
-		CAN.waitForTransferComplete(CAN.txBufNo);	// wait for end of transfer
+		CAN1.setTxBuf(2, 0, false, data);	
+		CAN1.waitForTxComplete(txBufNo);	// wait for end of transfer
 	}
 
 	// network management: stop remote node protocol
@@ -91,42 +91,40 @@ public class CANopen {
 	public static void sendMsg0NMTstopRemoteNode(int id) {
 		data[0] = (byte)0x02;
 		data[1] = (byte)id;
-		CAN.setMsgBufTx(2, 0, false, data);	
-		CAN.waitForTransferComplete(CAN.txBufNo);	// wait for end of transfer
+		CAN1.setTxBuf(2, 0, false, data);	
+		CAN1.waitForTxComplete(txBufNo);	// wait for end of transfer
 	}
 
 	public static void start(int id) {	
-		CAN.setMsgBufRx1(0, bootUpMsg | id, false, data);	// set receive msg buffer to listen for bootup msg
+		CAN1.setMsgBufRx(0, bootUpMsg | id, false, data);	// set receive msg buffer to listen for bootup msg
 		sendMsg0NMTresetNode(id);	// reset all nodes
-		CAN.waitForTransferComplete(CAN.rx1BufNo);	// wait for end of bootup msg
+		CAN1.waitForRxComplete();	// wait for end of bootup msg
 	}
 	
 	public static void dispMsgBuf1() {
 		System.out.print("Message Buffer 1");
-		byte data[] = CAN.getMsgBuf(1);
-		int len = data[1] &  0xf;
+		byte data[] = CAN1.getMsgBuf(1);
+		int len = data[12] &  0xf;
 		System.out.print("\tlength: "); System.out.print(len);
-		System.out.print("\tcode: "); System.out.printHexln((data[1] >> 4) & 0xf); 
 		for (int i = 0; i < len; i++) {
-			System.out.printHex(data[i+6]); System.out.print("\t");
+			System.out.printHex(data[i+4]); System.out.print("\t");
 		}
 		System.out.println();
 	}
 						
 	public static void dispMsgBuf2() {
 		System.out.print("Message Buffer 2");
-		byte data[] = CAN.getMsgBuf(2);
-		int len = data[1] &  0xf;
-		System.out.print("\tlength: "); System.out.print(len);
-		System.out.print("\tcode: "); System.out.printHexln((data[1] >> 4) & 0xf); 
+		byte data[] = CAN1.getMsgBuf(2);
+		int len = data[12] &  0xf;
+		System.out.println("\tlength: "); System.out.print(len);
 		for (int i = 0; i < len; i++) {
-			System.out.printHex(data[i+6]); System.out.print("\t");
+			System.out.printHex(data[i+4]); System.out.print("\t");
 		}
 		System.out.println();
 	}
 						
 	public static void printSDOAnswer() {
-		data = CAN.getMsgBuf(CAN.rx1BufNo);
+		data = CAN1.getMsgBuf(CAN1.rx1BufNo);
 		System.out.print("index: "); System.out.printHex(data[8]*0x100 + data[7]); System.out.print("\t");
 		System.out.print("subindex: "); System.out.printHex(data[9]); System.out.print("\t");
 		int val = 0xff & data[10]; 
@@ -137,12 +135,11 @@ public class CANopen {
 	}
 
 	public static void sendSync() {
-		CAN.setMsgBufTx(0, 0x80, false, data);
+		CAN1.setTxBuf(0, 0x80, false, data);
 	}
 
 	public static void setMsgBufRxPDO(int id) {
-		CAN.setMsgBufRx2(0, PDO1_COB + id, false, data);
-		
+//		CAN.setMsgBufRx(0, PDO1_COB + id, false, data);
 	}
 			
 
