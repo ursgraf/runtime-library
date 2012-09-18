@@ -746,6 +746,11 @@ cpu MPC5200 {
 			addr = MemBaseAddr + 0x0510;
 			size = 4;
 		}
+		register ICTLPISAR {
+			type = IOR;
+			addr = MemBaseAddr + 0x0530;
+			size = 4;
+		}
 		
 		# GPIO registers
 		register GPSPCR {

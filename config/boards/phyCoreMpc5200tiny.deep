@@ -81,12 +81,16 @@ board phyCoreMpc5200tiny {
 			
 			memorysector Sec0 {							# First sector is used exception code and system table
 				base = extFlashBase;
-				sectorsize = 0x08000;					# 32k
+				sectorsize = 0x8000;					# 32k
 			}
 			memorysector Sec1 {
-				base = extFlashBase + 0x08000;
-				sectorsize = 0x04000;					# 16k
+				base = extFlashBase + 0x8000;
+				sectorsize = 0x8000;					# 32k
 			}
+#			memorysector Sec2 {
+#				base = extFlashBase + 0x10000;
+#				sectorsize = 0x8000;					# 32k
+#			}
 		}
 		
 		segment ExternalFlash.ExceptionCode {			# Exception code
@@ -105,11 +109,8 @@ board phyCoreMpc5200tiny {
 		}
 	}
 	
-#	reginit {
-#		
-#	}
 
-	targetconfiguration DefaultBoot {
+	targetconfiguration BootAndRunFromFlash {
 		system {
 			systemtable: systab@ExternalFlash.SysTab;
 		}
@@ -118,12 +119,21 @@ board phyCoreMpc5200tiny {
 			exception: code@ExternalFlash.ExceptionCode, const@ExternalFlash.Default, var@ExternalRam.Default;
 			default: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;           
 		}
-#		reginit {
-#			
-#		}
 	}
 	
-	targetconfiguration RamOnlyBoot {
+	targetconfiguration BootAndCopyFromFlash {
+		system {
+			systemtable: systab@ExternalFlash.SysTab;
+		}
+		modules {
+			kernel, heap: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;
+			reset: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;
+			exception: code@ExternalRam.ExceptionCode, const@ExternalRam.Default, var@ExternalRam.Default;
+			default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;           
+		}
+	}
+	
+	targetconfiguration BootFromRam {
 		system {
 			systemtable: systab@ExternalRam.SysTab;
 		}
@@ -132,9 +142,6 @@ board phyCoreMpc5200tiny {
 			exception: code@ExternalRam.ExceptionCode, const@ExternalRam.Default, var@ExternalRam.Default;
 			default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;           
 		}
-#		reginit {
-#			
-#		}
 	}
 
 }

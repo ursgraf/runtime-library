@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-// Auto generated file (2012-09-04 15:02:35)
+// Auto generated file (2012-09-18 17:58:25)
 
 public interface phyCoreMpc5200tiny {
 
@@ -172,6 +172,7 @@ public interface phyCoreMpc5200tiny {
 	public static final int ICTLPPR2 = 0xf0000508;
 	public static final int ICTLPPR3 = 0xf000050c;
 	public static final int ICTLEER = 0xf0000510;
+	public static final int ICTLPISAR = 0xf0000530;
 	public static final int GPSPCR = 0xf0000b00;
 	public static final int GPWER = 0xf0000c00;
 	public static final int GPWDDR = 0xf0000c08;

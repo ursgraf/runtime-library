@@ -35,6 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200;
 
+import ch.ntb.inf.deep.runtime.mpc5200.driver.can.CAN1;
 import ch.ntb.inf.deep.runtime.ppc.PPCException;
 import ch.ntb.inf.deep.unsafe.US;
 
@@ -50,25 +51,25 @@ public class Interrupt extends PPCException implements phyCoreMpc5200tiny {
 	public static int nofUnexpInterrupts = 0;
 	
 	static int nofInterrupts = 0;
-//	static Interrupt[] interrupts = new Interrupt[16]; 	// ext. and int. interrupts  
+	static Interrupt[] perInts = new Interrupt[24]; 	// interrupt handlers for peripheral interrupts  
 	
-	public int enableRegAdr;
-	public int enBit;
-	public int flagRegAdr;
-	public int flag;
-	private Interrupt next;
+//	public int enableRegAdr;
+//	public int enBit;
+//	public int flagRegAdr;
+//	public int flag;
+//	private Interrupt next;
+	
+//	public static int data;
 	
 	public void action() {
 		nofUnexpInterrupts++;
 	}
 
 	static void interrupt() {
-		nofUnexpInterrupts++;
-//		int data;
-//		for (int i = 0; i < 12; i++) data = US.GET1(MSCAN1Base + CANRXFG + i);
-//		US.PUT1(MSCAN1Base + CANRFLG, 0x01);	// clear flag
-//		while (true);
-//		nofInterrupts++;
+		int status = US.GET4(ICTLPISAR);
+		int intNr = status;	// get the
+		perInts[17].action();
+		nofInterrupts++;
 //		int pendInt = US.GET2(SIPEND);
 //		int i = 0;	// find highest bit
 //		while (pendInt != 0) {
@@ -99,18 +100,13 @@ public class Interrupt extends PPCException implements phyCoreMpc5200tiny {
 //		}
 	}
 
-//	public static void install(Interrupt interrupt, int level, boolean internal) {
-//		if (internal) {
-//			interrupt.next = interrupts[2 * level + 1]; 
-//			interrupts[2 * level + 1] = interrupt;
-//		} else {
-//			interrupt.next = interrupts[2 * level]; 
-//			interrupts[2 * level] = interrupt;
-//		}
-//	}
+	public static void install(Interrupt interrupt, int peripheralNr) {
+//		interrupt.next = interrupts[2 * level + 1]; 
+		perInts[peripheralNr] = interrupt;
+	}
 	
 	static {
-//		for (int i = 0; i < 16; i++) interrupts[i] = new Interrupt(); 
+		for (int i = 0; i < perInts.length; i++) perInts[i] = new Interrupt(); 
 //		US.PUT4(SIEL, 0xffff0000);	// external ints are edge sensitive, exit low-power modes 
 //		US.PUT4(SIPEND, 0xffff0000);	// reset all int requests
 //		US.PUT4(SIMASK, 0x7fff0000);	// enable all interrupt levels, except NMI

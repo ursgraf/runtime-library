@@ -29,7 +29,7 @@ public class CANopen {
 	}
 			
 	public static void sendSDO(byte id, short index, byte subIndex, int val, int len) {
-		CAN1.setMsgBufRx(0, sc_SDO_COB | id, false, data);	// set receive msg buffer to search for SDO answer
+		CAN2.setMsgBufRx(0, sc_SDO_COB | id, false, data);	// set receive msg buffer to search for SDO answer
 		switch (len) {
 		case 4:
 			setSDO(SDOrObject1Byte, index, subIndex, val, 4);
@@ -46,8 +46,8 @@ public class CANopen {
 		default:
 			break;
 		}
-		CAN1.setTxBuf(len, cs_SDO_COB | id, false, data);	
-		CAN1.waitForRxComplete();	// wait for answer
+		CAN2.setTxBuf(len, cs_SDO_COB | id, false, data);	
+		CAN2.waitForRxComplete();	// wait for answer
 	}
 	
 	// network management: enter pre-operational protocol
@@ -55,8 +55,8 @@ public class CANopen {
 	public static void sendMsg0NMTenterPreOp(int id) {
 		data[0] = (byte)0x80;
 		data[1] = (byte)id;
-		CAN1.setTxBuf(2, 0, false, data);	
-		CAN1.waitForTxComplete(txBufNo);	// wait for end of transfer
+		CAN2.setTxBuf(2, 0, false, data);	
+		CAN2.waitForTxComplete(txBufNo);	// wait for end of transfer
 	}
 			
 	// network management: reset communication protocol
@@ -64,8 +64,8 @@ public class CANopen {
 	public static void sendMsg0NMTresetComm(int id) {
 		data[0] = (byte)0x82;
 		data[1] = (byte)id;
-		CAN1.setTxBuf(2, 0, false, data);	
-		CAN1.waitForTxComplete(txBufNo);	// wait for end of transfer
+		CAN2.setTxBuf(2, 0, false, data);	
+		CAN2.waitForTxComplete(txBufNo);	// wait for end of transfer
 	}
 			
 	// network management: reset node protocol
@@ -73,8 +73,8 @@ public class CANopen {
 	public static void sendMsg0NMTresetNode(int id) {
 		data[0] = (byte)0x81;
 		data[1] = (byte)id;
-		CAN1.setTxBuf(2, 0, false, data);	
-		CAN1.waitForTxComplete(txBufNo);	// wait for end of transfer
+		CAN2.setTxBuf(2, 0, false, data);	
+		CAN2.waitForTxComplete(txBufNo);	// wait for end of transfer
 	}
 		
 	// network management: start remote node protocol
@@ -82,8 +82,8 @@ public class CANopen {
 	public static void sendMsg0NMTstartRemoteNode(int id) {
 		data[0] = (byte)0x01;
 		data[1] = (byte)id;
-		CAN1.setTxBuf(2, 0, false, data);	
-		CAN1.waitForTxComplete(txBufNo);	// wait for end of transfer
+		CAN2.setTxBuf(2, 0, false, data);	
+		CAN2.waitForTxComplete(txBufNo);	// wait for end of transfer
 	}
 
 	// network management: stop remote node protocol
@@ -91,19 +91,20 @@ public class CANopen {
 	public static void sendMsg0NMTstopRemoteNode(int id) {
 		data[0] = (byte)0x02;
 		data[1] = (byte)id;
-		CAN1.setTxBuf(2, 0, false, data);	
-		CAN1.waitForTxComplete(txBufNo);	// wait for end of transfer
+		CAN2.setTxBuf(2, 0, false, data);	
+		CAN2.waitForTxComplete(txBufNo);	// wait for end of transfer
 	}
 
 	public static void start(int id) {	
-		CAN1.setMsgBufRx(0, bootUpMsg | id, false, data);	// set receive msg buffer to listen for bootup msg
+		CAN2.setMsgBufRx(0, bootUpMsg | id, false, data);	// set receive msg buffer to listen for bootup msg
 		sendMsg0NMTresetNode(id);	// reset all nodes
-		CAN1.waitForRxComplete();	// wait for end of bootup msg
+		CAN2.waitForRxComplete();	// wait for end of bootup msg
 	}
 	
+	// to be fixed for 5200 
 	public static void dispMsgBuf1() {
 		System.out.print("Message Buffer 1");
-		byte data[] = CAN1.getMsgBuf(1);
+		byte data[] = CAN2.getMsgBuf(1);
 		int len = data[12] &  0xf;
 		System.out.print("\tlength: "); System.out.print(len);
 		for (int i = 0; i < len; i++) {
@@ -112,9 +113,10 @@ public class CANopen {
 		System.out.println();
 	}
 						
+	// to be fixed for 5200 
 	public static void dispMsgBuf2() {
 		System.out.print("Message Buffer 2");
-		byte data[] = CAN1.getMsgBuf(2);
+		byte data[] = CAN2.getMsgBuf(2);
 		int len = data[12] &  0xf;
 		System.out.println("\tlength: "); System.out.print(len);
 		for (int i = 0; i < len; i++) {
@@ -123,8 +125,9 @@ public class CANopen {
 		System.out.println();
 	}
 						
+	// to be fixed for 5200 
 	public static void printSDOAnswer() {
-		data = CAN1.getMsgBuf(CAN1.rx1BufNo);
+		data = CAN2.getMsgBuf(CAN2.rx1BufNo);
 		System.out.print("index: "); System.out.printHex(data[8]*0x100 + data[7]); System.out.print("\t");
 		System.out.print("subindex: "); System.out.printHex(data[9]); System.out.print("\t");
 		int val = 0xff & data[10]; 
@@ -135,11 +138,12 @@ public class CANopen {
 	}
 
 	public static void sendSync() {
-		CAN1.setTxBuf(0, 0x80, false, data);
+		CAN2.setTxBuf(0, 0x80, false, data);
 	}
 
+	// to be fixed for 5200 
 	public static void setMsgBufRxPDO(int id) {
-//		CAN.setMsgBufRx(0, PDO1_COB + id, false, data);
+//		CAN2.setMsgBufRx(0, PDO1_COB + id, false, data);
 	}
 			
 

@@ -7,10 +7,23 @@ import ch.ntb.inf.deep.unsafe.US;
 public class CAN1 extends Interrupt implements phyCoreMpc5200tiny {
 	// supports only standard frame format (11Bit itentifier)
 	
-	static final int rx1BufNo = 1;
-	static final int rx2BufNo = 2;
-	
+	private static final int maxNofNodes = 16;
+
+	public static NodeData[] nodeData = new NodeData[maxNofNodes];
 	private static byte[] data = new byte[14];
+	
+	public void action() {
+		byte[] msg = CAN1.getMsgBuf(0);
+		int nodeId = ((msg[0] & 0xf) << 3) | ((msg[1] >>> 5) & 0x07);
+		NodeData nd = nodeData[nodeId];
+		nd.forceX = (short)((msg[4] << 8) | (msg[5] & 0xff));
+		nd.forceY = (short)((msg[6] << 8) | (msg[7] & 0xff));
+		nd.forceZ = (short)((msg[8] << 8) | (msg[9] & 0xff));
+	}
+	
+	public static void sampleNodes() {
+		setTxBuf(0, 0x80, false, null);
+	}
 
 	public static void setTxBuf(int len, int id, boolean rtr, byte data[]) {
 		US.PUT1(MSCAN1Base + CANTBSEL, 7);	// select buffer 0
@@ -25,19 +38,19 @@ public class CAN1 extends Interrupt implements phyCoreMpc5200tiny {
 		US.PUT1(MSCAN1Base + CANTFLG, 1);	// start transmission for buffer 0
 	}
 	
-	public static void setMsgBufRx(int len, int id, boolean rtr, byte data[]) {
+	public static void setMsgBufRx(int id, boolean rtr) {
 		US.PUT1(MSCAN1Base + CANCTL0, 0x01);	// enter initialization mode
 		while ((US.GET1(MSCAN1Base + CANCTL1) & 1) == 0);	// wait for acknowledge bit
 		
 		int idReg = id << 5;
 		US.PUT2(MSCAN1Base + CANIDAR0, idReg);	// filter 0: id
-		US.PUT2(MSCAN1Base + CANIDMR0, 0x000f);	// filter 0: mask, all bits must match
+		US.PUT2(MSCAN1Base + CANIDMR0, 0x01ff);	// filter 0: mask, COB-ID must match, accept node-IDs from 0 to 15
 		
 		US.PUT1(MSCAN1Base + CANCTL0, 0);	// exit initialization mode
 		while ((US.GET1(MSCAN1Base + CANCTL0) & 1) == 1);	// wait for normal mode
 		while ((US.GET1(MSCAN1Base + CANCTL0) & 0x10) == 0);	// wait for synchronization
 		US.PUT1(MSCAN1Base + CANRFLG, 0x01);	// clear receive flag
-//		US.PUT1(MSCAN1Base + CANRIER, 0x01);	// enable rx ints
+		US.PUT1(MSCAN1Base + CANRIER, 0x01);	// enable rx ints
 	}
 	
 	public static void waitForTxComplete(int bufNr) {
@@ -54,10 +67,14 @@ public class CAN1 extends Interrupt implements phyCoreMpc5200tiny {
 			data[i*2 + 1] = US.GET1(MSCAN1Base + CANRXFG + i*4 + 1);
 		}
 		data[12] = US.GET1(MSCAN1Base + CANRXFG + 0x18);
+		US.PUT1(MSCAN1Base + CANRFLG, 0x07);	// clear receive flag
 		return data;
 	}
 
 	public static void init() {
+		Interrupt canInt = new CAN1();
+		for (int i = 0; i < maxNofNodes; i++) nodeData[i] = new NodeData();
+		Interrupt.install(canInt, 17); // CAN1 is peripheral number 1
 		US.PUT4(ICTLPIMR, US.GET4(ICTLPIMR) & ~0x4000);	// accept interrupts from CAN1
 		US.PUT4(GPSPCR, US.GET4(GPSPCR) | 0x10);	// use pins on PCS2 for CAN
 		US.PUT1(MSCAN1Base + CANCTL0, 0x01);	// enter initialization mode
@@ -73,5 +90,7 @@ public class CAN1 extends Interrupt implements phyCoreMpc5200tiny {
 		US.PUT1(MSCAN1Base + CANCTL0, 0);	// exit initialization mode
 		while ((US.GET1(MSCAN1Base + CANCTL0) & 1) == 1);	// wait for normal mode
 		while ((US.GET1(MSCAN1Base + CANCTL0) & 0x10) == 0);	// wait for synchronization
+		
+		setMsgBufRx(0x180, false);	// COB-ID = 0x180
 	}
 }
