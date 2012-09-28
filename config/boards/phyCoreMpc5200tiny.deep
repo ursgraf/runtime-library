@@ -13,18 +13,14 @@ board phyCoreMpc5200tiny {
 		extRamBase   = 0x0;						        # starting at 0x0
 		extRamSize   = 0x8000000;						# 128M external RAM
 	
-		extFlashBase = 0xFF000000;						# starting at 0xFF000000
-		extFlashSize = 0x1000000;						# 16M external Flash
+		extFlashBase = 0xFFF00000;						# starting at 0xFF000000
+		extFlashSize = 0x100000;						# only the last MB of the 16M external Flash is used
 
 		excpCodeFlashBase = extFlashBase;				# Base address for exception code when starting from flash
 		excpCodeRamBase = extRamBase;					# Base address for exception code when starting from ram
 		excpCodeSize = 0x4000;							# Exception code size (includes exception vectors and further methods of the exception classe
 		
-#		sysTabBaseAddr = excpCodeFlashBase + excpCodeSize;	# Place system table behind exception code
-		sysTabBaseAddr = excpCodeRamBase + excpCodeSize;	# Place system table behind exception code
-		
-		# Achtung: wenn zwischen Flash und Ram bootup gewechselt wird, muss oben die richtige Zeile ausgewählt werden 
-		# und ein neues Interface-File erzeugt werden!!
+		sysTabBaseAddr = excpCodeSize;					# Place system table behind exception code
 		
 		stackSize = 0x2000;								# Default stack size
 		heapSize = 0x40000;								# Default heap size
@@ -110,29 +106,6 @@ board phyCoreMpc5200tiny {
 	}
 	
 
-	targetconfiguration BootAndRunFromFlash {
-		system {
-			systemtable: systab@ExternalFlash.SysTab;
-		}
-		modules {
-			kernel, heap: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;
-			exception: code@ExternalFlash.ExceptionCode, const@ExternalFlash.Default, var@ExternalRam.Default;
-			default: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;           
-		}
-	}
-	
-	targetconfiguration BootAndCopyFromFlash {
-		system {
-			systemtable: systab@ExternalFlash.SysTab;
-		}
-		modules {
-			kernel, heap: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;
-			reset: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;
-			exception: code@ExternalRam.ExceptionCode, const@ExternalRam.Default, var@ExternalRam.Default;
-			default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;           
-		}
-	}
-	
 	targetconfiguration BootFromRam {
 		system {
 			systemtable: systab@ExternalRam.SysTab;

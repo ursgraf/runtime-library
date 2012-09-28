@@ -155,16 +155,16 @@ operatingsystem ntbMpc5200STS {
     	}
     }
     
-    exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/MachineCheck";
-		method machineCheck {
-    		attributes = exchnd;
-    		offset = 0x200;
-		}
-			method <init> {
-			attributes = synthetic;
-		}
-	}
+#    exception {
+#    	class = "ch/ntb/inf/deep/runtime/mpc5200/MachineCheck";
+#		method machineCheck {
+#    		attributes = exchnd;
+#    		offset = 0x200;
+#		}
+#			method <init> {
+#			attributes = synthetic;
+#		}
+#	}
 
 	exception {
     	class = "ch/ntb/inf/deep/runtime/mpc5200/Interrupt";

@@ -113,41 +113,7 @@ public class Kernel implements phyCoreMpc5200tiny, IdeepCompilerConstants {
 	}
 	
 	private static void boot() {
-//		blink(4);
-//		US.PUT4(MBAR, MemBaseAddr >> 16);	// switch memory base address
 		US.PUT4(XLBACR, 0x00002006);	// time base enable, data and address timeout enable
-//		US.PUT4(SIUMCR, 0x00040000);	// internal arb., no data show cycles, BDM operation, CS functions,
-//			// output FREEZE, no lock, use data & address bus, use as RSTCONF, no reserv. logic
-//		US.PUT4(PLPRCR, 0x00900000);	// MF = 9, 40MHz operation with 4MHz quarz
-//		int reg;
-//		do reg = US.GET4(PLPRCR); while ((reg & (1 << 16)) == 0);	// wait for PLL to lock 
-//		US.PUT4(UMCR, 0);	// enable IMB clock, no int. multiplexing, full speed
-
-		// configure memory base address
-//		US.PUT4(MBAR, 0x0000f000);	// base address is now 0xf0000000
-//		// configure CS0 for boot flash 
-//		US.PUT4(CS0START, 0x0000ff00);	// start address = 0xff000000
-//		US.PUT4(CS0STOP, 0x0000ffff); 	// stop address = 0xffffffff, size = 16MB
-//		US.PUT4(CS0CR, 0x0008fd00);	// 8 wait states, multiplexed, ack, enabled, 25 addr. lines, 16 bit data, rw
-//		US.PUT4(IPBI, 0x00010001);	// enable CS0, disable CSboot, enable wait states
-//		US.PUT4(CSCR, 0x01000000);	// CS master enable
-//		
-//		// configure CS for SDRAM 
-//		US.PUT4(SDRAMCS0, 0x0000001a);	// 128MB, start at 0
-//		
-//		// configure SDRAM controller for DDR 133MHz 
-//		US.PUT4(SDRAMCONFIG1, 0x73722930);	// config 1	
-//		US.PUT4(SDRAMCONFIG2, 0x47770000);	// config 2
-//		US.PUT4(SDRAMCONTROL, 0xe15f0f02);	
-	
-		//		short reset = US.GET2(RSR);
-//		if ((reset & (1<<5 | 1<<15)) != 0) {	// boot from flash
-//			US.PUT4(SYPCR, 0xffffff83);	// bus monitor time out, enable bus monitor, disable watchdog
-//			US.PUT4(DMBR, 0x1);			// dual mapping enable, map from address 0, use CS0 -> external Flash
-//			US.PUT4(DMOR, 0x7e000000);	// map 32k -> 0x0...0x8000
-//		}
-		
-//		set FPSCR;
 		
 		// mark stack end with specific pattern
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);

@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-// Auto generated file (2012-09-18 17:58:25)
+// Auto generated file (2012-09-28 16:21:23)
 
 public interface phyCoreMpc5200tiny {
 
@@ -20,9 +20,9 @@ public interface phyCoreMpc5200tiny {
 	// System constants of board phyCoreMpc5200tiny
 	public static final int extRamBase = 0x0;
 	public static final int extRamSize = 0x8000000;
-	public static final int extFlashBase = 0xff000000;
-	public static final int extFlashSize = 0x1000000;
-	public static final int excpCodeFlashBase = 0xff000000;
+	public static final int extFlashBase = 0xfff00000;
+	public static final int extFlashSize = 0x100000;
+	public static final int excpCodeFlashBase = 0xfff00000;
 	public static final int excpCodeRamBase = 0x0;
 	public static final int excpCodeSize = 0x4000;
 	public static final int sysTabBaseAddr = 0x4000;
