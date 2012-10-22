@@ -38,12 +38,12 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
-import ch.ntb.inf.deep.runtime.mpc555.driver.AM29LV160;
-import ch.ntb.inf.deep.runtime.mpc555.driver.FFS;
-import ch.ntb.inf.deep.runtime.mpc555.driver.File;
-import ch.ntb.inf.deep.runtime.mpc555.driver.Rider;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.ffs.AM29LV160;
+import ch.ntb.inf.deep.runtime.mpc555.driver.ffs.FFS;
+import ch.ntb.inf.deep.runtime.mpc555.driver.ffs.File;
+import ch.ntb.inf.deep.runtime.mpc555.driver.ffs.Rider;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
