@@ -1,64 +1,96 @@
+/*
+ * Copyright (c) 2011 NTB Interstate University of Applied Sciences of Technology Buchs.
+ * All rights reserved.
+ *
+ * http://www.ntb.ch/inf
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 
+ * Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ * 
+ * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * 
+ * Neither the name of the project's author nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
 package ch.ntb.inf.deep.runtime.mpc5200.driver;
 
 import ch.ntb.inf.deep.runtime.mpc5200.phyCoreMpc5200tiny;
 import ch.ntb.inf.deep.unsafe.US;
 
 public class DAC_MAX5500 implements phyCoreMpc5200tiny{
-	public static UART3OutputStream out;
 
-	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
-
-	
 	private static final int FIFO_LENGTH = 512;
+	private static final int PSCBase = PSC6Base;
 
 	/**
-	 * <p>Initialize and start the <i>UART 3</i>.</p>
-	 * <p>This method has to be called before using the UART3! The number of
-	 * stop bits can't be set. There is always one stop bit!<p>
-	 * 
-	 * @param baudRate
-	 *            The baud rate. Allowed Range: 64 to 500'000 bits/s.
-	 * @param parity
-	 *            Parity bits configuration. Possible values: {@link #NO_PARITY},
-	 *            {@link #ODD_PARITY} or {@link #EVEN_PARITY}.
-	 * @param data
-	 *            Number of data bits. Allowed values are 5 to 8 bits. 
+	 * <p>Initialize the <i>SPI</i> on PSC6.</p>
+	 * <p>This method has to be called before using the SPI!<p>
 	 */
-	public static void start(int baudRate, short parity, short data) {
-		US.PUT1(PSC3Base + PSCCR, 0xa); // disable Tx, Rx
-		US.PUT2(PSC3Base + PSCCSR, 0xff00); // CSR, prescaler 16
-		US.PUT4(PSC3Base + PSCSICR, 0); // select UART mode
-		if (parity == NO_PARITY)
-			US.PUT1(PSC3Base + PSCMR1, 0x30 | (data-5) & 3); 
-		else {
-			if (parity == ODD_PARITY)
-				US.PUT1(PSC3Base + PSCMR1, 0x24 | (data-5) & 3);
-			else
-				US.PUT1(PSC3Base + PSCMR1, 0x20 | (data-5) & 3);
-		}
-		US.PUT1(PSC3Base + PSCMR2, 0x7); // MR2, 1 stop bit
-		int divider = 16500000 / baudRate; // IPB clock = 66MHz, prescaler = 4
-		US.PUT1(PSC3Base + PSCCTUR, divider >> 8); 
-		US.PUT1(PSC3Base + PSCCTLR, divider); 
-		US.PUT1(PSC3Base + PSCTFCNTL, 0x1); // no frames
-		US.PUT4(GPSPCR, US.GET4(GPSPCR) | 0x400);	// use pins on PCS3 for UART
-		US.PUT1(PSC3Base + PSCCR, 0x5); // enable Tx, Rx
-		
+	public static void init() {
+		US.PUT1(PSCBase + PSCCR, 0xa); // disable Tx, Rx
+		US.PUT1(PSCBase + PSCCR, 0x20); // reset receiver, clears fifo
+		US.PUT1(PSCBase + PSCCR, 0x30); // reset transmitter, clears fifo
+		US.PUT4(PSCBase + PSCSICR, 0x0280c000); // select SPI mode, master, 16 bit, msb first
+		US.PUT4(CDMPSC6MCLKCR, 0x800f);	// Mclk = 33MHz
+		US.PUT4(CDMCER, US.GET4(CDMCER) | 0x10);	// enable Mclk for PSC6
+		US.PUT4(PSCBase + PSCCCR, 0x00030000); // DSCKL = 60ns, SCK = 8.25MHz
+		US.PUT1(PSCBase + PSCCTUR, 0); // set DTL to 150ns
+		US.PUT1(PSCBase + PSCCTLR, 2); 
+		US.PUT1(PSCBase + PSCTFCNTL, 0x1); // no frames
+		US.PUT1(PSCBase + PSCRFCNTL, 0x1); // no frames
+		US.PUT4(GPSPCR, US.GET4(GPSPCR) | 0x00700000);	// use pins on PCS6 for SPI
+		US.PUT1(PSCBase + PSCCR, 0x5); // enable Tx, Rx
 	}
 	
 	/**
-	 * Writes a given byte into the transmit buffer.
-	 * A call of this method is not blocking! That means
-	 * the byte is lost if the buffer is already full!
+	 * Sends a value over the SPI to one of the four DAC-channels.
+	 * A call of this method is not blocking! A call to this method 
+	 * can be followed by another call to this method, as the data 
+	 * is written to a hardware fifo.
 	 * 
-	 * @param b
-	 *            Byte to write.
+	 * @param ch
+	 *            channel of the DAC (0, 1, 2, 3)
+	 * @param val
+	 *            value
 	 */
-	public static void write(byte b) {
-		US.PUT1(PSC3Base + PSCTxBuf, b); 
+	public static void send(int ch, short val) {
+		US.GET2(PSCBase + PSCRxBuf);	// empty the last entry from the fifo
+		US.PUT2(PSCBase + PSCTxBuf, (ch << 14) | 0x3000 | (val & 0xfff)); 
 	}
 
-
+	/**
+	 * Sets the digital output pin on the DAC.
+	 * A call of this method is not blocking! A call to this method 
+	 * can be followed by another call to this method, as the data 
+	 * is written to a hardware fifo.
+	 * 
+	 * @param val
+	 *            value
+	 */
+	public static void setUPO(boolean val) {
+		US.GET2(PSCBase + PSCRxBuf);	// empty the last entry from the fifo
+		if (val) US.PUT2(PSCBase + PSCTxBuf, 0x6000); else US.PUT2(PSCBase + PSCTxBuf, 0x2000); 
+	}
 
 	/**
 	 * Returns the number of free bytes available in the transmit fifo.
@@ -68,10 +100,7 @@ public class DAC_MAX5500 implements phyCoreMpc5200tiny{
 	 * @return the available free bytes in the transmit fifo.
 	 */
 	public static int availToWrite() {
-		return FIFO_LENGTH - US.GET2(PSC3Base + PSCTFNUM);
+		return FIFO_LENGTH - US.GET2(PSCBase + PSCTFNUM);
 	}
 
-	static {
-		out = new UART3OutputStream();
-	}
 }

@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-// Auto generated file (2012-09-28 16:21:23)
+// Auto generated file (2012-10-23 14:45:12)
 
 public interface phyCoreMpc5200tiny {
 
@@ -156,6 +156,11 @@ public interface phyCoreMpc5200tiny {
 	public static final int SDRAMCR1 = 0xf0000108;
 	public static final int SDRAMCR2 = 0xf000010c;
 	public static final int SDRAMSCDR = 0xf0000190;
+	public static final int CDMCER = 0xf0000214;
+	public static final int CDMPSC1MCLKCR = 0xf0000228;
+	public static final int CDMPSC2MCLKCR = 0xf000022c;
+	public static final int CDMPSC3MCLKCR = 0xf0000230;
+	public static final int CDMPSC6MCLKCR = 0xf0000234;
 	public static final int CS0CR = 0xf0000300;
 	public static final int CS1CR = 0xf0000304;
 	public static final int CS2CR = 0xf0000308;
@@ -188,8 +193,12 @@ public interface phyCoreMpc5200tiny {
 	public static final int PSCTxBuf = 0xc;
 	public static final int PSCCTUR = 0x18;
 	public static final int PSCCTLR = 0x1c;
+	public static final int PSCCCR = 0x20;
 	public static final int PSCSICR = 0x40;
+	public static final int PSCRFNUM = 0x58;
 	public static final int PSCTFNUM = 0x5c;
+	public static final int PSCRFCNTL = 0x68;
+	public static final int PSCTFSTAT = 0x84;
 	public static final int PSCTFCNTL = 0x88;
 	public static final int CANCTL0 = 0x0;
 	public static final int CANCTL1 = 0x1;
