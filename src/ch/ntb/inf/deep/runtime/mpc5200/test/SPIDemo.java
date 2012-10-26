@@ -55,7 +55,10 @@ public class SPIDemo extends Task {
 		DAC_MAX5500.send(3, i);
 		i += 0x40;
 		if (i > 0xfff) i = 0;
-		System.out.println(SPI_FQD.receive());
+		SPI_FQD.receive();
+		System.out.print(SPI_FQD.getEncoder0());
+		System.out.print('\t');
+		System.out.println(SPI_FQD.getEncoder1());
 	}
 
 	static {

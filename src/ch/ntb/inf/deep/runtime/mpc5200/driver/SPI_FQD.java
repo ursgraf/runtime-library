@@ -41,6 +41,9 @@ public class SPI_FQD implements phyCoreMpc5200tiny{
 	
 	private static final int FIFO_LENGTH = 512;
 	private static final int PSCBase = PSC1Base;
+	
+	private static short fqdCount0;
+	private static short fqdCount1;
 
 	/**
 	 * <p>Initialize the <i>SPI</i> on PSC1.</p>
@@ -50,10 +53,11 @@ public class SPI_FQD implements phyCoreMpc5200tiny{
 		US.PUT1(PSCBase + PSCCR, 0xa); // disable Tx, Rx
 		US.PUT1(PSCBase + PSCCR, 0x20); // reset receiver, clears fifo
 		US.PUT1(PSCBase + PSCCR, 0x30); // reset transmitter, clears fifo
-		US.PUT4(PSCBase + PSCSICR, 0x0280c000); // select SPI mode, master, 16 bit, msb first
+		US.PUT4(PSCBase + PSCSICR, 0x0f80c000); // select SPI mode, master, 32 bit, msb first
 		US.PUT4(CDMPSC1MCLKCR, 0x800f);	// Mclk = 33MHz
 		US.PUT4(CDMCER, US.GET4(CDMCER) | 0x20);	// enable Mclk for PSC1
-		US.PUT4(PSCBase + PSCCCR, 0x00030000); // DSCKL = 60ns, SCK = 8.25MHz
+//		US.PUT4(PSCBase + PSCCCR, 0x00030000); // DSCKL = 60ns, SCK = 8.25MHz
+        US.PUT4(PSCBase + PSCCCR, 0x000f0000); // DSCKL = 60ns, SCK = 2MHz
 		US.PUT1(PSCBase + PSCCTUR, 0); // set DTL to 150ns
 		US.PUT1(PSCBase + PSCCTLR, 2); 
 		US.PUT1(PSCBase + PSCTFCNTL, 0x1); // no frames
@@ -69,10 +73,20 @@ public class SPI_FQD implements phyCoreMpc5200tiny{
 	 * @return 
 	 *         value from SPI
 	 */
-	public static short receive() {
-		US.PUT2(PSCBase + PSCTxBuf, 0); // start transfer
-		while ((US.GET2(PSCBase + PSCTFSTAT) & 1) == 0); // wait for all transfers to complete
-		return US.GET2(PSCBase + PSCRxBuf);
+	public static void receive() {
+		US.PUT4(PSCBase + PSCTxBuf, 0); // start transfer
+//		while ((US.GET2(PSCBase + PSCTFSTAT) & 1) == 0); // wait for all transfers to complete
+		while (US.GET2(PSCBase + PSCRFNUM) < 4);
+		int fqdCount = US.GET4(PSCBase + PSCRxBuf);
+		fqdCount0 = (short)(fqdCount >> 16);
+		fqdCount1 = (short)fqdCount;
 	}
 
+	public static short getEncoder0(){
+		return fqdCount0;
+	}
+
+	public static short getEncoder1(){
+		return fqdCount1;
+	}
 }
