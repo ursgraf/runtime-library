@@ -87,7 +87,8 @@ class Reset extends PPCException implements phyCoreMpc5200tiny, IdeepCompilerCon
 			// copy code and const from flash to ram
 			int srcAddr = extFlashBase;
 			int dstAddr = extRamBase;
-			for (int i = 0; i < 32000; i++) {
+			int size = US.GET4(baseAddr + stResetOffset + 4) / 4;
+			for (int i = 0; i < size; i++) {
 				US.PUT4(dstAddr, US.GET4(srcAddr));
 				dstAddr += 4;
 				srcAddr += 4;
