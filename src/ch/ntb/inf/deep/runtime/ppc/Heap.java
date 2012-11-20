@@ -33,9 +33,10 @@
  *
  */
 
-package ch.ntb.inf.deep.runtime.mpc555;
+package ch.ntb.inf.deep.runtime.ppc;
 
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
+import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
@@ -45,7 +46,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 1.5.12	Urs Graf		GC added
  */
 
-public class Heap implements ntbMpc555HB, IdeepCompilerConstants {
+public class Heap implements IdeepCompilerConstants {
 	private static final boolean dbg = false;
 	private static final int minBlockSize = 16;	// smallest block size to allocate
 	private static final int nofFreeLists = 8;	// free blocks are kept in multiple lists
@@ -67,8 +68,9 @@ public class Heap implements ntbMpc555HB, IdeepCompilerConstants {
 										// 3*minBlockSize .. 6*minBlockSize, greater than 7*minBlockSize
 	private static int[] nofFreeBlocks;	// counter for debugging purposes
 	
-	static int nofSweepFreeBlock, nofSweepMarkedBlock, nofSweepCollBlock;
-	static int currBlock;
+	private static int nofSweepFreeBlock, nofSweepMarkedBlock, nofSweepCollBlock;
+	private static int currBlock;
+	public static int sysTabBaseAddr;
 	
 	// called by new	
 	private static int newObject(int ref) {	
@@ -355,9 +357,9 @@ public class Heap implements ntbMpc555HB, IdeepCompilerConstants {
 	
 	static {
 		int heapOffset = US.GET4(sysTabBaseAddr + stHeapOffset);
-		heapBase = US.GET4(sysTabBaseAddr + heapOffset);
+		heapBase = US.GET4(sysTabBaseAddr + heapOffset + 4);
 		heapPtr = heapBase;
-		heapSize = US.GET4(sysTabBaseAddr + heapOffset + 4);
+		heapSize = US.GET4(sysTabBaseAddr + heapOffset + 8);
 		heapEnd = heapBase + heapSize;
 		freeHeap = heapSize;
 		// read the roots of all classes into array

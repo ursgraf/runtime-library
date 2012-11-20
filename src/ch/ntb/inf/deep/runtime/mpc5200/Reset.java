@@ -95,8 +95,8 @@ class Reset extends PPCException implements phyCoreMpc5200tiny, IdeepCompilerCon
 			}
 		}
 		int stackOffset = US.GET4(baseAddr + stStackOffset);
-		int stackBase = US.GET4(baseAddr + stackOffset);
-		int stackSize = US.GET4(baseAddr + stackOffset + 4);
+		int stackBase = US.GET4(baseAddr + stackOffset + 4);
+		int stackSize = US.GET4(baseAddr + stackOffset + 8);
 		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
 		int kernelClinitAddr = US.GET4(baseAddr + stKernelClinitAddr);
 		US.PUTSPR(SRR0, kernelClinitAddr);

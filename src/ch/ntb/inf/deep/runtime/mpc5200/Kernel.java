@@ -91,7 +91,7 @@ public class Kernel implements phyCoreMpc5200tiny, IdeepCompilerConstants {
 	 */
 	public static void checkStack() { 
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset);
+		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
 		if (US.GET4(stackBase) != stackEndPattern) while (true) blink(3);
 	}
 
@@ -117,7 +117,7 @@ public class Kernel implements phyCoreMpc5200tiny, IdeepCompilerConstants {
 		
 		// mark stack end with specific pattern
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset);
+		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
 		US.PUT4(stackBase, stackEndPattern);
 
 		int classConstOffset = US.GET4(sysTabBaseAddr);

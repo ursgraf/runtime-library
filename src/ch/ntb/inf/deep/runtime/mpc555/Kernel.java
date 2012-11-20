@@ -35,6 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555;
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
+import ch.ntb.inf.deep.runtime.ppc.Heap;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
@@ -91,7 +92,7 @@ public class Kernel implements ntbMpc555HB, IdeepCompilerConstants {
 	 */
 	public static void checkStack() { 
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset);
+		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
 		if (US.GET4(stackBase) != stackEndPattern) while (true) blink(3);
 	}
 
@@ -146,7 +147,7 @@ public class Kernel implements ntbMpc555HB, IdeepCompilerConstants {
 		
 		// mark stack end with specific pattern
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset);
+		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
 		US.PUT4(stackBase, stackEndPattern);
 
 		int classConstOffset = US.GET4(sysTabBaseAddr);
@@ -172,6 +173,7 @@ public class Kernel implements ntbMpc555HB, IdeepCompilerConstants {
 			classConstOffset += 4;
 		}
 		classConstOffset = US.GET4(sysTabBaseAddr);
+		Heap.sysTabBaseAddr = sysTabBaseAddr;
 		while (true) {
 			// get addresses of classes from system table
 			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);

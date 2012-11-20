@@ -121,7 +121,7 @@ operatingsystem ntbMpc555STS {
     }
 	
     heap {
-        class = "ch/ntb/inf/deep/runtime/mpc555/Heap";
+        class = "ch/ntb/inf/deep/runtime/ppc/Heap";
         method newMultiDimArray  {
                 attributes = new;
                 id = 0x204;
