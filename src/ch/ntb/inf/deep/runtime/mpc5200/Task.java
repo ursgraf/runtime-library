@@ -54,7 +54,7 @@ public class Task implements Actionable, phyCoreMpc5200tiny {
 	 */
 	public static int firstErr;
 	
-	private static int nofPerTasks, nofReadyTasks, curRdyTask, curTask, nofActionables;
+	private static int nofPerTasks, nofReadyTasks, curRdyTask, nofActionables;
 	private static Task[] tasks = new Task[maxNofTasks+2];	// periodic tasks
 	private static Task lowestPrioStub = new Task(); // to be put at the end of the prioQ when dequeueing a task
 	private static Task highestPrioStub = new Task(); // to be put at the front of the prioQ (periodic Task[0])
@@ -236,7 +236,6 @@ public class Task implements Actionable, phyCoreMpc5200tiny {
 			long time = Kernel.time();
 			currentTask = tasks[1];
 			if (currentTask.nextTime < time) {
-				curTask = 1;
 				currentTask.nofActivations++;
 				if (currentTask.actionable < 0)	currentTask.action();
 				else actionables[currentTask.actionable].action();

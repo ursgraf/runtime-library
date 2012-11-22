@@ -48,6 +48,7 @@ public class Kernel implements ntbMpc555HB, IdeepCompilerConstants {
 	static int loopAddr;
 	static int cmdAddr;
 	
+	@SuppressWarnings("unused")
 	private static void loop() {	// endless loop
 		while (true) {
 			if (cmdAddr != -1) {
@@ -151,7 +152,7 @@ public class Kernel implements ntbMpc555HB, IdeepCompilerConstants {
 		US.PUT4(stackBase, stackEndPattern);
 
 		int classConstOffset = US.GET4(sysTabBaseAddr);
-		int state = 0;
+//		int state = 0;
 		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr); 
 		while (true) {
 			// get addresses of classes from system table
@@ -169,7 +170,7 @@ public class Kernel implements ntbMpc555HB, IdeepCompilerConstants {
 			int end = varBase + varSize;
 			while (begin < end) {US.PUT4(begin, 0); begin += 4;}
 			
-			state++; 
+//			state++; 
 			classConstOffset += 4;
 		}
 		classConstOffset = US.GET4(sysTabBaseAddr);

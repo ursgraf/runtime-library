@@ -3,17 +3,17 @@ package ch.ntb.inf.deep.runtime.mpc5200.driver.can;
 
 public class CANopen {
 	private static final byte SDOrObject1Byte = 0x40;
-	private static final byte SDOrObject2Byte = 0x40;
-	private static final byte SDOrObject4Byte = 0x40;
+//	private static final byte SDOrObject2Byte = 0x40;
+//	private static final byte SDOrObject4Byte = 0x40;
 	private static final byte SDOwObject1Byte = 0x2f;
 	private static final byte SDOwObject2Byte = 0x2b;
 	private static final byte SDOwObject4Byte = 0x23;
 	
 	private static final short cs_SDO_COB = 0x600;	// COB-ID for client server SDO
 	private static final short sc_SDO_COB = 0x580;	// COB-ID for server client SDO
-	private static final short PDO1_COB = 0x180;	// COB-ID for TxPDO 1
+//	private static final short PDO1_COB = 0x180;	// COB-ID for TxPDO 1
 	private static final short bootUpMsg = 0x700;	// COB-ID for boot up message
-	private static final short sync_COB = 0x080;	// COB-ID for synch signal
+//	private static final short sync_COB = 0x080;	// COB-ID for synch signal
 	private static final int txBufNo = 0;
 	
 	private static byte[] data = new byte[8];

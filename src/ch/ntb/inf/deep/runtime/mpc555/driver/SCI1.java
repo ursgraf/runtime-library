@@ -98,6 +98,7 @@ public class SCI1 extends Interrupt {
 	private static ByteFifo txQueue;
 	private static boolean txDone;
 
+	@SuppressWarnings("unused")
 	private static int intCtr;
 
 	/* (non-Javadoc)

@@ -64,6 +64,7 @@ public class FFS implements ntbMpc555HB {
 	static File[] fileTab; 	//  table of files
 	static boolean[] freeBlocks;	// free and erased blocks in flash 
 	static boolean[] usedBlocks; 	// blocks containing files
+	@SuppressWarnings("unused")
 	private static boolean fileDirExists; 	// indicates whether file system exists in flash and could be read 
 
 	/**

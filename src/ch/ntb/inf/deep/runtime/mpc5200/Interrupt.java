@@ -35,7 +35,6 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-import ch.ntb.inf.deep.runtime.mpc5200.driver.can.CAN1;
 import ch.ntb.inf.deep.runtime.ppc.PPCException;
 import ch.ntb.inf.deep.unsafe.US;
 
@@ -66,8 +65,9 @@ public class Interrupt extends PPCException implements phyCoreMpc5200tiny {
 	}
 
 	static void interrupt() {
-		int status = US.GET4(ICTLPISAR);
-		int intNr = status;	// get the
+//		int status = US.GET4(ICTLPISAR);
+		US.GET4(ICTLPISAR);
+//		int intNr = status;	// get the
 		perInts[17].action();
 		nofInterrupts++;
 //		int pendInt = US.GET2(SIPEND);

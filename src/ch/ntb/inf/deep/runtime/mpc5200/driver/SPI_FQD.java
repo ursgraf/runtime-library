@@ -39,7 +39,7 @@ import ch.ntb.inf.deep.unsafe.US;
 
 public class SPI_FQD implements phyCoreMpc5200tiny{
 	
-	private static final int FIFO_LENGTH = 512;
+//	private static final int FIFO_LENGTH = 512;
 	private static final int PSCBase = PSC1Base;
 	
 	private static short fqdCount0;

@@ -73,6 +73,7 @@ public class Heap implements IdeepCompilerConstants {
 	public static int sysTabBaseAddr;
 	
 	// called by new	
+	@SuppressWarnings("unused")
 	private static int newObject(int ref) {	
 		int size = US.GET4(ref) + 8;
 		int blockAddr = getBlock(size);
@@ -114,6 +115,7 @@ public class Heap implements IdeepCompilerConstants {
 	}
 	
 	// called by multianewarray	
+	@SuppressWarnings("unused")
 	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3) {
 		int addr;
 		if (nofDim > 3 || nofDim < 2) US.HALT(20);

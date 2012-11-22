@@ -63,10 +63,13 @@ public class Robi2 extends Task {
 
 	/* General definitions */
 	/*****************************************************************************/
+	@SuppressWarnings("unused")
 	private static final boolean TPUA = true;				// use TPUA
 	private static final boolean TPUB = false;				// use TPUB
+	@SuppressWarnings("unused")
 	private static final boolean QADCA = true;				// use QADCA
 	private static final boolean QADCB = false;				// use QADCB
+	@SuppressWarnings("unused")
 	private static final boolean INPUT = false;				// use pin as input
 	private static final boolean OUTPUT = true;				// use pin as output
 	private static final boolean Mot_BridgeMode_SM = true;	// use H-bridge in signed magnitude mode
@@ -76,8 +79,10 @@ public class Robi2 extends Task {
 	private static final int Mot1_PWMA_Pin = 0;				// Motor 1, PWM channel A
 	private static final int Mot1_PWMB_Pin = 1;				// Motor 1, PWM channel B
 	private static final int Mot1_EncA_Pin = 2;				// Motor 1, Encoder channel A
+	@SuppressWarnings("unused")
 	private static final int Mot1_EncB_Pin = 3;				// Motor 1, Encoder channel B
 	private static final int Mot2_EncA_Pin = 4;				// Motor 2, Encoder channel A
+	@SuppressWarnings("unused")
 	private static final int Mot2_EncB_Pin = 5;				// Motor 2, Encoder channel B
 	private static final int Mot2_PWMA_Pin = 6;				// Motor 2, PWM channel A
 	private static final int Mot2_PWMB_Pin = 7;				// Motor 2, PWM channel B
@@ -103,6 +108,7 @@ public class Robi2 extends Task {
 	
 	/* Private variables */
 	/*****************************************************************************/
+	@SuppressWarnings("unused")
 	private static float s_R = 0, s_L = 0; // traveled distance of each wheel
 	private static float v_R = 0, v_L = 0; // linear speed of each wheel
 	private static short prevPos1 = 0, prevPos2 = 0;
@@ -136,7 +142,7 @@ public class Robi2 extends Task {
 	 */
 	public void action() {
 		
-		/* Odometrie */
+		/* Odometry */
 		short actualPos, deltaPos;
 
 		// calculate exact time increment

@@ -141,7 +141,7 @@ public class EPOS {
 			
 	public static void readStatusword() {
 		CANopen.sendSDO(drive1.driveId, (short)0x6041, (byte)0, 0, 4);
-		byte data[] = CAN2.getMsgBuf(CAN2.rx1BufNo);
+		CAN2.getMsgBuf(CAN2.rx1BufNo);
 		int status = drive1.getStatus();
 		CANopen.printSDOAnswer();
 		System.out.print("status = "); System.out.printHexln(status);

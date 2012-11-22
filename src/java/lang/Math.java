@@ -36,8 +36,6 @@
 package java.lang;
 
 import ch.ntb.inf.deep.lowLevel.LL;
-import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
-import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
  30.06.11	NTB/Urs Graf	ported to deep
@@ -48,7 +46,7 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 public class Math {
-	private static final boolean _$bigEndian = true; // big-endian
+//	private static final boolean _$bigEndian = true; // big-endian
 
 	/**
 	 * do not allow instances.
@@ -72,9 +70,9 @@ public class Math {
 
 	private static final double pio2 = PI / 2, pio4 = PI / 4;
 
-	private static final int dNaN16MSBs = 0x7ff8;
+//	private static final int dNaN16MSBs = 0x7ff8;
 
-	private static double twoPow52 = 1L << 52; // 2^52
+//	private static double twoPow52 = 1L << 52; // 2^52
 
 	private static final int dExpOffset = 0x3ff;
 
@@ -344,10 +342,10 @@ public class Math {
 			cotC10 = -0.0000262619, cotC6 = -0.0021177168;
 
 	private static double cotInPio4(double arg) {
-		final double maxCot = 1.633123935319537E16;
+//		final double maxCot = 1.633123935319537E16;
 
 		if (arg < 1.0E-16)
-			return 1.633123935319537E16; // nach demo
+			return 1.633123935319537E16;
 
 		double arg2 = arg * arg;
 		double res = ((((cotC10 * arg2 + cotC8) * arg2 + cotC6) * arg2 + cotC4)
