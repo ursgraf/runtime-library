@@ -37,11 +37,9 @@ package ch.ntb.inf.deep.runtime.mpc555.driver.ffs;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.Task;
-import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
-// files can be manually uploaded over SCI1, uses interrupt driven SCI driver
+/** files can be manually uploaded over SCI1, uses interrupt driven SCI driver */
 
 public class FileTransfer extends Task {
 	static final int receivingCommands = 0;
@@ -90,7 +88,8 @@ public class FileTransfer extends Task {
 					System.out.print(name);
 					f = FFS.old(name);
 					if (f != null) {
-						System.out.print('\t'); System.out.print(f.length()); System.out.println(" Bytes"); 
+						System.out.print(", len = "); System.out.print(f.length()); System.out.println(" Bytes"); 
+						System.out.print((char)20); // delimiter
 						r = new Rider();
 						r.set(f, 0);
 						byte val = r.readByte();
@@ -98,7 +97,11 @@ public class FileTransfer extends Task {
 							System.out.print(val);
 							val = r.readByte();
 						}
-					} else System.out.println(" does not exist");
+					} else {
+						System.out.println(" does not exist");
+						System.out.print((char)20); // delimiter 
+					}
+					System.out.print((char)20); // delimiter 
 					this.state = receivingCommands;
 				}
 			}				
@@ -119,19 +122,20 @@ public class FileTransfer extends Task {
 						this.subState++;
 						this.i = 0;
 						name = new String(str, 0, this.count);;
-						System.out.print("create file "); System.out.println(name);
-						System.out.print("length "); System.out.print(this.len);System.out.println(" Bytes");
-//						f = new File(name);
-//						r = new Rider();
-//						r.set(f, 0);
+						System.out.print("create file: "); System.out.print(name); 
+						System.out.print(", len = "); System.out.print(this.len); System.out.println("Bytes");
+						f = new File(name);
+						r = new Rider();
+						r.set(f, 0);
 					}
 					break;
 				case 2:
-//					r.writeByte((byte)res); this.i++;
+					r.writeByte((byte)res); this.i++;
 					if (this.i == this.len) {
-//						f.register(); System.out.print(f.name); System.out.println(" created");
+						f.register(); System.out.print(f.name); System.out.println(" registered");
 						this.state = receivingCommands;
 					}
+//					this.state = receivingCommands;
 				}
 			}
 			break;
