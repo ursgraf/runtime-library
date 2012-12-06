@@ -36,86 +36,18 @@
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import ch.ntb.inf.deep.runtime.mpc555.Task;
-import ch.ntb.inf.deep.runtime.mpc555.driver.Robi2;
 
 /**
- * Demo application for the NTB Robi2.
- * The Robi is driving around and avoids collisions
- * with obstacles.
+ * Demo application for the NTB Robi2. The Robi is driving around and avoids
+ * collisions with obstacles.
+ * 
+ * This class serves only as a root class starting the real application. This
+ * has been divided in order to make the demo itself reusable.
  */
-public class Robi2ObstacleDemo extends Task {
-	private static final short threshold = 70;
-	private static final short turnSpeed = 100;
-	private static final short driveSpeed = 60;
-	short state = 0;
-	boolean turnLeft = false;
-	
-	private boolean hasBarrier() {
-		boolean hasBarrier = false;
-		for (int i = 4; i < 7; i++) {
-			if (Robi2.getDistSensorValue(i) > threshold) {
-				hasBarrier = true;
-				turnLeft = false;
-			}
-		}
-		for (short i = 10; i < 13; i++) {
-			if (Robi2.getDistSensorValue(i) > threshold) {
-				hasBarrier = true;
-				turnLeft = true;
-			}
-		}
-		if (Robi2.getDistSensorValue(2) > threshold) {
-				hasBarrier = true;
-				turnLeft = true;
-			}
-		return hasBarrier;
-	}
-	
-	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
-	 */
-	public void action() {
-		switch (state) {
-			case 0: // barrier ahead, turn roboter
-				if (hasBarrier()) {
-					state = 1;
-					Robi2.stop();
-					if(turnLeft) {
-						Robi2.setRightDriveSpeed(-turnSpeed);
-						Robi2.setLeftDriveSpeed(-turnSpeed);
-					} else {
-						Robi2.setRightDriveSpeed(turnSpeed);
-						Robi2.setLeftDriveSpeed(turnSpeed);
-					}
-				}
-				break;
-			case 1: // noc barrier ahead, go straigt forward
-				if (! hasBarrier()) {
-					state = 0;
-					Robi2.stop(); 
-					Robi2.setRightDriveSpeed(-driveSpeed);
-					Robi2.setLeftDriveSpeed(driveSpeed);
-				}
-				break;
-			default: 
-				// should never be reachead
-				state = 0;
-				break;
-		}
-	}
-	
+public class Robi2ObstacleDemo {
 	static {
 		// Task initialization
-		Robi2ObstacleDemo task = new Robi2ObstacleDemo();
-		task.period = 0;
+		Task task = new Robi2ObstacleTask();
 		Task.install(task);
-		
-		// Enable some LEDs
-		for(int i = 0; i < 4; i++ ) {
-			Robi2.setPatternLED(i, 0, true);
-			Robi2.setPatternLED(i, 2, true);
-		}
-		Robi2.setPatternLED(0, 1, true);
-		Robi2.setPatternLED(3, 1, true);
 	}
 }

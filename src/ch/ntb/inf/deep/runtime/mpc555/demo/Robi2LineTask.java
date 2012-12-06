@@ -38,20 +38,31 @@ package ch.ntb.inf.deep.runtime.mpc555.demo;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.Robi2;
 
-
 /**
- * Demo application for the NTB Robi2.
- * Let the Robi following a line on the
+ * Demo application for the NTB Robi2. Let the Robi following a line on the
  * surface.
+ * 
+ * This class initializes the task as needed and carries the driving control. In
+ * order to use it, build a class creating an instance of this class and install
+ * it using Task.install
  */
-public class Robi2LineDemo extends Task {
-	
+public class Robi2LineTask extends Task {
+	public Robi2LineTask() {
+		// Setup the demo task
+		this.period = 0;
+
+		// Initialize some LEDs
+		for (int i = 0; i < 4; i++) {
+			Robi2.setPatternLED(i, 1, true);
+		}
+	}
+
 	private boolean sensors() {
 		boolean isSensor = false;
 		if (Robi2.getDistSensorValue(2) > 250) {
 			isSensor = true;
 		}
-		for (short i=4;i<16;i++) {
+		for (short i = 4; i < 16; i++) {
 			if (Robi2.getDistSensorValue(i) > 250) {
 				isSensor = true;
 			}
@@ -64,10 +75,12 @@ public class Robi2LineDemo extends Task {
 	}
 
 	private boolean rightFloorSensor() {
-		return (Robi2.getDistSensorValue(1) > 550); 
+		return (Robi2.getDistSensorValue(1) > 550);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
 	 */
 	public void action() {
@@ -79,23 +92,11 @@ public class Robi2LineDemo extends Task {
 		} else if (!rightFloorSensor() && !leftFloorSensor()) {
 			Robi2.setRightDriveSpeed(-50);
 			Robi2.setLeftDriveSpeed(-100);
-		} else if(!leftFloorSensor() && rightFloorSensor()){
+		} else if (!leftFloorSensor() && rightFloorSensor()) {
 			Robi2.setRightDriveSpeed(-50);
 			Robi2.setLeftDriveSpeed(-100);
-		}else{
-			Robi2.drive(80);					
-		}
-	}
-	
-	static {
-		// Install the demo task
-		Robi2LineDemo task = new Robi2LineDemo();
-		task.period = 0;
-		Task.install(task);
-		
-		// Initialize some LEDs
-		for(int i = 0; i < 4; i++ ) {
-			Robi2.setPatternLED(i, 1, true);
+		} else {
+			Robi2.drive(80);
 		}
 	}
 }
