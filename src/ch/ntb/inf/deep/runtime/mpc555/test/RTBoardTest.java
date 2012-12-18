@@ -37,6 +37,7 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import java.io.PrintStream;
 
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.DAC7614;
 import ch.ntb.inf.deep.runtime.mpc555.driver.QADC_AIN;
@@ -53,7 +54,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * <strong>Änderungen</strong>
  * 3.5.2011 Roger Millischer: adapted for deep
  */
-public class RTBoardTest extends Task {
+public class RTBoardTest extends Task implements IntbMpc555HB {
 
 	// Enable/Disable tests
 	private static final boolean enableSpiTest = true; 

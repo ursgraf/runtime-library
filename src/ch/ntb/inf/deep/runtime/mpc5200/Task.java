@@ -42,7 +42,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 21.6.12	NTB/Urs Graf	creation
  */
 
-public class Task implements Actionable, Ippc32, IphyCoreMpc5200tiny {
+public class Task implements Actionable, Ippc32 {
 	public static final int maxNofTasks = 32;
 	
 	public static boolean done;	/** previous operation successfully completed */

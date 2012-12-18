@@ -36,7 +36,6 @@
 package ch.ntb.inf.deep.runtime.ppc32;
 
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
-import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
@@ -224,13 +223,13 @@ public class Heap implements IdeepCompilerConstants {
 				}
 			} else {	// get block from list with block size >= 128 Bytes
 				addr = freeBlocks[nofFreeLists - 1];
-				if (addr == 0) while (true) Kernel.blink(5);	// no block in list 
+//				if (addr == 0) while (true) Kernel.blink(5);	// no block in list 
 				int freeBlockSize = US.GET4(addr) & 0xffffff;
 				int prev = addr;
 				while (blockSize > freeBlockSize) {	// search block which is big enough
 					prev = addr;
 					addr = US.GET4(addr + 4);
-					if (addr == 0) while (true) Kernel.blink(5);	// no block left 
+//					if (addr == 0) while (true) Kernel.blink(5);	// no block left 
 					freeBlockSize = US.GET4(addr) & 0xffffff;
 				}
 				// unlink block
