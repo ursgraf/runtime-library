@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
@@ -46,7 +46,7 @@ import ch.ntb.inf.deep.unsafe.US;
 /**
  * constant definitions for QSMCM<br>
  */
-public class QSMCM implements ntbMpc555HB{
+public class QSMCM implements IntbMpc555HB{
 
 	// interrupt levels
 

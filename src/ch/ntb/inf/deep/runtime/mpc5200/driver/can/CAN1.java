@@ -1,10 +1,10 @@
 package ch.ntb.inf.deep.runtime.mpc5200.driver.can;
 
 import ch.ntb.inf.deep.runtime.mpc5200.Interrupt;
-import ch.ntb.inf.deep.runtime.mpc5200.phyCoreMpc5200tiny;
+import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
 import ch.ntb.inf.deep.unsafe.US;
 
-public class CAN1 extends Interrupt implements phyCoreMpc5200tiny {
+public class CAN1 extends Interrupt implements IphyCoreMpc5200tiny {
 	// supports only standard frame format (11Bit itentifier)
 	
 	private static final int maxNofNodes = 16;

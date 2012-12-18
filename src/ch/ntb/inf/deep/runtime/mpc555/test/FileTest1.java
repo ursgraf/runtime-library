@@ -37,7 +37,7 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 import ch.ntb.inf.deep.runtime.mpc555.driver.ffs.AM29LV160;
@@ -50,7 +50,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 3.5.11	NTB/GRAU	creation
  */
 
-public class FileTest1 implements ntbMpc555HB {
+public class FileTest1 implements IntbMpc555HB {
 	
 	static void createFile1() {
 		File f1 = new File("test1.txt");

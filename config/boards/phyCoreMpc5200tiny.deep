@@ -7,7 +7,7 @@ meta {
 
 board phyCoreMpc5200tiny {
 	description = "Phytec phyCORE-MPC5200tiny";
-	cputype = MPC5200;
+	cputype = mpc5200;
 	
 	sysconst {
 		extRamBase   = 0x0;						        # starting at 0x0

@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver.ffs;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*
@@ -48,7 +48,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * Works if code runs out of RAM or flash
  * Sets aside part of the onboard flash for a file system
  */
-public class FFS implements ntbMpc555HB {
+public class FFS implements IntbMpc555HB {
 	private static final boolean dbg = false;
 	private static final int devAddr = extFlashBase; // external flash address, 16MB 
 	private static final int fsOffset = 0x200000; // start of file system in flash, 2MB 

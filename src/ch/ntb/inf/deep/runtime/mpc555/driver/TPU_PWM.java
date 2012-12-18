@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
@@ -51,7 +51,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * All 32 channels (2 x 16) can be used for this. All time data have to be a multiple of the
  * TPU time base (806 ns).
  */
-public class TPU_PWM implements ntbMpc555HB{
+public class TPU_PWM implements IntbMpc555HB{
 
 
 	/** TPU time base in nano seconds [ns]. */

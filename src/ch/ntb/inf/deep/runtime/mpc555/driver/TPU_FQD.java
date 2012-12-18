@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
@@ -59,7 +59,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * Bei jedem Methodenaufruf kann die gewünschte TPU mittels dem Parameter
  * <code>tpuA</code> gewählt werden.
  */
-public class TPU_FQD implements ntbMpc555HB{
+public class TPU_FQD implements IntbMpc555HB{
 
 
 	/**

@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
@@ -44,7 +44,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * All 16 channels of an ADC were converted every 1 ms and could be read with the method
  * <code>read(...)</code>. Allowed channel numbers are 0..3 and 48..59.
  */
-public class QADC_AIN implements ntbMpc555HB {
+public class QADC_AIN implements IntbMpc555HB {
 
 	private static final int ADDR_OFFSET = 32;
 	private static final int CCW_INIT = 0x00C0;

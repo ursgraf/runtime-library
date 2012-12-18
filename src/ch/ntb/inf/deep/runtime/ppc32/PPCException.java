@@ -33,7 +33,7 @@
  *
  */
 
-package ch.ntb.inf.deep.runtime.ppc;
+package ch.ntb.inf.deep.runtime.ppc32;
 
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation

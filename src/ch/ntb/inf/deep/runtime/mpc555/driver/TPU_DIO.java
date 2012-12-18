@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
@@ -48,7 +48,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * Each 16 channels of both time processing units can be used as
  * general purpose in- or output.
  */
-public class TPU_DIO implements ntbMpc555HB {
+public class TPU_DIO implements IntbMpc555HB {
 
 	/**
 	 * Initialize an channel as a general purpose in- our output. 

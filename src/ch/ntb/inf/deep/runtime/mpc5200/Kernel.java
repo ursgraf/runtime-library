@@ -35,13 +35,14 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200;
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
-import ch.ntb.inf.deep.unsafe.*;
+import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
+import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
  * 21.6.12	NTB/Urs Graf		creation
  */
 
-public class Kernel implements phyCoreMpc5200tiny, IdeepCompilerConstants {
+public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
 	static int loopAddr;
 	static int cmdAddr;

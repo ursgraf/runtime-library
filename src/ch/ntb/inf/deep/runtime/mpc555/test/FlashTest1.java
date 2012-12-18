@@ -37,7 +37,7 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 import ch.ntb.inf.deep.runtime.mpc555.driver.ffs.AM29LV160;
 import ch.ntb.inf.deep.unsafe.US;
@@ -46,7 +46,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 2.5.11	NTB/GRAU	creation
  */
 
-public class FlashTest1 implements ntbMpc555HB {
+public class FlashTest1 implements IntbMpc555HB {
 	
 	static final int flashAddr = extFlashBase + 0x20008;
 	static {

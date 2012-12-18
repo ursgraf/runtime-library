@@ -7,7 +7,7 @@ meta {
 
 board ntbMpc555HB {
 	description = "NTB MPC555 Headerboard";
-	cputype = MPC555;
+	cputype = mpc555;
 	
 	sysconst {
 		extRamSize   = 0x200000;						# 2M external RAM

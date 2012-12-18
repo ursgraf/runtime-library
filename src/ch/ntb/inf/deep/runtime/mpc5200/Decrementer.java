@@ -35,14 +35,15 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-import ch.ntb.inf.deep.runtime.ppc.PPCException;
+import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
+import ch.ntb.inf.deep.runtime.ppc32.PPCException;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*changes:
  * 23.8.2012	NTB/Urs Graf	creation
  */
 
-public class Decrementer extends PPCException implements phyCoreMpc5200tiny {
+public class Decrementer extends PPCException implements Ippc32, IphyCoreMpc5200tiny {
 	public static int nofDecExceptions;
 	public static Decrementer dec = new Decrementer();
 	public int decPeriodUs = -1; 	// use longest period per default

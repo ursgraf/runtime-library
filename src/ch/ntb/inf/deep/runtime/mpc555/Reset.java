@@ -35,14 +35,15 @@
 
 package ch.ntb.inf.deep.runtime.mpc555;
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
-import ch.ntb.inf.deep.runtime.ppc.PPCException;
-import ch.ntb.inf.deep.unsafe.*;
+import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
+import ch.ntb.inf.deep.runtime.ppc32.PPCException;
+import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
  * 11.11.10	NTB/GRAU	creation
  */
 
-class Reset extends PPCException implements ntbMpc555HB, IdeepCompilerConstants {
+class Reset extends PPCException implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 	
 	static void reset() {
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);

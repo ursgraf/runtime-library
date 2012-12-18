@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 
@@ -47,7 +47,7 @@ import ch.ntb.inf.deep.unsafe.US;
 * Driver to use the MPWM sub module as digital I/O.
 * 
 */
-public class MPWMSM_DIO implements ntbMpc555HB {
+public class MPWMSM_DIO implements IntbMpc555HB {
 
 	/**
 	 * Initialize an MPWM pin as digital I/O.

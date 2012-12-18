@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
@@ -67,7 +67,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 14</em> und im Haltstep-Modus im Bereich <em>0 <= Startpin <= 12</em> gewählt werden.
  * 
  */
-public class StepMotor implements ntbMpc555HB {
+public class StepMotor implements IntbMpc555HB {
 	private static int openSteps;
 
 	/**

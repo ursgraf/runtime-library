@@ -37,7 +37,7 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* CHANGES:
@@ -66,7 +66,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * <strong>IMPORTANT:</strong> Connect AGnd to Gnd!
  * 
  */
-public class HLC1395Pulsed extends Task implements ntbMpc555HB {
+public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 
 	private static final byte maxNofSensors = 16, maxAnalogInPortNr = 59;
 	private static final HLC1395Pulsed thisSngTask; // Singleton DistSense Task

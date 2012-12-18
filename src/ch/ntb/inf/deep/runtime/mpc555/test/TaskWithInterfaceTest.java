@@ -36,10 +36,10 @@
 package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import ch.ntb.inf.deep.runtime.mpc555.Task;
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 
-public class TaskWithInterfaceTest extends Task implements ntbMpc555HB {
+public class TaskWithInterfaceTest extends Task implements IntbMpc555HB {
 	
 	public void action() {
 		MPIOSM_DIO.set(12, !MPIOSM_DIO.get(12));

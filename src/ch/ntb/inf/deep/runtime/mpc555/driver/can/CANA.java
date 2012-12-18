@@ -1,9 +1,9 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver.can;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
-public class CANA implements ntbMpc555HB {
+public class CANA implements IntbMpc555HB {
 	// EPOS unterstützt nur Standard Frame Format (11Bit Itentifier)
 	// Message buffer 0 für transmit
 	// Message buffer 1 für receive

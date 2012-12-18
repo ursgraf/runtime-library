@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-import ch.ntb.inf.deep.runtime.ppc.PPCException;
+import ch.ntb.inf.deep.runtime.ppc32.PPCException;
 
 /*changes:
  * 23.8.2012	NTB/Urs Graf	creation

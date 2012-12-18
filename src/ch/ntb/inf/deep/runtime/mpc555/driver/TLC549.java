@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 //© NTB/UG 
 /*changes:
@@ -54,7 +54,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * darf keine weitere extrene Peripherie angeschlossen werden, welche ebenfalls
  * die QSPI benötigt.
  */
-public class TLC549 implements ntbMpc555HB {
+public class TLC549 implements IntbMpc555HB {
 
 
 

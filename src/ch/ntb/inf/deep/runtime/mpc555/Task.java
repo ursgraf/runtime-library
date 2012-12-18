@@ -35,6 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555;
 
+import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
@@ -42,7 +43,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 20.3.12	NTB/Urs Graf	Interface Actionable added
  */
 
-public class Task implements Actionable, ntbMpc555HB {
+public class Task implements Actionable, Ippc32, IntbMpc555HB {
 	public static final int maxNofTasks = 32;
 	
 	public static boolean done;	/** previous operation successfully completed */

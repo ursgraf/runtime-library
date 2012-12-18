@@ -35,13 +35,13 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
  * Driver for the MPWM module for generating PWM signals
  */
-public class MPWMSM_PWM implements ntbMpc555HB {
+public class MPWMSM_PWM implements IntbMpc555HB {
 
 	static public final int TIME_BASE = 400;	// time base in ns
 	

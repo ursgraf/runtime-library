@@ -33,7 +33,7 @@
  *
  */
 
-package ch.ntb.inf.deep.runtime.ppc;
+package ch.ntb.inf.deep.runtime.ppc32;
 
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;

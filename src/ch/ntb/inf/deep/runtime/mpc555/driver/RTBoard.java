@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
@@ -52,7 +52,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 18.02.2010 M. Zueger: Treiber fuer DAC und ADC angepasst und direkt integriert
  */
 
-public class RTBoard implements ntbMpc555HB {
+public class RTBoard implements IntbMpc555HB {
   
   private static final int ADDR_OFFSET = 64;
   private static final int CCW_INIT = 0x0000;

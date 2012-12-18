@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* CHANGES:
@@ -47,7 +47,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * PCS0 is used.
  * 
  */
-public class MAX512 implements ntbMpc555HB {
+public class MAX512 implements IntbMpc555HB {
 	
 	public final static int chnA = 0;
 	public final static int chnB = 1;

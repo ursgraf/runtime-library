@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* Changes:
@@ -60,7 +60,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * For further informations please read the corresponding documentation on the <i>NTB
  * Infoportal</i>.
  */
-public class MPIOSM_DIO implements ntbMpc555HB {
+public class MPIOSM_DIO implements IntbMpc555HB {
 
 	public static final boolean OUTPUT = true;
 	public static final boolean INPUT = false;

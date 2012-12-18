@@ -35,14 +35,15 @@
 
 package ch.ntb.inf.deep.runtime.mpc555;
 
-import ch.ntb.inf.deep.runtime.ppc.PPCException;
+import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
+import ch.ntb.inf.deep.runtime.ppc32.PPCException;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation
  */
 
-public class Decrementer extends PPCException implements ntbMpc555HB {
+public class Decrementer extends PPCException implements Ippc32, IntbMpc555HB {
 	public static int nofDecExceptions;
 	public static Decrementer dec = new Decrementer();
 	public int decPeriodUs = -1; 	// use longest period per default

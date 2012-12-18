@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* Changes:
@@ -47,7 +47,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * Driver for the digital analog converter DAC7614.
  * PCS0 and PCS1 are used.
  */
-public class DAC7614 implements ntbMpc555HB {
+public class DAC7614 implements IntbMpc555HB {
 
 	/**
 	 * Initialize the QSPI Port and set the output values of the DAC's to zero.

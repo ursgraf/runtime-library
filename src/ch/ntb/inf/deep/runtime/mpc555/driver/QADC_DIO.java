@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
@@ -48,7 +48,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * <strong>IMPORTANT</strong>: Don't initialize the Ports PQB (PQB0..PQB7 respectively
  * AN0..AN3 and AN48..AN51) as output, because these are input ports only!
  */
-public class QADC_DIO implements ntbMpc555HB{
+public class QADC_DIO implements IntbMpc555HB{
 
 	private static int getChannel(int channel){
 		if(channel>15) channel -= 44;

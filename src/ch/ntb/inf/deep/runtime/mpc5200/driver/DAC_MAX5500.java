@@ -34,10 +34,10 @@
  */
 package ch.ntb.inf.deep.runtime.mpc5200.driver;
 
-import ch.ntb.inf.deep.runtime.mpc5200.phyCoreMpc5200tiny;
+import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
 import ch.ntb.inf.deep.unsafe.US;
 
-public class DAC_MAX5500 implements phyCoreMpc5200tiny{
+public class DAC_MAX5500 implements IphyCoreMpc5200tiny{
 
 	private static final int FIFO_LENGTH = 512;
 	private static final int PSCBase = PSC6Base;

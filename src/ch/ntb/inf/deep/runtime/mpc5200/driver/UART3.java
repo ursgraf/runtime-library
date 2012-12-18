@@ -1,9 +1,9 @@
 package ch.ntb.inf.deep.runtime.mpc5200.driver;
 
-import ch.ntb.inf.deep.runtime.mpc5200.phyCoreMpc5200tiny;
+import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
 import ch.ntb.inf.deep.unsafe.US;
 
-public class UART3 implements phyCoreMpc5200tiny{
+public class UART3 implements IphyCoreMpc5200tiny{
 	public static UART3OutputStream out;
 
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;

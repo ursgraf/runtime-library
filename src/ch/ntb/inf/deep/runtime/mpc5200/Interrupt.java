@@ -35,13 +35,13 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-import ch.ntb.inf.deep.runtime.ppc.PPCException;
+import ch.ntb.inf.deep.runtime.ppc32.PPCException;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
  * 3.9.2012	NTB/GRAU	creation
  */
-public class Interrupt extends PPCException implements phyCoreMpc5200tiny {
+public class Interrupt extends PPCException implements IphyCoreMpc5200tiny {
 
 	/**
 	 * Each interrupt request, which cannot be handled by a registered interrupt handler

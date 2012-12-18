@@ -121,7 +121,7 @@ operatingsystem ntbSTS {
     }
 	
     heap {
-        class = "ch/ntb/inf/deep/runtime/ppc/Heap";
+        class = "ch/ntb/inf/deep/runtime/ppc32/Heap";
         method newMultiDimArray  {
                 attributes = new;
                 id = 0x204;
@@ -141,13 +141,13 @@ operatingsystem ntbSTS {
     }
 	        
     exceptionbaseclass {
-    	class = "ch/ntb/inf/deep/runtime/ppc/PPCException";
+    	class = "ch/ntb/inf/deep/runtime/ppc32/PPCException";
     	condition = cpuarch:ppc32;
     }
     
 	exception {
     	class = "ch/ntb/inf/deep/runtime/mpc555/Reset";
-    	condition = cputype:MPC555;
+    	condition = cputype:mpc555;
     	method reset {
     		attributes = exchnd;
 			offset = 0x100;
@@ -159,7 +159,7 @@ operatingsystem ntbSTS {
     
     exception {
     	class = "ch/ntb/inf/deep/runtime/mpc5200/Reset";
-    	condition = cputype:MPC5200;
+    	condition = cputype:mpc5200;
     	method reset {
     		attributes = exchnd;
 			offset = 0x100;
@@ -171,7 +171,7 @@ operatingsystem ntbSTS {
     
 	exception {
     	class = "ch/ntb/inf/deep/runtime/mpc555/Interrupt";
-    	condition = cputype:MPC555;
+    	condition = cputype:mpc555;
     	method interrupt {
     		attributes = exchnd;
 			offset = 0x500;
@@ -180,7 +180,7 @@ operatingsystem ntbSTS {
     
     exception {
     	class = "ch/ntb/inf/deep/runtime/mpc5200/Interrupt";
-    	condition = cputype:MPC5200;
+    	condition = cputype:mpc5200;
     	method interrupt {
     		attributes = exchnd;
 			offset = 0x500;
@@ -189,7 +189,7 @@ operatingsystem ntbSTS {
     
     exception {
     	class = "ch/ntb/inf/deep/runtime/mpc5200/ProgramExc";
-    	condition = cputype:MPC5200;
+    	condition = cputype:mpc5200;
 		method programExc {
     		attributes = exchnd;
     		offset = 0x700;
@@ -201,7 +201,7 @@ operatingsystem ntbSTS {
 	
 	exception {
     	class = "ch/ntb/inf/deep/runtime/mpc5200/FloatingPointUnavailable";
-    	condition = cputype:MPC5200;
+    	condition = cputype:mpc5200;
 		method floatingPointUnavailable {
     		attributes = exchnd;
     		offset = 0x800;
@@ -213,7 +213,7 @@ operatingsystem ntbSTS {
 	
 	exception {
 		class = "ch/ntb/inf/deep/runtime/mpc555/Decrementer";
-		condition = cputype:MPC555;
+		condition = cputype:mpc555;
 		method decrementer {
 			attributes = exchnd;
 			offset = 0x900;
@@ -222,7 +222,7 @@ operatingsystem ntbSTS {
 	
 	exception {
 		class = "ch/ntb/inf/deep/runtime/mpc5200/Decrementer";
-		condition = cputype:MPC5200;
+		condition = cputype:mpc5200;
 		method decrementer {
 			attributes = exchnd;
 			offset = 0x900;
@@ -231,7 +231,7 @@ operatingsystem ntbSTS {
 	
     exception {
     	class = "ch/ntb/inf/deep/runtime/mpc555/SystemCall";
-    	condition = cputype:MPC555;
+    	condition = cputype:mpc555;
 		method systemCall {
     		attributes = exchnd;
     		offset = 0xc00;
@@ -243,7 +243,7 @@ operatingsystem ntbSTS {
 	
 	exception {
     	class = "ch/ntb/inf/deep/runtime/mpc5200/SystemCall";
-    	condition = cputype:MPC5200;
+    	condition = cputype:mpc5200;
 		method systemCall {
     		attributes = exchnd;
     		offset = 0xc00;
@@ -255,12 +255,12 @@ operatingsystem ntbSTS {
 
 	kernel {
 		class = "ch/ntb/inf/deep/runtime/mpc555/Kernel";
-		condition = cputype:MPC555;
+		condition = cputype:mpc555;
 	}
 	
 	kernel {
 		class = "ch/ntb/inf/deep/runtime/mpc5200/Kernel";
-		condition = cputype:MPC5200;
+		condition = cputype:mpc5200;
 	}
 
 }

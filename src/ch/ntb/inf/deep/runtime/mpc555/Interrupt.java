@@ -35,13 +35,13 @@
 
 package ch.ntb.inf.deep.runtime.mpc555;
 
-import ch.ntb.inf.deep.runtime.ppc.PPCException;
+import ch.ntb.inf.deep.runtime.ppc32.PPCException;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
  * 25.11.10	NTB/GRAU	creation
  */
-public class Interrupt extends PPCException implements ntbMpc555HB {
+public class Interrupt extends PPCException implements IntbMpc555HB {
 
 	/**
 	 * Each interrupt request, which cannot be handled by a registered interrupt handler

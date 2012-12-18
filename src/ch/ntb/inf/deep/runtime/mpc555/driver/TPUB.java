@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*
@@ -49,7 +49,7 @@ import ch.ntb.inf.deep.unsafe.US;
 /**
  * Driver for the TPU B.
  */
-public class TPUB implements ntbMpc555HB {
+public class TPUB implements IntbMpc555HB {
 
 	/**
 	 * Returns the TCR1 cycle time.

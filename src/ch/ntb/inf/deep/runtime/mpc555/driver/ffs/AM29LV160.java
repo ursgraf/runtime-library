@@ -35,7 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver.ffs;
 
-import ch.ntb.inf.deep.runtime.mpc555.ntbMpc555HB;
+import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /*
@@ -49,7 +49,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * Code of procedures are moved into ram space to be able to run out of flash.
  * Single bits can be written, make sure not to change a '0' to a '1'
  */
-public class AM29LV160 implements ntbMpc555HB {
+public class AM29LV160 implements IntbMpc555HB {
 
 	static final int devAddr = extFlashBase; 	// external flash address, 16MB 
 	
