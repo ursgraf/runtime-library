@@ -35,6 +35,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200;
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
+import ch.ntb.inf.deep.runtime.ppc32.Heap;
 import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
 import ch.ntb.inf.deep.unsafe.US;
 
@@ -126,7 +127,6 @@ public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstan
 //		int state = 0;
 		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr); 
 		while (true) {
-//			blink(state);
 			// get addresses of classes from system table
 			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);
 			if (constBlkBase == 0) break;
@@ -146,6 +146,7 @@ public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstan
 			classConstOffset += 4;
 		}
 		classConstOffset = US.GET4(sysTabBaseAddr);
+		Heap.sysTabBaseAddr = sysTabBaseAddr;
 		while (true) {
 			// get addresses of classes from system table
 			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);

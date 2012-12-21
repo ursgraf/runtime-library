@@ -37,8 +37,8 @@ package ch.ntb.inf.deep.runtime.mpc5200.test;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc5200.Decrementer;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
+import ch.ntb.inf.deep.runtime.ppc32.Decrementer;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:

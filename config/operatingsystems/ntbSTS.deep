@@ -212,17 +212,7 @@ operatingsystem ntbSTS {
 	}
 	
 	exception {
-		class = "ch/ntb/inf/deep/runtime/mpc555/Decrementer";
-		condition = cputype:mpc555;
-		method decrementer {
-			attributes = exchnd;
-			offset = 0x900;
-		}
-	}
-	
-	exception {
-		class = "ch/ntb/inf/deep/runtime/mpc5200/Decrementer";
-		condition = cputype:mpc5200;
+		class = "ch/ntb/inf/deep/runtime/ppc32/Decrementer";
 		method decrementer {
 			attributes = exchnd;
 			offset = 0x900;

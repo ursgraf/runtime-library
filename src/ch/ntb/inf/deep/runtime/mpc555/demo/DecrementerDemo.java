@@ -36,8 +36,8 @@
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
-import ch.ntb.inf.deep.runtime.mpc555.Decrementer;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.ppc32.Decrementer;
 
 /* changes:
  * 22.02.11 NTB/Martin Züger	OutT replaced by System.out
