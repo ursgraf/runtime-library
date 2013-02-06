@@ -129,6 +129,25 @@ public class UART3 implements IphyCoreMpc5200tiny{
 		return FIFO_LENGTH - US.GET2(PSC3Base + PSCTFNUM);
 	}
 
+	/**
+	 * Returns the number of bytes available in the receive fifo.
+	 * 
+	 * @return number of bytes in the receive fifo.
+	 */
+	public static int availToRead() {
+		return US.GET2(PSC3Base + PSCRFNUM);
+	}
+
+	/**
+	 * Reads one byte from the receive fifo. A call of
+	 * this method is not blocking!
+	 * 
+	 * @return byte read.
+	 */
+	public static byte read() {
+		return US.GET1(PSC3Base + PSCRxBuf);
+	}
+	
 	static {
 		out = new UART3OutputStream();
 	}
