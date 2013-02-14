@@ -37,9 +37,9 @@ package ch.ntb.inf.deep.runtime.mpc555.driver.ffs;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.Task;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
-/** files can be manually uploaded over SCI1, uses interrupt driven SCI driver */
+/** files can be manually uploaded over SCI2, uses interrupt driven SCI driver */
 
 public class FileTransfer extends Task {
 	static final int receivingCommands = 0;
@@ -51,7 +51,7 @@ public class FileTransfer extends Task {
 	static Rider r;
 	
 	int state = receivingCommands;
-	int subState, count, field, len, i;
+	int subState, count, len, i;
 
 	void sendFileDir () {
 		File f;
@@ -69,8 +69,8 @@ public class FileTransfer extends Task {
 		char ch; int res; String name;
 		switch (this.state) {
 		case receivingCommands:
-			if (SCI1.availToRead() > 0) {
-				res = SCI1.read();
+			if (SCI2.availToRead() > 0) {
+				res = SCI2.read();
 				ch = (char)res;
 				if (ch == 'g') sendFileDir();
 				if (ch == 'a') {FFS.formatAll(); System.out.println("ffs formated"); System.out.println();}
@@ -79,46 +79,45 @@ public class FileTransfer extends Task {
 			}
 			break;
 		case sendingFile:
-			if (SCI1.availToRead() > 0) {
-				res = SCI1.read();
+			if (SCI2.availToRead() > 0) {
+				res = SCI2.read();
 				ch = (char)res;
 				if (ch != 0) {str[this.count] = ch; this.count++;}
 				else {
 					name = new String(str, 0, this.count);
 					System.out.print(name);
+					System.out.print('\0');
 					f = FFS.old(name);
 					if (f != null) {
-						System.out.print(", len = "); System.out.print(f.length()); System.out.println(" Bytes"); 
-						System.out.print((char)20); // delimiter
+						System.out.print(f.length()); 
+						System.out.print(' ');
 						r = new Rider();
 						r.set(f, 0);
 						byte val = r.readByte();
 						while (!r.eof) {
-							System.out.print(val);
+							System.out.print((char)val);
 							val = r.readByte();
 						}
-					} else {
-						System.out.println(" does not exist");
-						System.out.print((char)20); // delimiter 
+					} else { // file does not exist
+						System.out.print(-1); 
+						System.out.print(' ');
 					}
-					System.out.print((char)20); // delimiter 
 					this.state = receivingCommands;
 				}
 			}				
 			break;
 		case receivingFile:
-			if (SCI1.availToRead() > 0) {
-				res = SCI1.read();
+			if (SCI2.availToRead() > 0) {
+				res = SCI2.read();
 				ch = (char)res;
 				switch (subState) {
 				case 0:
 					if (ch != 0) {str[this.count] = ch; this.count++;}
-					else {this.subState++; this.field = 0; this.len = 0;}
+					else if (count > 0) {this.subState++; this.len = 0;}
 					break;	
 				case 1:
 					if (ch != ' ') {this.len = ch - '0' + this.len * 10; }
-					this.field++;		
-					if (this.field == fieldLen) {
+					else {
 						this.subState++;
 						this.i = 0;
 						name = new String(str, 0, this.count);;
@@ -135,7 +134,6 @@ public class FileTransfer extends Task {
 						f.register(); System.out.print(f.name); System.out.println(" registered");
 						this.state = receivingCommands;
 					}
-//					this.state = receivingCommands;
 				}
 			}
 			break;
@@ -143,8 +141,8 @@ public class FileTransfer extends Task {
 	}
 
 	static {
-		SCI1.start(9600, SCI1.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI1.out);
+		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
+		System.out = new PrintStream(SCI2.out);
 		System.out.println("started");
 		Task t = new FileTransfer(); 
 		Task.install(t);

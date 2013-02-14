@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555;
 
-// Auto generated file (2012-12-18 13:51:21)
+// Auto generated file (2013-02-14 08:49:58)
 
 public interface IntbMpc555HB {
 
@@ -15,8 +15,8 @@ public interface IntbMpc555HB {
 	public static final int CMFB_BaseAddr = 0x40000;
 	public static final int CMFB_Size = 0x30000;
 	public static final int excpCodeBase = 0x0;
-	public static final int excpCodeSize = 0x2000;
-	public static final int sysTabBaseAddr = 0x2000;
+	public static final int excpCodeSize = 0x4000;
+	public static final int sysTabBaseAddr = 0x4000;
 	public static final int stackSize = 0x2000;
 
 	// System constants of board ntbMpc555HB

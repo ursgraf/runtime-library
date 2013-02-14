@@ -2,7 +2,7 @@
 
 meta {
 	version = "2012-07-04";
-	description = "Bord description file for Phytec phyCORE-MPC5200tiny";
+	description = "Board description file for Phytec phyCORE-MPC5200tiny";
 }
 
 board phyCoreMpc5200tiny {
