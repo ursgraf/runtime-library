@@ -5,6 +5,7 @@ import ch.ntb.inf.deep.unsafe.US;
 
 public class UART3 implements IphyCoreMpc5200tiny{
 	public static UART3OutputStream out;
+	public static UART3InputStream in;
 
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
 
@@ -148,7 +149,66 @@ public class UART3 implements IphyCoreMpc5200tiny{
 		return US.GET1(PSC3Base + PSCRxBuf);
 	}
 	
+	/**
+	 * Reads the given number of bytes from the UART3. A call of
+	 * this method is not blocking!
+	 * 
+	 * @param b
+	 *            Byte Array to write the received data.
+	 * @param off
+	 *            Offset in the array to start writing the data.
+	 * @param len
+	 *            Length (number of bytes) to read.
+	 * @return the number of bytes read. 0 if there were no data
+	 *            available to read or if the given number of bytes
+	 *            was zero (len == 0).
+	 *            {@link #LENGTH_NEG_ERR} if the given number of
+	 *            bytes was negative (len < 0).
+	 *            {@link #OFFSET_NEG_ERR} if the given offset was
+	 *            negative (off < 0).
+	 *            {@link #NULL_POINTER_ERR} if the array reference
+	 *            was null (b == null).
+	 */
+	public static int read(byte[] b, int off, int len) {
+		if (b == null)
+			return NULL_POINTER_ERR;
+		if (len < 0)
+			return LENGTH_NEG_ERR;
+		if (len == 0)
+			return 0;
+		if (off < 0)
+			return OFFSET_NEG_ERR;
+		int bufferLen = availToRead();
+		if (len > bufferLen)
+			len = bufferLen;
+		if (len > b.length)
+			len = b.length;
+		if (len + off > b.length)
+			len = b.length - off;
+		for (int i = 0; i < len; i++) {
+			b[off + i] = read();
+		}
+		return len;
+	}
+
+	/**
+	 * Reads the given number of bytes from the UART3. A call of
+	 * this method is not blocking!
+	 * 
+	 * @param b
+	 *            Byte Array to write the received data.
+	 * @return the number of bytes read. 0 if there were no data
+	 *            available to read or if the length of the array
+	 *            was zero (b.length == 0).
+	 *            {@link #NULL_POINTER_ERR} if the array reference
+	 *            was null (b == null).
+	 */
+	public static int read(byte[] b) {
+		return read(b, 0, b.length);
+	}
+	
 	static {
 		out = new UART3OutputStream();
+		in = new UART3InputStream();
 	}
 }
