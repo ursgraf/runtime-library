@@ -2,7 +2,7 @@
 
 meta {
 	version = "2012-11-26";
-	description = "Despription file for the NTB deep simple tasking system";
+	description = "Description file for the NTB deep simple tasking system";
 }
 
 operatingsystem ntbSTS {

@@ -23,7 +23,7 @@ cpu mpc555 {
 		CMFB_Size = 0x30000;							# Internal Flash B Size (192 KiB)
 		
 		excpCodeBase = IMB;								# Base address for exception code
-		excpCodeSize = 0x2000;							# Exception code size
+		excpCodeSize = 0x4000;							# Exception code size
 		
 		sysTabBaseAddr = IMB + excpCodeSize;			# Place system table behind exception code
 		
