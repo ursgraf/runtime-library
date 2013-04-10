@@ -180,7 +180,7 @@ public class Heap implements IdeepCompilerConstants {
 	public static int newstring(int ref, int len) {
 		int size = len + 8;
 		int blockAddr = getBlock(size);
-		US.PUT4(blockAddr, 0x80810000);	// set mark and array bit, set primitive array bit
+		US.PUT4(blockAddr, 0x80000000 | size);	// set mark bit and size, clear array bit and primitive array bit
 		US.PUT4(blockAddr + 4, ref);	// write tag
 		ref = blockAddr + 8;
 		int i = ref;

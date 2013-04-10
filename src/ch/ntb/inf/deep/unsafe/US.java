@@ -82,6 +82,11 @@ public class US {
 		return 0;
 	}
 
+	/** returns object reference as address */
+	public static int REF(Object ref) {
+		return 0;
+	}
+
 	/** get content of general purpose register */
 	public static int GETGPR(int reg) {
 		return 0;
@@ -131,4 +136,5 @@ public class US {
 	 */
 	public static void ENABLE_FLOATS() {
 	}
+	
 }

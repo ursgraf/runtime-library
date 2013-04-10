@@ -40,7 +40,7 @@ package java.lang;
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation
  */
-public class String extends BString{
+public class String extends BString {
 
 	/** value is used for character storage. */
 	protected char value[];
@@ -136,6 +136,24 @@ public class String extends BString{
 		return value[index];
 	}
 
+	/**
+	 * Returns the length of this string. The length is equal to the number of
+	 * 16-bit Unicode characters in the string.
+	 * 
+	 * @return number of characters in the string
+	 */
+	public boolean equals(Object anObject) {
+		if (anObject == null) return false;
+		if (!(anObject instanceof String)) return false;
+		String str = (String) anObject;
+		int len = str.length();
+		if (len > length()) return false;
+		for (int i = 0; i < len; i++) {
+			if (charAt(i) != str.charAt(i)) return false;
+		}
+		return true;
+	}
+	
 	/**
 	 * Returns the length of this string. The length is equal to the number of
 	 * 16-bit Unicode characters in the string.

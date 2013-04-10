@@ -86,6 +86,10 @@ operatingsystem ntbSTS {
             attributes = unsafe, synthetic;
             id = 0x013;
         }
+        method REF {
+            attributes = unsafe, synthetic;
+            id = 0x014;
+        }                
     }
     
     lowlevel {
