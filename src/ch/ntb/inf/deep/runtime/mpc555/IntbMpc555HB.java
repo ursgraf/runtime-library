@@ -1,32 +1,32 @@
 package ch.ntb.inf.deep.runtime.mpc555;
 
-// Auto generated file (2013-02-14 08:49:58)
+// Auto generated file (2013-05-07 22:00:45)
 
 public interface IntbMpc555HB {
 
 	// System constants of CPU mpc555
-	public static final int IMB = 0x0;
-	public static final int SRAMA_BaseAddr = 0x3f9800;
-	public static final int SRAMA_Size = 0x2800;
-	public static final int SRAMB_BaseAddr = 0x3fc000;
-	public static final int SRAMB_Size = 0x4000;
-	public static final int CMFA_BaseAddr = 0x0;
-	public static final int CMFA_Size = 0x40000;
-	public static final int CMFB_BaseAddr = 0x40000;
-	public static final int CMFB_Size = 0x30000;
-	public static final int excpCodeBase = 0x0;
-	public static final int excpCodeSize = 0x4000;
-	public static final int sysTabBaseAddr = 0x4000;
 	public static final int stackSize = 0x2000;
+	public static final int sysTabBaseAddr = 0x4000;
+	public static final int excpCodeSize = 0x4000;
+	public static final int excpCodeBase = 0x0;
+	public static final int CMFB_Size = 0x30000;
+	public static final int CMFB_BaseAddr = 0x40000;
+	public static final int CMFA_Size = 0x40000;
+	public static final int CMFA_BaseAddr = 0x0;
+	public static final int SRAMB_Size = 0x4000;
+	public static final int SRAMB_BaseAddr = 0x3fc000;
+	public static final int SRAMA_Size = 0x2800;
+	public static final int SRAMA_BaseAddr = 0x3f9800;
+	public static final int IMB = 0x0;
 
 	// System constants of board ntbMpc555HB
-	public static final int extRamSize = 0x200000;
-	public static final int extRamBase = 0x800000;
-	public static final int extFlashSize = 0x400000;
-	public static final int extFlashBase = 0x1000000;
-	public static final int dualMappedSize = 0x8000;
-	public static final int heapSize = 0x40000;
 	public static final int SRR1init = 0x3802;
+	public static final int heapSize = 0x40000;
+	public static final int dualMappedSize = 0x8000;
+	public static final int extFlashBase = 0x1000000;
+	public static final int extFlashSize = 0x400000;
+	public static final int extRamBase = 0x800000;
+	public static final int extRamSize = 0x200000;
 
 	// Specific registers of CPU " + cpuName + "
 	public static final int SPR80 = 0x50;

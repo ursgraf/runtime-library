@@ -1,10 +1,13 @@
 package ch.ntb.inf.deep.runtime.ppc32;
 
-// Auto generated file (2013-02-14 08:49:58)
+// Auto generated file (2013-05-08 07:32:27)
 
 public interface Ippc32 {
 
 	// Registermap for architecture "ppc32"
+	public static final int MSR = 0x1;
+	public static final int CR = 0x1;
+	public static final int FPSCR = 0x1;
 	public static final int R0 = 0x0;
 	public static final int R1 = 0x1;
 	public static final int R2 = 0x2;
@@ -102,7 +105,4 @@ public interface Ippc32 {
 	public static final int SPR285 = 0x11d;
 	public static final int TBUwrite = 0x11d;
 	public static final int SPR287 = 0x11f;
-	public static final int MSR = 0x1;
-	public static final int CR = 0x1;
-	public static final int FPSCR = 0x1;
 }

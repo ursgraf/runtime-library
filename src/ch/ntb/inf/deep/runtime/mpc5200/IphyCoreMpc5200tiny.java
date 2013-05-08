@@ -1,34 +1,34 @@
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-// Auto generated file (2013-02-14 08:49:58)
+// Auto generated file (2013-05-08 07:32:27)
 
 public interface IphyCoreMpc5200tiny {
 
 	// System constants of CPU mpc5200
-	public static final int SRAM_BaseAddr = 0xf0008000;
-	public static final int SRAM_Size = 0x4000;
-	public static final int MemBaseAddr = 0xf0000000;
-	public static final int PSC1Base = 0xf0002000;
-	public static final int PSC2Base = 0xf0002200;
-	public static final int PSC3Base = 0xf0002400;
-	public static final int PSC4Base = 0xf0002600;
-	public static final int PSC5Base = 0xf0002800;
-	public static final int PSC6Base = 0xf0002c00;
-	public static final int MSCAN1Base = 0xf0000900;
 	public static final int MSCAN2Base = 0xf0000980;
+	public static final int MSCAN1Base = 0xf0000900;
+	public static final int PSC6Base = 0xf0002c00;
+	public static final int PSC5Base = 0xf0002800;
+	public static final int PSC4Base = 0xf0002600;
+	public static final int PSC3Base = 0xf0002400;
+	public static final int PSC2Base = 0xf0002200;
+	public static final int PSC1Base = 0xf0002000;
+	public static final int MemBaseAddr = 0xf0000000;
+	public static final int SRAM_Size = 0x4000;
+	public static final int SRAM_BaseAddr = 0xf0008000;
 
 	// System constants of board phyCoreMpc5200tiny
-	public static final int extRamBase = 0x0;
-	public static final int extRamSize = 0x8000000;
-	public static final int extFlashBase = 0xfff00000;
-	public static final int extFlashSize = 0x100000;
-	public static final int excpCodeFlashBase = 0xfff00000;
-	public static final int excpCodeRamBase = 0x0;
-	public static final int excpCodeSize = 0x4000;
-	public static final int sysTabBaseAddr = 0x4000;
-	public static final int stackSize = 0x2000;
-	public static final int heapSize = 0x40000;
 	public static final int SRR1init = 0x3802;
+	public static final int heapSize = 0x40000;
+	public static final int stackSize = 0x2000;
+	public static final int sysTabBaseAddr = 0x4000;
+	public static final int excpCodeSize = 0x4000;
+	public static final int excpCodeRamBase = 0x0;
+	public static final int excpCodeFlashBase = 0xfff00000;
+	public static final int extFlashSize = 0x100000;
+	public static final int extFlashBase = 0xfff00000;
+	public static final int extRamSize = 0x8000000;
+	public static final int extRamBase = 0x0;
 
 	// Specific registers of CPU " + cpuName + "
 	public static final int PVR = 0x11f;

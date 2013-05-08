@@ -2,7 +2,7 @@
 
 meta {
 	version = "2012-06-14";
-	description = "Bord description file for NTB MPC555 Headerboard";
+	description = "Board description file for NTB MPC555 header board";
 }
 
 compiler {

@@ -2,15 +2,15 @@
 
 meta {
 	version = "2012-06-14";
-	description = "Bord description file for NTB MPC555 Headerboard";
+	description = "Board description file for NTB MPC555 header board";
 }
 
 board ntbMpc555HB {
-	description = "NTB MPC555 Headerboard";
+	description = "NTB MPC555 header board";
 	cputype = mpc555;
 	
 	sysconst {
-		extRamSize   = 0x200000;						# 2M external RAM
+		extRamSize   = 0x200000 + IMB;					# 2M external RAM
 		extRamBase   = 0x800000;						# starting at 0x800000
 		extFlashSize = 0x400000;						# 4M external Flash
 		extFlashBase = 0x1000000;						# starting at 0x1000000
@@ -115,14 +115,15 @@ board ntbMpc555HB {
 		SRR1 = SRR1init;								# Set Machine Status Save/Restore Register 1
 	}
 
-	targetconfiguration BootFromRam {
+	runconfiguration BootFromRam {
+		description = "load program to ram (optimized)";
 		system {
 			systemtable: systab@InternalRam.SysTab;
 		}
 		modules {
 				kernel, heap: code@InternalRam.Code, const@InternalRam.Constants, var@InternalRam.Variables; 
 				exception: code@ExternalRam.ExceptionCode, const@InternalRam.Constants, var@InternalRam.Variables;
-				default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;           
+				default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;      
 		}
 		reginit {
 			DMBR = 0x3;									# Dual mapping enable, map from address 0, use CS1 (external RAM)
@@ -130,11 +131,27 @@ board ntbMpc555HB {
 		}
 	}
 
-	targetconfiguration BootFromFlash {
+	runconfiguration BootFromExtRam {
+		description = "load program to external ram";
+		system {
+			systemtable: systab@InternalRam.SysTab;
+		}
+		modules {
+				kernel, heap: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default; 
+				exception: code@ExternalRam.ExceptionCode, const@ExternalRam.Default, var@ExternalRam.Default;
+				default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;      
+		}
+		reginit {
+			DMBR = 0x3;									# Dual mapping enable, map from address 0, use CS1 (external RAM)
+			DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
+		}
+	}
+
+	runconfiguration BootFromFlash {
+		description = "load program to flash";
 		system {
 			systemtable: systab@ExternalFlash.SysTab;
 		}
-		
 		modules {
 				kernel, heap: code@ExternalFlash.Default, const@ExternalFlash.Default, var@InternalRam.Variables;
 				exception: code@ExternalFlash.ExceptionCode, const@ExternalFlash.Default, var@InternalRam.Variables;

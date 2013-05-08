@@ -14,14 +14,12 @@ arch ppc32 {
 			type = MSR;
 			addr = 1;
 			size = 4;
-		}
-				
+		}	
 		register CR {
 			type = CR;
 			addr = 1;
 			size = 4;
 		}
-		
 		register FPSCR {
 			type = FPSCR;
 			addr = 1;

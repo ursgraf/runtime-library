@@ -10,6 +10,7 @@ operatingsystem ntbSTS {
 		
 	us {
         class = "ch/ntb/inf/deep/unsafe/US";
+        attributes = synthetic;
         method PUT1 {
             attributes = unsafe, synthetic;
             id = 0x001;
@@ -94,6 +95,7 @@ operatingsystem ntbSTS {
     
     lowlevel {
             class = "ch/ntb/inf/deep/lowLevel/LL";
+            attributes = synthetic;
             method mostSign1BitNr {
                 attributes = synthetic;
                 id = 0x101;
@@ -124,7 +126,7 @@ operatingsystem ntbSTS {
             }
     }
 	
-    heap {
+    heapclass {
         class = "ch/ntb/inf/deep/runtime/ppc32/Heap";
         method newMultiDimArray  {
                 attributes = new;
@@ -142,6 +144,9 @@ operatingsystem ntbSTS {
                 attributes = new;
                 id = 0x201;
         }
+     	method <init> {
+    		attributes = synthetic;
+    	}
     }
 	        
     exceptionbaseclass {
