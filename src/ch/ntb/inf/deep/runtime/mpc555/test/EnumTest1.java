@@ -28,16 +28,42 @@ public class EnumTest1 extends Task {
 		System.out.print("ordinal of STOPPING = "); System.out.println(State.STOPPING.ordinal());
 	}
 
+	static void test2() {
+		int res = 0;
+		State state = State.STOPPED;
+		switch (state) {
+		case STARTING: res = 1000; break;
+		case RUNNING: res = 2000; break;
+		case STOPPING: res = 3000; break;
+		case STOPPED: res = 4000; break;
+		}
+		System.out.println(res);
+	}
+
+	static void test3() {
+		int res = 0;
+		Color state = Color.BLACK;
+		switch (state) {
+		case WHITE: res = 1000; break;
+		case BLACK: res = 2000; break;
+		case RED: res = 3000; break;
+		}
+		System.out.println(res);
+	}
+
 	static {	
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI2.out);
 		System.out.println("test started");
 		test1();
+		test2();
+		test3();
 		System.out.println("test method done");
 		Task t = new EnumTest1();	
-		t.period = 10;
+		t.period = 50;
 		Task.install(t);
 	}
 }
 
 enum State {STARTING, RUNNING, STOPPING, STOPPED}
+enum Color {WHITE, BLACK, RED}

@@ -1,11 +1,10 @@
 package java.lang;
 
 import java.io.Serializable;
-import ch.ntb.inf.deep.unsafe.US;
 
 public abstract class Enum<E extends Enum<E>> implements Comparable<E>, Serializable {
-	
-    private final String name;
+	private static final long serialVersionUID = 1L;
+	private final String name;
     private final int ordinal;
 
     /**
@@ -79,8 +78,8 @@ public abstract class Enum<E extends Enum<E>> implements Comparable<E>, Serializ
      * method is the order in which the constants are declared.
      */
     public final int compareTo(E o) {
-    	Enum other = (Enum)o;
-    	Enum self = this;
+    	Enum<?> other = (Enum<?>)o;
+    	Enum<E> self = this;
     	return self.ordinal - other.ordinal;
     }
 
@@ -101,14 +100,9 @@ public abstract class Enum<E extends Enum<E>> implements Comparable<E>, Serializ
      *         is null
      * @since 1.5
      */
-//    public static <T extends Enum<T>> T valueOf(Class<T> obj, String name) {
-//    public static <T extends Enum<T>> T valueOf(Object o, String name) {
         public static <T extends Enum<T>> T valueOf(T[] enumValues, String name) {
     	for (T val : enumValues) {
-//    		System.out.println(val.ordinal);
-//    		System.out.println(val.name);
-       		if (val.name.equals(name)) return val;
-//       		if (val.name == name) return val;
+       		if (val.name().equals(name)) return val;
     	}
 		return null;
     }
