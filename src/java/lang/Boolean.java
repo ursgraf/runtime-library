@@ -35,11 +35,72 @@
 
 package java.lang;
 
-public class Object {
+/**
+ * The {@code Byte} class wraps a value of primitive type 
+ * {@code byte} in an object. An object of type {@code Byte}
+ * contains a single field whose type is {@code byte}.
+ * 
+ * changes:
+ * 20.9.2011	NTB/Urs Graf	ported to deep
+ *
+ */
+public class Boolean {
 
-	public int hashCode() {
-		// TODO Auto-generated method stub
-		return 0;
+	/**
+	 * A constant holding the minimum value a {@code byte} can
+	 * have, -2<sup>7</sup>.
+	 */
+	public static final byte   MIN_VALUE = -128;
+
+	/**
+	 * A constant holding the maximum value a {@code byte} can
+	 * have, 2<sup>7</sup>-1.
+	 */
+	public static final byte   MAX_VALUE = 127;
+	
+	/**
+	 * Returns a new {@code String} object representing the
+	 * specified {@code byte}. The radix is assumed to be 10.
+	 *
+	 * @param b the {@code byte} to be converted
+	 * @return the string representation of the specified {@code byte}
+	 * @see java.lang.Integer#toString(int)
+	 */
+	public static String toString(byte b) {
+		return Integer.toString((int)b);
 	}
+
+	/**
+	 * Returns a {@code Byte} instance representing the specified
+	 * {@code byte} value.
+	 *
+	 * @param  b a byte value.
+	 * @return a {@code Byte} instance representing {@code b}.
+	 * @since  1.5
+	 */
+	public static Boolean valueOf(boolean b) {
+		return new Boolean(b);
+	}
+
+
+	/**
+	 * The value of the {@code Byte}.
+	 *
+	 * @serial
+	 */
+	private final boolean value;
+
+	/**
+	 * Constructs a newly allocated {@code Byte} object that
+	 * represents the specified {@code byte} value.
+	 *
+	 * @param   value   the value to be represented by the
+	 *                  {@code Byte} object.
+	 */
+	public Boolean(boolean value) {
+		this.value = value;
+	}
+
+
 
 }

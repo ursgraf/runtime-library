@@ -7,4 +7,5 @@ meta {
 
 programmer bdi2000 {
 	description = "Abatron BDI2000";
+	classname = "ch.ntb.inf.Bdi2000";
 }
