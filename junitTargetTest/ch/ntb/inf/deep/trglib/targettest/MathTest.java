@@ -24,7 +24,8 @@ import ch.ntb.inf.junitTarget.MaxErrors;
 import ch.ntb.inf.junitTarget.Test;
 
 /**
- * NTB 30.6.2011, Urs Graf
+ * 17.12.2013	NTB/AK	atan2, acos test added
+ * 30.06.2011	NTB/Urs Graf
  * 
  *         Changes:
  */
@@ -73,5 +74,28 @@ public class MathTest {
 		Assert.assertEquals("Test6", 0.5, Math.cos(2 * Math.PI + Math.PI/3), 1e-5);
 		Assert.assertEquals("Test7", -0.5, Math.cos(3 * Math.PI + Math.PI/3), 1e-5);
 		CmdTransmitter.sendDone();
-	}	
+	}
+	
+	@Test
+	public static void testArcCos(){
+		Assert.assertEquals("Test1", Math.PI/2, Math.acos(0), 1e-5);
+		Assert.assertEquals("Test2", 0.0, Math.acos(1), 1e-5);
+		Assert.assertEquals("Test3", Math.PI, Math.acos(-1), 1e-5);
+		Assert.assertEquals("Test4", Math.PI/4, Math.acos(1/Math.sqrt(2)), 1e-5);
+		Assert.assertEquals("Test5", 3*Math.PI/4, Math.acos(-1/Math.sqrt(2)), 1e-5);
+		Assert.assertEquals("Test6", Math.PI/6, Math.acos(Math.sqrt(3)/2), 1e-5);
+		Assert.assertEquals("Test7", 0.863211890069541, Math.acos(0.65), 1e-5);
+		CmdTransmitter.sendDone();
+	}
+	
+	@Test
+	public static void testArcTan2(){
+		Assert.assertEquals("Test1", Double.NaN, Math.atan2(0,0), 1e-5);
+		Assert.assertEquals("Test2", Math.PI/2, Math.atan2(1,0), 1e-5);
+		Assert.assertEquals("Test3", -Math.PI/2, Math.atan2(-1,0), 1e-5);
+		Assert.assertEquals("Test4", Math.atan(1.5/2), Math.atan2(1.5,2), 1e-5);
+		Assert.assertEquals("Test5", Math.atan(1.5/-2)+Math.PI, Math.atan2(1.5,-2), 1e-5);
+		Assert.assertEquals("Test6", Math.atan(-1.5/-2)-Math.PI, Math.atan2(-1.5,-2), 1e-5);
+		CmdTransmitter.sendDone();
+	}
 }

@@ -21,6 +21,7 @@ package java.lang;
 import ch.ntb.inf.deep.lowLevel.LL;
 
 /*changes:
+ 16.12.13	NTB/AK			acos and atan2 added
  30.06.11	NTB/Urs Graf	ported to deep
  04.09.09	NTB/MZ			ceil, floor, fix, class moved to java.lang
  27.10.06	NTB/ED			SYS.ADR(param)	==> SYS.ADR(locVar)
@@ -461,6 +462,50 @@ public class Math {
 		return res;
 	}
 
+	/**
+	 * Returns the arc tangent of an angle, in the range of -<i>pi</i>/2 through
+	 * <i>pi</i>/2. <br>
+	 * arctan(arg1/arg2) is calculated considering signs of the inputs<br>
+	 * Special cases:<br>
+	 * If both arguments are zero, NaN is returned
+	 * @param arg1
+	 * @param arg2
+	 * @return the arc tangent of the argument
+	 */
+	public static double atan2(double arg1, double arg2){
+		if(arg1+arg2 == arg1) {
+			if(arg1 > 0)
+				return Math.PI/2;
+			if(arg1 == 0)
+				return Double.NaN;
+			return -Math.PI/2;
+		}
+		arg1 = Math.atan(arg1/arg2);
+		if(arg2 < 0){
+			if(arg1 <= 0)
+				return arg1 + Math.PI;
+			return arg1 - Math.PI;
+		}
+		return arg1;
+	}
+	
+	/**
+	 * Returns the arc cosinus of an angle in radians
+	 * @param x the value whose arc cosinus is to be returned
+	 * @return the arc cosinus of the argument
+	 */
+	public static double acos(double x){
+		if (x == 1){
+			return 0;
+		}
+		if (x == 0){
+			return Math.PI/2;
+		}
+		else{
+			return Math.atan(-x / Math.sqrt(-x*x+1)) + Math.PI/2;
+		}
+	}
+	
 	/**
 	 * Round toward zero
 	 * 
