@@ -97,6 +97,12 @@ public class SpeedController4DCMotor {
 		e = desiredSpeed - speed;
 		controlValue = prevControlValue + b0 * e + b1 * e_1;
 		
+		//PARV: 11.1.2014
+		//Anti Wind Up, so the duty cycle will always be  <= 100%
+        if(controlValue > umax) {
+               controlValue = umax;
+        }
+		
 		// Update PWM
 		setPWM(controlValue / umax);
 		

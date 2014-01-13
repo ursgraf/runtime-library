@@ -31,6 +31,7 @@ import ch.ntb.sysp.lib.SpeedController4DCMotor;
  *   <li>PWM B (Left): TPU A, Channel 1</li>
  *   <li>Encoder A: TPU A, Channel 2</li>
  *   <li>Encoder B: TPU A, Channel 3</li>
+ *   <li>Mode: Sign Magnitude (GND)</li>
  * </ul>
  *
  */
