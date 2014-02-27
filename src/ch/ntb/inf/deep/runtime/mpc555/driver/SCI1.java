@@ -19,6 +19,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.mpc555.Interrupt;
+import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
 import ch.ntb.inf.deep.unsafe.US;
 
@@ -57,7 +58,7 @@ public class SCI1 extends Interrupt {
 			FRAME_ERR = 1, PARITY_ERR = 0, LENGTH_NEG_ERR = -1,
 			OFFSET_NEG_ERR = -2, NULL_POINTER_ERR = -3;
 	public static final int QUEUE_LEN = 2047;
-	public static final int CLOCK = 40000000;
+	public static final int CLOCK = Kernel.clockFrequency;
 	private static Interrupt rxInterrupt, txInterrupt;
 
 	private static short portStat; // just for saving flag portOpen
