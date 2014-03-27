@@ -193,7 +193,7 @@ public class SCI1 extends Interrupt {
 
 	/**
 	 * Check the port status. Returns the port status bits.<br>
-	 * Every bit is representing a flag (e.g. {@link #FLAG_PORT_OPEN}).
+	 * Every bit is representing a flag (e.g. {@link #PORT_OPEN}).
 	 * 
 	 * @return the port status bits.
 	 */
@@ -283,7 +283,7 @@ public class SCI1 extends Interrupt {
 	 * Reads one byte from the SCI1. A call of
 	 * this method is not blocking!
 	 * 
-	 * @return byte read or {@link mpc555.util.ByteFifo#NO_DATA} if
+	 * @return byte read or {@link ch.ntb.inf.deep.runtime.util.ByteFifo#NO_DATA} if
 	 *             no data was available.
 	 */
 	public static byte read() {
@@ -335,10 +335,6 @@ public class SCI1 extends Interrupt {
 	 * 
 	 * @param b
 	 *            Array of bytes to send.
-	 * @param off
-	 *            Offset to the data which should be sent.
-	 * @param len
-	 *            Number of bytes to send.
 	 * @return the number of bytes written.
 	 *            {@link #NULL_POINTER_ERR} if the array reference
 	 *            was null (b == null).

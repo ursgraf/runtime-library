@@ -41,7 +41,7 @@ package java.lang;
  * behavior of the class.
  *
  * @author  Urs Graf
- * @see     jch.ntb.inf.deep.runtime.mpc555.Task
+ * @see     ch.ntb.inf.deep.runtime.mpc555.Task
  */
 public interface Actionable {
     /**

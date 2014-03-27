@@ -41,7 +41,7 @@ public class MAX512 implements IntbMpc555HB {
 	
 	/**
 	 * Disable one channel.
-	 * @param ch the desired channel ({@link chnA}, {@link chnB}, {@link chnC})
+	 * @param ch the desired channel ({@link #chnA}, {@link #chnB}, {@link #chnC})
 	 */
 	public static void disable(int ch){
 		disDACs |= 0x0800 << ch;
@@ -50,7 +50,7 @@ public class MAX512 implements IntbMpc555HB {
 	
 	/**
 	 * Enable a disabled channel.
-	 * @param ch the desired channel ({@link chnA}, {@link chnB}, {@link chnC})
+	 * @param ch the desired channel ({@link #chnA}, {@link #chnB}, {@link #chnC})
 	 */
 	public static void enable(int ch){
 		disDACs &=  ~(0x0800 << ch);
@@ -59,7 +59,7 @@ public class MAX512 implements IntbMpc555HB {
 	
 	/**
 	 * Write a value to the DAC.
-	 * @param ch the desired channel ({@link chnA}, {@link chnB}, {@link chnC})
+	 * @param ch the desired channel ({@link #chnA}, {@link #chnB}, {@link #chnC})
 	 * @param val the desired output value
 	 */
 	public static void write(int ch, byte val){

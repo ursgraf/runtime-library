@@ -946,7 +946,7 @@ public class RN131WiFly extends Task{
 
 	/**
 	 * read from readbuffer
-	 * @return
+	 * @return one Byte from FiFo rxQueue
 	 */
 	public static int read(){
 		return rxQueue.dequeue();
@@ -956,7 +956,7 @@ public class RN131WiFly extends Task{
 	 * read data from readBuffer
 	 * @param b destination byte array where to write the read data
 	 * @return {@link #NULL_POINTER_ERR} if b is null, {@link #LENGTH_NEG_ERR} 
-	 * if length is < 0, {@link OFFSET_NEG_ERR} if offset < 0, else read data length
+	 * if length is < 0, {@link #OFFSET_NEG_ERR} if offset < 0, else read data length
 	 */
 	public static int read(byte[] b){
 		return read(b, 0, b.length);
@@ -967,7 +967,7 @@ public class RN131WiFly extends Task{
 	 * @param b destination byte array where to write the read data
 	 * @param len how many bytes to read
 	 * @return {@link #NULL_POINTER_ERR} if b is null, {@link #LENGTH_NEG_ERR} 
-	 * if length is < 0, {@link OFFSET_NEG_ERR} if offset < 0, else read data length
+	 * if length is < 0, {@link #OFFSET_NEG_ERR} if offset < 0, else read data length
 	 */
 	public static int read(byte[] b, int len){
 		return read(b, 0, len);
@@ -979,7 +979,7 @@ public class RN131WiFly extends Task{
 	 * @param off offset position in destination byte array to write
 	 * @param len length of data to read
 	 * @return {@link #NULL_POINTER_ERR} if b is null, {@link #LENGTH_NEG_ERR} 
-	 * if length is < 0, {@link OFFSET_NEG_ERR} if offset < 0, else read data length
+	 * if length is < 0, {@link #OFFSET_NEG_ERR} if offset < 0, else read data length
 	 */
 	public static int read(byte[] b, int off, int len){
 		if (b == null)

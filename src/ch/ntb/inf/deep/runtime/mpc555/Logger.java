@@ -97,12 +97,12 @@ public class Logger {
 	/**
 	 * Set the log level. Possible levels are:
 	 * <ul>
-	 * <li>{@link none}</li>
-	 * <li>{@link error}</li>
-	 * <li>{@link warning}</li>
-	 * <li>{@link config}</li>
-	 * <li>{@link info}</li>
-	 * <li>{@link debug}</li>
+	 * <li>{@link #none}</li>
+	 * <li>{@link #error}</li>
+	 * <li>{@link #warning}</li>
+	 * <li>{@link #config}</li>
+	 * <li>{@link #info}</li>
+	 * <li>{@link #debug}</li>
 	 * </ul>
 	 * 
 	 * @param level
