@@ -86,7 +86,7 @@ public abstract class OutputStream {
 
 	/**
 	 * Returns the number of bytes which can be written to the output stream.
-	 * @return
+	 * @return number of bytes which can be written to the output stream
 	 */
 	public abstract int freeSpace();
 

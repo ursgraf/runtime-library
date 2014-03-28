@@ -239,13 +239,12 @@ public class BlueRS extends Task {
 	 * Writes, if possible, <code>len</code> bytes starting at
 	 * <code>offset</code> to this output stream.
 	 * 
-	 * @param b
+	 * @param cmd
 	 *            the byte array
 	 * @param off
 	 *            the start offset in the data.
 	 * @param len
 	 *            the number of bytes to write
-	 * @return the number of written bytes.
 	 */
 	public static void sendCommand(byte[] cmd, int off, int len){
 		out.write(cmd, off, len);
@@ -765,7 +764,7 @@ public class BlueRS extends Task {
 	 * In addition to the AT commands, the Bluetooth module will display error
 	 * codes after each command. A detailed description can be found in the
 	 * Stollmann BlueRS+E/I manual (section 5.2). To display this error codes on
-	 * the Target Log use {@link #setDebugging(boolean)}.
+	 * the Target Log set {@link #dbg} true.
 	 */
 	public static void enableErrorMessages() {
 		if (mode == MODE_AT) {

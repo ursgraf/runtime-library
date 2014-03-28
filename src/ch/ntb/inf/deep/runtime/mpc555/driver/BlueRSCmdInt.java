@@ -193,7 +193,7 @@ public class BlueRSCmdInt extends Task {
 
 	/**
 	 * Tries to connect to a partner module
-	 * @param partner, the address of the partner module.
+	 * @param partner the address of the partner module.
 	 * @return {@link #success} if the connection process has been initiated, {@link #wrongMode} if the module is not disconnected.
 	 */
 	public static int connect(String partner) {

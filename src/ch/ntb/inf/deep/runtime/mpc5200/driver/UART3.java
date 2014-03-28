@@ -88,10 +88,6 @@ public class UART3 implements IphyCoreMpc5200tiny{
 	 * 
 	 * @param b
 	 *            Array of bytes to send.
-	 * @param off
-	 *            Offset to the data which should be sent.
-	 * @param len
-	 *            Number of bytes to send.
 	 * @return the number of bytes written.
 	 *            {@link #NULL_POINTER_ERR} if the array reference
 	 *            was null (b == null).
