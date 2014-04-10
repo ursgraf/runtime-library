@@ -14,30 +14,31 @@ public class ProgramExc extends PPCException implements Ippc32 {
 
 	static void programExc(Exception e) {
 		nofProgExceptions++;
-		int adr = US.GETSPR(SRR0);
-		int instr = US.GET4(adr);
+		int addr = US.GETSPR(SRR0);
+		int instr = US.GET4(addr);
 		int opCode = instr >> 21;
-		if (opCode == 0x3ff) {	// tw, TOalways -> Custom Exception
+		if (opCode == 0x3ff) {	// tw, TOalways -> user defined exception
 			e.message = "custom";
 			a = 10;
 		} else if (opCode == 0x3e5) {	// tw, TOifgeU -> ArrayIndexOutOfBounds
 			a = 20;
 		} else if (opCode == 0x64) {	// twi, TOifequal
-			int nextInstr = US.GET4(adr + 4);
+			int nextInstr = US.GET4(addr + 4);
 			b = nextInstr;
 			int nextOpCode = nextInstr >> 21;
 			if (nextOpCode == 0x3e4) {	// divw -> ArithmeticException
 				a = 30;
 			} else {	// NullPointer
+				e = new NullPointerException();
 				a = 40;
 			}
 		} else if (opCode == 0x3f8) {	// tw, TOifnequal
 			a = 50;
-		} else {
+		} else {	
 			a = 100;
 		}
-		
-		while (true);
+		US.PUTGPR(R2, US.REF(e));	// copy to volatile register
+		US.PUTGPR(R3, addr);	// copy to volatile register
 	}
 
 }

@@ -17,6 +17,8 @@ public class ExceptionTest1 {
 			int c = a + 10;
 			if (a > 200) return;
 			System.out.println("catch2");
+//		} finally { 
+//			a += 2;
 		}
 	}
 
@@ -46,12 +48,47 @@ public class ExceptionTest1 {
 		((int[])a)[0] = 100;
 	}
 
+	static int a = 1;
+	static void m71() {
+		if (a == 2) while (true); else {int b = 3;}
+	}
+
+	static void m7() {
+		try {
+			m3();
+		} catch (Exception e) {
+//			int a = 2;
+			while (true);
+		}
+	}
+
+	static void m8() {
+		int a = 100;
+		try {
+			a++;
+			throw new MyException1();
+		} catch (MyException1 e){ 
+			a += e.x;
+			while (true);
+//			System.out.println("catch1");
+		}
+	}
+	
+	static void m9() {
+		int a = 100;
+		a += 5;
+		while (true);
+	}
+
+	static void m10() {
+		m3();
+	}
 
 //	public static void main (String[] args) {
 //		m1();
 //	}
 }
 
-class MyException1 extends Throwable{
+class MyException1 extends Exception{
 	int x = 10;
 }
