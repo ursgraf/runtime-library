@@ -23,6 +23,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
+ * 30.04.14	NTB/Urs Graf	catching of unchecked exception added
  * 23.11.11	NTB/Martin Züger	classConstOffset
  * 11.11.10	NTB/Urs Graf		creation
  */
@@ -36,10 +37,18 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 	@SuppressWarnings("unused")
 	private static void loop() {	// endless loop
 		while (true) {
-			if (cmdAddr != -1) {
-				US.PUTSPR(LR, cmdAddr);	
-				US.ASM("bclrl always, 0");
-				cmdAddr = -1;
+			try {
+				if (cmdAddr != -1) {
+					US.PUTSPR(LR, cmdAddr);	
+					US.ASM("bclrl always, 0");
+					cmdAddr = -1;
+				}
+			} catch (Exception e) {
+				cmdAddr = -1;	// stop trying to run the same method
+				System.err.print(e.message);
+				System.err.print(" at addr ");
+				System.err.printHexln(e.addr);
+				Kernel.blink(10);
 			}
 		}
 	}
@@ -174,6 +183,7 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 					US.ASM("bclrl always, 0");
 				} else {	// kernel
 					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/mpc555/Kernel/loop");
+					US.ASM("mtspr EIE, r0");
 				}
 			}
 			// the direct call to clinitAddr destroys volatile registers, hence make sure
@@ -188,11 +198,17 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 	}
 
 	static {
-		boot();
-		cmdAddr = -1;	// must be after class variables are zeroed by boot
-		US.ASM("mtspr EIE, r0");
-		US.PUTSPR(LR, loopAddr);
-		US.ASM("bclrl always, 0");
+		try {
+			boot();
+			cmdAddr = -1;	// must be after class variables are zeroed by boot
+			US.PUTSPR(LR, loopAddr);
+			US.ASM("bclrl always, 0");
+		} catch (Exception e) {
+			System.err.print(e.message);
+			System.err.print(" at addr ");
+			System.err.printHexln(e.addr);
+			while (true) Kernel.blink(5);
+		}
 	}
 
 }

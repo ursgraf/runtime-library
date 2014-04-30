@@ -68,7 +68,8 @@ public class Heap implements IdeepCompilerConstants {
 	}	
 
 	// called by newarray	
-	private static int newPrimTypeArray(int nofElements, int type, int ref) {
+	private static int newPrimTypeArray(int nofElements, int type, int ref) throws NegativeArraySizeException {
+		if (nofElements < 0) throw new NegativeArraySizeException();
 		int elementSize;
 		if (type == 7 || type == 11) elementSize = 8;
 		else if (type == 6 || type == 10) elementSize = 4;
@@ -85,7 +86,8 @@ public class Heap implements IdeepCompilerConstants {
 	}
 	
 	// called by anewarray	
-	private static int newRefArray(int nofElements, int ref) {
+	private static int newRefArray(int nofElements, int ref) throws NegativeArraySizeException {
+		if (nofElements < 0) throw new NegativeArraySizeException();
 		int size = nofElements * 4 + 8;
 		int blockAddr = getBlock(size);
 		US.PUT4(blockAddr, 0x80800000 | nofElements);	// set mark and array bit, write length
@@ -98,7 +100,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	// called by multianewarray	
 	@SuppressWarnings("unused")
-	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3) {
+	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3) throws NegativeArraySizeException {
 		int addr;
 		if (nofDim > 3 || nofDim < 2) US.HALT(20);
 		if (nofDim == 2) {

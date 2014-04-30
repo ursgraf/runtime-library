@@ -21,6 +21,8 @@ public class ProgramExc extends PPCException implements Ippc32 {
 			e.message = "custom";
 			a = 10;
 		} else if (opCode == 0x3e5) {	// tw, TOifgeU -> ArrayIndexOutOfBounds
+			e = new ArrayIndexOutOfBoundsException();
+			e.message = "ArrayIndexOutOfBoundsException";
 			a = 20;
 		} else if (opCode == 0x64) {	// twi, TOifequal
 			int nextInstr = US.GET4(addr + 4);
@@ -30,6 +32,7 @@ public class ProgramExc extends PPCException implements Ippc32 {
 				a = 30;
 			} else {	// NullPointer
 				e = new NullPointerException();
+				e.message = "NullPointerException";
 				a = 40;
 			}
 		} else if (opCode == 0x3f8) {	// tw, TOifnequal
@@ -37,6 +40,8 @@ public class ProgramExc extends PPCException implements Ippc32 {
 		} else {	
 			a = 100;
 		}
+		e.addr = addr;
+
 		US.PUTGPR(R2, US.REF(e));	// copy to volatile register
 		US.PUTGPR(R3, addr);	// copy to volatile register
 	}

@@ -24,5 +24,10 @@ public class Object {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	public Class getClass() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

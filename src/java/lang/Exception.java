@@ -20,5 +20,6 @@ package java.lang;
 
 public class Exception extends Throwable {
 	public String message;
+	public int addr;
 
 }
