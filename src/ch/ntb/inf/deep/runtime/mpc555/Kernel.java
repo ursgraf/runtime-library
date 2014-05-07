@@ -45,10 +45,8 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 				}
 			} catch (Exception e) {
 				cmdAddr = -1;	// stop trying to run the same method
-				System.err.print(e.message);
-				System.err.print(" at addr ");
-				System.err.printHexln(e.addr);
-				Kernel.blink(10);
+				e.printStackTrace();
+				Kernel.blink(2);
 			}
 		}
 	}
@@ -204,9 +202,7 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 			US.PUTSPR(LR, loopAddr);
 			US.ASM("bclrl always, 0");
 		} catch (Exception e) {
-			System.err.print(e.message);
-			System.err.print(" at addr ");
-			System.err.printHexln(e.addr);
+			e.printStackTrace();
 			while (true) Kernel.blink(5);
 		}
 	}

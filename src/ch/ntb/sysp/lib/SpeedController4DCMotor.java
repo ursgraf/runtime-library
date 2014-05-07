@@ -43,6 +43,7 @@ public class SpeedController4DCMotor {
 	private long time = 0, lastTime = 0;		// [us]
 	private float dt;							// [s]
 	private short actualPos, deltaPos, prevPos; // [ticks]
+	private int absPos;
 	private float speed = 0;					// [1/s]
 	private float e = 0, e_1 = 0;				// [1/s]
 	
@@ -91,6 +92,7 @@ public class SpeedController4DCMotor {
 		// Read encoder and calculate actual speed
 		actualPos = TPU_FQD.getPosition(encTPUA, encChannelA);
 		deltaPos = (short)(actualPos - prevPos);
+		absPos += deltaPos;
 		speed = (deltaPos * scale) / dt;
 		
 		// Calculate control value
@@ -126,6 +128,13 @@ public class SpeedController4DCMotor {
 	 */
 	public float getActualSpeed() {
 		return speed;
+	}
+	
+	/** Returns the current absolute position.
+	 * @return absolute position in radian
+	 */
+	public float getActualPosition() {
+		return absPos * scale;
 	}
 	
 	private static float limitDutyCycle(float d) {
