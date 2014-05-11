@@ -1,20 +1,20 @@
 #deep-1
 
 meta {
-	version = "2012-07-04";
-	description = "Board description file for Phytec phyCORE-MPC5200tiny";
+	version = "2014-04-09";
+	description = "Board description file for Phytec phyCORE-MPC5200io";
 }
 
-board phyCoreMpc5200tiny {
-	description = "Phytec phyCORE-MPC5200tiny";
+board phyCoreMpc5200io {
+	description = "Phytec phyCORE-MPC5200io";
 	cputype = mpc5200;
 	
 	sysconst {
 		extRamBase   = 0x0;						        # starting at 0x0
 		extRamSize   = 0x8000000;						# 128M external RAM
 	
-		extFlashBase = 0xFFF00000;						# starting at 0xFF000000
-		extFlashSize = 0x100000;						# only the last MB of the 16MB external Flash is used
+		extFlashBase = 0xFFF00000;						# starting at 0xFE000000
+		extFlashSize = 0x100000;						# only the last MB of the 32MB external Flash is used
 
 		excpCodeFlashBase = extFlashBase;				# Base address for exception code when starting from flash
 		excpCodeRamBase = extRamBase;					# Base address for exception code when starting from ram

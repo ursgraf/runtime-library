@@ -156,7 +156,20 @@ operatingsystem ntbSTS {
     
 	exception {
     	class = "ch/ntb/inf/deep/runtime/mpc555/Reset";
-    	condition = cputype:mpc555;
+ #   	condition = boardtype:ntbMpc555HB;
+     	condition = cputype:mpc555;
+    	method reset {
+    		attributes = exchnd;
+			offset = 0x100;
+    	}
+    	method <init> {
+    		attributes = synthetic;
+    	}
+    }
+    
+	exception {
+    	class = "ch/ntb/inf/deep/runtime/mpc5200/ResetPCMtiny";
+    	condition = boardtype:phyCoreMpc5200tiny;
     	method reset {
     		attributes = exchnd;
 			offset = 0x100;
@@ -167,8 +180,8 @@ operatingsystem ntbSTS {
     }
     
     exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/Reset";
-    	condition = cputype:mpc5200;
+    	class = "ch/ntb/inf/deep/runtime/mpc5200/ResetPCMio";
+    	condition = boardtype:phyCoreMpc5200io;
     	method reset {
     		attributes = exchnd;
 			offset = 0x100;
