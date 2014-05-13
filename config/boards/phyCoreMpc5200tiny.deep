@@ -18,7 +18,7 @@ board phyCoreMpc5200tiny {
 
 		excpCodeFlashBase = extFlashBase;				# Base address for exception code when starting from flash
 		excpCodeRamBase = extRamBase;					# Base address for exception code when starting from ram
-		excpCodeSize = 0x4000;							# Exception code size (includes exception vectors and further methods of the exception classe
+		excpCodeSize = 0x4000;							# Exception code size (includes exception vectors and further methods of the exception classes
 		
 		sysTabBaseAddr = excpCodeSize;					# Place system table behind exception code
 		
