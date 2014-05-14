@@ -68,7 +68,7 @@ class ResetPCMio extends PPCException implements Ippc32, IphyCoreMpc5200io, Idee
 			US.PUT4(SDRAMMR, 0x018d0000);				
 			US.PUT4(SDRAMCR, 0x715f0f00);	
 			
-			// copy code and const from flash to ram
+			// copy code and const from flash to SDRAM
 			int srcAddr = extFlashBase;
 			int dstAddr = extRamBase;
 			int size = US.GET4(baseAddr + stResetOffset + 4) / 4;

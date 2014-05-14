@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-// Auto generated file (2014-05-09 17:10:55)
+// Auto generated file (2014-05-14 13:07:31)
 
 public interface IphyCoreMpc5200io {
 
@@ -45,6 +45,16 @@ public interface IphyCoreMpc5200io {
 	public static final int MBAR = 0xf0000000;
 	public static final int CS0START = 0xf0000004;
 	public static final int CS0STOP = 0xf0000008;
+	public static final int CS1START = 0xf000000c;
+	public static final int CS1STOP = 0xf0000010;
+	public static final int CS2START = 0xf0000014;
+	public static final int CS2STOP = 0xf0000018;
+	public static final int CS3START = 0xf000001c;
+	public static final int CS3STOP = 0xf0000020;
+	public static final int CS4START = 0xf0000024;
+	public static final int CS4STOP = 0xf0000028;
+	public static final int CS5START = 0xf000002c;
+	public static final int CS5STOP = 0xf0000030;
 	public static final int SDRAMCS0 = 0xf0000034;
 	public static final int SDRAMCS1 = 0xf0000038;
 	public static final int IPBICR = 0xf0000054;
