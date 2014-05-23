@@ -69,8 +69,8 @@ class ResetPCMtiny extends PPCException implements Ippc32, IphyCoreMpc5200tiny, 
 			US.PUT4(SDRAMCR, 0x715f0f00);	
 			
 			// copy code and const from flash to ram
-			int srcAddr = extFlashBase;
-			int dstAddr = extRamBase;
+			int srcAddr = extFlashBase + US.GET4(baseAddr + stResetOffset);
+			int dstAddr = extRamBase + US.GET4(baseAddr + stResetOffset);
 			int size = US.GET4(baseAddr + stResetOffset + 4) / 4;
 			for (int i = 0; i < size; i++) {
 				US.PUT4(dstAddr, US.GET4(srcAddr));

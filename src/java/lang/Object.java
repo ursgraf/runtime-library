@@ -25,4 +25,5 @@ public class Object {
 		return 0;
 	}
 
+	public Class getClass() {return null;}
 }
