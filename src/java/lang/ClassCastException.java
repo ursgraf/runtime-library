@@ -26,43 +26,35 @@
 package java.lang;
 
 /**
- * Thrown to indicate that an array has been accessed with an
- * illegal index. The index is either negative or greater than or
- * equal to the size of the array.
+ * Thrown to indicate that the code has attempted to cast an object
+ * to a subclass of which it is not an instance. For example, the
+ * following code generates a <code>ClassCastException</code>:
+ * <p><blockquote><pre>
+ *     Object x = new Integer(0);
+ *     System.out.println((String)x);
+ * </pre></blockquote>
  *
  * @author  unascribed
  * @since   JDK1.0
  */
 public
-class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException {
-    private static final long serialVersionUID = -5116101128118950844L;
+class ClassCastException extends RuntimeException {
+    private static final long serialVersionUID = -9223365651070458532L;
 
     /**
-     * Constructs an <code>ArrayIndexOutOfBoundsException</code> with no
-     * detail message.
+     * Constructs a <code>ClassCastException</code> with no detail message.
      */
-    public ArrayIndexOutOfBoundsException() {
+    public ClassCastException() {
         super();
     }
 
     /**
-     * Constructs a new <code>ArrayIndexOutOfBoundsException</code>
-     * class with an argument indicating the illegal index.
-     *
-     * @param   index   the illegal index.
-     */
-    public ArrayIndexOutOfBoundsException(int index) {
-//        super("Array index out of range: " + index);
-        super("Array index out of range");
-    }
-
-    /**
-     * Constructs an <code>ArrayIndexOutOfBoundsException</code> class
-     * with the specified detail message.
+     * Constructs a <code>ClassCastException</code> with the specified
+     * detail message.
      *
      * @param   s   the detail message.
      */
-    public ArrayIndexOutOfBoundsException(String s) {
+    public ClassCastException(String s) {
         super(s);
     }
 }

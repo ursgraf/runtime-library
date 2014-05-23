@@ -32,6 +32,10 @@ public class Throwable implements Serializable {
 	public Throwable(Throwable cause) {
 	}
 
+	public Throwable(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+		this.message = message;
+	}
+
 	public String getMessage() {
 		return message;
 	}

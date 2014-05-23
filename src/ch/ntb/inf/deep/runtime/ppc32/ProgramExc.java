@@ -18,7 +18,10 @@ public class ProgramExc extends PPCException implements Ippc32 {
 		int opCode = instr >> 21;
 		if (opCode == 0x3ff) {	// tw, TOalways -> user defined exception
 //			if (e.message == null) e.message = "custom";
-			a = 10;
+//			if (a == 10) a = 11; else a = 10;
+			a++;
+//			if (a == 2) while (true);
+//			while (true);
 		} else if (opCode == 0x3e5) {	// tw, TOifgeU -> ArrayIndexOutOfBounds
 			e = new ArrayIndexOutOfBoundsException("ArrayIndexOutOfBoundsException");
 			a = 20;
