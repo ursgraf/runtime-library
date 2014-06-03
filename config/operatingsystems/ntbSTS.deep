@@ -217,13 +217,12 @@ operatingsystem ntbSTS {
     }
     
     exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/ProgramExc";
-    	condition = cputype:mpc5200;
-		method programExc {
+    	class = "ch/ntb/inf/deep/runtime/ppc32/ProgramExc";
+ 		method programExc {
     		attributes = exchnd;
     		offset = 0x700;
 		}
-			method <init> {
+		method <init> {
 			attributes = synthetic;
 		}
 	}
@@ -235,7 +234,7 @@ operatingsystem ntbSTS {
     		attributes = exchnd;
     		offset = 0x800;
 		}
-			method <init> {
+		method <init> {
 			attributes = synthetic;
 		}
 	}
@@ -255,7 +254,7 @@ operatingsystem ntbSTS {
     		attributes = exchnd;
     		offset = 0xc00;
 		}
-			method <init> {
+		method <init> {
 			attributes = synthetic;
 		}
 	}
@@ -267,7 +266,7 @@ operatingsystem ntbSTS {
     		attributes = exchnd;
     		offset = 0xc00;
 		}
-			method <init> {
+		method <init> {
 			attributes = synthetic;
 		}
 	}

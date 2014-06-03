@@ -18,30 +18,32 @@
 package java.lang;
 
 /**
- * Thrown when the VM notices that a program tries to reference,
- * on a class or object, a field that does not exist.
- * <p>
- * Note that this can only occur when inconsistent class files are being loaded.
+ * Thrown when a program tries to access a field or method of an object or an
+ * element of an array when there is no instance or array to use, that is if the
+ * object or array points to {@code null}. It also occurs in some other, less
+ * obvious circumstances, like a {@code throw e} statement where the {@link
+ * Throwable} reference is {@code null}.
  */
-public class NoSuchFieldError extends IncompatibleClassChangeError {
+public class NullPointerException extends RuntimeException {
 
-    private static final long serialVersionUID = -3456430195886129035L;
+    private static final long serialVersionUID = 5162710183389028792L;
 
     /**
-     * Constructs a new {@code NoSuchFieldError} that includes the current stack
-     * trace.
+     * Constructs a new {@code NullPointerException} that includes the current
+     * stack trace.
      */
-    public NoSuchFieldError() {
+    public NullPointerException() {
     }
 
     /**
-     * Constructs a new {@code NoSuchFieldError} with the current stack trace
-     * and the specified detail message.
+     * Constructs a new {@code NullPointerException} with the current stack
+     * trace and the specified detail message.
      *
      * @param detailMessage
-     *            the detail message for this error.
+     *            the detail message for this exception.
      */
-    public NoSuchFieldError(String detailMessage) {
+    public NullPointerException(String detailMessage) {
         super(detailMessage);
     }
+
 }

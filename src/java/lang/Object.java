@@ -1,29 +1,95 @@
 /*
- * Copyright 2011 - 2013 NTB University of Applied Sciences in Technology
- * Buchs, Switzerland, http://www.ntb.ch/inf
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- *   
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
  */
 
 package java.lang;
 
+/**
+ * The root class of the Java class hierarchy. All non-primitive types
+ * (including arrays) inherit either directly or indirectly from this class.
+ *
+ * This class is only partly implemented as we currently have no reflection and synchronization
+ */
+/* Changes:
+ * 2.6.2014	Urs Graf	initial import and modified
+ */
 public class Object {
 
-	public int hashCode() {
+    /**
+     * Constructs a new instance of {@code Object}.
+     */
+    public Object() {
+    }
+
+    public int hashCode() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+    /**
+     * Returns the unique instance of {@link Class} that represents this
+     * object's class. Note that {@code getClass()} is a special case in that it
+     * actually returns {@code Class<? extends Foo>} where {@code Foo} is the
+     * erasure of the type of the expression {@code getClass()} was called upon.
+     * <p>
+     * As an example, the following code actually compiles, although one might
+     * think it shouldn't:
+     * <p>
+     * <pre>{@code
+     *   List<Integer> l = new ArrayList<Integer>();
+     *   Class<? extends List> c = l.getClass();}</pre>
+     *
+     * @return this object's {@code Class} instance.
+     */
+    public final Class<?> getClass() {
+		return null;
+	}
+
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+    /**
+     * Compares this instance with the specified object and indicates if they
+     * are equal. In order to be equal, {@code o} must represent the same object
+     * as this instance using a class-specific comparison. The general contract
+     * is that this comparison should be reflexive, symmetric, and transitive.
+     * Also, no object reference other than null is equal to null.
+     *
+     * <p>The default implementation returns {@code true} only if {@code this ==
+     * o}. See <a href="{@docRoot}reference/java/lang/Object.html#writing_equals">Writing a correct
+     * {@code equals} method</a>
+     * if you intend implementing your own {@code equals} method.
+     *
+     * <p>The general contract for the {@code equals} and {@link
+     * #hashCode()} methods is that if {@code equals} returns {@code true} for
+     * any two objects, then {@code hashCode()} must return the same value for
+     * these objects. This means that subclasses of {@code Object} usually
+     * override either both methods or neither of them.
+     *
+     * @param o
+     *            the object to compare this instance with.
+     * @return {@code true} if the specified object is equal to this {@code
+     *         Object}; {@code false} otherwise.
+     * @see #hashCode
+     */
+    public boolean equals(Object o) {
+        return this == o;
+    }
 
 	public Class getClass() {return null;}
 }

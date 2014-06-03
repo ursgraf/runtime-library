@@ -18,30 +18,27 @@
 package java.lang;
 
 /**
- * Thrown when the VM notices that a program tries to reference,
- * on a class or object, a field that does not exist.
- * <p>
- * Note that this can only occur when inconsistent class files are being loaded.
+ * Thrown when a program attempts to cast a an object to a type with which it is
+ * not compatible.
  */
-public class NoSuchFieldError extends IncompatibleClassChangeError {
-
-    private static final long serialVersionUID = -3456430195886129035L;
+public class ClassCastException extends RuntimeException {
+    private static final long serialVersionUID = -9223365651070458532L;
 
     /**
-     * Constructs a new {@code NoSuchFieldError} that includes the current stack
-     * trace.
+     * Constructs a new {@code ClassCastException} that includes the current
+     * stack trace.
      */
-    public NoSuchFieldError() {
+    public ClassCastException() {
     }
 
     /**
-     * Constructs a new {@code NoSuchFieldError} with the current stack trace
+     * Constructs a new {@code ClassCastException} with the current stack trace
      * and the specified detail message.
      *
      * @param detailMessage
-     *            the detail message for this error.
+     *            the detail message for this exception.
      */
-    public NoSuchFieldError(String detailMessage) {
+    public ClassCastException(String detailMessage) {
         super(detailMessage);
     }
 }

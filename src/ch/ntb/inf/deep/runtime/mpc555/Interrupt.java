@@ -60,21 +60,25 @@ public class Interrupt extends PPCException implements IntbMpc555HB {
 			currInt.action();
 			US.PUT2(SIPEND, 1 << bitNr);		// clear pending bit
 		} else {	// internal interrupt
-			boolean done = false;
-			while (currInt.next != null && !done) {
-				short sh = US.GET2(currInt.enableRegAdr);
-				if ((sh & (1 << currInt.enBit)) != 0) {
-					sh = US.GET2(currInt.flagRegAdr);
-					if ((sh & (1 << currInt.flag)) != 0) {
-						currInt.action();
-						done = true;
-					}
-				}
-				currInt = currInt.next;
-			}
-			if (currInt.next == null && !done)
-				currInt.action();	// default handler
+			handleInternalInt(currInt);
 		}
+	}
+
+	private static void handleInternalInt(Interrupt currInt) {
+		boolean done = false;
+		while (currInt.next != null && !done) {
+			short sh = US.GET2(currInt.enableRegAdr);
+			if ((sh & (1 << currInt.enBit)) != 0) {
+				sh = US.GET2(currInt.flagRegAdr);
+				if ((sh & (1 << currInt.flag)) != 0) {
+					currInt.action();
+					done = true;
+				}
+			}
+			currInt = currInt.next;
+		}
+		if (currInt.next == null && !done)
+			currInt.action();	// default handler
 	}
 
 	public static void install(Interrupt interrupt, int level, boolean internal) {

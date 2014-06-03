@@ -20,10 +20,11 @@ package java.lang;
 
 import java.io.InputStream;
 import java.io.PrintStream;
-
+import ch.ntb.inf.deep.marker.Modified;
+import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
 import ch.ntb.inf.deep.unsafe.US;
 
-public final class System {
+public final class System implements Ippc32, Modified {
 	public static PrintStream err;
 	public static PrintStream out;
 	public static InputStream in;
@@ -95,5 +96,10 @@ public final class System {
 		err = new PrintStream(new DummyOutputStream());
 		in = new DummyInputStream();
 		
+	}
+
+	public static long currentTimeMillis() {
+		// TODO Auto-generated method stub, has to be improved
+		return US.GETSPR(TBLread);
 	}
 }

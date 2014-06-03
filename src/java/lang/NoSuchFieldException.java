@@ -20,28 +20,26 @@ package java.lang;
 /**
  * Thrown when the VM notices that a program tries to reference,
  * on a class or object, a field that does not exist.
- * <p>
- * Note that this can only occur when inconsistent class files are being loaded.
  */
-public class NoSuchFieldError extends IncompatibleClassChangeError {
+public class NoSuchFieldException extends ReflectiveOperationException {
 
-    private static final long serialVersionUID = -3456430195886129035L;
+    private static final long serialVersionUID = -6143714805279938260L;
 
     /**
-     * Constructs a new {@code NoSuchFieldError} that includes the current stack
-     * trace.
+     * Constructs a new {@code NoSuchFieldException} that includes the current
+     * stack trace.
      */
-    public NoSuchFieldError() {
+    public NoSuchFieldException() {
     }
 
     /**
-     * Constructs a new {@code NoSuchFieldError} with the current stack trace
-     * and the specified detail message.
+     * Constructs a new {@code NoSuchFieldException} with the current stack
+     * trace and the specified detail message.
      *
      * @param detailMessage
-     *            the detail message for this error.
+     *            the detail message for this exception.
      */
-    public NoSuchFieldError(String detailMessage) {
+    public NoSuchFieldException(String detailMessage) {
         super(detailMessage);
     }
 }

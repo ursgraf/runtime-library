@@ -111,7 +111,7 @@ board ntbMpc555HB {
 		OR1 = 0xFFE00020;								# Set address mask for CS0 to 2M, address type mask = 0, 2 + 2 wait states
 		ICTRL = 7;										# ???
 		RSR = -1;										# Set reset status register back
-		DER = 0x31C3400F;								# Set debug enable register
+		DER = 0x3143400F;								# Set debug enable register // 0x31C3400F includes program exc
 		SRR1 = SRR1init;								# Set Machine Status Save/Restore Register 1
 	}
 
