@@ -18,28 +18,29 @@
 package java.lang;
 
 /**
- * Thrown when a program attempts to access a value in an indexable collection
- * using a value which is outside of the range of valid indices.
+ * Thrown when the VM notices that a program tries to reference,
+ * on a class or object, a method that does not exist.
  */
-public class IndexOutOfBoundsException extends RuntimeException {
+public class NoSuchMethodError extends IncompatibleClassChangeError {
 
-    private static final long serialVersionUID = 234122996006267687L;
+    private static final long serialVersionUID = -3765521442372831335L;
 
     /**
-     * Constructs a new {@code IndexOutOfBoundsException} that includes the
-     * current stack trace.
+     * Constructs a new {@code NoSuchMethodError} that includes the current
+     * stack trace.
      */
-    public IndexOutOfBoundsException() {
+    public NoSuchMethodError() {
     }
 
     /**
-     * Constructs a new {@code IndexOutOfBoundsException} with the current stack
-     * trace and the specified detail message.
+     * Constructs a new {@code NoSuchMethodError} with the current stack trace
+     * and the specified detail message.
      *
      * @param detailMessage
      *            the detail message for this exception.
      */
-    public IndexOutOfBoundsException(String detailMessage) {
+    public NoSuchMethodError(String detailMessage) {
         super(detailMessage);
     }
+
 }

@@ -18,28 +18,28 @@
 package java.lang;
 
 /**
- * Thrown when a program attempts to access a value in an indexable collection
- * using a value which is outside of the range of valid indices.
+ * Thrown when an invalid value is passed to a string-to-number conversion
+ * method.
  */
-public class IndexOutOfBoundsException extends RuntimeException {
+public class NumberFormatException extends IllegalArgumentException {
 
-    private static final long serialVersionUID = 234122996006267687L;
+    private static final long serialVersionUID = -2848938806368998894L;
 
     /**
-     * Constructs a new {@code IndexOutOfBoundsException} that includes the
-     * current stack trace.
+     * Constructs a new {@code NumberFormatException} that includes the current
+     * stack trace.
      */
-    public IndexOutOfBoundsException() {
+    public NumberFormatException() {
     }
 
     /**
-     * Constructs a new {@code IndexOutOfBoundsException} with the current stack
+     * Constructs a new {@code NumberFormatException} with the current stack
      * trace and the specified detail message.
      *
      * @param detailMessage
      *            the detail message for this exception.
      */
-    public IndexOutOfBoundsException(String detailMessage) {
+    public NumberFormatException(String detailMessage) {
         super(detailMessage);
     }
 }

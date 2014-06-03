@@ -19,6 +19,7 @@
 package ch.ntb.inf.deep.trglib.targettest;
 
 import ch.ntb.inf.deep.runtime.mpc555.*;
+import ch.ntb.inf.deep.runtime.util.Actionable;
 import ch.ntb.inf.deep.unsafe.US;
 import ch.ntb.inf.junitTarget.*;
 
