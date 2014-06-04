@@ -16,24 +16,37 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc555.test;
+package ch.ntb.inf.deep.runtime.mpc5200.test;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
-import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
-import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
+import java.io.PrintStream;
 
-public class TaskWithInterfaceTest extends Task implements IntbMpc555HB {
+import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
+import ch.ntb.inf.deep.runtime.mpc5200.Task;
+
+/**
+ * Demo for System.out using UART on PSC3.
+ */
+public class UART3Demo extends Task {
 	
 	public void action() {
-		MPIOSM_DIO.set(12, !MPIOSM_DIO.get(12));
-	}
-	
-	static {
-		MPIOSM_DIO.init(12, true);
-		MPIOSM_DIO.set(12, false);
-		Task t = new TaskWithInterfaceTest();
-		t.period = 1000;
-		Task.install(t);
+		// Write a single character to the stdout
+		System.out.print('.');
 	}
 
+	static {
+		// Initialize UART (9600 8N1)
+		UART3.start(9600, UART3.NO_PARITY, (short)8);
+		
+		// Use the UART3 for stdout and stderr
+		System.out = new PrintStream(UART3.out);
+		System.err = System.out;
+		
+		// Print a string to the stdout
+		System.out.print("System.out demo (UART3)");
+		
+		// Create and install the demo task
+		Task t = new UART3Demo();
+		t.period = 500;
+		Task.install(t);
+	}
 }

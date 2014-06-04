@@ -26,8 +26,6 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.DS1302Z;
  * After that the time is updated with a normal {@link ch.ntb.inf.deep.runtime.mpc555.Task}. 
  * Each 24 hours at 24:00 the time will be updated from the real time clock.<br>
  * 
- * @author 25.08.2009 simon.pertschy@ntb.ch
- * 
  */
 public class DateTime extends Task {
 
@@ -61,10 +59,10 @@ public class DateTime extends Task {
 		return dateTime;
 	}
 
-	/* (non-Javadoc)
-	 * @see mpc555.Task#Do()
+	/*
+	 * @see mpc555.Task#action()
 	 */
-	public void Do() {
+	public void action() {
 		millisec += Task.time() - lastCallTime;
 		lastCallTime = Task.time();
 		if (millisec > 999) {

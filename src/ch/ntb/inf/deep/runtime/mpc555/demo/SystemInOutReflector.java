@@ -19,30 +19,30 @@
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import ch.ntb.inf.deep.runtime.mpc555.Task;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2InputStream;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2OutputStream;
 
 
 /**
- * Demo for System.out and System.in using SCI2.
+ * Demo for InputStream and OutputStream using SCI2.
  */
 public class SystemInOutReflector extends Task {
+	static SCI2OutputStream out;
+	static SCI2InputStream in;
 	
-	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
-	 */
 	public void action() {
 		// reflect input on stdin to stdout
-		if (SCI1.availToRead() > 0)
-			SCI1.write((byte)SCI1.read());
+		if (in.available() > 0)	out.write(in.read());
 	}
 
 	static {
 		// Initialize SCI2 (9600 8N1)
-		SCI1.start(9600, SCI1.NO_PARITY, (short)8);
-		SCI1.write((byte)'x');
-		SCI1.write((byte)'1');
+		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
+		out = new SCI2OutputStream();
+		in = new SCI2InputStream();
+		out.write((byte)'x');
 		
-		// Create and install the demo task
 		Task t = new SystemInOutReflector();
 		t.period = 0;
 		Task.install(t);

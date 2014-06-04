@@ -46,6 +46,7 @@ public class DecrementerDemo extends Decrementer {
 		// Initialize the SCI2 (9600 8N1) and use it for System.out
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI2.out);
+		System.err = System.out;
 		
 		// Create and install the Decrementer demo
 		decTest = new DecrementerDemo(); 

@@ -25,6 +25,7 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
 /**
  * Demo for System.out using SCI2.
+ * This application simply outputs the character '.' once per second over the SCI2.
  */
 public class SystemOutDemo2 extends Task {
 	

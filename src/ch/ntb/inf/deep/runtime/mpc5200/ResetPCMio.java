@@ -23,10 +23,10 @@ import ch.ntb.inf.deep.runtime.ppc32.PPCException;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
- * 21.6.12	NTB/GRAU	creation
+ * 10.5.2014	NTB/GRAU	creation
  */
 
-class Reset extends PPCException implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstants {
+class ResetPCMio extends PPCException implements Ippc32, IphyCoreMpc5200io, IdeepCompilerConstants {
 	
 	static void reset() {
 //		US.ASM("b 0");
@@ -46,9 +46,9 @@ class Reset extends PPCException implements Ippc32, IphyCoreMpc5200tiny, IdeepCo
 //			US.PUT4(GPWOUT, 0x80000000);	// switch off led 1
 			
 			// configure CS0 for boot flash 
-			US.PUT4(CS0START, 0x0000ff00);	// start address = 0xff000000
-			US.PUT4(CS0STOP, 0x0000ffff); 	// stop address = 0xffffffff, size = 16MB
-			US.PUT4(CS0CR, 0x0008fd00);	// 8 wait states, multiplexed, ack, enabled, 25 addr. lines, 16 bit data, rw
+			US.PUT4(CS0START, 0x0000fe00);	// start address = 0xfe000000
+			US.PUT4(CS0STOP, 0x0000ffff); 	// stop address = 0xffffffff, size = 32MB
+			US.PUT4(CS0CR, 0x0008ff00);	// 8 wait states, multiplexed, ack, enabled, 25 addr. lines, 32 bit data, rw
 			US.PUT4(CSCR, 0x01000000);	// CS master enable
 			US.PUT4(IPBICR, 0x00010001);	// enable CS0, disable CSboot, enable wait states
 			
@@ -68,9 +68,9 @@ class Reset extends PPCException implements Ippc32, IphyCoreMpc5200tiny, IdeepCo
 			US.PUT4(SDRAMMR, 0x018d0000);				
 			US.PUT4(SDRAMCR, 0x715f0f00);	
 			
-			// copy code and const from flash to ram
-			int srcAddr = extFlashBase;
-			int dstAddr = extRamBase;
+			// copy code and const from flash to SDRAM
+			int srcAddr = extFlashBase + US.GET4(baseAddr + stResetOffset);
+			int dstAddr = extRamBase + US.GET4(baseAddr + stResetOffset);
 			int size = US.GET4(baseAddr + stResetOffset + 4) / 4;
 			for (int i = 0; i < size; i++) {
 				US.PUT4(dstAddr, US.GET4(srcAddr));

@@ -20,6 +20,7 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
+import ch.ntb.inf.deep.runtime.util.Actionable;
 
 public class ActionableTest1 implements Actionable {
 	int pin;

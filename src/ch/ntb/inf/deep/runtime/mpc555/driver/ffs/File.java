@@ -47,7 +47,6 @@ public class File {
 	 * returns length of file in bytes
 	 */
 	public int length () {
-		if (this == null) return 0;
 		return this.len;
 	} 
 
@@ -55,7 +54,6 @@ public class File {
 	 * writes file length into directory
 	 */
 	public void register () {	// blocking
-		if (this == null) return;
 		if (this.len % 2 == 1) {
 			Rider r = new Rider();
 			r.set(this, this.len);
@@ -70,7 +68,6 @@ public class File {
 	 * deletes file in directory
 	 */
 	public void delete () {	// blocking
-		if (this == null) return;
 		this.valid = false;
 		FFS.writeDir();
 		return;

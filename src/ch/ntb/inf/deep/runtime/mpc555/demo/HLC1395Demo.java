@@ -60,6 +60,7 @@ public class HLC1395Demo extends Task {
 		// Initialize SCI1 and set stdout to SCI1
 		SCI1.start(9600, SCI1.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI1.out);
+		System.err = System.out;
 		
 		System.out.println("HLC1295-Demo");
 		

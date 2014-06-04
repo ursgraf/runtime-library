@@ -18,6 +18,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver.ffs;
 
+import java.io.IOException;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.Task;
@@ -54,71 +55,77 @@ public class FileTransfer extends Task {
 		switch (this.state) {
 		case receivingCommands:
 			if (SCI2.availToRead() > 0) {
-				res = SCI2.read();
-				ch = (char)res;
-				if (ch == 'g') sendFileDir();
-				if (ch == 'a') {FFS.formatAll(); System.out.println("ffs formated"); System.out.println();}
-				if (ch == 's') {this.state = sendingFile; this.count = 0;}	// transfer to host 
-				if (ch == 'p') {this.state = receivingFile; this.subState = 0; this.count = 0;}	// receive from host
+				try {
+					res = SCI2.read();
+					ch = (char)res;
+					if (ch == 'g') sendFileDir();
+					if (ch == 'a') {FFS.formatAll(); System.out.println("ffs formated"); System.out.println();}
+					if (ch == 's') {this.state = sendingFile; this.count = 0;}	// transfer to host 
+					if (ch == 'p') {this.state = receivingFile; this.subState = 0; this.count = 0;}	// receive from host
+				} catch (IOException e) {e.printStackTrace();}
 			}
 			break;
 		case sendingFile:
 			if (SCI2.availToRead() > 0) {
-				res = SCI2.read();
-				ch = (char)res;
-				if (ch != 0) {str[this.count] = ch; this.count++;}
-				else {
-					name = new String(str, 0, this.count);
-					System.out.print(name);
-					System.out.print('\0');
-					f = FFS.old(name);
-					if (f != null) {
-						System.out.print(f.length()); 
-						System.out.print(' ');
-						r = new Rider();
-						r.set(f, 0);
-						byte val = r.readByte();
-						while (!r.eof) {
-							System.out.print((char)val);
-							val = r.readByte();
+				try {
+					res = SCI2.read();
+					ch = (char)res;
+					if (ch != 0) {str[this.count] = ch; this.count++;}
+					else {
+						name = new String(str, 0, this.count);
+						System.out.print(name);
+						System.out.print('\0');
+						f = FFS.old(name);
+						if (f != null) {
+							System.out.print(f.length()); 
+							System.out.print(' ');
+							r = new Rider();
+							r.set(f, 0);
+							byte val = r.readByte();
+							while (!r.eof) {
+								System.out.print((char)val);
+								val = r.readByte();
+							}
+						} else { // file does not exist
+							System.out.print(-1); 
+							System.out.print(' ');
 						}
-					} else { // file does not exist
-						System.out.print(-1); 
-						System.out.print(' ');
+						this.state = receivingCommands;
 					}
-					this.state = receivingCommands;
-				}
+				} catch (IOException e) {e.printStackTrace();}
 			}				
 			break;
 		case receivingFile:
 			if (SCI2.availToRead() > 0) {
-				res = SCI2.read();
-				ch = (char)res;
-				switch (subState) {
-				case 0:
-					if (ch != 0) {str[this.count] = ch; this.count++;}
-					else if (count > 0) {this.subState++; this.len = 0;}
-					break;	
-				case 1:
-					if (ch != ' ') {this.len = ch - '0' + this.len * 10; }
-					else {
-						this.subState++;
-						this.i = 0;
-						name = new String(str, 0, this.count);;
-						System.out.print("create file: "); System.out.print(name); 
-						System.out.print(", len = "); System.out.print(this.len); System.out.println("Bytes");
-						f = new File(name);
-						r = new Rider();
-						r.set(f, 0);
+				try {
+					res = SCI2.read();
+					ch = (char)res;
+					switch (subState) {
+					case 0:
+						if (ch != 0) {str[this.count] = ch; this.count++;}
+						else if (count > 0) {this.subState++; this.len = 0;}
+						break;	
+					case 1:
+						if (ch != ' ') {this.len = ch - '0' + this.len * 10; }
+						else {
+							this.subState++;
+							this.i = 0;
+							name = new String(str, 0, this.count);;
+							System.out.print("create file: "); System.out.print(name); 
+							System.out.print(", len = "); System.out.print(this.len); System.out.println("Bytes");
+							f = new File(name);
+							r = new Rider();
+							r.set(f, 0);
+						}
+						break;
+					case 2:
+						r.writeByte((byte)res); this.i++;
+						if (this.i == this.len) {
+							f.register(); System.out.print(f.name); System.out.println(" registered");
+							this.state = receivingCommands;
+						}
 					}
-					break;
-				case 2:
-					r.writeByte((byte)res); this.i++;
-					if (this.i == this.len) {
-						f.register(); System.out.print(f.name); System.out.println(" registered");
-						this.state = receivingCommands;
-					}
-				}
+				} catch (IOException e) {e.printStackTrace();}
 			}
 			break;
 		}
@@ -127,6 +134,7 @@ public class FileTransfer extends Task {
 	static {
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI2.out);
+		System.err = new PrintStream(SCI2.out);
 		System.out.println("started");
 		Task t = new FileTransfer(); 
 		Task.install(t);

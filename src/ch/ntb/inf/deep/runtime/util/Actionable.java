@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 - 2013 NTB University of Applied Sciences in Technology
+ * Copyright 2011 - 2014 NTB University of Applied Sciences in Technology
  * Buchs, Switzerland, http://www.ntb.ch/inf
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@
  * 
  */
 
-package java.lang;
+package ch.ntb.inf.deep.runtime.util;
 
 /**
  * The <code>Actionable</code> interface should be implemented by any
@@ -42,6 +42,7 @@ package java.lang;
  *
  * @author  Urs Graf
  * @see     ch.ntb.inf.deep.runtime.mpc555.Task
+ * @see     ch.ntb.inf.deep.runtime.mpc5200.Task
  */
 public interface Actionable {
     /**

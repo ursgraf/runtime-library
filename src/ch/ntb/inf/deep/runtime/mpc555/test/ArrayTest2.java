@@ -19,6 +19,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import java.io.PrintStream;
+
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
 /*changes:
@@ -31,6 +32,7 @@ public class ArrayTest2 {
 	static {
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI2.out);
+		System.err = new PrintStream(SCI2.out);
 		
 		System.out.println("array test");
 		d1 = d[0];

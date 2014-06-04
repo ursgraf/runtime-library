@@ -98,4 +98,29 @@ public class MathTest {
 		Assert.assertEquals("Test6", Math.atan(-1.5/-2)-Math.PI, Math.atan2(-1.5,-2), 1e-5);
 		CmdTransmitter.sendDone();
 	}
+
+	@Test
+	public static void testLog(){
+		Assert.assertEquals("Test1", Math.log(2345), 7.7600406808803797393761840730331, 1e-20);
+		Assert.assertEquals("Test2", Math.log10(2345), 3.3701428470511020696476089930942, 1e-20);
+		Assert.assertEquals("Test3", Math.log(-10), Double.NaN, 1e-5);
+		CmdTransmitter.sendDone();
+	}
+
+	@Test
+	public static void testMaxMin(){
+		Assert.assertEquals("Test1", Math.max(3E56, 0.1), +3e+56, 0);
+		Assert.assertEquals("Test2", Math.max(9209352045L, 457394857493654L), 457394857493654L);
+		Assert.assertEquals("Test3", Math.min(3E56, 0.1), 0.1, 0);
+		Assert.assertEquals("Test4", Math.min(9209352045L, 457394857493654L), 9209352045L);
+		CmdTransmitter.sendDone();
+	}
+
+	@Test
+	public static void testRandom(){
+		Assert.assertFalse("Test1", Math.random() == Math.random());
+		Assert.assertTrue("Test2", Math.random() < 1.0);
+		Assert.assertTrue("Test3", Math.random() >= 0.0);
+		CmdTransmitter.sendDone();
+	}
 }
