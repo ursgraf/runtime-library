@@ -18,9 +18,11 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200.driver;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /* Changes:
+ * 3.6.2014		Urs Graf		exception handling added
  * 12.02.2013	Martin Zueger	initial version
  */
 
@@ -32,32 +34,63 @@ import java.io.InputStream;
  */
 public class UART3InputStream extends InputStream{
 
-	/* (non-Javadoc)
-	 * @see java.io.InputStream#available()
+	/**
+	 * Returns the number of bytes available from the stream.
+	 * 
+	 * @return number of bytes available.
 	 */
 	public int available() {
 		return UART3.availToRead();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.io.InputStream#read()
+	/**
+	 * Reads one byte from the UART3. A call of
+	 * this method is not blocking!
+	 * 
+	 * @return byte read
 	 */
 	public int read() {
-		return UART3.read();
+		int cnt = 0;
+		try {
+			cnt = UART3.read();
+		} catch (IOException e) {e.printStackTrace();}
+		return cnt;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.io.InputStream#read(byte[])
+	/**
+	 * Reads the given number of bytes from the UART3. A call of
+	 * this method is not blocking!
+	 * 
+	 * @param buffer
+	 *            Byte array to write the received data.
+	 * @return the number of bytes read. 
 	 */
-	public int read(byte b[]){
-		return UART3.read(b);
+	public int read(byte buffer[]){
+		int cnt = 0;
+		try {
+			cnt = UART3.read(buffer);
+		} catch (IOException e) {e.printStackTrace();}
+		return cnt;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.io.InputStream#read(byte[], int, int)
+
+	/**
+	 * Reads the given number of bytes from the UART3. A call of
+	 * this method is not blocking!
+	 * 
+	 * @param buffer
+	 *            Byte array to write the received data.
+	 * @param off
+	 *            Offset in the array to start writing the data.
+	 * @param count
+	 *            Length (number of bytes) to read.
+	 * @return the number of bytes read.
 	 */
-	public int read(byte b[], int off, int len){
-		return UART3.read(b, off, len);
+	public int read(byte buffer[], int off, int count){
+		int cnt = 0;
+		try {
+			cnt = UART3.read(buffer, off, count);
+		} catch (IOException e) {e.printStackTrace();}
+		return cnt;
 	}
 	
 }

@@ -16,28 +16,32 @@
  * 
  */
 
-package java.lang;
+package ch.ntb.inf.deep.runtime.mpc5200.test;
 
-import java.io.OutputStream;
+import ch.ntb.inf.deep.runtime.mpc5200.Task;
+import ch.ntb.inf.deep.runtime.mpc5200.driver.*;
 
-public class DummyOutputStream extends OutputStream {
-
-	@Override
-	public int freeSpace() {
-		// TODO Auto-generated method stub
-		return 0;
+/**
+ * Demo for InputStream and OutputStream using UART3.
+ */
+public class UART3InOutReflector extends Task {
+	static UART3OutputStream out;
+	static UART3InputStream in;
+	
+	public void action() {
+		// reflect input on stdin to stdout
+		if (in.available() > 0)	out.write(in.read());
 	}
 
-	@Override
-	public void reset() {
-		// TODO Auto-generated method stub
-
+	static {
+		// Initialize SCI2 (9600 8N1)
+		UART3.start(9600, UART3.NO_PARITY, (short)8);
+		out = new UART3OutputStream();
+		in = new UART3InputStream();
+		out.write((byte)'x');
+		
+		Task t = new UART3InOutReflector();
+		t.period = 0;
+		Task.install(t);
 	}
-
-	@Override
-	public void write(byte b) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

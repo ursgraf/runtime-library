@@ -18,9 +18,11 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /* Changes:
+ * 3.6.2014		Urs Graf		exception handling added
  * 13.10.2011	Martin Zueger	JavaDoc fixed
  * 06.01.2010	Simon Pertschy	initial version
  */
@@ -31,34 +33,65 @@ import java.io.InputStream;
  * Don't forget to initialize the SCI2 before using this class.
  * 
  */
-public class SCI2InputStream extends InputStream{
+public class SCI2InputStream extends InputStream {
 
-	/* (non-Javadoc)
-	 * @see java.io.InputStream#available()
+	/**
+	 * Returns the number of bytes available from the stream.
+	 * 
+	 * @return number of bytes available.
 	 */
 	public int available() {
 		return SCI2.availToRead();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.io.InputStream#read()
+	/**
+	 * Reads one byte from the SCI2. A call of
+	 * this method is not blocking!
+	 * 
+	 * @return byte read
 	 */
 	public int read() {
-		return SCI2.read();
+		int cnt = 0;
+		try {
+			cnt = SCI2.read();
+		} catch (IOException e) {e.printStackTrace();}
+		return cnt;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.io.InputStream#read(byte[])
+	/**
+	 * Reads the given number of bytes from the SCI2. A call of
+	 * this method is not blocking!
+	 * 
+	 * @param buffer
+	 *            Byte array to write the received data.
+	 * @return the number of bytes read. 
 	 */
-	public int read(byte b[]){
-		return SCI2.read(b);
+	public int read(byte buffer[]){
+		int cnt = 0;
+		try {
+			cnt = SCI2.read(buffer);
+		} catch (IOException e) {e.printStackTrace();}
+		return cnt;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.io.InputStream#read(byte[], int, int)
+
+	/**
+	 * Reads the given number of bytes from the SCI2. A call of
+	 * this method is not blocking!
+	 * 
+	 * @param buffer
+	 *            Byte array to write the received data.
+	 * @param off
+	 *            Offset in the array to start writing the data.
+	 * @param count
+	 *            Length (number of bytes) to read.
+	 * @return the number of bytes read.
 	 */
-	public int read(byte b[], int off, int len){
-		return SCI2.read(b, off, len);
+	public int read(byte buffer[], int off, int count){
+		int cnt = 0;
+		try {
+			cnt = SCI2.read(buffer, off, count);
+		} catch (IOException e) {e.printStackTrace();}
+		return cnt;
 	}
 	
 }

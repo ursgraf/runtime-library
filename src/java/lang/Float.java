@@ -205,8 +205,8 @@ public final class Float extends Number implements Comparable<Float>, Modified {
         }
 
         // Deal with +0.0 and -0.0
-        int f1 = (int) LL.doubleToBits(float1);
-        int f2 = (int) LL.doubleToBits(float2);	//TODO, noch aendern!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        int f1 = (int) LL.floatToBits(float1);
+        int f2 = (int) LL.floatToBits(float2);
         // The below expression is equivalent to:
         // (f1 == f2) ? 0 : (f1 < f2) ? -1 : 1
         // because f1 and f2 are either 0 or Integer.MIN_VALUE
@@ -274,12 +274,12 @@ public final class Float extends Number implements Comparable<Float>, Modified {
     @Override
     public boolean equals(Object object) {
         return (object instanceof Float) &&
-                (LL.doubleToBits(this.value) == LL.doubleToBits(((Float) object).value));	//TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                (LL.floatToBits(this.value) == LL.floatToBits(((Float) object).value));
     }
 
     @Override
     public int hashCode() {
-        return (int) LL.doubleToBits(value);	//TODO
+        return (int) LL.floatToBits(value);
     }
 
     @Override

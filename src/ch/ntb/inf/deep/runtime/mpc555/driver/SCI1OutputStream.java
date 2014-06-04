@@ -18,9 +18,11 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 /* Changes:
+ * 3.6.2014		Urs Graf		exception handling added
  * 13.10.2011	Martin Zueger	reset() implemented, JavaDoc fixed
  * 06.01.2010	Simon Pertschy	initial version
  */
@@ -31,41 +33,46 @@ import java.io.OutputStream;
  * Don't forget to initialize the SCI1 before using this stream.
  * 
  */
-public class SCI1OutputStream extends OutputStream{
+public class SCI1OutputStream extends OutputStream {
 
-	/* (non-Javadoc)
-	 * @see java.io.OutputStream#freeSpace()
-	 */
-	public int freeSpace() {
-		return SCI1.availToWrite();
+    /**
+     * Writes a single byte to this stream. Only the least significant byte of
+     * the integer {@code oneByte} is written to the stream.
+     *
+     * @param oneByte
+     *            the byte to be written.
+     */
+	public void write(int b) {
+		try {
+			SCI1.write((byte)b);
+		} catch (IOException e) {e.printStackTrace();}
 	}
 
-	/* (non-Javadoc)
-	 * @see java.io.OutputStream#reset()
-	 */
-	public void reset() {
-		SCI1.clear();
-	}
-
-	/* (non-Javadoc)
-	 * @see java.io.OutputStream#write(byte)
-	 */
-	public void write(byte b) {
-		SCI1.write(b);
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see java.io.OutputStream#write(byte[])
-	 */
-	public int write(byte b[]){
-		return SCI1.write(b);
+    /**
+     * Equivalent to {@code write(buffer, 0, buffer.length)}.
+     */
+	public void write(byte buffer[]) {
+		try {
+			SCI1.write(buffer);
+		} catch (IOException e) {e.printStackTrace();}
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.io.OutputStream#write(byte[], int, int)
-	 */
-	public int write(byte b[], int off, int len){
-		return SCI1.write(b, off, len);
+    /**
+     * Writes {@code count} bytes from the byte array {@code buffer} starting at
+     * position {@code offset} to this stream.
+     *
+     * @param buffer
+     *            the buffer to be written.
+     * @param offset
+     *            the start position in {@code buffer} from where to get bytes.
+     * @param count
+     *            the number of bytes from {@code buffer} to write to this
+     *            stream.
+     */
+	public void write(byte b[], int off, int len) {
+		try {
+			SCI1.write(b, off, len);
+		} catch (IOException e) {e.printStackTrace();}
 	}
+
 }

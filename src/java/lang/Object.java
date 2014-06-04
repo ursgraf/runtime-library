@@ -17,6 +17,8 @@
 
 package java.lang;
 
+import ch.ntb.inf.deep.unsafe.US;
+
 /**
  * The root class of the Java class hierarchy. All non-primitive types
  * (including arrays) inherit either directly or indirectly from this class.
@@ -34,10 +36,25 @@ public class Object {
     public Object() {
     }
 
+    /**
+     * Returns an integer hash code for this object. By contract, any two
+     * objects for which {@link #equals} returns {@code true} must return
+     * the same hash code value. This means that subclasses of {@code Object}
+     * usually override both methods or neither method.
+     *
+     * <p>Note that hash values must not change over time unless information used in equals
+     * comparisons also changes.
+     *
+     * <p>See <a href="{@docRoot}reference/java/lang/Object.html#writing_hashCode">Writing a correct
+     * {@code hashCode} method</a>
+     * if you intend implementing your own {@code hashCode} method.
+     *
+     * @return this object's hash code.
+     * @see #equals
+     */
     public int hashCode() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    	return US.REF(this);
+    }
 	
     /**
      * Returns the unique instance of {@link Class} that represents this
@@ -58,10 +75,16 @@ public class Object {
 		return null;
 	}
 
-	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /**
+     * Returns a string containing a concise, human-readable description of this
+     * object. Subclasses are encouraged to override this method and provide an
+     * implementation that takes into account the object's type and data. 
+     *
+     * @return a printable representation of this object.
+     */
+    public String toString() {
+        return Integer.toHexString(hashCode());
+    }
 
     /**
      * Compares this instance with the specified object and indicates if they
@@ -91,5 +114,4 @@ public class Object {
         return this == o;
     }
 
-	public Class getClass() {return null;}
 }

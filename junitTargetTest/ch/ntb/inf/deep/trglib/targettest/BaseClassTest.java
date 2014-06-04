@@ -54,6 +54,28 @@ public class BaseClassTest {
 	}	
 
 	@Test
+	public static void testShort() {
+		Short s1 = -10000;
+		Short s2 = 10000;
+		Assert.assertEquals("test1", Short.compare(s1, s2), -1);
+		Assert.assertEquals("test2", Short.compare(s2, s1), 1);
+		Assert.assertEquals("test3", Short.compare(s1, new Short((short) -10000)), 0);
+		
+		s2 = new Short("5000");
+		Assert.assertEquals("test4", s2.shortValue(), 5000);
+		s2 = new Short("-12008");
+		Assert.assertEquals("test5", s2.shortValue(), -12008);
+		Assert.assertTrue("test6", s2.equals(new Short((short) -12008)));
+		Assert.assertFalse("test7", s2.equals(s1));
+		
+		Assert.assertEquals("test10", s2.floatValue(), -12008.0, 0);
+		Assert.assertEquals("test11", s2.intValue(), -12008);
+		Assert.assertEquals("test12", s2.longValue(), -12008);
+		
+		CmdTransmitter.sendDone();
+	}	
+
+	@Test
 	public static void testInt() {
 		Integer i1 = -10000000;
 		Integer i2 = 334556;

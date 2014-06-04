@@ -6,6 +6,7 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
 
 public class ExceptionTest1 {
 	
+	@SuppressWarnings("unused")
 	static void m1() {
 		int a = 100;
 		System.out.println("m1()");
@@ -55,11 +56,13 @@ public class ExceptionTest1 {
 		a[5] = 1000;
 	}
 
+	@SuppressWarnings("null")
 	static void m6() {
 		int[] a = null;
 		a[5] = 1000;
 	}
 
+	@SuppressWarnings("unused")
 	static void m7() {
 //		int a = 0;
 //		int b = 100 / a;
@@ -70,16 +73,19 @@ public class ExceptionTest1 {
 		long n = 100000000000L % m;	
 	}
 
+	@SuppressWarnings("unused")
 	static void m8() {
 		int a = -1;
 		int[] b = new int[a];
 	}
 
+	@SuppressWarnings("unused")
 	static void m9() {
 		int a = -1;
 		MyException1[] b = new MyException1[a];
 	}
 
+	@SuppressWarnings("unused")
 	static void m10() {
 		Object obj = new MyException1();
 		ExceptionTest1 obj2 = (ExceptionTest1) obj;
@@ -99,6 +105,7 @@ public class ExceptionTest1 {
 	}
 }
 
+@SuppressWarnings("serial")
 class MyException1 extends Exception {
 	int x;
 	

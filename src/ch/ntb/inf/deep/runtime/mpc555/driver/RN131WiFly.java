@@ -1,5 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
@@ -9,6 +10,7 @@ import ch.ntb.inf.deep.runtime.util.ByteLiFo;
 
 /*
  * Changes:
+ * 3.6.2014		Urs Graf			exception handling added
  * 30.10.2013 NTB/AK: Initial Version
  */
 
@@ -657,23 +659,25 @@ public class RN131WiFly extends Task{
 	 * Do not call this Method!!
 	 */
 	public void action(){
-		if(inWifi.available() > 0){
-			int availLen =  inWifi.read(tmp);
-			int tmpIndex;
-			for (tmpIndex = 0; tmpIndex < availLen; tmpIndex++){
-				checkKeyWords(tmpIndex, availLen);
-				if(tcpConnectionOpen() && !gotKeyWord){
-					int writeLen = rxQueueSlip.availToWrite();
-					if(!(writeLen < (availLen-tmpIndex))){
-						rxQueueSlip.enqueue(tmp[tmpIndex]);
+		try {
+			if (inWifi.available() > 0){
+				int availLen =  inWifi.read(tmp);
+				int tmpIndex;
+				for (tmpIndex = 0; tmpIndex < availLen; tmpIndex++){
+					checkKeyWords(tmpIndex, availLen);
+					if(tcpConnectionOpen() && !gotKeyWord){
+						int writeLen = rxQueueSlip.availToWrite();
+						if(!(writeLen < (availLen-tmpIndex))){
+							rxQueueSlip.enqueue(tmp[tmpIndex]);
+						}
 					}
+					if(gotListenOnBefore){
+						gotListenOn = true;
+					}
+					gotKeyWord = false;
 				}
-				if(gotListenOnBefore){
-					gotListenOn = true;
-				}
-				gotKeyWord = false;
 			}
-		}
+		} catch (IOException e) {}
 		if(txQueue.availToRead() > 0){
 			if(tcpConnectionOpen()){
 				for(int writeLen = txQueue.availToRead() ; writeLen > 0; writeLen--){

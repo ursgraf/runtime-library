@@ -34,6 +34,7 @@ public class HeapTest3 extends Task {
 	static Task t;
 	
 	public void action() {
+		@SuppressWarnings("unused")
 		boolean[] taster = taster();
 		if (this.nofActivations % 1000 == 0) {
 			System.out.print("freeHeap = ");
@@ -54,6 +55,7 @@ public class HeapTest3 extends Task {
 	static {
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI2.out);
+		System.err = new PrintStream(SCI2.out);
 		System.out.println("HeapTest3 started");
 		Task t = new HeapTest3();
 		t.period = 1;

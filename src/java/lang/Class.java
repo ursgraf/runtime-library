@@ -96,20 +96,20 @@ public final class Class<T> implements Serializable, Modified {
     	return getName();
     }
 
-    /**
-     * Copies two arrays into one. Assumes that the destination array is large
-     * enough.
-     *
-     * @param result the destination array
-     * @param head the first source array
-     * @param tail the second source array
-     * @return the destination array, that is, result
-     */
-    private static <T extends Object> T[] arraycopy(T[] result, T[] head, T[] tail) {
-        System.arraycopy(head, 0, result, 0, head.length);
-        System.arraycopy(tail, 0, result, head.length, tail.length);
-        return result;
-    }
+//    /**
+//     * Copies two arrays into one. Assumes that the destination array is large
+//     * enough.
+//     *
+//     * @param result the destination array
+//     * @param head the first source array
+//     * @param tail the second source array
+//     * @return the destination array, that is, result
+//     */
+//    private static <T extends Object> T[] arraycopy(T[] result, T[] head, T[] tail) {
+//        System.arraycopy(head, 0, result, 0, head.length);
+//        System.arraycopy(tail, 0, result, head.length, tail.length);
+//        return result;
+//    }
 
  
  }

@@ -1,29 +1,40 @@
 /*
- * Copyright 2011 - 2013 NTB University of Applied Sciences in Technology
- * Buchs, Switzerland, http://www.ntb.ch/inf
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- *   
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
  */
 
 package java.lang;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+
 import ch.ntb.inf.deep.marker.Modified;
 import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
+import ch.ntb.inf.deep.runtime.util.DummyInputStream;
+import ch.ntb.inf.deep.runtime.util.DummyOutputStream;
 import ch.ntb.inf.deep.unsafe.US;
 
+/**
+ * Provides access to system-related information and resources including
+ * standard input and output. All methods of this class are accessed in a static way and the
+ * class itself can not be instantiated.
+ *
+ */
+/* Changes:
+ * 27.5.2014	Urs Graf	initial import and modified
+ */
 public final class System implements Ippc32, Modified {
 	public static PrintStream err;
 	public static PrintStream out;
@@ -99,7 +110,7 @@ public final class System implements Ippc32, Modified {
 	}
 
 	public static long currentTimeMillis() {
-		// TODO Auto-generated method stub, has to be improved
+		// TODO has to be improved
 		return US.GETSPR(TBLread);
 	}
 }

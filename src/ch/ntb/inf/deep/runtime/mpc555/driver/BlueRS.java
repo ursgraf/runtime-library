@@ -18,6 +18,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -26,6 +27,7 @@ import ch.ntb.inf.deep.runtime.util.ByteLiFo;
 
 /*
  * Changes: 
+ * 03.06.2014 NTB/GRAU	exception handling added
  * 09.03.2011 NTB/RM:	add init to SCI2 and some debug prints
  * 24.02.2011 NTB/MZ:	adapted to the new deep environment
  * 27.05.2008 NTB/SP:	task creation moved to static construct
@@ -248,8 +250,10 @@ public class BlueRS extends Task {
 	 * @return the number of written bytes.
 	 */
 	public static void sendCommand(byte[] cmd, int off, int len){
-		out.write(cmd, off, len);
-		out.write(CRLF);
+		try {
+			out.write(cmd, off, len);
+			out.write(CRLF);
+		} catch (IOException e) {e.printStackTrace();}
 		setWaitForResult();
 	}
 
@@ -262,9 +266,11 @@ public class BlueRS extends Task {
 	 *            the command to send
 	 */
 	public static void sendCommand(byte[] cmd) {
-		out.write(cmd);
-		out.write(CRLF);
-		setWaitForResult();
+		try {
+			out.write(cmd);
+			out.write(CRLF);
+			setWaitForResult();
+		} catch (IOException e) {e.printStackTrace();}
 	}
 
 	/**
@@ -339,11 +345,13 @@ public class BlueRS extends Task {
 	 */
 	public static void connect(String connectTo) {
 		if (mode == MODE_AT) {
-			out.write(CMD_CONNECT);
-			for(int i = 0; i < connectTo.length(); i++){
-				out.write((byte)connectTo.charAt(i));
-			}
-			out.write(CRLF);
+			try {
+				out.write(CMD_CONNECT);
+				for(int i = 0; i < connectTo.length(); i++){
+					out.write((byte)connectTo.charAt(i));
+				}
+				out.write(CRLF);
+			} catch (IOException e) {e.printStackTrace();}
 			setWaitForResult();
 		} else {
 			if(dbg){
@@ -365,9 +373,11 @@ public class BlueRS extends Task {
 	 */
 	public static void connect(byte[] connectTo) {
 		if (mode == MODE_AT) {
-			out.write(CMD_CONNECT);
-			out.write(connectTo);
-			out.write(CRLF);
+			try {
+				out.write(CMD_CONNECT);
+				out.write(connectTo);
+				out.write(CRLF);
+			} catch (IOException e) {e.printStackTrace();}
 			setWaitForResult();
 		} else {
 			if(dbg){
@@ -409,7 +419,9 @@ public class BlueRS extends Task {
 	 */
 	public static void switchToConnectedATMode() {
 		if (mode == MODE_CONNECTED) {
-			out.write(CMD_ESCAPE_SEQUENCE);
+			try {
+				out.write(CMD_ESCAPE_SEQUENCE);
+			} catch (IOException e) {e.printStackTrace();}
 			switchMode = MODE_CONNECTED_AT;
 			setWaitForResult();
 		} else {
@@ -429,7 +441,9 @@ public class BlueRS extends Task {
 	 */
 	public static void switchToConfigMode() {
 		if (mode == MODE_AT) {
-			out.write(CMD_ENTER_CONFIG);
+			try {
+				out.write(CMD_ENTER_CONFIG);
+			} catch (IOException e) {e.printStackTrace();}
 			switchMode = MODE_CONFIG;
 			setWaitForResult();
 		} else {
@@ -466,7 +480,9 @@ public class BlueRS extends Task {
 	 */
 	public static void returnFromConfigMode() {
 		if (mode == MODE_CONFIG) {
-			out.write(CMD_EXIT_CONFIG);
+			try {
+				out.write(CMD_EXIT_CONFIG);
+			} catch (IOException e) {e.printStackTrace();}
 			lastResult = RESULT_OK;
 			mode = MODE_AT;
 		} else {
@@ -494,20 +510,6 @@ public class BlueRS extends Task {
 			}
 			lastResult = RESULT_ERROR;
 		}
-	}
-
-	/**
-	 * Checks the space of the send buffer.<br>
-	 * 
-	 * If the device is not in {@link #MODE_CONNECTED}, the result will be -1.
-	 * 
-	 * @return number of bytes to be able to send or -1 if not in
-	 *         {@link #MODE_CONNECTED}.
-	 */
-	public static int availableToSend() {
-		if (mode != MODE_CONNECTED)
-			return -1;
-		return out.freeSpace();
 	}
 
 	/**
@@ -540,7 +542,9 @@ public class BlueRS extends Task {
 	 */
 	public static boolean write(byte[] b, int len) {
 		if (mode == MODE_CONNECTED) {
-			out.write(b, 0, len);
+			try {
+				out.write(b, 0, len);
+			} catch (IOException e) {e.printStackTrace();}
 			return true;
 		}
 		return false;
@@ -627,110 +631,112 @@ public class BlueRS extends Task {
 	 */
 	// @Override
 	public void action() {
-		if (in.available() > 0) {
-			int lenRead = in.read(tmpRsp);
-			if (dbg) {
-				System.out.print('*');
-				System.out.write(tmpRsp, 0, lenRead);
-			}
-			int tmpIndex;
-			for (tmpIndex = 0; tmpIndex < lenRead; tmpIndex++) {
-				if (mode == MODE_CONNECTED) {
-					dataBuffer[dataBufferEnd] = tmpRsp[tmpIndex];
-					currentRsp.push(tmpRsp[tmpIndex]);
-					dataBufferEnd = (dataBufferEnd + 1) % DATABUFFER_LEN;
-				} else {
-					currentRsp.push(tmpRsp[tmpIndex]);
+		try {
+			if (in.available() > 0) {
+				int lenRead = in.read(tmpRsp);
+				if (dbg) {
+					System.out.print('*');
+					System.out.write(tmpRsp, 0, lenRead);
 				}
-				if (tmpRsp[tmpIndex] == CR) {
-					crReceived = true;
-				} else if (crReceived && (tmpRsp[tmpIndex] == LF)) {
-					crReceived = false;
-					if (mode == MODE_CONNECTED) { // connection mode
-						// check for "NO CARRIER"
-						if (currentRsp.compare(BT_NO_CARRIER, 2, min(lenRead, BT_NO_CARRIER.length))) {
-							if(dbg){
-								System.out.println("BT_NO_CARRIER");
+				int tmpIndex;
+				for (tmpIndex = 0; tmpIndex < lenRead; tmpIndex++) {
+					if (mode == MODE_CONNECTED) {
+						dataBuffer[dataBufferEnd] = tmpRsp[tmpIndex];
+						currentRsp.push(tmpRsp[tmpIndex]);
+						dataBufferEnd = (dataBufferEnd + 1) % DATABUFFER_LEN;
+					} else {
+						currentRsp.push(tmpRsp[tmpIndex]);
+					}
+					if (tmpRsp[tmpIndex] == CR) {
+						crReceived = true;
+					} else if (crReceived && (tmpRsp[tmpIndex] == LF)) {
+						crReceived = false;
+						if (mode == MODE_CONNECTED) { // connection mode
+							// check for "NO CARRIER"
+							if (currentRsp.compare(BT_NO_CARRIER, 2, min(lenRead, BT_NO_CARRIER.length))) {
+								if(dbg){
+									System.out.println("BT_NO_CARRIER");
+								}
+								mode = MODE_AT;
+							}else if (currentRsp.compare(BT_RESET, 2, BT_RESET.length)) {
+								if(dbg){
+									System.out.println("BT_RESET");
+								}
+								init();
 							}
-							mode = MODE_AT;
-						}else if (currentRsp.compare(BT_RESET, 2, BT_RESET.length)) {
-							if(dbg){
-								System.out.println("BT_RESET");
+						} else { // AT mode
+							// interpret commands
+							if (currentRsp.compare(BT_CONNECT, 2,min(lenRead, BT_CONNECT.length))) {
+								if(dbg){
+									System.out.println("BT_CONNECT");
+								}
+								mode = MODE_CONNECTED;
+								lastResult = RESULT_OK;
+								connectionInitiated = false;
+								resetDataBuffer();
+								waitForResult = false;
+							} else if (currentRsp.compare(BT_RING, 2, min(lenRead, BT_RING.length))) {
+								if(dbg){
+									System.out.println("BT_RING");
+								}
+								lastResult = RESULT_OK;
+								connectionInitiated = true;
+								mode = MODE_AT;
+								waitForResult = false;
+							} else if (currentRsp.compare(BT_NO_CARRIER, 2, min(lenRead, BT_NO_CARRIER.length))) {
+								if(dbg){
+									System.out.println("BT_NO_CARRIER");
+								}
+								connectionInitiated = false;
+								lastResult = RESULT_ERROR;
+								mode = MODE_AT;
+								waitForResult = false;
+							} else if (currentRsp.compare(BT_NO_ANSWER, 2, min(lenRead, BT_NO_ANSWER.length))) {
+								if(dbg){
+									System.out.println("BT_NO_ANSWER");
+								}
+								lastResult = RESULT_ERROR;
+								mode = MODE_AT;
+								waitForResult = false;
+								connectionInitiated = false;
+							} else if (currentRsp.compare(BT_RESET, 2, BT_RESET.length)) {
+								if(dbg){
+									System.out.println("BT_RESET");
+								}
+								init();
 							}
-							init();
 						}
-					} else { // AT mode
-						// interpret commands
-						if (currentRsp.compare(BT_CONNECT, 2,min(lenRead, BT_CONNECT.length))) {
-							if(dbg){
-								System.out.println("BT_CONNECT");
+						if (waitForResult) {
+							// get result
+							if (currentRsp.compare(BT_OK, 2, BT_OK.length)) {
+								switch (switchMode) {
+								case MODE_AT:
+									switchMode = MODE_NONE;
+									mode = MODE_CONNECTED_AT;
+									break;
+								case MODE_CONFIG:
+									switchMode = MODE_NONE;
+									mode = MODE_CONFIG;
+									break;
+								case MODE_CONNECTED_AT:
+									switchMode = MODE_NONE;
+									mode = MODE_CONNECTED_AT;
+									break;
+								default:
+									break;
+								}
+								lastResult = RESULT_OK;
+								waitForResult = false;
+							} else if (currentRsp.compare(BT_ERROR, 0,
+									BT_ERROR.length)) {
+								lastResult = RESULT_ERROR;
+								waitForResult = false;
 							}
-							mode = MODE_CONNECTED;
-							lastResult = RESULT_OK;
-							connectionInitiated = false;
-							resetDataBuffer();
-							waitForResult = false;
-						} else if (currentRsp.compare(BT_RING, 2, min(lenRead, BT_RING.length))) {
-							if(dbg){
-								System.out.println("BT_RING");
-							}
-							lastResult = RESULT_OK;
-							connectionInitiated = true;
-							mode = MODE_AT;
-							waitForResult = false;
-						} else if (currentRsp.compare(BT_NO_CARRIER, 2, min(lenRead, BT_NO_CARRIER.length))) {
-							if(dbg){
-								System.out.println("BT_NO_CARRIER");
-							}
-							connectionInitiated = false;
-							lastResult = RESULT_ERROR;
-							mode = MODE_AT;
-							waitForResult = false;
-						} else if (currentRsp.compare(BT_NO_ANSWER, 2, min(lenRead, BT_NO_ANSWER.length))) {
-							if(dbg){
-								System.out.println("BT_NO_ANSWER");
-							}
-							lastResult = RESULT_ERROR;
-							mode = MODE_AT;
-							waitForResult = false;
-							connectionInitiated = false;
-						} else if (currentRsp.compare(BT_RESET, 2, BT_RESET.length)) {
-							if(dbg){
-								System.out.println("BT_RESET");
-							}
-							init();
 						}
 					}
-					if (waitForResult) {
-						// get result
-						if (currentRsp.compare(BT_OK, 2, BT_OK.length)) {
-							switch (switchMode) {
-							case MODE_AT:
-								switchMode = MODE_NONE;
-								mode = MODE_CONNECTED_AT;
-								break;
-							case MODE_CONFIG:
-								switchMode = MODE_NONE;
-								mode = MODE_CONFIG;
-								break;
-							case MODE_CONNECTED_AT:
-								switchMode = MODE_NONE;
-								mode = MODE_CONNECTED_AT;
-								break;
-							default:
-								break;
-							}
-							lastResult = RESULT_OK;
-							waitForResult = false;
-						} else if (currentRsp.compare(BT_ERROR, 0,
-								BT_ERROR.length)) {
-							lastResult = RESULT_ERROR;
-							waitForResult = false;
-						}
-					}
 				}
 			}
-		}
+		} catch (IOException e) {}
 	}
 
 	/**
