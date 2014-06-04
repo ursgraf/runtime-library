@@ -1,3 +1,21 @@
+/*
+ * Copyright 2011 - 2013 NTB University of Applied Sciences in Technology
+ * Buchs, Switzerland, http://www.ntb.ch/inf
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *   
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ */
+
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import java.io.InputStream;
@@ -9,7 +27,8 @@ import ch.ntb.inf.deep.runtime.util.ByteLiFo;
 
 /*
  * Changes:
- * 30.10.2013 NTB/AK: Initial Version
+ * 30.10.2013 	NTB/KALA 	Initial Version
+ * 04.06.2014 	NTB/KALA 	added support for antenna selection
  */
 
 /**
@@ -65,6 +84,8 @@ public class RN131WiFly extends Task{
 	private static boolean openTcpCon = false;
 	private static boolean configInitiated = false;
 	private static boolean configDone = false;
+	private static boolean changeAntConfig = false;
+	private static boolean configUseExtAnt = false;
 	
 	//Escaping Bytes (mechanism used from SLIP (Serial Line Internet Protocol))
 	private static final byte END = (byte)0300;
@@ -90,7 +111,7 @@ public class RN131WiFly extends Task{
 						CONFIG_SAVE = 9, CONFIG_REBOOT = 10, IDLE = 11, CONFIG_UART_MODE = 12,
 						/*CONFIG_IP_HOST = 13,*/ /*CONFIG_IP_REMOTE = 14,*/ CONFIG_CLOSE_CON = 15,
 						CONFIG_EXIT = 16, CONFIG_OPEN_CON = 17, CONFIG_CON_TIMEOUT = 18,
-						CONFIG_COMM_CLOSE = 19, CONFIG_COMM_OPEN = 20, CONFIG_COMM_REMOTE = 21;
+						CONFIG_COMM_CLOSE = 19, CONFIG_COMM_OPEN = 20, CONFIG_COMM_REMOTE = 21, CONFIG_EXT_ANT = 22;
 	private static int configState = IDLE;
 	
 	private static final byte[] RN_CMD = {'C', 'M', 'D'};
@@ -207,6 +228,27 @@ public class RN131WiFly extends Task{
 	}
 	
 	/**
+	 * Configures the antenna setting of the RN131WiFly
+	 * @param external true: use external antenna (via U.FL connector); false: use internal antenna
+	 */
+	public static void configAntenna(boolean external){
+		if(external){
+			configUseExtAnt = true;
+		}
+		else{
+			configUseExtAnt = false;
+		}
+		if (MODE_CMD){
+			rnError = IN_CMD_MODE;
+		}
+		else{
+			configState = ENTER_CMD;
+			changeAntConfig = true;
+			rnError = RN_OK;
+		}
+	}
+	
+	/**
 	 * Enters the config-mode of the RN131WiFly module and configures the module according
 	 * to the flags previous set.
 	 */
@@ -259,7 +301,10 @@ public class RN131WiFly extends Task{
 				doConfigConTimeout();
 				break;
 			case CONFIG_UART_MODE:
-				sendCMD_AOK("set uart mode 0\r\n",CONFIG_SAVE);
+				sendCMD_AOK("set uart mode 0\r\n",CONFIG_EXT_ANT);
+				break;
+			case CONFIG_EXT_ANT:
+				doConfigExtAnt();
 				break;
 			case CONFIG_SAVE:
 				doConfigSave();
@@ -472,6 +517,23 @@ public class RN131WiFly extends Task{
 			gotErr = false;
 			done = false;
 			configState = CONFIG_EXIT;
+		}
+	}
+	
+	/**
+	 * Configures the antenna setting, if the internal or external antenna should be used
+	 */
+	private static void doConfigExtAnt(){
+		if(changeAntConfig){
+			if(configUseExtAnt){
+				sendCMD_AOK("set wlan ext_antenna 1\r\n", CONFIG_SAVE);
+			}
+			else{
+				sendCMD_AOK("set wlan ext_antenna 0\r\n", CONFIG_SAVE);
+			}
+		}
+		else{
+			configState = CONFIG_SAVE;
 		}
 	}
 	

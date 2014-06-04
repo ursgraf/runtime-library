@@ -1,3 +1,21 @@
+/*
+ * Copyright 2011 - 2013 NTB University of Applied Sciences in Technology
+ * Buchs, Switzerland, http://www.ntb.ch/inf
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *   
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ */
+
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
@@ -8,9 +26,9 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
 
 public class RN131WiFlyDemo extends Task{
-	private static final String ssidNet = "SysPNet_Team33";//"SysPNet_Team22";
+	private static final String ssidNet = "SysPNet_Team33";	//Adhoc net name
 	private static final boolean createNet = true;
-	private static final String ip_adr = "169.254.1.3";//"169.254.1.11";
+	private static final String ip_adr = "169.254.1.3";		//IP Address
 	private static final int resetPin = 11;
 	private static int num = 1;
 	private static int err=0, lastErr=0;
