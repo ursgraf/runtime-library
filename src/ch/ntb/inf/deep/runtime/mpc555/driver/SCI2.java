@@ -19,13 +19,16 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import java.io.IOException;
+
 import ch.ntb.inf.deep.runtime.mpc555.Interrupt;
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
+import ch.ntb.inf.deep.runtime.util.SCIInputStream;
+import ch.ntb.inf.deep.runtime.util.SCIOutputStream;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
- * <p>Interrupt controlled driver for the <i>Serial Communicatin Interface 2</i>
+ * <p>Interrupt controlled driver for the <i>Serial Communication Interface 2</i>
  * of the Freescale MPC555.</p>
  * <p><b>Remember:</b><br>
  * Depending on the baudrate configured, the effective baudrate can be different.
@@ -42,8 +45,8 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 public class SCI2 extends Interrupt {
 
-	public static SCI2OutputStream out;
-	public static SCI2InputStream in;
+	public static SCIOutputStream out;
+	public static SCIInputStream in;
 	private static int d = 0;
 	
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
@@ -358,8 +361,8 @@ public class SCI2 extends Interrupt {
 	}
 	
 	static {
-		out = new SCI2OutputStream();
-		in = new SCI2InputStream();
+		out = new SCIOutputStream(SCIOutputStream.pSCI2);
+		in = new SCIInputStream(SCIInputStream.pSCI2);
 		QSMCM.init();
 
 		rxQueue = new ByteFifo(QUEUE_LEN);
