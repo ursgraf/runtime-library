@@ -2,10 +2,10 @@ package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
 import ch.ntb.inf.deep.runtime.mpc555.driver.RN131WiFlyCmdInt;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /*
  * Changes:		28.10.2013		NTB/KALA		initial version

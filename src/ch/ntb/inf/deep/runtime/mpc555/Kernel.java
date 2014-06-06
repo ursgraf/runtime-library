@@ -28,6 +28,9 @@ import ch.ntb.inf.deep.unsafe.US;
  * 11.11.10	NTB/Urs Graf		creation
  */
 
+/**
+ *  This is the kernel class. It provides basic functionalities and does the booting-up. 
+ */
 public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
 	public static final int clockFrequency = 40000000; // Hz

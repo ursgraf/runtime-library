@@ -20,9 +20,9 @@ package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.Robi2;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /* Changes:
  * 02.09.2011	NTB/MZ	Adapted to the changes in the Robi2 driver

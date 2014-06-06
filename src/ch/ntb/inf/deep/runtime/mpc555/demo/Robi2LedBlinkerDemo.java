@@ -18,8 +18,8 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.Robi2;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /**
  * Wenn der Roboter autonom betrieben werden soll, d.h. er ist nicht mehr an den

@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.DAC7614;
 import ch.ntb.inf.deep.runtime.mpc555.driver.QADC_AIN;
 import ch.ntb.inf.deep.runtime.mpc555.driver.RTBoard;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**

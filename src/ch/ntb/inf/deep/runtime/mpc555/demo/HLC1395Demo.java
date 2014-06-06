@@ -20,9 +20,9 @@ package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.HLC1395Pulsed;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /* CHANGES:
  * 22.02.2011	NTB/Zueger	OutT replaced by System.out

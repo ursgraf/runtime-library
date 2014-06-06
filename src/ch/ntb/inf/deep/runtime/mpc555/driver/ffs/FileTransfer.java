@@ -21,8 +21,8 @@ package ch.ntb.inf.deep.runtime.mpc555.driver.ffs;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /** files can be manually uploaded over SCI2, uses interrupt driven SCI driver */
 

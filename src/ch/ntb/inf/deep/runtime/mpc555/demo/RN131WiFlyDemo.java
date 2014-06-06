@@ -3,9 +3,9 @@ package ch.ntb.inf.deep.runtime.mpc555.demo;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.driver.RN131WiFly;
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 public class RN131WiFlyDemo extends Task{
 	private static final String ssidNet = "SysPNet_Team33";//"SysPNet_Team22";

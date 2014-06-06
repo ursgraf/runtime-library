@@ -20,6 +20,7 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import ch.ntb.inf.deep.runtime.mpc555.*;
 import ch.ntb.inf.deep.runtime.mpc555.driver.*;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation

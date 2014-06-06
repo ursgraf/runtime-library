@@ -18,7 +18,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200.test;
 
-import ch.ntb.inf.deep.runtime.mpc5200.Task;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.*;
 
 /**

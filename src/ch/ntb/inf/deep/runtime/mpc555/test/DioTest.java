@@ -21,12 +21,12 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPWMSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.QADC_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_DIO;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /* CHANGES:
  * 12.10.2011	NTB/MZ	QADC test added

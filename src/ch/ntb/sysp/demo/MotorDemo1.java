@@ -19,8 +19,9 @@
 package ch.ntb.sysp.demo;
 
 import java.io.PrintStream;
-import ch.ntb.inf.deep.runtime.mpc555.Task;
+
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.sysp.lib.SpeedController4DCMotor;
 
 /**

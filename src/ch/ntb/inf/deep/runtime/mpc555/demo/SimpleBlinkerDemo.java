@@ -18,8 +18,8 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /* CHANGES:
  * 24.02.2011	NTB/Zueger	creation

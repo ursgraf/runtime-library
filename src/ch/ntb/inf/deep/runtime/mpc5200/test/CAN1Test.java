@@ -19,7 +19,7 @@
 package ch.ntb.inf.deep.runtime.mpc5200.test;
 
 import java.io.PrintStream;
-import ch.ntb.inf.deep.runtime.mpc5200.Task;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.can.CAN1;
 

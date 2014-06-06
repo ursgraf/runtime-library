@@ -19,10 +19,10 @@
 package ch.ntb.inf.deep.runtime.mpc555.test;
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.QADC_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 import ch.ntb.inf.deep.runtime.ppc32.Heap;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /*changes:
  * 10.04.12	NTB/GRAU	creation

@@ -16,9 +16,9 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc555;
+package ch.ntb.inf.deep.runtime.ppc32;
 
-import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
+import ch.ntb.inf.deep.runtime.Kernel;
 import ch.ntb.inf.deep.runtime.util.Actionable;
 import ch.ntb.inf.deep.unsafe.US;
 
@@ -256,7 +256,7 @@ public class Task implements Actionable, Ippc32 {
 		highestPrioStub.nextTime = Long.MIN_VALUE;
 		tasks[0] = highestPrioStub;
 		for (int i = 1; i < tasks.length; i++) tasks[i] = lowestPrioStub;
-		Kernel.loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/mpc555/Task/loop");
+		Kernel.loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/ppc32/Task/loop");
 	}
 	
 }

@@ -20,9 +20,9 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 import java.io.IOException;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /*changes:
  * 10.1.11	NTB/GRAU	creation

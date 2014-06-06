@@ -18,6 +18,8 @@
 
 package ch.ntb.inf.deep.runtime.mpc555;
 
+import ch.ntb.inf.deep.runtime.ppc32.Task;
+
 
 /**
  * A class to measure a time span.
