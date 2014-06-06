@@ -20,8 +20,6 @@ package ch.ntb.inf.deep.runtime.mpc5200.test;
 
 import ch.ntb.inf.deep.runtime.mpc5200.Task;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.*;
-import ch.ntb.inf.deep.runtime.util.UARTInputStream;
-import ch.ntb.inf.deep.runtime.util.UARTOutputStream;
 
 /**
  * Demo for InputStream and OutputStream using UART3.

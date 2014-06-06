@@ -23,8 +23,6 @@ import java.io.IOException;
 import ch.ntb.inf.deep.runtime.mpc555.Interrupt;
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
-import ch.ntb.inf.deep.runtime.util.SCIInputStream;
-import ch.ntb.inf.deep.runtime.util.SCIOutputStream;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**

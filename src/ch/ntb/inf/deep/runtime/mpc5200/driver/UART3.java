@@ -21,8 +21,6 @@ package ch.ntb.inf.deep.runtime.mpc5200.driver;
 import java.io.IOException;
 
 import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
-import ch.ntb.inf.deep.runtime.util.UARTInputStream;
-import ch.ntb.inf.deep.runtime.util.UARTOutputStream;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
