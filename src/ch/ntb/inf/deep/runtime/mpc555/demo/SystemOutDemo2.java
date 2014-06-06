@@ -20,7 +20,6 @@ package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.Kernel1;
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
@@ -34,11 +33,9 @@ public class SystemOutDemo2 extends Task {
 	/* (non-Javadoc)
 	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
 	 */
-	@SuppressWarnings("static-access")
 	public void action() {
 		// Write a single character to the stdout
-//		System.out.print('.');
-		System.out.print(Kernel1.kernel.time());
+		System.out.print('.');
 	}
 
 	static {
