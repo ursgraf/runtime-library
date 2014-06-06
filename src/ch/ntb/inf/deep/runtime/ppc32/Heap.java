@@ -28,6 +28,9 @@ import ch.ntb.inf.deep.unsafe.US;
  * 1.5.12	Urs Graf		GC added
  */
 
+/**
+ *  Heap manager with mark-sweep garbage collection. 
+ */
 public class Heap implements IdeepCompilerConstants {
 	private static final boolean dbg = false;
 	private static final int minBlockSize = 16;	// smallest block size to allocate

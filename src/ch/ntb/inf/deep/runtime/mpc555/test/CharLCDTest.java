@@ -18,8 +18,8 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.test;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.HD44780U;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 /* changes:
  * 06.05.2011 Roger Millischer adapted to deep
  * 08.02.06	NTB/HS	creation

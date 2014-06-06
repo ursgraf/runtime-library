@@ -16,19 +16,19 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200;
+package ch.ntb.inf.deep.runtime.ppc32;
 
-import ch.ntb.inf.deep.runtime.ppc32.PPCException;
+import ch.ntb.inf.deep.runtime.Kernel;
 
 /*changes:
- * 11.11.10	NTB/Urs Graf	creation
+ * 23.8.2012	NTB/Urs Graf	creation
  */
 
-public class SystemCall extends PPCException {
-	public static int nofScExceptions;
+public class FloatingPointUnavailable extends PPCException {
+	public static int nofFPUnavailableExceptions;
 
-	static void systemCall() {
-		nofScExceptions++;
+	static void floatingPointUnavailable() {
+		nofFPUnavailableExceptions++;
 		while (true) {
 			Kernel.blink(1); Kernel.blink(4);
 		}

@@ -18,9 +18,9 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.util.IntFifo;
 import ch.ntb.inf.deep.runtime.mpc555.driver.RN131WiFly;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /*
  * Changes:

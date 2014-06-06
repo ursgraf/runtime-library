@@ -20,9 +20,9 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.HLC1395Pulsed;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /* CHANGES:
  * 07.09.2011	NTB/MZ	Created (based on HLC1395Demo)

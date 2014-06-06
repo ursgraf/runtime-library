@@ -16,21 +16,21 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200;
+package ch.ntb.inf.deep.runtime.ppc32;
 
-import ch.ntb.inf.deep.runtime.ppc32.PPCException;
+import ch.ntb.inf.deep.runtime.Kernel;
 
 /*changes:
- * 23.8.2012	NTB/Urs Graf	creation
+ * 11.11.10	NTB/Urs Graf	creation
  */
 
-public class ProgramExc extends PPCException {
-	public static int nofProgExceptions;
+public class SystemCall extends PPCException {
+	public static int nofScExceptions;
 
-	static void programExc() {
-		nofProgExceptions++;
+	static void systemCall() {
+		nofScExceptions++;
 		while (true) {
-			Kernel.blink(1); Kernel.blink(2);
+			Kernel.blink(1); Kernel.blink(3);
 		}
 	}
 

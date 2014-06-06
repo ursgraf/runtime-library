@@ -68,8 +68,8 @@ public class OutTest1 {
 		System.out.printHexln(0x973bc3af);
 		System.out.printHexln(0xaf973bc3af456789L);
 		System.out.printHexln(-1L);
-		String str = null;
-		System.out.println(str);
+//		String str = null;	//test an NullPointerException
+//		System.out.println(str);
 		System.out.println("done");
 	}
 }

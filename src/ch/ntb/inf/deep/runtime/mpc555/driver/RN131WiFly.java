@@ -1,10 +1,8 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import java.io.IOException;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCIInputStream;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCIOutputStream;
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
 import ch.ntb.inf.deep.runtime.util.ByteLiFo;
 

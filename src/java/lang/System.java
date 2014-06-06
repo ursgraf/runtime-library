@@ -21,7 +21,8 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.marker.Modified;
-import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
+import ch.ntb.inf.deep.runtime.Kernel;
+import ch.ntb.inf.deep.runtime.ppc32.*;
 import ch.ntb.inf.deep.runtime.util.DummyInputStream;
 import ch.ntb.inf.deep.runtime.util.DummyOutputStream;
 import ch.ntb.inf.deep.unsafe.US;
@@ -110,7 +111,6 @@ public final class System implements Ippc32, Modified {
 	}
 
 	public static long currentTimeMillis() {
-		// TODO has to be improved
-		return US.GETSPR(TBLread);
+		return Kernel.time();
 	}
 }
