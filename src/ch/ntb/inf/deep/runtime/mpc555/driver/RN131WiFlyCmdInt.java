@@ -113,7 +113,7 @@ public class RN131WiFlyCmdInt extends Task{
 				}
 			case connected:
 				while(RN131WiFly.availToRead() > 0){
-					if(RN131WiFly.read() == cmdStartSymbol){
+					if(RN131WiFly.in.read() == cmdStartSymbol){
 						state = receiveCmd;
 						break;
 					}
@@ -124,10 +124,10 @@ public class RN131WiFlyCmdInt extends Task{
 				break;
 			case receiveCmd:
 				if(RN131WiFly.availToRead() >= 4){
-					int cmd = RN131WiFly.read() << 24;
-					cmd |= (RN131WiFly.read() & 0xFF) << 16;
-					cmd |= (RN131WiFly.read() & 0xFF) << 8;
-					cmd |= (RN131WiFly.read() & 0xFF);
+					int cmd = RN131WiFly.in.read() << 24;
+					cmd |= (RN131WiFly.in.read() & 0xFF) << 16;
+					cmd |= (RN131WiFly.in.read() & 0xFF) << 8;
+					cmd |= (RN131WiFly.in.read() & 0xFF);
 					cmdBuffer.enqueue(cmd);
 					state = connected;
 				}
@@ -195,7 +195,7 @@ public class RN131WiFlyCmdInt extends Task{
 				b[2] = (byte) (cmd >> 16);
 				b[3] = (byte) (cmd >> 8);
 				b[4] = (byte) cmd;
-				RN131WiFly.write(b);
+				RN131WiFly.out.write(b);
 				return success;
 			}
 			return illegalCmd;

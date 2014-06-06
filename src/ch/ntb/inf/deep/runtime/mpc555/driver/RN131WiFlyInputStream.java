@@ -18,22 +18,67 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public class RN131WiFlyInputStream extends InputStream{
 
+	/**
+	 * Returns the number of bytes available from the stream.
+	 * 
+	 * @return number of bytes available.
+	 */
 	public int available() {
 		return RN131WiFly.availToRead();
 	}
+	
+	/**
+	 * Reads one byte from the RN131WiFly. A call of this 
+	 * method is not blocking!
+	 * 
+	 * @return byte read
+	 */
 	public int read() {
-		return RN131WiFly.read();
+		int cnt = 0;
+		try{
+			cnt = RN131WiFly.read();
+		} catch (IOException e) { e.printStackTrace(); }
+		return cnt;
 	}
 	
-	public int read(byte b[], int len){
-		return RN131WiFly.read(b, len);
+	/**
+	 * Reads one byte from the RN131WiFly. A call of this 
+	 * method is not blocking!
+	 * 
+	 * @param b
+	 * 			Byte array to write the received data.
+	 * @return the number of bytes read.
+	 */
+	public int read(byte b[]){
+		int cnt = 0;
+		try{
+			cnt = RN131WiFly.read(b);
+		} catch (IOException e) { e.printStackTrace(); }
+		return cnt;
 	}
 
+	/**
+	 * Reads one byte from the RN131WiFly. A call of this 
+	 * method is not blocking!
+	 * 
+	 * @param buffer
+	 * 				Byte array to write the received data.
+	 * @param off
+	 * 				Offset in the array to start writing the data.
+	 * @param count 
+	 * 				Length (number of bytes) to read.
+	 * @return the number of bytes read.
+	 */
 	public int read(byte b[], int off, int len){
-		return RN131WiFly.read(b, off, len);
+		int cnt = 0;
+		try{
+			cnt = RN131WiFly.read(b, off, len);
+		} catch (IOException e) { e.printStackTrace(); }
+		return cnt;
 	}
 }

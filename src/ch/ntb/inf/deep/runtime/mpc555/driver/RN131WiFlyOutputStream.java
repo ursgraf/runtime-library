@@ -18,7 +18,6 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 /* Changes:
@@ -32,7 +31,7 @@ import java.io.OutputStream;
 */
 public class RN131WiFlyOutputStream extends OutputStream {
 
-    /**
+	/**
      * Writes a single byte to this stream. Only the least significant byte of
      * the integer {@code b} is written to the stream.
      *
@@ -40,29 +39,29 @@ public class RN131WiFlyOutputStream extends OutputStream {
      *            the byte to be written.
      */
 	public void write(int b) {
-		try {
-			RN131WiFly.write((byte)b);
-		} catch (IOException e) {e.printStackTrace();}
+		RN131WiFly.write((byte)b);
 	}
 	
-	public int write(byte[] b){
-		return RN131WiFly.write(b);
+	/**
+     * Equivalent to {@code write(b, 0, len)}.
+     */
+	public void write(byte[] b){
+		RN131WiFly.write(b);
 	}
 	
-	public int write(byte[] b, int len){
-		return RN131WiFly.write(b, len);
+	/**
+	 * Writes {@code len} bytes from the byte array {@code b} starting at
+	 * position {@code offset} to this stream.
+	 *
+	 * @param b
+	 *            the buffer to be written.
+	 * @param off
+	 *            the start position in {@code b} from where to get bytes.
+	 * @param len
+	 *            the number of bytes from {@code b} to write to this
+	 *            stream.
+	 */
+	public void write(byte[] b, int off, int len){
+		RN131WiFly.write(b, off, len);
 	}
-	
-	public int write(byte[] b, int off, int len){
-		return RN131WiFly.write(b, off, len);
-	}
-	
-	public int freeSpace() {
-		return RN131WiFly.availToWrite();
-	}
-
-	public void reset() {
-		RN131WiFly.clear();
-	}
-
 }
