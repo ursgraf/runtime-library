@@ -16,26 +16,35 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200.driver;
+package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
 /* Changes:
- * 3.6.2014		Urs Graf		exception handling added
- * 13.10.2011	Martin Zueger	JavaDoc fixed
- * 06.01.2010	Simon Pertschy	initial version
+ * 3.6.2014		Urs Graf		initial version
  */
 
 /**
  *
- * Stream to write bytes to the UART3.
- * Don't forget to initialize the UART3 before using this stream.
+ * Stream to write bytes to a SCI interface.
+ * Don't forget to initialize the interface before using this stream.
  * 
  */
-public class UART3OutputStream extends OutputStream{
-
+public class SCIOutputStream extends OutputStream {
+	public static final int pSCI1 = 0; 
+	public static final int pSCI2 = 1; 
+	
+	private int port;
+	
     /**
+     * Creates an output stream on a given SCI interface.
+     */
+    public SCIOutputStream(int sci) {
+		port = sci;
+	}
+
+	/**
      * Writes a single byte to this stream. Only the least significant byte of
      * the integer {@code b} is written to the stream.
      *
@@ -44,7 +53,8 @@ public class UART3OutputStream extends OutputStream{
      */
 	public void write(int b) {
 		try {
-			UART3.write((byte)b);
+			if (port == pSCI1) SCI1.write((byte)b);
+			else SCI2.write((byte)b);
 		} catch (IOException e) {e.printStackTrace();}
 	}
 
@@ -53,7 +63,8 @@ public class UART3OutputStream extends OutputStream{
      */
 	public void write(byte buffer[]) {
 		try {
-			UART3.write(buffer);
+			if (port == pSCI1) SCI1.write(buffer);
+			else SCI2.write(buffer);
 		} catch (IOException e) {e.printStackTrace();}
 	}
 	
@@ -71,7 +82,8 @@ public class UART3OutputStream extends OutputStream{
 	 */
 	public void write(byte buffer[], int off, int count) {
 		try {
-			UART3.write(buffer, off, count);
+			if (port == pSCI1) SCI1.write(buffer, off, count);
+			else SCI2.write(buffer, off, count);
 		} catch (IOException e) {e.printStackTrace();}
 	}
 }

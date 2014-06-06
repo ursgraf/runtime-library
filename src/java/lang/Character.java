@@ -525,41 +525,41 @@ public final class Character implements Serializable, Comparable<Character>, Mod
     /*
      * Represents a subset of the Unicode character set.
      */
-    public static class Subset {
-        private final String name;
-
-        /**
-         * Constructs a new {@code Subset}.
-         */
-        protected Subset(String name) {
-            if (name == null) {
-                throw new NullPointerException("name == null");
-            }
-            this.name = name;
-        }
-
-        /**
-         * Compares this character subset for identity with the specified object.
-         */
-        @Override public final boolean equals(Object object) {
-            return object == this;
-        }
-
-        /**
-         * Returns this subset's hash code, which is the hash code computed by
-         *         {@link java.lang.Object#hashCode()}.
-         */
-        @Override public final int hashCode() {
-            return super.hashCode();
-        }
-
-        /**
-         * Returns this subset's name.
-         */
-        @Override public final String toString() {
-            return name;
-        }
-    }
+//    public static class Subset {
+//        private final String name;
+//
+//        /**
+//         * Constructs a new {@code Subset}.
+//         */
+//        protected Subset(String name) {
+//            if (name == null) {
+//                throw new NullPointerException("name == null");
+//            }
+//            this.name = name;
+//        }
+//
+//        /**
+//         * Compares this character subset for identity with the specified object.
+//         */
+//        @Override public final boolean equals(Object object) {
+//            return object == this;
+//        }
+//
+//        /**
+//         * Returns this subset's hash code, which is the hash code computed by
+//         *         {@link java.lang.Object#hashCode()}.
+//         */
+//        @Override public final int hashCode() {
+//            return super.hashCode();
+//        }
+//
+//        /**
+//         * Returns this subset's name.
+//         */
+//        @Override public final String toString() {
+//            return name;
+//        }
+//    }
 
 //    /**
 //     * Represents a block of Unicode characters. This class provides constants for various

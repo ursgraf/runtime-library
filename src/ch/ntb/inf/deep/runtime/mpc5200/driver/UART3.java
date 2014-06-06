@@ -34,8 +34,8 @@ import ch.ntb.inf.deep.unsafe.US;
  * 3.6.2014		Urs Graf			exception handling added
  */
 public class UART3 implements IphyCoreMpc5200tiny{
-	public static UART3OutputStream out;
-	public static UART3InputStream in;
+	public static UARTOutputStream out;
+	public static UARTInputStream in;
 
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
 
@@ -224,7 +224,7 @@ public class UART3 implements IphyCoreMpc5200tiny{
 	}
 
 	static {
-		out = new UART3OutputStream();
-		in = new UART3InputStream();
+		out = new UARTOutputStream(UARTOutputStream.pPSC3);
+		in = new UARTInputStream(UARTInputStream.pPSC3);
 	}
 }

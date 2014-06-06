@@ -16,26 +16,39 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc555.driver;
+package ch.ntb.inf.deep.runtime.mpc5200.driver;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
 /* Changes:
- * 3.6.2014		Urs Graf		exception handling added
- * 13.10.2011	Martin Zueger	JavaDoc fixed
- * 06.01.2010	Simon Pertschy	initial version
+ * 3.6.2014		Urs Graf		initial version
  */
 
 /**
  *
- * Stream to write bytes to the SCI2.
- * Don't forget to initialize the SCI2 before using this stream.
+ * Stream to write bytes to a UART interface.
+ * Don't forget to initialize the interface before using this stream.
  * 
  */
-public class SCI2OutputStream extends OutputStream {
-
+public class UARTOutputStream extends OutputStream {
+	public static final int pPSC1 = 0; 
+	public static final int pPSC2 = 1; 
+	public static final int pPSC3 = 2; 
+	public static final int pPSC4 = 3; 
+	public static final int pPSC5 = 4; 
+	public static final int pPSC6 = 5; 
+	
+	private int port;
+	
     /**
+     * Creates an output stream on a given UART interface.
+     */
+    public UARTOutputStream(int uart) {
+		port = uart;
+	}
+
+   /**
      * Writes a single byte to this stream. Only the least significant byte of
      * the integer {@code b} is written to the stream.
      *
@@ -44,7 +57,22 @@ public class SCI2OutputStream extends OutputStream {
      */
 	public void write(int b) {
 		try {
-			SCI2.write((byte)b);
+			switch (port) {
+			case pPSC1:
+				UART3.write((byte)b); break;
+			case pPSC2:
+				UART3.write((byte)b); break;
+			case pPSC3:
+				UART3.write((byte)b); break;
+			case pPSC4:
+				UART3.write((byte)b); break;
+			case pPSC5:
+				UART3.write((byte)b); break;
+			case pPSC6:
+				UART3.write((byte)b); break;
+			default:
+				break;
+			}
 		} catch (IOException e) {e.printStackTrace();}
 	}
 
@@ -53,7 +81,22 @@ public class SCI2OutputStream extends OutputStream {
      */
 	public void write(byte buffer[]) {
 		try {
-			SCI2.write(buffer);
+			switch (port) {
+			case pPSC1:
+				UART3.write(buffer); break;
+			case pPSC2:
+				UART3.write(buffer); break;
+			case pPSC3:
+				UART3.write(buffer); break;
+			case pPSC4:
+				UART3.write(buffer); break;
+			case pPSC5:
+				UART3.write(buffer); break;
+			case pPSC6:
+				UART3.write(buffer); break;
+			default:
+				break;
+			}
 		} catch (IOException e) {e.printStackTrace();}
 	}
 	
@@ -71,7 +114,22 @@ public class SCI2OutputStream extends OutputStream {
 	 */
 	public void write(byte buffer[], int off, int count) {
 		try {
-			SCI2.write(buffer, off, count);
+			switch (port) {
+			case pPSC1:
+				UART3.write(buffer, off, count); break;
+			case pPSC2:
+				UART3.write(buffer, off, count); break;
+			case pPSC3:
+				UART3.write(buffer, off, count); break;
+			case pPSC4:
+				UART3.write(buffer, off, count); break;
+			case pPSC5:
+				UART3.write(buffer, off, count); break;
+			case pPSC6:
+				UART3.write(buffer, off, count); break;
+			default:
+				break;
+			}
 		} catch (IOException e) {e.printStackTrace();}
 	}
 }

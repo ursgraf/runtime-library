@@ -26,7 +26,7 @@ import ch.ntb.inf.deep.runtime.util.ByteFifo;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
- * <p>Interrupt controlled driver for the <i>Serial Communicatin Interface 1</i>
+ * <p>Interrupt controlled driver for the <i>Serial Communication Interface 1</i>
  * of the Freescale MPC555.</p>
  * <p><b>Remember:</b><br>
  * Depending on the baudrate configured, the effective baudrate can be different.
@@ -43,8 +43,8 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 public class SCI1 extends Interrupt {
 
-	public static SCI1OutputStream out;
-	public static SCI1InputStream in;
+	public static SCIOutputStream out;
+	public static SCIInputStream in;
 	private static int d = 0;
 	
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
@@ -360,8 +360,8 @@ public class SCI1 extends Interrupt {
 	}
 	
 	static {
-		out = new SCI1OutputStream();
-		in = new SCI1InputStream();
+		out = new SCIOutputStream(SCIOutputStream.pSCI1);
+		in = new SCIInputStream(SCIInputStream.pSCI1);
 		QSMCM.init();
 
 		rxQueue = new ByteFifo(QUEUE_LEN);

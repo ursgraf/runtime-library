@@ -22,18 +22,27 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /* Changes:
- * 3.6.2014		Urs Graf		exception handling added
- * 13.10.2011	Martin Zueger	JavaDoc fixed
- * 06.01.2010	Simon Pertschy	initial version
+ * 3.6.2014		Urs Graf		initial version
  */
 
 /**
  *
- * Input Stream to read bytes form the SCI1.
- * Don't forget to initialize the SCI1 before using this class.
+ * Input Stream to read bytes from a SCI interface.
+ * Don't forget to initialize the SCI before using this class.
  * 
  */
-public class SCI1InputStream extends InputStream{
+public class SCIInputStream extends InputStream{
+	public static final int pSCI1 = 0; 
+	public static final int pSCI2 = 1; 
+	
+	private int port;
+	
+    /**
+     * Creates an input stream on a given SCI interface.
+     */
+    public SCIInputStream(int sci) {
+		port = sci;
+	}
 
 	/**
 	 * Returns the number of bytes available from the stream.
@@ -41,7 +50,8 @@ public class SCI1InputStream extends InputStream{
 	 * @return number of bytes available.
 	 */
 	public int available() {
-		return SCI1.availToRead();
+		if (port == pSCI1) return SCI1.availToRead();
+		else return SCI2.availToRead();
 	}
 
 	/**
@@ -53,7 +63,8 @@ public class SCI1InputStream extends InputStream{
 	public int read() {
 		int cnt = 0;
 		try {
-			cnt = SCI1.read();
+			if (port == pSCI1) cnt = SCI1.read();
+			else cnt = SCI2.read();
 		} catch (IOException e) {e.printStackTrace();}
 		return cnt;
 	}
@@ -69,7 +80,8 @@ public class SCI1InputStream extends InputStream{
 	public int read(byte buffer[]){
 		int cnt = 0;
 		try {
-			cnt = SCI1.read(buffer);
+			if (port == pSCI1) cnt = SCI1.read(buffer);
+			else cnt = SCI2.read(buffer);
 		} catch (IOException e) {e.printStackTrace();}
 		return cnt;
 	}
@@ -89,7 +101,8 @@ public class SCI1InputStream extends InputStream{
 	public int read(byte buffer[], int off, int count){
 		int cnt = 0;
 		try {
-			cnt = SCI1.read(buffer, off, count);
+			if (port == pSCI1) cnt = SCI1.read(buffer, off, count);
+			else cnt = SCI2.read(buffer, off, count);
 		} catch (IOException e) {e.printStackTrace();}
 		return cnt;
 	}

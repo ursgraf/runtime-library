@@ -25,8 +25,8 @@ import ch.ntb.inf.deep.runtime.mpc5200.driver.*;
  * Demo for InputStream and OutputStream using UART3.
  */
 public class UART3InOutReflector extends Task {
-	static UART3OutputStream out;
-	static UART3InputStream in;
+	static UARTOutputStream out;
+	static UARTInputStream in;
 	
 	public void action() {
 		// reflect input on stdin to stdout
@@ -36,8 +36,8 @@ public class UART3InOutReflector extends Task {
 	static {
 		// Initialize SCI2 (9600 8N1)
 		UART3.start(9600, UART3.NO_PARITY, (short)8);
-		out = new UART3OutputStream();
-		in = new UART3InputStream();
+		out = new UARTOutputStream(UARTOutputStream.pPSC3);
+		in = new UARTInputStream(UARTInputStream.pPSC3);
 		out.write((byte)'x');
 		
 		Task t = new UART3InOutReflector();

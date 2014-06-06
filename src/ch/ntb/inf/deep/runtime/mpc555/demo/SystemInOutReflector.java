@@ -20,16 +20,16 @@ package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2InputStream;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2OutputStream;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCIInputStream;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCIOutputStream;
 
 
 /**
  * Demo for InputStream and OutputStream using SCI2.
  */
 public class SystemInOutReflector extends Task {
-	static SCI2OutputStream out;
-	static SCI2InputStream in;
+	static SCIOutputStream out;
+	static SCIInputStream in;
 	
 	public void action() {
 		// reflect input on stdin to stdout
@@ -39,8 +39,8 @@ public class SystemInOutReflector extends Task {
 	static {
 		// Initialize SCI2 (9600 8N1)
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		out = new SCI2OutputStream();
-		in = new SCI2InputStream();
+		out = new SCIOutputStream(SCIOutputStream.pSCI2);
+		in = new SCIInputStream(SCIInputStream.pSCI2);
 		out.write((byte)'x');
 		
 		Task t = new SystemInOutReflector();
