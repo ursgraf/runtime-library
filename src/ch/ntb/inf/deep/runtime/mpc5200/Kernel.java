@@ -34,10 +34,16 @@ public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstan
 	@SuppressWarnings("unused")
 	private static void loop() {	// endless loop
 		while (true) {
-			if (cmdAddr != -1) {
-				US.PUTSPR(LR, cmdAddr);	
-				US.ASM("bclrl always, 0");
-				cmdAddr = -1;
+			try {
+				if (cmdAddr != -1) {
+					US.PUTSPR(LR, cmdAddr);	
+					US.ASM("bclrl always, 0");
+					cmdAddr = -1;
+				}
+			} catch (Exception e) {
+				cmdAddr = -1;	// stop trying to run the same method
+				e.printStackTrace();
+				Kernel.blink(2);
 			}
 		}
 	}
@@ -99,6 +105,7 @@ public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstan
 	}
 	
 	private static void boot() {
+		// configure CS3 for external FPGA 
 		US.PUT4(CS3START, 0x0000E000);	// start address = 0xfe000000
 		US.PUT4(CS3STOP, 0x0000E00F);	// stop address = 0xe00fffff, size = 1MB
 		US.PUT4(CS3CR, 0x0005FF00);	// 5 wait states, multiplexed, ack, enabled, 25 addr. lines, 32 bit data, rw
@@ -162,13 +169,18 @@ public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstan
 	}
 
 	static {
-		boot();
-		cmdAddr = -1;	// must be after class variables are zeroed by boot
-		US.ASM("mfmsr r0");	// enable interrupts
-		US.PUTGPR(0, US.GETGPR(0) | (1 << 15));
-		US.ASM("mtmsr r0");	
-		US.PUTSPR(LR, loopAddr);
-		US.ASM("bclrl always, 0");
+		try {
+			boot();
+			cmdAddr = -1;	// must be after class variables are zeroed by boot
+			US.ASM("mfmsr r0");	// enable interrupts
+			US.PUTGPR(0, US.GETGPR(0) | (1 << 15));
+			US.ASM("mtmsr r0");	
+			US.PUTSPR(LR, loopAddr);
+			US.ASM("bclrl always, 0");
+		} catch (Exception e) {
+			e.printStackTrace();
+			while (true) Kernel.blink(5);
+		}
 	}
 
 }

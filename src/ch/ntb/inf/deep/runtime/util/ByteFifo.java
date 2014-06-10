@@ -67,7 +67,7 @@ public class ByteFifo {
 			byte c= data[head];
 			head = (head + 1) % data.length;
 			return c;
-		} else throw new IOException();
+		} else throw new IOException("IOException");
 	}
 	
 	
