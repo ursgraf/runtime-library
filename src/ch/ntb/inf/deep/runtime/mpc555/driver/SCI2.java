@@ -305,7 +305,7 @@ public class SCI2 extends Interrupt {
 	 *            {@code buffer}.
 	 */
 	public static int write(byte[] buffer, int off, int count) throws IOException{
-		if ((portStat & (1 << PORT_OPEN)) == 0) throw new IOException();
+		if ((portStat & (1 << PORT_OPEN)) == 0) throw new IOException("IOException");
     	int len = buffer.length;
         if ((off | count) < 0 || off > len || len - off < count) {
         	throw new ArrayIndexOutOfBoundsException(len, off, count);
@@ -344,7 +344,7 @@ public class SCI2 extends Interrupt {
 	 *            if an error occurs while writing to this stream.
 	 */
 	public static void write(byte b) throws IOException {
-		if ((portStat & (1 << PORT_OPEN)) == 0) throw new IOException();
+		if ((portStat & (1 << PORT_OPEN)) == 0) throw new IOException("IOException");
 		while (txQueue.availToWrite() <= 0);
 		txQueue.enqueue(b);
 		startTransmission();

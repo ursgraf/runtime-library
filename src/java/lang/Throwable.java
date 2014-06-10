@@ -103,7 +103,7 @@ public class Throwable implements Serializable, Modified {
 //				s.println("\tat " + trace[i]);
 //			}
 //		}
-		s.print(message);
+		if (message != null) s.print(message); else s.print("Throwable");
 		s.print(" at addr ");
 		s.printHexln(addr);
 	}

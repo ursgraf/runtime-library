@@ -214,17 +214,29 @@ public class Task implements Actionable, Ippc32 {
 		Task currentTask;
 		while(true) {
 			cmd = Kernel.cmdAddr;
-			if (cmd != -1) {
-				US.PUTSPR(LR, cmd);	
-				US.ASM("bclrl always, 0");
-				Kernel.cmdAddr = -1;
+			try {
+				if (cmd != -1) {
+					US.PUTSPR(LR, cmd);	
+					US.ASM("bclrl always, 0");
+					Kernel.cmdAddr = -1;
+				}
+			} catch (Exception e) {
+				Kernel.cmdAddr = -1;	// stop trying to run the same method
+				e.printStackTrace();
+				Kernel.blink(1);
 			}
 			long time = Kernel.time();
 			currentTask = tasks[1];
 			if (currentTask.nextTime < time) {
 				currentTask.nofActivations++;
-				if (currentTask.actionable < 0)	currentTask.action();
-				else actionables[currentTask.actionable].action();
+				try {
+					if (currentTask.actionable < 0)	currentTask.action();
+					else actionables[currentTask.actionable].action();
+				} catch (Exception e) {
+					Kernel.cmdAddr = -1;	// stop trying to run the same method
+					e.printStackTrace();
+					Kernel.blink(3);
+				}
 				if (currentTask.installed) {
 					if (currentTask.period == 0) {
 						nofReadyTasks++;
