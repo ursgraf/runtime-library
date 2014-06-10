@@ -137,6 +137,7 @@ public class RN131WiFlyCmdIntDemo extends Task{
 		SCI1.start(19200, SCI1.NO_PARITY, (short) 8);
 		//hook SCI1 to System.out
 		System.out = new PrintStream(SCI1.out);
+		System.err = System.out;
 		
 		MPIOSM_DIO.init(resetPin,true); //Init Mpiosm
 		MPIOSM_DIO.set(resetPin,false); //Reset RN131C
@@ -145,7 +146,6 @@ public class RN131WiFlyCmdIntDemo extends Task{
 		t.period = 100;
 		Task.install(t);
 		MPIOSM_DIO.set(resetPin, true); // release Reset of RN131C
-		
 	}
 
 }
