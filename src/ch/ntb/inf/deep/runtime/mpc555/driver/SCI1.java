@@ -250,7 +250,7 @@ public class SCI1 extends Interrupt {
         if ((off | count) < 0 || off > len || len - off < count) {
         	throw new ArrayIndexOutOfBoundsException(len, off, count);
         }
-		for (int i = 0; i < len; i++) {
+		for (int i = 0; i < count; i++) {
 			buffer[off + i] = rxQueue.dequeue();
 		}
 		return len;

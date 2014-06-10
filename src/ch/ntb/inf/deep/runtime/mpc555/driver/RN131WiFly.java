@@ -701,7 +701,8 @@ public class RN131WiFly extends Task{
 	 */
 	public void action(){
 		if (inWifi.available() > 0){
-			int availLen =  inWifi.read(tmp, 0, 1);
+			int availLen = inWifi.available();
+			inWifi.read(tmp, 0, availLen);
 			int tmpIndex;
 			for (tmpIndex = 0; tmpIndex < availLen; tmpIndex++){
 				checkKeyWords(tmpIndex, availLen);
