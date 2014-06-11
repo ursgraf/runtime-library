@@ -35,7 +35,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
  */
 public class BlueRSCmdIntDemo extends Task {
 	private final static String partner = "008025003E46";
-	private static final int resetPin = 15;
+	private static final int resetPin = 11;
 	private static int cmd = 1;
 
 	public void action() { // Print status changes and received commands
