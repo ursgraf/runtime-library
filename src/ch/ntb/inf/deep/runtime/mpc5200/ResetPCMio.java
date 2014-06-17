@@ -39,7 +39,7 @@ class ResetPCMio extends PPCException implements Ippc32, IphyCoreMpc5200io, Idee
 			US.PUT4(0x80000000, MemBaseAddr >> 16);	// switch memory base address
 			
 			US.PUTGPR(1, SRAM_BaseAddr + 0x100);	// set temporary stack pointer
-			int addr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/mpc5200/ResetPCMtiny/copyCode");
+			int addr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/mpc5200/ResetPCMio/copyCode");
 			US.PUTSPR(LR, addr + 0xfff00000);
 			US.ASM("bclrl always, 0");
 		}
