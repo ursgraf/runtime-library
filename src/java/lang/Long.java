@@ -361,9 +361,7 @@ public final class Long extends Number implements Comparable<Long>, Modified {
         long max = Long.MIN_VALUE / radix;
         long result = 0, length = string.length();
         while (offset < length) {
-//            int digit = Character.digit(string.charAt(offset++), radix);
-            int digit = Character.digit(string.charAt(offset), radix);	//TODO
-            offset++;
+            int digit = Character.digit(string.charAt(offset++), radix);
             if (digit == -1) {
                 throw invalidLong(string);
             }

@@ -374,9 +374,7 @@ public final class Integer extends Number implements Comparable<Integer>, Modifi
         int max = Integer.MIN_VALUE / radix;
         int result = 0, length = string.length();
         while (offset < length) {
-//            int digit = Character.digit(string.charAt(offset++), radix);	//TODO
-            int digit = Character.digit(string.charAt(offset), radix);
-            offset++;
+            int digit = Character.digit(string.charAt(offset++), radix);
             if (digit == -1) {
                 throw invalidInt(string);
             }
