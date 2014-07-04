@@ -29,10 +29,6 @@ public class SimpleBlinkerDemo extends Task implements IphyCoreMpc5200tiny{
 
 	public void action(){
 		US.PUT4(GPWOUT, US.GET4(GPWOUT) ^ 0x80000000);
-		if (nofActivations == 10) {
-			int[] a = new int[3];
-			a[5] = 100;
-		}
 	}
 	
 	static {
