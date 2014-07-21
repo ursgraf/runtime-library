@@ -19,14 +19,13 @@
 package ch.ntb.inf.deep.runtime.mpc555;
 
 import ch.ntb.inf.deep.runtime.mpc555.driver.DS1302Z;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /**
  * Date and time class. This class reads on initialization the date and time
  * from the {@link mpc555.DS1302Z} real time clock. After that the time is
- * updated with a normal {@link mpc555.Task}. Each 24 hours at 24:00 the time will be
+ * updated with a normal {@link ch.ntb.inf.deep.runtime.ppc32.Task}. Each 24 hours at 24:00 the time will be
  * updated from the real time clock.<br>
- * 
- * @author 25.08.2009 simon.pertschy@ntb.ch
  * 
  */
 public class DateTime extends Task {
@@ -61,10 +60,10 @@ public class DateTime extends Task {
 		return dateTime;
 	}
 
-	/* (non-Javadoc)
-	 * @see mpc555.Task#Do()
+	/*
+	 * @see mpc555.Task#action()
 	 */
-	public void Do() {
+	public void action() {
 		millisec += Task.time() - lastCallTime;
 		lastCallTime = Task.time();
 		if (millisec > 999) {
@@ -84,7 +83,7 @@ public class DateTime extends Task {
 	}
 
 	/**
-	 * Update the time from the {@link mpc555.DS1302Z} real time clock.
+	 * Update the time from the {@link ch.ntb.inf.deep.runtime.mpc555.driver.DS1302Z} real time clock.
 	 */
 	private void  update() {
 		sec = DS1302Z.getSec();
@@ -147,7 +146,7 @@ public class DateTime extends Task {
 	}
 
 	/**
-	 * Sets the actual time and writes it to the {@link mpc555.DS1302Z} real time clock.
+	 * Sets the actual time and writes it to the {@link ch.ntb.inf.deep.runtime.mpc555.driver.DS1302Z} real time clock.
 	 * @param sec the actual seconds.
 	 * @param min the actual minutes.
 	 * @param hour the actual hour.
@@ -182,7 +181,7 @@ public class DateTime extends Task {
 	 * bits 16 - 20 = date
 	 * bits 21 - 24 = month
 	 * bits 25 - 31 = year - 1980
-	 * @return
+	 * @return actual Time as an integer
 	 */
 	public int getPackedTime() {
 		int time = (year - 1980) << 25;
@@ -199,7 +198,7 @@ public class DateTime extends Task {
 	 * Returns the date and time as a string.
 	 * The format <i>dd.mm.yyyy hh:mm:ss</i>.
 	 * @param str
-	 * @return
+	 * @return date and time as string
 	 */
 	public int getString(char[] str) {
 		int off = 0;

@@ -120,6 +120,56 @@ cpu mpc5200 {
 			addr = MemBaseAddr + 0x8;
 			size = 4;
 		}
+		register CS1START {
+			type = IOR;
+			addr = MemBaseAddr + 0xC;
+			size = 4;
+		}
+		register CS1STOP {
+			type = IOR;
+			addr = MemBaseAddr + 0x10;
+			size = 4;
+		}
+		register CS2START {
+			type = IOR;
+			addr = MemBaseAddr + 0x14;
+			size = 4;
+		}
+		register CS2STOP {
+			type = IOR;
+			addr = MemBaseAddr + 0x18;
+			size = 4;
+		}
+		register CS3START {
+			type = IOR;
+			addr = MemBaseAddr + 0x1C;
+			size = 4;
+		}
+		register CS3STOP {
+			type = IOR;
+			addr = MemBaseAddr + 0x20;
+			size = 4;
+		}
+		register CS4START {
+			type = IOR;
+			addr = MemBaseAddr + 0x24;
+			size = 4;
+		}
+		register CS4STOP {
+			type = IOR;
+			addr = MemBaseAddr + 0x28;
+			size = 4;
+		}
+		register CS5START {
+			type = IOR;
+			addr = MemBaseAddr + 0x2C;
+			size = 4;
+		}
+		register CS5STOP {
+			type = IOR;
+			addr = MemBaseAddr + 0x30;
+			size = 4;
+		}
 		register SDRAMCS0 {
 			type = IOR;
 			addr = MemBaseAddr + 0x34;

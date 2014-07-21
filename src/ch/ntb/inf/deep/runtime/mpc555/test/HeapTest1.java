@@ -116,6 +116,7 @@ public class HeapTest1 {
 	static {
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI2.out);
+		System.err = new PrintStream(SCI2.out);
 		System.out.println("HeapTest1 started");
 	}
 }

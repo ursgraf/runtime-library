@@ -1,39 +1,42 @@
 /*
- * @(#)RetentionPolicy.java	1.5 05/11/17
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Copyright 2006 Sun Microsystems, Inc. All rights reserved.
- * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package java.lang.annotation;
 
 /**
- * Annotation retention policy.  The constants of this enumerated type
- * describe the various policies for retaining annotations.  They are used
- * in conjunction with the {@link Retention} meta-annotation type to specify
- * how long annotations are to be retained.
+ * Defines an enumeration for annotation retention policies. Used in conjunction
+ * with the {@link Retention} annotation to specify an annotation's time-to-live
+ * in the overall development life cycle.
  *
- * @author  Joshua Bloch
  * @since 1.5
  */
-public class RetentionPolicy {
+public enum RetentionPolicy {
     /**
-     * Annotations are to be discarded by the compiler.
+     * Annotation is only available in the source code.
      */
-    static public final int SOURCE = 0;
-
+    SOURCE,
     /**
-     * Annotations are to be recorded in the class file by the compiler
-     * but need not be retained by the VM at run time.  This is the default
-     * behavior.
+     * Annotation is available in the source code and in the class file, but not
+     * at runtime. This is the default policy.
      */
-    static public final int CLASS= 1;
-
+    CLASS,
     /**
-     * Annotations are to be recorded in the class file by the compiler and
-     * retained by the VM at run time, so they may be read reflectively.
-     *
-     * @see java.lang.reflect.AnnotatedElement
+     * Annotation is available in the source code, the class file and is
+     * available at runtime.
      */
-    static public final int RUNTIME = 2;
+    RUNTIME
 }

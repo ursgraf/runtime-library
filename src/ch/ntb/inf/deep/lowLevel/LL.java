@@ -20,13 +20,23 @@ package ch.ntb.inf.deep.lowLevel;
 
 public class LL {
 
-	/** get bits of floating point value */
+	/** get bits of floating point value (64bit)*/
 	public static long doubleToBits(double d) {
 		return 0;
 	}
 
-	/** set double from bits */
+	/** set double from bits (64bit) */
 	public static double bitsToDouble(long val) {
+		return 0;
+	}
+
+	/** get bits of floating point value (32bit) */
+	public static int floatToBits(float f) {
+		return 0;
+	}
+
+	/** set float from bits (32bit) */
+	public static float bitsToFloat(int val) {
 		return 0;
 	}
 }

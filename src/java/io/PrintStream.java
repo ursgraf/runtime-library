@@ -1,74 +1,67 @@
 /*
- * Copyright 2011 - 2013 NTB University of Applied Sciences in Technology
- * Buchs, Switzerland, http://www.ntb.ch/inf
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- *   
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
-
-/* Changes:
- * 2010-01-06 moved and adapt to java.io.PrintStream by martin.zueger@ntb.ch 
- * 2009-12-18 created by simon.pertschy@ntb.ch 
- */
-
-// TODO: Add missing functions: append(char c), checkError(), close(), flush(), setError(), print(long l), printf(String format, int... args)
 
 package java.io;
 
+import ch.ntb.inf.deep.marker.Modified;
+
 /**
- * {@link OutputStream} adapter to write different data types as a string.
+ * Wraps an existing {@link OutputStream} and provides convenience methods for
+ * writing common data types in a human readable format. No {@code IOException} 
+ * is thrown by this class. Instead, the stack trace is written to the err-
+ * stream.
  * 
+ * This class puts special focus on efficiency. No strings are allocated during
+ * write operations!
  */
-public class PrintStream extends OutputStream{
+/* Changes:
+ * 27.5.2014	Urs Graf	initial import and modified
+ */
+public class PrintStream extends OutputStream implements Modified {
 	private static final boolean enableCR = true;
 	
-	static final char [ ] chars = new char[32];
+	private static final char [ ] chars = new char[32];
 	private OutputStream out;
 	
 	public PrintStream(OutputStream out){
 		this.out = out;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.io.OutputStream#freeSpace()
+	/**
+	 * Writes one byte to the target stream. Only the least significant byte of
+	 * the integer {@code oneByte} is written. 
+	 	 *
+	 * @param oneByte
+	 *            the byte to be written
 	 */
-	public int freeSpace() {
-		return out.freeSpace();
+	public void write(int b) {
+		try {
+			out.write(b);
+		} catch (IOException e) {e.printStackTrace();}
 	}
 
-	/* (non-Javadoc)
-	 * @see java.io.OutputStream#reset()
-	 */
-	public void reset() {
-		out.reset();
-	}
-
-	/* (non-Javadoc)
-	 * @see java.io.OutputStream#write(byte)
-	 */
-	public void write(byte b) {
-		out.write(b);		
-	}
-
-// ---------------------------------------------------------------------------------------------------------------------------------
-	
-	
 	/**
 	 * Terminates the line.
 	 */
 	public void println(){
-		if(enableCR) out.write((byte)'\r');
-		out.write((byte)'\n');
+		try {
+			if(enableCR) out.write('\r');
+			out.write('\n');
+		} catch (IOException e) {e.printStackTrace();}
 	}
 	
 	
@@ -77,7 +70,9 @@ public class PrintStream extends OutputStream{
 	 * @param c the char to write.
 	 */
 	public void print(char c){
-		out.write((byte)c);
+		try {
+			out.write(c);
+		} catch (IOException e) {e.printStackTrace();}
 	}
 	
 	
@@ -86,14 +81,15 @@ public class PrintStream extends OutputStream{
 	 * @param c the char to write.
 	 */
 	public void println(char c){
-		out.write((byte)c);
-		if(enableCR) out.write((byte)'\r');
-		out.write((byte)'\n');
+		try {
+			out.write(c);
+		} catch (IOException e) {e.printStackTrace();}
+		println();
 	}
 
 	
 	/**
-	 * Prints, if possible, <code>chars.length</code> ascii chars (8bit each char) to the output stream.
+	 * Prints <code>chars.length</code> ascii chars (8bit each char) to the output stream.
 	 * @param chars the chars to write
 	 */
 	public void print(char chars[]) {
@@ -102,41 +98,36 @@ public class PrintStream extends OutputStream{
 
 	
 	/**
-	 * Prints, if possible, <code>chars.length</code> ascii chars (8bit each char) to the output stream and then terminates the line.
+	 * Prints <code>chars.length</code> ascii chars (8bit each char) to the output stream and then terminates the line.
 	 * @param chars the chars to write
 	 */
 	public void println(char chars[]) {
 		print(chars, 0, chars.length);
-		if(enableCR) out.write((byte)'\r');
-		out.write((byte)'\n');
+		println();
 	}
 	
 	
 	/**
-	 * Prints, if possible, <code>len</code> ascii chars (8bit each char) starting at
+	 * Prints <code>len</code> ascii chars (8bit each char) starting at
 	 * <code>offset</code> to this output stream.
 	 * @param b
 	 *            the char array
 	 * @param off
 	 *            the start offset in the data.
-	 * @param len
+	 * @param count
 	 *            the number of char to write
 	 * @return the number of written bytes.
 	 */
-	public int print(char b[], int off, int len) {
-		if (len < 0)
-			return illegalLength;
-		if (off < 0)
-			return illegalOffset;
-		int free = out.freeSpace();
-		if (len > free)
-			len = free;
-		len += off;
-		if (len > b.length)
-			return illegalOffset;
-		for (int i = off ; i < len; i++)
-			out.write((byte) b[i]);
-		return len;
+	public int print(char b[], int off, int count) {
+    	int len = b.length;
+        if ((off | count) < 0 || off > len || len - off < count) {
+        	throw new ArrayIndexOutOfBoundsException(len, off, count);
+        }
+        len += off;
+        try {
+        	for (int i = off; i < len; i++) out.write((byte) b[i]);
+        } catch (IOException e) {e.printStackTrace();}
+        return len;
 	}
 	
 	
@@ -147,12 +138,11 @@ public class PrintStream extends OutputStream{
 	 */
 	public int print(String str) {
 		int len = str.length();
-		int free = out.freeSpace();
-		if (len > free)
-			len = free;
-		for (int i = 0; i < len; i++) {
-			out.write((byte) str.charAt(i));
-		}
+		try {
+			for (int i = 0; i < len; i++) {
+				out.write((byte) str.charAt(i));
+			}
+		} catch (IOException e) {e.printStackTrace();}
 		return len;
 	}
 	
@@ -163,15 +153,8 @@ public class PrintStream extends OutputStream{
 	 * @return The number of written chars.
 	 */
 	public int println(String str) {
-		int len = str.length();
-		int free = out.freeSpace();
-		if (len > free)
-			len = free - 1;
-		for (int i = 0; i < len; i++) {
-			out.write((byte) str.charAt(i));
-		}
-		if(enableCR) out.write((byte)'\r');
-		out.write((byte)'\n');
+		int len = print(str);
+		println();
 		return len;
 	}
 	
@@ -196,8 +179,7 @@ public class PrintStream extends OutputStream{
 			print("true");
 		else
 			print("false");
-		if(enableCR) out.write((byte)'\r');
-		out.write((byte)'\n');
+		println();
 	}
 	
 	
@@ -206,25 +188,27 @@ public class PrintStream extends OutputStream{
 	 * @param val the integer to write.
 	 */
 	public void print(int val) {
-		if (val == 0) out.write((byte) '0');
-		else {
-			boolean neg = false;
-			if (val < 0) {
-				neg = true;
-				val *= -1;
+		try {
+			if (val == 0) out.write((byte) '0');
+			else {
+				boolean neg = false;
+				if (val < 0) {
+					neg = true;
+					val *= -1;
+				}
+				int ctr = chars.length;
+				while (val != 0) {
+					chars[--ctr] = (char) ('0' + (val % 10));
+					val /= 10;
+				}
+				if (neg)
+					chars[--ctr] = '-';
+				for (int i = ctr; i < chars.length; i++)
+					out.write((byte)chars[i]);
 			}
-			int ctr = chars.length;
-			while (val != 0) {
-				chars[--ctr] = (char) ('0' + (val % 10));
-				val /= 10;
-			}
-			if (neg)
-				chars[--ctr] = '-';
-			for (int i = ctr; i < chars.length; i++)
-				out.write((byte)chars[i]);
-		}
+		} catch(IOException e) {e.printStackTrace();} 
 	}
-	
+
 	
 	/**
 	 * Prints a integer as a string to the output stream and then terminates the line.
@@ -232,8 +216,7 @@ public class PrintStream extends OutputStream{
 	 */
 	public void println(int val) {
 		print(val);
-		if(enableCR) out.write((byte)'\r');
-		out.write((byte)'\n');
+		println();
 	}
 	
 	/**
@@ -241,34 +224,35 @@ public class PrintStream extends OutputStream{
 	 * @param val the long to write.
 	 */
 	public void print(long val) {
-		if (val == 0) out.write((byte) '0');
-		else {
-			boolean neg = false;
-			if (val < 0) {
-				neg = true;
-				val *= -1;
+		try {
+			if (val == 0) out.write((byte) '0');
+			else {
+				boolean neg = false;
+				if (val < 0) {
+					neg = true;
+					val *= -1;
+				}
+				int ctr = chars.length;
+				while (val != 0) {
+					chars[--ctr] = (char) ('0' + (val % 10));
+					val /= 10;
+				}
+				if (neg)
+					chars[--ctr] = '-';
+				for (int i = ctr; i < chars.length; i++)
+					out.write((byte)chars[i]);
 			}
-			int ctr = chars.length;
-			while (val != 0) {
-				chars[--ctr] = (char) ('0' + (val % 10));
-				val /= 10;
-			}
-			if (neg)
-				chars[--ctr] = '-';
-			for (int i = ctr; i < chars.length; i++)
-				out.write((byte)chars[i]);
-		}
+		} catch(IOException e) {e.printStackTrace();} 
 	}
-	
-	
+
+
 	/**
 	 * Prints a long as a string to the output stream and then terminates the line.
 	 * @param val the long to write.
 	 */
 	public void println(long val) {
 		print(val);
-		if(enableCR) out.write((byte)'\r');
-		out.write((byte)'\n');
+		println();
 	}
 	
 	/**
@@ -278,7 +262,9 @@ public class PrintStream extends OutputStream{
 	public void print(float val){
 		int	nofChars = Double.doubleToChars(val, 6, chars);
 		int	n = 0;
-		while (n < nofChars) {	out.write((byte) chars[n]);	n++;	}
+		try {
+			while (n < nofChars) {out.write((byte)chars[n]); n++;}
+		} catch(IOException e) {e.printStackTrace();}
 	}
 	
 	
@@ -288,8 +274,7 @@ public class PrintStream extends OutputStream{
 	 */
 	public void println(float val){
 		print(val);
-		if(enableCR) out.write((byte)'\r');
-		out.write((byte)'\n');
+		println();
 	}
 	
 	
@@ -300,7 +285,9 @@ public class PrintStream extends OutputStream{
 	public void print(double val){
 		int	nofChars = Double.doubleToChars(val, 15, chars);
 		int	n = 0;
-		while (n < nofChars) {	out.write((byte)chars[n]);	n++;	}
+		try {
+			while (n < nofChars) {out.write((byte)chars[n]); n++;}
+		} catch(IOException e) {e.printStackTrace();}
 	}
 	
 	
@@ -310,8 +297,7 @@ public class PrintStream extends OutputStream{
 	 */
 	public void println(double val){
 		print(val);
-		if(enableCR) out.write((byte)'\r');
-		out.write((byte)'\n');
+		println();
 	}
 	
 	/**
@@ -319,31 +305,32 @@ public class PrintStream extends OutputStream{
 	 * @param val the integer to write.
 	 */
 	public void printHex(int val) {
-		if (val == 0) out.write((byte) '0');
-		else {
-			int ctr = chars.length;
-			while (val != 0) {
-				char ch = (char) ('0' + (val & 0xf));
-				if (ch > '9') ch += 39;
-				chars[--ctr] = ch;
-				val = val >>> 4;
+		try {
+			if (val == 0) out.write((byte) '0');
+			else {
+				int ctr = chars.length;
+				while (val != 0) {
+					char ch = (char) ('0' + (val & 0xf));
+					if (ch > '9') ch += 39;
+					chars[--ctr] = ch;
+					val = val >>> 4;
+				}
+				chars[--ctr] = 'x';
+				chars[--ctr] = '0';
+				for (int i = ctr; i < chars.length; i++)
+					out.write((byte)chars[i]);
 			}
-			chars[--ctr] = 'x';
-			chars[--ctr] = '0';
-			for (int i = ctr; i < chars.length; i++)
-				out.write((byte)chars[i]);
-		}
+		} catch(IOException e) {e.printStackTrace();} 
 	}
-	
-	
+
+
 	/**
 	 * Prints a integer in hexadezimal notation as a string to the output stream and then terminates the line.
 	 * @param val the integer to write.
 	 */
 	public void printHexln(int val) {
 		printHex(val);
-		if(enableCR) out.write((byte)'\r');
-		out.write((byte)'\n');
+		println();
 	}
 
 	/**
@@ -351,20 +338,23 @@ public class PrintStream extends OutputStream{
 	 * @param val the long to write.
 	 */
 	public void printHex(long val) {
-		if (val == 0) out.write((byte) '0');
-		else {
-			int ctr = chars.length;
-			while (val != 0) {
-				char ch = (char) ('0' + (val & 0xf));
-				if (ch > '9') ch += 39;
-				chars[--ctr] = ch;
-				val = val >>> 4;
+		try {
+			if (val == 0) out.write((byte) '0');
+			else {
+				int ctr = chars.length;
+				while (val != 0) {
+					char ch = (char) ('0' + (val & 0xf));
+					if (ch > '9') ch += 39;
+					chars[--ctr] = ch;
+					val = val >>> 4;
+				}
+				chars[--ctr] = 'x';
+				chars[--ctr] = '0';
+				for (int i = ctr; i < chars.length; i++)
+					out.write((byte)chars[i]);
 			}
-			chars[--ctr] = 'x';
-			chars[--ctr] = '0';
-			for (int i = ctr; i < chars.length; i++)
-				out.write((byte)chars[i]);
-		}
+		} catch(IOException e) {e.printStackTrace();} 
+
 	}
 	
 	
@@ -374,8 +364,7 @@ public class PrintStream extends OutputStream{
 	 */
 	public void printHexln(long val) {
 		printHex(val);
-		if(enableCR) out.write((byte)'\r');
-		out.write((byte)'\n');
+		println();
 	}
 
 }

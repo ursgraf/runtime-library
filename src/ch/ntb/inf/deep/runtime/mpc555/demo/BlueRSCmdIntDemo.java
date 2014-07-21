@@ -19,10 +19,11 @@
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
-import ch.ntb.inf.deep.runtime.mpc555.Task;
+
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.BlueRSCmdInt;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /* CHANGES:
  * 09.03.11 NTB/Roger Millischer	adapted to the new deep environment
@@ -34,7 +35,7 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.BlueRSCmdInt;
  */
 public class BlueRSCmdIntDemo extends Task {
 	private final static String partner = "008025003E46";
-	private static final int resetPin = 15;
+	private static final int resetPin = 11;
 	private static int cmd = 1;
 
 	public void action() { // Print status changes and received commands

@@ -19,8 +19,9 @@
 package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import java.io.PrintStream;
-import ch.ntb.inf.deep.runtime.mpc555.Task;
+
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 public class EnumTest1 extends Task {
 

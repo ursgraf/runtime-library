@@ -18,11 +18,10 @@
 
 package ch.ntb.inf.deep.runtime.mpc555;
 
-import ch.ntb.inf.deep.runtime.util.CharOutputStream;
-
+import java.io.PrintStream;
 
 /**
- * Logger utility to write log messages to a {@link CharOutputStream}. It is
+ * Logger utility to write log messages to a {@link PrintStream}. It is
  * possible to set six different log levels.
  * <ul>
  * <li>{@link Logger#none} Logging disabled</li>
@@ -32,8 +31,6 @@ import ch.ntb.inf.deep.runtime.util.CharOutputStream;
  * <li>{@link Logger#info} All messages except debug messages will be logged</li>
  * <li>{@link Logger#debug} All messages will be logged</li>
  * </ul>
- * 
- * @author 25.08.2009 simon.pertschy@ntb.ch
  * 
  */
 public class Logger {
@@ -75,19 +72,19 @@ public class Logger {
 	private String levelDis[] = { "[Erro] ", "[Warn] ", "[Conf] ", "[Info] ",
 			"[Debu] " };
 
-	private CharOutputStream stream;
+	private PrintStream stream;
 	private DateTime time;
 	private char[] str;
 
 	/**
 	 * Creates a new Logger object which write log messages to the
-	 * {@link CharOutputStream} <code>stream</code>. The standard log level is
+	 * {@link PrintStream} <code>stream</code>. The standard log level is
 	 * {@link #warning}.
 	 * 
 	 * @param stream
 	 *            The output stream of the logger.
 	 */
-	public Logger(CharOutputStream stream) {
+	public Logger(PrintStream stream) {
 		time = DateTime.getInstance();
 		str = new char[128];
 		this.stream = stream;
@@ -97,12 +94,12 @@ public class Logger {
 	/**
 	 * Set the log level. Possible levels are:
 	 * <ul>
-	 * <li>{@link none}</li>
-	 * <li>{@link error}</li>
-	 * <li>{@link warning}</li>
-	 * <li>{@link config}</li>
-	 * <li>{@link info}</li>
-	 * <li>{@link debug}</li>
+	 * <li>{@link #none}</li>
+	 * <li>{@link #error}</li>
+	 * <li>{@link #warning}</li>
+	 * <li>{@link #config}</li>
+	 * <li>{@link #info}</li>
+	 * <li>{@link #debug}</li>
 	 * </ul>
 	 * 
 	 * @param level
@@ -122,7 +119,7 @@ public class Logger {
 	}
 
 	/**
-	 * Writes a log message to the <code>CharOutputStream</code> if the
+	 * Writes a log message to the <code>PrintStream</code> if the
 	 * parameter <code>level</code> is greater than the logger level.<br>
 	 * With % it is possible to add some arguments to the message.
 	 * <ul>
@@ -149,12 +146,12 @@ public class Logger {
 					switch (c) {
 					case 't':
 						int len = time.getString(str);
-						stream.write(str, 0, len);
+						stream.print(str, 0, len);
 						i++;
 						break;
 					case 'l':
 						if (level >= 0 && level < levelDis.length)
-							stream.write(levelDis[level]);
+							stream.print(levelDis[level]);
 						i++;
 						break;
 					default:
@@ -170,7 +167,7 @@ public class Logger {
 	}
 
 	/**
-	 * Writes a log message to the <code>CharOutputStream</code> if the
+	 * Writes a log message to the <code>PrintStream</code> if the
 	 * parameter <code>level</code> is greater than the logger level.<br>
 	 * With % it is possible to add some arguments to the message.
 	 * <ul>
@@ -201,12 +198,12 @@ public class Logger {
 					switch (c) {
 					case 't':
 						int len = time.getString(str);
-						stream.write(str, 0, len);
+						stream.print(str, 0, len);
 						i++;
 						break;
 					case 'l':
 						if (level >= 0 && level < levelDis.length)
-							stream.write(levelDis[level]);
+							stream.print(levelDis[level]);
 						i++;
 						break;
 					case 'd':
@@ -225,7 +222,7 @@ public class Logger {
 	}
 
 	/**
-	 * Writes a log message to the <code>CharOutputStream</code> if the
+	 * Writes a log message to the <code>PrintStream</code> if the
 	 * parameter <code>level</code> is greater than the logger level.<br>
 	 * With % it is possible to add some arguments to the message.
 	 * <ul>
@@ -259,12 +256,12 @@ public class Logger {
 					switch (c) {
 					case 't':
 						int len = time.getString(str);
-						stream.write(str, 0, len);
+						stream.print(str, 0, len);
 						i++;
 						break;
 					case 'l':
 						if (level >= 0 && level < levelDis.length)
-							stream.write(levelDis[level]);
+							stream.print(levelDis[level]);
 						i++;
 						break;
 					case 'd':

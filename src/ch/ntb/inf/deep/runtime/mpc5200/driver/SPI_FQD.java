@@ -54,8 +54,6 @@ public class SPI_FQD implements IphyCoreMpc5200tiny{
 	 * Reads a given data word (16bit) from the receive buffer.
 	 * A call of this method is blocking!
 	 * 
-	 * @return 
-	 *         value from SPI
 	 */
 	public static void receive() {
 		US.PUT4(PSCBase + PSCTxBuf, 0); // start transfer

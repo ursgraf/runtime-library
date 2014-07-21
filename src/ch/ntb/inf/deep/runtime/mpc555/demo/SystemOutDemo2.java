@@ -19,12 +19,14 @@
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
-import ch.ntb.inf.deep.runtime.mpc555.Task;
+
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 
 /**
  * Demo for System.out using SCI2.
+ * This application simply outputs the character '.' once per second over the SCI2.
  */
 public class SystemOutDemo2 extends Task {
 	

@@ -23,22 +23,33 @@ import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
+ * 30.04.14	NTB/Urs Graf	catching of unchecked exception added
  * 23.11.11	NTB/Martin Züger	classConstOffset
  * 11.11.10	NTB/Urs Graf		creation
  */
 
+/**
+ *  This is the kernel class. It provides basic functionalities and does the booting-up. 
+ */
 public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
+	public static final int clockFrequency = 40000000; // Hz
 	static int loopAddr;
 	static int cmdAddr;
 	
 	@SuppressWarnings("unused")
 	private static void loop() {	// endless loop
 		while (true) {
-			if (cmdAddr != -1) {
-				US.PUTSPR(LR, cmdAddr);	
-				US.ASM("bclrl always, 0");
-				cmdAddr = -1;
+			try {
+				if (cmdAddr != -1) {
+					US.PUTSPR(LR, cmdAddr);	
+					US.ASM("bclrl always, 0");
+					cmdAddr = -1;
+				}
+			} catch (Exception e) {
+				cmdAddr = -1;	// stop trying to run the same method
+				e.printStackTrace();
+				Kernel.blink(2);
 			}
 		}
 	}
@@ -102,7 +113,7 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 //		blink(1);
 		US.PUT4(SIUMCR, 0x00040000);	// internal arb., no data show cycles, BDM operation, CS functions,
 			// output FREEZE, no lock, use data & address bus, use as RSTCONF, no reserv. logic
-		US.PUT4(PLPRCR, 0x00900000);	// MF = 9, 40MHz operation with 4MHz quarz
+		US.PUT4(PLPRCR, (clockFrequency / 4000000 - 1) << 20);	// MF = 9, 40MHz operation with 4MHz quarz
 		int reg;
 		do reg = US.GET4(PLPRCR); while ((reg & (1 << 16)) == 0);	// wait for PLL to lock 
 		US.PUT4(UMCR, 0);	// enable IMB clock, no int. multiplexing, full speed
@@ -172,6 +183,7 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 					US.ASM("bclrl always, 0");
 				} else {	// kernel
 					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/mpc555/Kernel/loop");
+					US.ASM("mtspr EIE, r0");
 				}
 			}
 			// the direct call to clinitAddr destroys volatile registers, hence make sure
@@ -186,11 +198,15 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 	}
 
 	static {
-		boot();
-		cmdAddr = -1;	// must be after class variables are zeroed by boot
-		US.ASM("mtspr EIE, r0");
-		US.PUTSPR(LR, loopAddr);
-		US.ASM("bclrl always, 0");
+		try {
+			boot();
+			cmdAddr = -1;	// must be after class variables are zeroed by boot
+			US.PUTSPR(LR, loopAddr);
+			US.ASM("bclrl always, 0");
+		} catch (Exception e) {
+			e.printStackTrace();
+			while (true) Kernel.blink(5);
+		}
 	}
 
 }

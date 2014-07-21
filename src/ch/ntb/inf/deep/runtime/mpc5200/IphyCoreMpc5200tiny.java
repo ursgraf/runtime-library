@@ -1,24 +1,6 @@
-/*
- * Copyright 2011 - 2013 NTB University of Applied Sciences in Technology
- * Buchs, Switzerland, http://www.ntb.ch/inf
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- *   
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- */
-
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-// Auto generated file (2013-05-08 07:32:27)
+// Auto generated file (2014-07-04 16:35:46)
 
 public interface IphyCoreMpc5200tiny {
 
@@ -63,6 +45,16 @@ public interface IphyCoreMpc5200tiny {
 	public static final int MBAR = 0xf0000000;
 	public static final int CS0START = 0xf0000004;
 	public static final int CS0STOP = 0xf0000008;
+	public static final int CS1START = 0xf000000c;
+	public static final int CS1STOP = 0xf0000010;
+	public static final int CS2START = 0xf0000014;
+	public static final int CS2STOP = 0xf0000018;
+	public static final int CS3START = 0xf000001c;
+	public static final int CS3STOP = 0xf0000020;
+	public static final int CS4START = 0xf0000024;
+	public static final int CS4STOP = 0xf0000028;
+	public static final int CS5START = 0xf000002c;
+	public static final int CS5STOP = 0xf0000030;
 	public static final int SDRAMCS0 = 0xf0000034;
 	public static final int SDRAMCS1 = 0xf0000038;
 	public static final int IPBICR = 0xf0000054;

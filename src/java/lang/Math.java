@@ -1,70 +1,58 @@
 /*
- * Copyright 2011 - 2013 NTB University of Applied Sciences in Technology
- * Buchs, Switzerland, http://www.ntb.ch/inf
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- *   
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package java.lang;
 
+import java.util.Random;
 import ch.ntb.inf.deep.lowLevel.LL;
+import ch.ntb.inf.deep.marker.Modified;
 
-/*changes:
- 16.12.13	NTB/AK			acos and atan2 added
- 30.06.11	NTB/Urs Graf	ported to deep
- 04.09.09	NTB/MZ			ceil, floor, fix, class moved to java.lang
- 27.10.06	NTB/ED			SYS.ADR(param)	==> SYS.ADR(locVar)
- 25.08.06	NTB/ED			powOf10, sqrt
- 14.08.04	NTB/ED			creation, powOf10, powIntExp
+/**
+ * Class Math provides basic math constants and operations such as trigonometric
+ * functions, hyperbolic functions, exponential, logarithms, etc.
  */
-
-public class Math {
-//	private static final boolean _$bigEndian = true; // big-endian
+/* Changes:
+ * 2.6.2014	Urs Graf	initial import and modified
+ */
+public final class Math implements Modified {
+	/**
+	 * The double value closest to e, the base of the natural logarithm.
+	 */
+	public static final double E = 2.718281828459045;
 
 	/**
-	 * do not allow instances.
+	 * The double value closest to pi, the ratio of a circle's circumference to
+	 * its diameter.
+	 */
+	public static final double PI = 3.141592653589793;
+
+	private static Random random;
+
+	/**
+	 * Prevents this class from being instantiated.
 	 */
 	private Math() {
 	}
-
-	/**
-	 * The <code>double</code> value that is closer than any other to <i>e</i>,
-	 * the base of the natural logarithms.
-	 */
-	public static final double E = 2.7182818284590452354;
-
-	/**
-	 * The <code>double</code> value that is closer than any other to <i>pi</i>,
-	 * the ratio of the circumference of a circle to its diameter.
-	 */
-	public static final double PI = 3.14159265358979323846;
 
 	private static final double twoPI = 2 * PI;
 
 	private static final double pio2 = PI / 2, pio4 = PI / 4;
 
-//	private static final int dNaN16MSBs = 0x7ff8;
-
-//	private static double twoPow52 = 1L << 52; // 2^52
-
 	private static final int dExpOffset = 0x3ff;
-
-	/*
-	 * private static final int dExpINF = 0x7ff; private static final int
-	 * dMaxNofFractionDigits = 16; private static double dMinValueNormalized =
-	 * Double.MIN_VALUE * (double)(1L << 52);
-	 */
 
 	/**
 	 * Calculation of power with exponent being an integer value
@@ -89,41 +77,123 @@ public class Math {
 	}
 
 	/**
-	 * Returns absolute value<br>
-	 * 
-	 * @param a
-	 * @return absolute value
+	 * Returns the closest double approximation of the logarithm to a 
+	 * certain base. The returned result is within 1 ulp (unit in the last place) of
+	 * the real result.
+	 *
+	 * @param d
+	 *            the value whose log has to be computed.
+	 * @param base
+	 *            the base to which the logarith is computed.
+	 * @return the natural logarithm of the argument.
 	 */
-	public static int abs(int a) {
-		if (a < 0)
-			a = -a;
-		return a;
+ 	public static double log(double d, double base) {
+		double sign = 1.0;
+	
+		if (d <= 1.0 || base <= 1.0) {
+			if (d <= 0.0 || base <= 0.0 ) return Double.NaN;
+	   		if (d < 1.0) {d = 1.0 / d; sign *= -1.0;}
+	   		if (base < 1.0) {sign *= -1.0; base = 1.0 / base;}
+	   		if (d == 1.0) {
+	   			if (base != 1.0) return 0.0;
+	   			return 1.0;
+	   		}
+	   	}
+		double n = 0.0;
+		while (d >= base) {d /= base; n++;}
+		if (d == 1.0) return (sign * n);
+		return sign * (n + (1.0 / log(base, d)));
 	}
 
 	/**
-	 * Returns absolute value<br>
-	 * 
-	 * @param a
-	 * @return absolute value
+	 * Returns the closest double approximation of the natural logarithm of the
+	 * argument. The returned result is within 1 ulp (unit in the last place) of
+	 * the real result.
+	 *
+	 * @param d
+	 *            the value whose log has to be computed.
+	 * @return the natural logarithm of the argument.
 	 */
-	public static double abs(double a) {
-		if (a < 0)
-			a = -a;
-		return a;
+ 	public static double log(double d) {
+		return log(d, E);
+	}
+
+    /**
+     * Returns the closest double approximation of the base 10 logarithm of the
+     * argument. The returned result is within 1 ulp (unit in the last place) of
+     * the real result.
+     *
+     * @param d
+     *            the value whose base 10 log has to be computed.
+     * @return the natural logarithm of the argument.
+     */
+	public static double log10(double d) {
+		return log(d, 10);
+	}
+
+ 	/**
+	 * Returns the absolute value of the argument.
+	 * <p>
+	 * Special cases:
+	 * <ul>
+	 * <li>{@code abs(-0.0) = +0.0}</li>
+	 * <li>{@code abs(+infinity) = +infinity}</li>
+	 * <li>{@code abs(-infinity) = +infinity}</li>
+	 * <li>{@code abs(NaN) = NaN}</li>
+	 * </ul>
+	 */
+	public static double abs(double d) {
+		return (d >= 0) ? d : -d;
 	}
 
 	/**
-	 * Returns maximum value<br>
-	 * 
-	 * @param a
-	 * @param b
-	 * @return b if b > a, else a
+	 * Returns the absolute value of the argument.
+	 * <p>
+	 * Special cases:
+	 * <ul>
+	 * <li>{@code abs(-0.0) = +0.0}</li>
+	 * <li>{@code abs(+infinity) = +infinity}</li>
+	 * <li>{@code abs(-infinity) = +infinity}</li>
+	 * <li>{@code abs(NaN) = NaN}</li>
+	 * </ul>
 	 */
-	public static int max(int a, int b) {
-		if (b > a)
-			a = b;
-		return a;
+	public static float abs(float f) {
+		return (f >= 0) ? f : -f;
 	}
+	
+    /**
+     * Returns the absolute value of the argument.
+     * <p>
+     * If the argument is {@code Integer.MIN_VALUE}, {@code Integer.MIN_VALUE}
+     * is returned.
+     */
+    public static int abs(int i) {
+        return (i >= 0) ? i : -i;
+    }
+
+    /**
+     * Returns the absolute value of the argument. If the argument is {@code
+     * Long.MIN_VALUE}, {@code Long.MIN_VALUE} is returned.
+     */
+    public static long abs(long l) {
+        return (l >= 0) ? l : -l;
+    }
+
+    /**
+     * Returns the most positive (closest to positive infinity) of the two
+     * arguments.
+     */
+    public static int max(int i1, int i2) {
+        return i1 > i2 ? i1 : i2;
+    }
+
+    /**
+     * Returns the most positive (closest to positive infinity) of the two
+     * arguments.
+     */
+    public static long max(long l1, long l2) {
+        return l1 > l2 ? l1 : l2;
+    }
 
 	/**
 	 * Returns maximum value<br>
@@ -139,17 +209,20 @@ public class Math {
 	}
 
 	/**
-	 * Returns minimum value<br>
-	 * 
-	 * @param a
-	 * @param b
-	 * @return b if b < a, else a
+	 * Returns the most negative (closest to negative infinity) of the two
+	 * arguments.
 	 */
-	public static int min(int a, int b) {
-		if (b < a)
-			a = b;
-		return a;
+	public static int min(int i1, int i2) {
+		return i1 < i2 ? i1 : i2;
 	}
+
+	/**
+	 * Returns the most negative (closest to negative infinity) of the two
+	 * arguments.
+	 */
+	public static long min(long l1, long l2) {
+        return l1 < l2 ? l1 : l2;
+    }
 
 	/**
 	 * Returns minimum value<br>
@@ -539,4 +612,63 @@ public class Math {
 			x -= 1f;
 		return fix(x);
 	}
+	
+    /**
+     * Returns a pseudo-random double {@code n}, where {@code n >= 0.0 && n < 1.0}.
+     * This method reuses a single instance of {@link java.util.Random}.
+     * This method is thread-safe because access to the {@code Random} is synchronized,
+     * but this harms scalability. Applications may find a performance benefit from
+     * allocating a {@code Random} for each of their threads.
+     *
+     * @return a pseudo-random number.
+     */
+    public static synchronized double random() {
+        if (random == null) {
+            random = new Random();
+        }
+        return random.nextDouble();
+    }
+
+    /**
+     * Returns the measure in radians of the supplied degree angle. The result
+     * is {@code angdeg / 180 * pi}.
+     * <p>
+     * Special cases:
+     * <ul>
+     * <li>{@code toRadians(+0.0) = +0.0}</li>
+     * <li>{@code toRadians(-0.0) = -0.0}</li>
+     * <li>{@code toRadians(+infinity) = +infinity}</li>
+     * <li>{@code toRadians(-infinity) = -infinity}</li>
+     * <li>{@code toRadians(NaN) = NaN}</li>
+     * </ul>
+     *
+     * @param angdeg
+     *            an angle in degrees.
+     * @return the radian measure of the angle.
+     */
+    public static double toRadians(double angdeg) {
+        return angdeg / 180d * PI;
+    }
+
+    /**
+     * Returns the measure in degrees of the supplied radian angle. The result
+     * is {@code angrad * 180 / pi}.
+     * <p>
+     * Special cases:
+     * <ul>
+     * <li>{@code toDegrees(+0.0) = +0.0}</li>
+     * <li>{@code toDegrees(-0.0) = -0.0}</li>
+     * <li>{@code toDegrees(+infinity) = +infinity}</li>
+     * <li>{@code toDegrees(-infinity) = -infinity}</li>
+     * <li>{@code toDegrees(NaN) = NaN}</li>
+     * </ul>
+     *
+     * @param angrad
+     *            an angle in radians.
+     * @return the degree measure of the angle.
+     */
+    public static double toDegrees(double angrad) {
+        return angrad * 180d / PI;
+    }
+
 }

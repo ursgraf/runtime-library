@@ -17,10 +17,12 @@
  */
 
 package ch.ntb.inf.deep.runtime.mpc555.test;
+import java.io.IOException;
+
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /*changes:
  * 10.1.11	NTB/GRAU	creation
@@ -32,7 +34,9 @@ public class TaskTest2 extends Task {
 	static TaskTest2 t1;
 	
 	public void action() {
-		SCI2.write((byte)'.');;
+		try {
+			SCI2.write((byte)'.');
+		} catch (IOException e) {};
 		if (Kernel.time() > startTime + 100000) {
 			MPIOSM_DIO.set(pin, !MPIOSM_DIO.get(pin));
 			startTime = Kernel.time();
@@ -40,22 +44,25 @@ public class TaskTest2 extends Task {
 	}
 	
 	public TaskTest2(int pin) {
-		SCI2.write((byte)'a');
+		try {
+			SCI2.write((byte)'a');
+		} catch (IOException e) {}
 		this.startTime = Kernel.time();
 		this.pin = pin;
 		MPIOSM_DIO.init(pin, true);
 		period = 500;
 		time = 50;
 		Task.install(this);
-		SCI2.write((byte)'b');
+		try {
+			SCI2.write((byte)'b');
+		} catch (IOException e) {}
 	}
 	
 	static {
 		SCI2.start(9600, (byte)0, (short)8);
-		SCI2.write((byte)'0');
-//		OutT.switchToSCI2();
-//		OutT.print((byte)'0');
-//		OutT.println((byte)'1');
+		try {
+			SCI2.write((byte)'0');
+		} catch (IOException e) {}
 		t1 = new TaskTest2(9);
 //		TaskTest2 t2 = new TaskTest2(10);
 	}

@@ -19,8 +19,9 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import java.lang.Math;
+
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
-import ch.ntb.inf.deep.runtime.mpc555.Task;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /* Changes:
  * 16.03.2012   NTB/UN  Fixed orientation

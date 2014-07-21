@@ -20,7 +20,7 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
 public class ArrayTest5 {
 	void print() {
@@ -36,8 +36,9 @@ public class ArrayTest5 {
 	}
 
 	static {
-		SCI1.start(9600, SCI1.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI1.out);
+		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
+		System.out = new PrintStream(SCI2.out);
+		System.err = new PrintStream(SCI2.out);
 		System.out.println("start");
 		new ArrayTest5().print();
 	}

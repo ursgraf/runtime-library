@@ -20,9 +20,9 @@ package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.HLC1395Pulsed;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /* CHANGES:
  * 22.02.2011	NTB/Zueger	OutT replaced by System.out
@@ -60,6 +60,7 @@ public class HLC1395Demo extends Task {
 		// Initialize SCI1 and set stdout to SCI1
 		SCI1.start(9600, SCI1.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI1.out);
+		System.err = System.out;
 		
 		System.out.println("HLC1295-Demo");
 		

@@ -124,6 +124,14 @@ operatingsystem ntbSTS {
                 attributes = synthetic;
                 id = 0x107;
             }
+            method floatToBits {
+                attributes = synthetic;
+                id = 0x108;
+            }    
+            method bitsToFloat {
+                attributes = synthetic;
+                id = 0x109;
+            }
     }
 	
     heapclass {
@@ -156,7 +164,19 @@ operatingsystem ntbSTS {
     
 	exception {
     	class = "ch/ntb/inf/deep/runtime/mpc555/Reset";
-    	condition = cputype:mpc555;
+    	condition = boardtype:ntbMpc555HB;
+    	method reset {
+    		attributes = exchnd;
+			offset = 0x100;
+    	}
+    	method <init> {
+    		attributes = synthetic;
+    	}
+    }
+    
+	exception {
+    	class = "ch/ntb/inf/deep/runtime/mpc5200/ResetPCMtiny";
+    	condition = boardtype:phyCoreMpc5200tiny;
     	method reset {
     		attributes = exchnd;
 			offset = 0x100;
@@ -167,8 +187,8 @@ operatingsystem ntbSTS {
     }
     
     exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/Reset";
-    	condition = cputype:mpc5200;
+    	class = "ch/ntb/inf/deep/runtime/mpc5200/ResetPCMio";
+    	condition = boardtype:phyCoreMpc5200io;
     	method reset {
     		attributes = exchnd;
 			offset = 0x100;
@@ -178,6 +198,17 @@ operatingsystem ntbSTS {
     	}
     }
     
+	exception {
+    	class = "ch/ntb/inf/deep/runtime/ppc32/MachineCheck";
+  		method machineCheck {
+    		attributes = exchnd;
+    		offset = 0x200;
+		}
+		method <init> {
+			attributes = synthetic;
+		}
+	}
+	
 	exception {
     	class = "ch/ntb/inf/deep/runtime/mpc555/Interrupt";
     	condition = cputype:mpc555;
@@ -197,25 +228,23 @@ operatingsystem ntbSTS {
     }
     
     exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/ProgramExc";
-    	condition = cputype:mpc5200;
-		method programExc {
+    	class = "ch/ntb/inf/deep/runtime/ppc32/ProgramExc";
+ 		method programExc {
     		attributes = exchnd;
     		offset = 0x700;
 		}
-			method <init> {
+		method <init> {
 			attributes = synthetic;
 		}
 	}
 	
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/FloatingPointUnavailable";
-    	condition = cputype:mpc5200;
+    	class = "ch/ntb/inf/deep/runtime/ppc32/FloatingPointUnavailable";
 		method floatingPointUnavailable {
     		attributes = exchnd;
     		offset = 0x800;
 		}
-			method <init> {
+		method <init> {
 			attributes = synthetic;
 		}
 	}
@@ -229,29 +258,16 @@ operatingsystem ntbSTS {
 	}
 	
     exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc555/SystemCall";
-    	condition = cputype:mpc555;
-		method systemCall {
+    	class = "ch/ntb/inf/deep/runtime/ppc32/SystemCall";
+ 		method systemCall {
     		attributes = exchnd;
     		offset = 0xc00;
 		}
-			method <init> {
+		method <init> {
 			attributes = synthetic;
 		}
 	}
 	
-	exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/SystemCall";
-    	condition = cputype:mpc5200;
-		method systemCall {
-    		attributes = exchnd;
-    		offset = 0xc00;
-		}
-			method <init> {
-			attributes = synthetic;
-		}
-	}
-
 	kernel {
 		class = "ch/ntb/inf/deep/runtime/mpc555/Kernel";
 		condition = cputype:mpc555;

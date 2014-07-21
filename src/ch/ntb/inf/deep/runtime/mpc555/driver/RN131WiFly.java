@@ -1,14 +1,14 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import ch.ntb.inf.deep.runtime.mpc555.Task;
+import java.io.IOException;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
 import ch.ntb.inf.deep.runtime.util.ByteLiFo;
 
 /*
  * Changes:
+ * 3.6.2014		Urs Graf			exception handling added
  * 30.10.2013 NTB/AK: Initial Version
  */
 
@@ -27,8 +27,8 @@ public class RN131WiFly extends Task{
 	public static RN131WiFlyOutputStream out;
 	public static RN131WiFlyInputStream in;
 	
-	private static OutputStream outWifi;
-	private static InputStream inWifi;
+	private static SCIOutputStream outWifi;
+	private static SCIInputStream inWifi;
 	
 	private static final int TMPLEN = 2048, MAX_CURR_RSP_LEN = 255;
 	private static byte[] tmp;
@@ -65,6 +65,8 @@ public class RN131WiFly extends Task{
 	private static boolean openTcpCon = false;
 	private static boolean configInitiated = false;
 	private static boolean configDone = false;
+	private static boolean changeAntConfig = false;
+	private static boolean configUseExtAnt = false;
 	
 	//Escaping Bytes (mechanism used from SLIP (Serial Line Internet Protocol))
 	private static final byte END = (byte)0300;
@@ -86,11 +88,11 @@ public class RN131WiFly extends Task{
 	
 	// States for Config
 	private static final int ENTER_CMD = 1, WAIT_ON_CMD = 2, CONFIG_SSID = 3, CONFIG_JOIN = 4,
-						CONFIG_CHAN = 5, CONFIG_IP_ADDR = 6, CONFIG_IP_NETMASK = 7, CONFIG_DHCP = 8,
-						CONFIG_SAVE = 9, CONFIG_REBOOT = 10, IDLE = 11, CONFIG_UART_MODE = 12,
-						/*CONFIG_IP_HOST = 13,*/ /*CONFIG_IP_REMOTE = 14,*/ CONFIG_CLOSE_CON = 15,
-						CONFIG_EXIT = 16, CONFIG_OPEN_CON = 17, CONFIG_CON_TIMEOUT = 18,
-						CONFIG_COMM_CLOSE = 19, CONFIG_COMM_OPEN = 20, CONFIG_COMM_REMOTE = 21;
+							CONFIG_CHAN = 5, CONFIG_IP_ADDR = 6, CONFIG_IP_NETMASK = 7, CONFIG_DHCP = 8,
+							CONFIG_SAVE = 9, CONFIG_REBOOT = 10, IDLE = 11, CONFIG_UART_MODE = 12,
+							/*CONFIG_IP_HOST = 13,*/ /*CONFIG_IP_REMOTE = 14,*/ CONFIG_CLOSE_CON = 15,
+							CONFIG_EXIT = 16, CONFIG_OPEN_CON = 17, CONFIG_CON_TIMEOUT = 18,
+							CONFIG_COMM_CLOSE = 19, CONFIG_COMM_OPEN = 20, CONFIG_COMM_REMOTE = 21, CONFIG_EXT_ANT = 22;
 	private static int configState = IDLE;
 	
 	private static final byte[] RN_CMD = {'C', 'M', 'D'};
@@ -207,6 +209,27 @@ public class RN131WiFly extends Task{
 	}
 	
 	/**
+	 * Configures the antenna setting of the RN131WiFly
+	 * @param external true: use external antenna (via U.FL connector); false: use internal antenna
+	 */
+	public static void configAntenna(boolean external){
+		if(external){
+			configUseExtAnt = true;
+		}
+		else{
+			configUseExtAnt = false;
+		}
+		if (MODE_CMD){
+			rnError = IN_CMD_MODE;
+		}
+		else{
+			configState = ENTER_CMD;
+			changeAntConfig = true;
+			rnError = RN_OK;
+		}
+	}
+	
+	/**
 	 * Enters the config-mode of the RN131WiFly module and configures the module according
 	 * to the flags previous set.
 	 */
@@ -259,7 +282,10 @@ public class RN131WiFly extends Task{
 				doConfigConTimeout();
 				break;
 			case CONFIG_UART_MODE:
-				sendCMD_AOK("set uart mode 0\r\n",CONFIG_SAVE);
+				sendCMD_AOK("set uart mode 0\r\n",CONFIG_EXT_ANT);
+				break;
+			case CONFIG_EXT_ANT:
+				doConfigExtAnt();
 				break;
 			case CONFIG_SAVE:
 				doConfigSave();
@@ -430,7 +456,7 @@ public class RN131WiFly extends Task{
 			outWifi.write("set ip address ".getBytes());
 			outWifi.write(ip_address.getBytes());
 			outWifi.write("\r\n".getBytes());
-			done = true;
+			done = true;		
 		}
 		else if(gotAOK){
 			if(dbg){
@@ -472,6 +498,23 @@ public class RN131WiFly extends Task{
 			gotErr = false;
 			done = false;
 			configState = CONFIG_EXIT;
+		}
+	}
+	
+	/**
+	 * Configures the antenna setting, if the internal or external antenna should be used
+	 */
+	private static void doConfigExtAnt(){
+		if(changeAntConfig){
+			if(configUseExtAnt){
+				sendCMD_AOK("set wlan ext_antenna 1\r\n", CONFIG_SAVE);
+			}
+			else{
+				sendCMD_AOK("set wlan ext_antenna 0\r\n", CONFIG_SAVE);
+			}
+		}
+		else{
+			configState = CONFIG_SAVE;
 		}
 	}
 	
@@ -657,8 +700,9 @@ public class RN131WiFly extends Task{
 	 * Do not call this Method!!
 	 */
 	public void action(){
-		if(inWifi.available() > 0){
-			int availLen =  inWifi.read(tmp);
+		if (inWifi.available() > 0){
+			int availLen = inWifi.available();
+			inWifi.read(tmp, 0, availLen);
 			int tmpIndex;
 			for (tmpIndex = 0; tmpIndex < availLen; tmpIndex++){
 				checkKeyWords(tmpIndex, availLen);
@@ -677,7 +721,9 @@ public class RN131WiFly extends Task{
 		if(txQueue.availToRead() > 0){
 			if(tcpConnectionOpen()){
 				for(int writeLen = txQueue.availToRead() ; writeLen > 0; writeLen--){
-					outWifi.write(txQueue.dequeue());
+					try {
+						outWifi.write(txQueue.dequeue());
+					} catch (IOException e) { e.printStackTrace(); }
 				}
 			}
 			else{
@@ -685,7 +731,9 @@ public class RN131WiFly extends Task{
 			}
 		}
 		if(rxQueueSlip.availToRead() > 0){
-			receiveSlipPacket();
+			try{
+				receiveSlipPacket();
+			} catch (IOException e) { e.printStackTrace(); }
 		}
 		configure();
 	}
@@ -839,9 +887,9 @@ public class RN131WiFly extends Task{
 	 * Receives a SLIP escaped packet and decodes it
 	 */
 	// uses escaping from SLIP protocol: http://tools.ietf.org/html/rfc1055
-	private static void receiveSlipPacket(){
+	private static void receiveSlipPacket() throws IOException {
 		for(int i=rxQueueSlip.availToRead(); i > 0; i--){
-			temp = rxQueueSlip.dequeue();
+				temp = rxQueueSlip.dequeue();
 			switch(temp){
 				case END:
 					break;
@@ -948,7 +996,7 @@ public class RN131WiFly extends Task{
 	 * read from readbuffer
 	 * @return
 	 */
-	public static int read(){
+	public static int read() throws IOException {
 		return rxQueue.dequeue();
 	}
 	
@@ -958,7 +1006,7 @@ public class RN131WiFly extends Task{
 	 * @return {@link #NULL_POINTER_ERR} if b is null, {@link #LENGTH_NEG_ERR} 
 	 * if length is < 0, {@link OFFSET_NEG_ERR} if offset < 0, else read data length
 	 */
-	public static int read(byte[] b){
+	public static int read(byte[] b) throws IOException {
 		return read(b, 0, b.length);
 	}
 	
@@ -969,7 +1017,7 @@ public class RN131WiFly extends Task{
 	 * @return {@link #NULL_POINTER_ERR} if b is null, {@link #LENGTH_NEG_ERR} 
 	 * if length is < 0, {@link OFFSET_NEG_ERR} if offset < 0, else read data length
 	 */
-	public static int read(byte[] b, int len){
+	public static int read(byte[] b, int len) throws IOException {
 		return read(b, 0, len);
 	}
 	
@@ -979,9 +1027,10 @@ public class RN131WiFly extends Task{
 	 * @param off offset position in destination byte array to write
 	 * @param len length of data to read
 	 * @return {@link #NULL_POINTER_ERR} if b is null, {@link #LENGTH_NEG_ERR} 
-	 * if length is < 0, {@link OFFSET_NEG_ERR} if offset < 0, else read data length
+	 * if length is < 0, {@link OFFSET_NEG_ERR} if offset < 0, 
+	 * {@link IO_EXCEPTION_ERR} if Exception occured, else read data length
 	 */
-	public static int read(byte[] b, int off, int len){
+	public static int read(byte[] b, int off, int len) throws IOException {
 		if (b == null)
 			return NULL_POINTER_ERR;
 		if (len < 0)

@@ -18,19 +18,15 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
+import java.io.IOException;
+
 import ch.ntb.inf.deep.runtime.mpc555.Interrupt;
+import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
 import ch.ntb.inf.deep.unsafe.US;
 
-/* Changes:
- * 13.10.2011	NTB/Martin Zueger	reset() implemented, JavaDoc fixed
- * 08.03.2011	NTB/Urs Graf		ported to deep
- * 31.03.2007	NTB/Simon Pertschy	read failure corrected and error states added
- * 12.02.2007	NTB/Simon Pertschy	assigned to Java
- */
-
 /**
- * <p>Interrupt controlled driver for the <i>Serial Communicatin Interface 2</i>
+ * <p>Interrupt controlled driver for the <i>Serial Communication Interface 2</i>
  * of the Freescale MPC555.</p>
  * <p><b>Remember:</b><br>
  * Depending on the baudrate configured, the effective baudrate can be different.
@@ -40,10 +36,15 @@ import ch.ntb.inf.deep.unsafe.US;
  * >MPC555 User's manual</a>.
  * </p>
  */
+/* Changes:
+ * 3.6.2014		Urs Graf			exception handling added
+ * 13.10.2011	NTB/Martin Zueger	reset() implemented, JavaDoc fixed
+ * 08.03.2011	NTB/Urs Graf		ported to deep
+ */
 public class SCI2 extends Interrupt {
 
-	public static SCI2OutputStream out;
-	public static SCI2InputStream in;
+	public static SCIOutputStream out;
+	public static SCIInputStream in;
 	private static int d = 0;
 	
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
@@ -57,7 +58,7 @@ public class SCI2 extends Interrupt {
 			FRAME_ERR = 1, PARITY_ERR = 0, LENGTH_NEG_ERR = -1,
 			OFFSET_NEG_ERR = -2, NULL_POINTER_ERR = -3;
 	public static final int QUEUE_LEN = 2047;
-	public static final int CLOCK = 40000000;
+	public static final int CLOCK = Kernel.clockFrequency;
 	private static Interrupt rxInterrupt, txInterrupt;
 
 	private static short portStat; // just for saving flag portOpen
@@ -94,7 +95,9 @@ public class SCI2 extends Interrupt {
 			rxQueue.enqueue((byte) word);
 		} else {
 			if (txQueue.availToRead() > 0) {
-				d = txQueue.dequeue();
+				try {
+					d = txQueue.dequeue();
+				} catch (IOException e) {}
 				US.PUT2(QSMCM.SC2DR, d);
 			} else {
 				txDone = true;
@@ -107,7 +110,9 @@ public class SCI2 extends Interrupt {
 	private static void startTransmission() {
 		if (txDone && (txQueue.availToRead() > 0)) {
 			txDone = false;
-			US.PUT2(QSMCM.SC2DR, txQueue.dequeue());
+			try {
+				US.PUT2(QSMCM.SC2DR, txQueue.dequeue());
+			} catch (IOException e) {}
 			scc2r1 |= (1 << QSMCM.scc2r1TIE);
 			US.PUT2(QSMCM.SCC2R1, scc2r1);
 		}
@@ -192,7 +197,7 @@ public class SCI2 extends Interrupt {
 
 	/**
 	 * Check the port status. Returns the port status bits.<br>
-	 * Every bit is representing a flag (e.g. {@link #FLAG_PORT_OPEN}).
+	 * Every bit is representing a flag (e.g. {@link #PORT_OPEN}).
 	 * 
 	 * @return the port status bits.
 	 */
@@ -221,43 +226,32 @@ public class SCI2 extends Interrupt {
 	}
 
 	/**
-	 * Reads the given number of bytes from the SCI1. A call of
+	 * Reads the given number of bytes from the SCI2. A call of
 	 * this method is not blocking!
 	 * 
-	 * @param b
-	 *            Byte Array to write the received data.
+	 * @param buffer
+	 *            Byte aray to write the received data.
 	 * @param off
 	 *            Offset in the array to start writing the data.
-	 * @param len
+	 * @param count
 	 *            Length (number of bytes) to read.
-	 * @return the number of bytes read. 0 if there were no data
-	 *            available to read or if the given number of bytes
-	 *            was zero (len == 0).
-	 *            {@link #LENGTH_NEG_ERR} if the given number of
-	 *            bytes was negative (len < 0).
-	 *            {@link #OFFSET_NEG_ERR} if the given offset was
-	 *            negative (off < 0).
-	 *            {@link #NULL_POINTER_ERR} if the array reference
-	 *            was null (b == null).
+	 * @return the number of bytes read.
+	 * @throws IOException
+	 *            if an error occurs while reading from this stream.
+	 * @throws NullPointerException
+	 *            if {@code buffer} is null.
+	 * @throws IndexOutOfBoundsException
+	 *            if {@code off < 0} or {@code count < 0}, or if
+	 *            {@code off + count} is bigger than the length of
+	 *            {@code buffer}.
 	 */
-	public static int read(byte[] b, int off, int len) {
-		if (b == null)
-			return NULL_POINTER_ERR;
-		if (len < 0)
-			return LENGTH_NEG_ERR;
-		if (len == 0)
-			return 0;
-		if (off < 0)
-			return OFFSET_NEG_ERR;
-		int bufferLen = rxQueue.availToRead();
-		if (len > bufferLen)
-			len = bufferLen;
-		if (len > b.length)
-			len = b.length;
-		if (len + off > b.length)
-			len = b.length - off;
-		for (int i = 0; i < len; i++) {
-			b[off + i] = rxQueue.dequeue();
+	public static int read(byte[] buffer, int off, int count) throws IOException {
+	   	int len = buffer.length;
+        if ((off | count) < 0 || off > len || len - off < count) {
+        	throw new ArrayIndexOutOfBoundsException(len, off, count);
+        }
+		for (int i = 0; i < count; i++) {
+			buffer[off + i] = rxQueue.dequeue();
 		}
 		return len;
 	}
@@ -266,26 +260,26 @@ public class SCI2 extends Interrupt {
 	 * Reads the given number of bytes from the SCI2. A call of
 	 * this method is not blocking!
 	 * 
-	 * @param b
-	 *            Byte Array to write the received data.
-	 * @return the number of bytes read. 0 if there were no data
-	 *            available to read or if the length of the array
-	 *            was zero (b.length == 0).
-	 *            {@link #NULL_POINTER_ERR} if the array reference
-	 *            was null (b == null).
+	 * @param buffer
+	 *            Byte array to write the received data.
+	 * @return the number of bytes read. 
+	 * @throws IOException 
+	 *            if no data available.
 	 */
-	public static int read(byte[] b) {
-		return read(b, 0, b.length);
+	public static int read(byte[] buffer) throws IOException {
+		return read(buffer, 0, buffer.length);
 	}
 
 	/**
 	 * Reads one byte from the SCI2. A call of
 	 * this method is not blocking!
 	 * 
-	 * @return byte read or {@link mpc555.util.ByteFifo#NO_DATA} if
+	 * @return byte read or {@link ch.ntb.inf.deep.runtime.util.ByteFifo#NO_DATA} if
 	 *             no data was available.
+	 * @throws IOException 
+	 *            if no byte available.
 	 */
-	public static int read() {
+	public static int read() throws IOException {
 		return rxQueue.dequeue();
 	}
 
@@ -294,37 +288,33 @@ public class SCI2 extends Interrupt {
 	 * A call of this method is not blocking! There will only as
 	 * many bytes written, which are free in the buffer.
 	 * 
-	 * @param b
+	 * @param buffer
 	 *            Array of bytes to send.
 	 * @param off
 	 *            Offset to the data which should be sent.
-	 * @param len
+	 * @param count
 	 *            Number of bytes to send.
 	 * @return the number of bytes written.
-	 *            {@link #LENGTH_NEG_ERR} if the given number of
-	 *            bytes was negative (len < 0).
-	 *            {@link #OFFSET_NEG_ERR} if the given offset was
-	 *            negative (off < 0).
-	 *            {@link #NULL_POINTER_ERR} if the array reference
-	 *            was null (b == null).
+	 * @throws IOException
+	 *            if an error occurs while writing to this stream.
+	 * @throws NullPointerException
+	 *            if {@code buffer} is null.
+	 * @throws IndexOutOfBoundsException
+	 *            if {@code off < 0} or {@code count < 0}, or if
+	 *            {@code off + count} is bigger than the length of
+	 *            {@code buffer}.
 	 */
-	public static int write(byte[] b, int off, int len) {
-		if (b == null)
-			return NULL_POINTER_ERR;
-		if (len < 0)
-			return LENGTH_NEG_ERR;
-		if (off < 0)
-			return OFFSET_NEG_ERR;
-		if (len + off > b.length)
-			len = b.length - off;
-		int bufferSpace = txQueue.availToWrite();
-		if (bufferSpace < len)
-			len = bufferSpace;
-		for (int i = 0; i < len; i++) {
-			txQueue.enqueue(b[off + i]);
+	public static int write(byte[] buffer, int off, int count) throws IOException{
+		if ((portStat & (1 << PORT_OPEN)) == 0) throw new IOException("IOException");
+    	int len = buffer.length;
+        if ((off | count) < 0 || off > len || len - off < count) {
+        	throw new ArrayIndexOutOfBoundsException(len, off, count);
+        }
+		for (int i = 0; i < count; i++) {
+			txQueue.enqueue(buffer[off + i]);
 		}
 		startTransmission();
-		return len;
+		return count;
 	}
 
 	/**
@@ -332,18 +322,14 @@ public class SCI2 extends Interrupt {
 	 * A call of this method is not blocking! There will only as
 	 * many bytes written, which are free in the buffer.
 	 * 
-	 * @param b
+	 * @param buffer
 	 *            Array of bytes to send.
-	 * @param off
-	 *            Offset to the data which should be sent.
-	 * @param len
-	 *            Number of bytes to send.
 	 * @return the number of bytes written.
-	 *            {@link #NULL_POINTER_ERR} if the array reference
-	 *            was null (b == null).
+	 * @throws IOException 
+	 *            if an error occurs while writing to this stream.
 	 */
-	public static int write(byte[] b) {
-		return write(b, 0, b.length);
+	public static int write(byte[] buffer) throws IOException {
+		return write(buffer, 0, buffer.length);
 	}
 
 	/**
@@ -354,15 +340,18 @@ public class SCI2 extends Interrupt {
 	 * 
 	 * @param b
 	 *            Byte to write.
+	 * @throws IOException 
+	 *            if an error occurs while writing to this stream.
 	 */
-	public static void write(byte b) {
+	public static void write(byte b) throws IOException {
+		if ((portStat & (1 << PORT_OPEN)) == 0) throw new IOException("IOException");
 		while (txQueue.availToWrite() <= 0);
 		txQueue.enqueue(b);
 		startTransmission();
 	}
 
 	/**
-	 * Resets the SCI1. This means, the SCI will be
+	 * Resets the SCI2. This means, the SCI will be
 	 * stopped and reinitialized with the same configuration.
 	 */
 	public static void reset() {
@@ -371,8 +360,8 @@ public class SCI2 extends Interrupt {
 	}
 	
 	static {
-		out = new SCI2OutputStream();
-		in = new SCI2InputStream();
+		out = new SCIOutputStream(SCIOutputStream.pSCI2);
+		in = new SCIInputStream(SCIInputStream.pSCI2);
 		QSMCM.init();
 
 		rxQueue = new ByteFifo(QUEUE_LEN);

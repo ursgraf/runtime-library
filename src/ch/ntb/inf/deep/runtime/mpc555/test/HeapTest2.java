@@ -19,9 +19,9 @@
 package ch.ntb.inf.deep.runtime.mpc555.test;
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 import ch.ntb.inf.deep.runtime.ppc32.Heap;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /*changes:
  * 10.04.12	NTB/GRAU	creation
@@ -33,6 +33,7 @@ public class HeapTest2 extends Task {
 	static Task t;
 	
 	public void action() {
+		@SuppressWarnings("unused")
 		int[] a = new int[100];
 		head = new HeapTest2();
 		HeapTest2 tail = head;
@@ -50,6 +51,7 @@ public class HeapTest2 extends Task {
 	static {
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI2.out);
+		System.err = new PrintStream(SCI2.out);
 		System.out.println("HeapTest2 started");
 		t = new HeapTest2();
 		t.period = 10;

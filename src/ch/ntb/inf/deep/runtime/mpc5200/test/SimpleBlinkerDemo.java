@@ -18,13 +18,12 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200.test;
 
-import ch.ntb.inf.deep.runtime.mpc5200.Task;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
- * Simple blinker application demo.
- * Connect an LED to pin MPIOSM12. The LED will be toggled every half second.
+ * Simple blinker application demo. Binks LED on EVM every second.
  */
 public class SimpleBlinkerDemo extends Task implements IphyCoreMpc5200tiny{
 

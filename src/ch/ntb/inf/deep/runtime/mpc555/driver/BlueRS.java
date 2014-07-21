@@ -18,14 +18,14 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.util.ByteLiFo;
 
 /*
  * Changes: 
+ * 03.06.2014 NTB/GRAU	exception handling added
  * 09.03.2011 NTB/RM:	add init to SCI2 and some debug prints
  * 24.02.2011 NTB/MZ:	adapted to the new deep environment
  * 27.05.2008 NTB/SP:	task creation moved to static construct
@@ -74,8 +74,8 @@ import ch.ntb.inf.deep.runtime.util.ByteLiFo;
  */
 public class BlueRS extends Task {
 
-	private static OutputStream out;
-	private static InputStream in;
+	private static SCIOutputStream out;
+	private static SCIInputStream in;
 	
 	/**
 	 * The receiver task period.
@@ -239,13 +239,12 @@ public class BlueRS extends Task {
 	 * Writes, if possible, <code>len</code> bytes starting at
 	 * <code>offset</code> to this output stream.
 	 * 
-	 * @param b
+	 * @param cmd
 	 *            the byte array
 	 * @param off
 	 *            the start offset in the data.
 	 * @param len
 	 *            the number of bytes to write
-	 * @return the number of written bytes.
 	 */
 	public static void sendCommand(byte[] cmd, int off, int len){
 		out.write(cmd, off, len);
@@ -497,20 +496,6 @@ public class BlueRS extends Task {
 	}
 
 	/**
-	 * Checks the space of the send buffer.<br>
-	 * 
-	 * If the device is not in {@link #MODE_CONNECTED}, the result will be -1.
-	 * 
-	 * @return number of bytes to be able to send or -1 if not in
-	 *         {@link #MODE_CONNECTED}.
-	 */
-	public static int availableToSend() {
-		if (mode != MODE_CONNECTED)
-			return -1;
-		return out.freeSpace();
-	}
-
-	/**
 	 * Checks the number of bytes which are available to receive.<br>
 	 * 
 	 * If the device is not in {@link #MODE_CONNECTED}, the result will be -1.
@@ -628,10 +613,13 @@ public class BlueRS extends Task {
 	// @Override
 	public void action() {
 		if (in.available() > 0) {
-			int lenRead = in.read(tmpRsp);
+			int lenRead = in.available();
+			in.read(tmpRsp, 0, lenRead);
 			if (dbg) {
-				System.out.print('*');
-				System.out.write(tmpRsp, 0, lenRead);
+				try{
+					System.out.print('*');
+					System.out.write(tmpRsp, 0, lenRead);
+				}catch(IOException e) { e.printStackTrace(); }
 			}
 			int tmpIndex;
 			for (tmpIndex = 0; tmpIndex < lenRead; tmpIndex++) {
@@ -696,7 +684,7 @@ public class BlueRS extends Task {
 							connectionInitiated = false;
 						} else if (currentRsp.compare(BT_RESET, 2, BT_RESET.length)) {
 							if(dbg){
-								System.out.println("BT_RESET");
+									System.out.println("BT_RESET");
 							}
 							init();
 						}
@@ -720,8 +708,8 @@ public class BlueRS extends Task {
 							default:
 								break;
 							}
-							lastResult = RESULT_OK;
-							waitForResult = false;
+								lastResult = RESULT_OK;
+								waitForResult = false;
 						} else if (currentRsp.compare(BT_ERROR, 0,
 								BT_ERROR.length)) {
 							lastResult = RESULT_ERROR;
@@ -765,7 +753,7 @@ public class BlueRS extends Task {
 	 * In addition to the AT commands, the Bluetooth module will display error
 	 * codes after each command. A detailed description can be found in the
 	 * Stollmann BlueRS+E/I manual (section 5.2). To display this error codes on
-	 * the Target Log use {@link #setDebugging(boolean)}.
+	 * the Target Log set {@link #dbg} true.
 	 */
 	public static void enableErrorMessages() {
 		if (mode == MODE_AT) {

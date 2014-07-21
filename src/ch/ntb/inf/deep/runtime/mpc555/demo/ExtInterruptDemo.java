@@ -53,6 +53,7 @@ public class ExtInterruptDemo extends Interrupt {
 	static {
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI2.out);
+		System.err = System.out;
 		System.out.println("start");
 		
 		Interrupt int5 = new ExtInterruptDemo(5); 

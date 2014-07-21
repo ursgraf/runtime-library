@@ -18,8 +18,8 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.Robi2;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /**
  * This class is part of the Robi2SensorProximityDemo.

@@ -18,14 +18,15 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.test;
 
+import java.io.IOException;
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPWMSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.QADC_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_DIO;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /* CHANGES:
  * 12.10.2011	NTB/MZ	QADC test added
@@ -36,6 +37,7 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_DIO;
 public class DioTest extends Task {
 	private static final int print = 0, waitForInput = 1, inputTest = 2, outputTest = 3;
 	private static final boolean IN = false, OUT = true;
+	@SuppressWarnings("unused")
 	private static final boolean ON = true, OFF = false;
 	private static final boolean TPUA = true, TPUB = false, QADCA = true, QADCB = false;
 	private static final String HI = "HI";
@@ -83,9 +85,6 @@ public class DioTest extends Task {
 		for(int i = 0; i < 16; i++) {
 			QADC_DIO.init(QADCB, i, out);
 		}
-		
-		// MDA
-		// TODO: implement this
 	}
 	
 	private static void toggleLEDs() {
@@ -118,9 +117,6 @@ public class DioTest extends Task {
 		for(int i = 0; i < 16; i++) {
 			QADC_DIO.set(QADCB, i, !ledStat);
 		}
-		
-		// MDA
-		// TODO: implement this
 		
 		ledStat = !ledStat;
 	}
@@ -185,9 +181,6 @@ public class DioTest extends Task {
 			System.out.print(getState(QADC_DIO.get(QADCB, i)));
 			System.out.print('\t');
 		}
-		
-		// MDA
-		// TODO: implement this
 	}
 	
 	private static void inputTest() {
@@ -225,7 +218,10 @@ public class DioTest extends Task {
 			action = waitForInput;
 			break;
 		case waitForInput:
-			char c = (char)System.in.read();
+			char c;
+			try {
+				c = (char)System.in.read();
+			} catch (IOException e) {break;}
 			if(c == 'i') {
 				System.out.println("  [I] Running input test...");
 				initializeIOs(IN);
@@ -248,6 +244,7 @@ public class DioTest extends Task {
 		// Initialize SCI1 and set stdout to SCI1
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
 		System.out = new PrintStream(SCI2.out);
+		System.err = new PrintStream(SCI2.out);
 		System.in = SCI2.in;
 		
 		System.out.println("DIO-Test");

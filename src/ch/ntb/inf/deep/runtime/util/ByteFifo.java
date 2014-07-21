@@ -18,7 +18,10 @@
 
 package ch.ntb.inf.deep.runtime.util;
 
+import java.io.IOException;
+
 /* Changes:
+ * 04.06.2014	Urs Graf	exception added
  * 01.04.2008	NTB/SP	error states added
  * 28.09.2007	NTB/SP	creation
  */
@@ -26,12 +29,8 @@ package ch.ntb.inf.deep.runtime.util;
 /**
  * First in first out <code>byte</code> queue.
  * The size of the queue should be a multiple of 2 minus one (size = 2^x - 1).
- * 
- * @author NTB/SP 28.9.2007
  */
-public class ByteFifo{
-	
-	public static final int NO_DATA = -1; 
+public class ByteFifo {
 	
 	byte[] data;
 	int head, tail;
@@ -41,7 +40,7 @@ public class ByteFifo{
 	 * 
 	 * @param size The size of the queue (size = 2^x - 1)
 	 */
-	public ByteFifo(int size){
+	public ByteFifo(int size) {
 		data = new byte[size + 1];
 		this.size = size;
 	}
@@ -50,38 +49,39 @@ public class ByteFifo{
 	 * Inserts one <code>byte</code> into the queue.
 	 * @param data <code>Byte</code> which will be inserted into the queue
 	 */
-	public void enqueue(byte data){
-		if(availToWrite() > 0){
+	public void enqueue(byte data) {
+		if (availToWrite() > 0) {
 			this.data[tail] = data;
 			tail = (tail + 1) % this.data.length;
 		}
 	}
-	
+
 	/**
 	 * Removes one <code>byte</code> from the queue.
-	 * @return The removed byte or @see {@link #NO_DATA} if no data is present
+	 * @return The removed byte.
+	 * @throws IOException 
+	 *            if reading from an empty queue.
 	 */
-	public byte dequeue(){
-		if(head != tail){
+	public byte dequeue() throws IOException {
+		if (head != tail) {
 			byte c= data[head];
 			head = (head + 1) % data.length;
 			return c;
-		}
-		return NO_DATA;
+		} else throw new IOException("IOException");
 	}
 	
 	
 	/**
 	 * Clears the queue.
 	 */
-	public void clear(){
+	public void clear() {
 		head = tail;
 	}
 	
 	/**
 	 * @return The available <code>bytes</code> to read.
 	 */
-	public int availToRead(){
+	public int availToRead() {
 		int len = tail - head;
 		if(len < 0) return data.length + len;
 		return len;
@@ -90,7 +90,7 @@ public class ByteFifo{
 	/**
 	 * @return The available queue space.
 	 */
-	public int availToWrite(){
+	public int availToWrite() {
 		int len = tail - head;
 		if(len < 0) len = data.length + len;
 		return size - len;
@@ -99,7 +99,7 @@ public class ByteFifo{
 	/**
 	 * @return The size of the queue.
 	 */
-	public int getSize(){
+	public int getSize() {
 		return size;
 	}
 }
