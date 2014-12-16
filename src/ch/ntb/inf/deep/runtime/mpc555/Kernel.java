@@ -183,9 +183,9 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 					US.ASM("bclrl always, 0");
 				} else {	// kernel
 					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/mpc555/Kernel/loop");
-					US.ASM("mtspr EIE, r0");
 				}
 			}
+
 			// the direct call to clinitAddr destroys volatile registers, hence make sure
 			// the variable classConstOffset is forced into nonvolatile register
 			// this is done by call to empty()
@@ -201,6 +201,7 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 		try {
 			boot();
 			cmdAddr = -1;	// must be after class variables are zeroed by boot
+			US.ASM("mtspr EIE, r0");
 			US.PUTSPR(LR, loopAddr);
 			US.ASM("bclrl always, 0");
 		} catch (Exception e) {

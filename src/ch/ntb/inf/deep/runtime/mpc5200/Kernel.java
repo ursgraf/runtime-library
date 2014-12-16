@@ -105,12 +105,6 @@ public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstan
 	}
 	
 	private static void boot() {
-		// configure CS3 for external FPGA 
-		US.PUT4(CS3START, 0x0000E000);	// start address = 0xfe000000
-		US.PUT4(CS3STOP, 0x0000E00F);	// stop address = 0xe00fffff, size = 1MB
-		US.PUT4(CS3CR, 0x0005FF00);	// 5 wait states, multiplexed, ack, enabled, 25 addr. lines, 32 bit data, rw
-		US.PUT4(IPBICR, US.GET4(IPBICR) | 0x00080000); // enable CS3
-
 		US.PUT4(XLBACR, 0x00002006);	// time base enable, data and address timeout enable
 		
 		// mark stack end with specific pattern
