@@ -8,6 +8,7 @@ import ch.ntb.inf.deep.runtime.util.ByteLiFo;
 
 /*
  * Changes:
+ * 10.12.2014	Aaron Leander		Change Settings for new RN131g Firmware (Change AdHoc to AccessPoint, Use DHCP on AP Mode)
  * 3.6.2014		Urs Graf			exception handling added
  * 30.10.2013 NTB/AK: Initial Version
  */
@@ -40,13 +41,13 @@ public class RN131WiFly extends Task{
 	private static boolean MODE_CMD = false;
 	private static boolean MODE_DATA = true;
 	
-	private static final int RN_OK = 0, NO_ADHOC = 1, CONNECT_FAILED = 2, CMD_ERR_OCCURED = 3,
+	private static final int RN_OK = 0, NO_AP = 1, CONNECT_FAILED = 2, CMD_ERR_OCCURED = 3,
 					IN_CMD_MODE = 4, ERR_CLOSE_CON = 5, TCP_CON_CLOSED = 6;
 	private static int rnError = RN_OK;
 		
 	private static boolean gotCMD = false, gotAOK = false, gotREADY = false, gotSAVE = false,
 						gotCLOS = false, gotOPEN = false, gotEXIT = false, gotErr = false,
-						gotConOnAdHoc = false, gotAdHocLost = false, gotConnectFailed = false,
+						gotConOnAP = false, gotAdHocLost = false, gotConnectFailed = false,
 						tcpOpen = false, gotListenOn = false,
 						gotListenOnBefore = false, gotKeyWord = false;
 	
@@ -55,7 +56,7 @@ public class RN131WiFly extends Task{
 	
 	// Config Parameter for RN131
 	private static String ssid;
-	private static boolean createAdHoc;
+	private static boolean createAP;
 	private static String ip_address;
 	private static String connectToIp;
 	private static String connectToPort;
@@ -105,8 +106,8 @@ public class RN131WiFly extends Task{
 	private static final byte[] RN_CLOS = {closeCmd};
 	private static final byte[] RN_OPEN = {openCmd};
 	private static final byte[] RN_REMOTE = {remoteCmd};
-	private static final byte[] RN_ADHOC_CON = {'C','o','n','n','e','c','t','e','d',' ','v','i','a',' ','A','d','-','H','o','c',' ','o','n',' '};
-	private static final byte[] RN_ADHOC_LOST = {'A','d','-','H','o','c',' ','i','s',' ','l','o','s','t'};
+	private static final byte[] RN_AP_CON = {'A','s','s','o','c','i','a','t','e','d','!'};
+	private static final byte[] RN_AP_LOST = {'D','i','s','c','o','n','n',' ','f','r','o','m',' '};
 	private static final byte[] RN_LISTEN_ON = {'L','i','s','t','e','n',' ','o','n',' ','2','0','0','0'};	
 	
 	public static final int LENGTH_NEG_ERR = 11,
@@ -144,8 +145,8 @@ public class RN131WiFly extends Task{
 		if (MODE_CMD){
 			rnError = IN_CMD_MODE;
 		}
-		else if(!gotConOnAdHoc){
-			rnError = NO_ADHOC;
+		else if(!gotConOnAP){
+			rnError = NO_AP;
 		}
 		else{
 			connectToIp = conToIp;
@@ -162,7 +163,7 @@ public class RN131WiFly extends Task{
 	 * Note: Netmask set to 255.255.0.0, so use IP Addresses like 169.254.x.x 
 	 * (first three parts of the IP must be the same, otherwise the modules can't communicate)
 	 * @param conSsid		SSID of desired Network
-	 * @param createSelf	true: create AdHoc Network with this Module, false: join Network with given SSID
+	 * @param createSelf	true: create Access Point with this Module, false: join Network with given SSID
 	 * @param ip_adr		desired IP Address, note: Netmask 255.255.255.0
 	 */
 	public static void init(String conSsid, boolean createSelf, String ip_adr){
@@ -171,7 +172,7 @@ public class RN131WiFly extends Task{
 		}
 		else{
 			ssid = conSsid;
-			createAdHoc = createSelf;
+			createAP = createSelf;
 			ip_address = ip_adr;
 			configState = ENTER_CMD;
 			rnError = RN_OK;
@@ -182,7 +183,7 @@ public class RN131WiFly extends Task{
 	/**
 	 * returns Error Status of RN131WiFly
 	 * @return 	0 = RN_OK;
-				1 = NO_ADHOC;
+				1 = NO_AP;
 				2 = CONNECT_FAILED;
 				3 = CMD_ERR_OCCURED;
 				4 = IN_CMD_MODE;
@@ -251,8 +252,8 @@ public class RN131WiFly extends Task{
 				doConfigCommRemote();
 				break;
 			case CONFIG_JOIN:
-				if(createAdHoc){
-					sendCMD_AOK("set wlan join 4\r\n",CONFIG_SSID);
+				if(createAP){
+					sendCMD_AOK("set wlan join 7\r\n",CONFIG_SSID);
 				}
 				else{
 					sendCMD_AOK("set wlan join 1\r\n",CONFIG_SSID);
@@ -262,7 +263,7 @@ public class RN131WiFly extends Task{
 				doConfigSsid();
 				break;
 			case CONFIG_CHAN:
-				if(createAdHoc){
+				if(createAP){
 					sendCMD_AOK("set wlan chan 1\r\n",CONFIG_IP_ADDR);
 				}
 				else{
@@ -276,7 +277,11 @@ public class RN131WiFly extends Task{
 				sendCMD_AOK("set ip netmask 255.255.0.0\r\n",CONFIG_DHCP);//("set ip netmask 255.255.255.0\r\n",CONFIG_DHCP);
 				break;
 			case CONFIG_DHCP:
-				sendCMD_AOK("set ip dhcp 0\r\n",CONFIG_UART_MODE);
+				if(createAP){
+					sendCMD_AOK("set ip dhcp 4\r\n",CONFIG_UART_MODE);
+				}else{
+					sendCMD_AOK("set ip dhcp 0\r\n",CONFIG_UART_MODE);
+				}
 				break;
 			case CONFIG_CON_TIMEOUT:
 				doConfigConTimeout();
@@ -395,7 +400,8 @@ public class RN131WiFly extends Task{
 			configState = CONFIG_EXIT;
 		}
 	}
-	
+
+
 	/**
 	 * Configures the remote statement
 	 */
@@ -561,6 +567,9 @@ public class RN131WiFly extends Task{
 			outWifi.write("\r\n\r\n".getBytes());
 			configState = IDLE;
 			configDone = true;
+			if (createAP){
+				gotConOnAP = true;
+			}
 		}
 	}
 	
@@ -599,7 +608,7 @@ public class RN131WiFly extends Task{
 				outWifi.write("AdHoc lost!\r\n".getBytes());
 			}
 			done = false;
-			rnError = NO_ADHOC;
+			rnError = NO_AP;
 			configState = CONFIG_EXIT;
 		}
 		else if (gotConnectFailed){
@@ -796,18 +805,18 @@ public class RN131WiFly extends Task{
 			gotCLOS = true;
 			gotKeyWord = true;
 		}
-		else if (currentRsp.compare(RN_ADHOC_CON, 0, min(availableLen, RN_ADHOC_CON.length))){
-			gotConOnAdHoc = true;
+		else if (currentRsp.compare(RN_AP_CON, 0, min(availableLen, RN_AP_CON.length))){
+			gotConOnAP = true;
 			gotAdHocLost = false;
 		}
 		else if (MODE_CMD && currentRsp.compare(RN_ERR, 0, min(availableLen, RN_ERR.length))){
 			gotErr = true;
 		}
-		else if (currentRsp.compare(RN_ADHOC_LOST, 0, min(availableLen, RN_ADHOC_LOST.length))){
+		else if (currentRsp.compare(RN_AP_LOST, 0, min(availableLen, RN_AP_LOST.length))){
 			gotAdHocLost = true;
-			gotConOnAdHoc = false;
+			gotConOnAP = false;
 			closeConnection();
-			rnError = NO_ADHOC;
+			rnError = NO_AP;
 		}
 		else if (currentRsp.compare(RN_CON_FAIL, 0, min(availableLen, RN_CON_FAIL.length))){
 			gotConnectFailed = true;

@@ -19,7 +19,6 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.runtime.util.IntFifo;
-import ch.ntb.inf.deep.runtime.mpc555.driver.RN131WiFly;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /*
@@ -138,7 +137,7 @@ public class RN131WiFlyCmdInt extends Task{
 	/**
 	 * Initializes the RN131WiFly Module with the following parameters
 	 * @param ssid SSID of adhoc network (SSID: Service Set Identifier)
-	 * @param createSelf true: create adhoc network self, false: module will connect to network with ssid of first parameter
+	 * @param createSelf true: create Access Point self, false: module will connect to network with ssid of first parameter
 	 * @param ipAdr IP Address of module, with first two parts fix (169.254.x.x)
 	 */
 	public static void init(String ssid, boolean createSelf, String ipAdr){
@@ -235,6 +234,7 @@ public class RN131WiFlyCmdInt extends Task{
 		return RN131WiFly.initDone();
 	}
 	
+
 	/**
 	 * Configures the antenna setting of the RN131WiFly
 	 * @param external true: use external antenna (via U.FL connector); false: use internal antenna
