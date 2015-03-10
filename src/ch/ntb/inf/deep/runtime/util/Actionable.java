@@ -41,8 +41,7 @@ package ch.ntb.inf.deep.runtime.util;
  * behavior of the class.
  *
  * @author  Urs Graf
- * @see     ch.ntb.inf.deep.runtime.mpc555.Task
- * @see     ch.ntb.inf.deep.runtime.mpc5200.Task
+ * @see     ch.ntb.inf.deep.runtime.ppc32.Task
  */
 public interface Actionable {
     /**
