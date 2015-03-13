@@ -16,47 +16,37 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200.test;
+package ch.ntb.inf.deep.runtime.mpc5200.demo;
 
 import java.io.PrintStream;
-import ch.ntb.inf.deep.runtime.ppc32.Task;
-import ch.ntb.inf.deep.runtime.mpc5200.driver.DAC_MAX5500;
-import ch.ntb.inf.deep.runtime.mpc5200.driver.SPI_FQD;
+
 import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /**
- * Demo for SPI on PSC1 and PSC6.
+ * Demo for System.out using UART on PSC3.
  */
-public class SPIDemo extends Task {
-	static short i;
+public class UART3Demo extends Task {
 	
 	public void action() {
-//		System.out.print('.');
-		DAC_MAX5500.send(0, i);
-		DAC_MAX5500.send(1, i);
-		DAC_MAX5500.send(2, i);
-		DAC_MAX5500.send(3, i);
-		i += 0x40;
-		if (i > 0xfff) i = 0;
-		SPI_FQD.receive();
-		System.out.print(SPI_FQD.getEncoder0());
-		System.out.print('\t');
-		System.out.println(SPI_FQD.getEncoder1());
+		// Write a single character to the stdout
+		System.out.print('.');
 	}
 
 	static {
-		// Use the UART3 for stdout and stderr
+		// Initialize UART (9600 8N1)
 		UART3.start(9600, UART3.NO_PARITY, (short)8);
+		
+		// Use the UART3 for stdout and stderr
 		System.out = new PrintStream(UART3.out);
 		System.err = System.out;
-
-		System.out.print("started");
-		DAC_MAX5500.init();
-		SPI_FQD.init();
+		
+		// Print a string to the stdout
+		System.out.print("System.out demo (UART3)");
 		
 		// Create and install the demo task
-		Task t = new SPIDemo();
-		t.period = 100;
+		Task t = new UART3Demo();
+		t.period = 500;
 		Task.install(t);
 	}
 }

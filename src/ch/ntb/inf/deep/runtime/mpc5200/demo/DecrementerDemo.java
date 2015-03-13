@@ -16,37 +16,41 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200.test;
+package ch.ntb.inf.deep.runtime.mpc5200.demo;
 
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
-import ch.ntb.inf.deep.runtime.ppc32.Task;
+import ch.ntb.inf.deep.runtime.ppc32.Decrementer;
+
+/* changes:
+ * 24.8.2012	NTB/Urs Graf		creation
+ */
 
 /**
- * Demo for System.out using UART on PSC3.
+ * Simple demo application how to use the Decrementer.
+ * This application simply outputs the character 'x' 
+ * over the UART3 for each decrementer exception.
  */
-public class UART3Demo extends Task {
+public class DecrementerDemo extends Decrementer {
+	static DecrementerDemo decTest; 
 	
-	public void action() {
-		// Write a single character to the stdout
-		System.out.print('.');
+	/* (non-Javadoc)
+	 * @see ch.ntb.inf.deep.runtime.mpc5200.Decrementer#action()
+	 */
+	public void action () {
+		System.out.print('x');
 	}
-
+	
 	static {
-		// Initialize UART (9600 8N1)
+		// Initialize the UART3 (9600 8N1) and use it for System.out
 		UART3.start(9600, UART3.NO_PARITY, (short)8);
-		
-		// Use the UART3 for stdout and stderr
 		System.out = new PrintStream(UART3.out);
-		System.err = System.out;
 		
-		// Print a string to the stdout
-		System.out.print("System.out demo (UART3)");
-		
-		// Create and install the demo task
-		Task t = new UART3Demo();
-		t.period = 500;
-		Task.install(t);
+		// Create and install the Decrementer demo
+		System.out.println("decrementer started");
+		decTest = new DecrementerDemo(); 
+		decTest.decPeriodUs = 33000000;	// gives 1s with XLB clock = 132MHz
+		Decrementer.install(decTest);
 	}
 }

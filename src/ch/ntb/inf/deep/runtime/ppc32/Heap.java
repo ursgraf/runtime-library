@@ -55,6 +55,9 @@ public class Heap implements IdeepCompilerConstants {
 	
 	private static int nofSweepFreeBlock, nofSweepMarkedBlock, nofSweepCollBlock;
 	private static int currBlock;
+	/**
+	 * Base address of the system table. Must be set by the boot method of the kernel.
+	 */
 	public static int sysTabBaseAddr;
 	
 	// called by new	
@@ -165,7 +168,7 @@ public class Heap implements IdeepCompilerConstants {
 	}
 	
 	// called by newstring in java/lang/String
-	public static int newstring(int ref, int len) {
+	private static int newstring(int ref, int len) {
 		int size = len + 8;
 		int blockAddr = getBlock(size);
 		US.PUT4(blockAddr, 0x80000000 | size);	// set mark bit and size, clear array bit and primitive array bit
@@ -182,7 +185,7 @@ public class Heap implements IdeepCompilerConstants {
 		int i = blockSize / minBlockSize - 1;
 		if (i >= nofFreeLists) i = nofFreeLists - 1;
 		// search free block in free block list
-		if (freeBlocks == null) { // there is no free list at the very beginning
+		if (freeBlocks == null) { // there is no free list at the very beginning of the boot process
 			addr = heapPtr;
 			heapPtr += blockSize;
 			freeHeap -= blockSize;

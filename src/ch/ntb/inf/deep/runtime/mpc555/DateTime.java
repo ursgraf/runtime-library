@@ -23,7 +23,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /**
  * Date and time class. This class reads on initialization the date and time
- * from the {@link mpc555.DS1302Z} real time clock. After that the time is
+ * from the {@link ch.ntb.inf.deep.runtime.mpc555.driver.DS1302Z} real time clock. After that the time is
  * updated with a normal {@link ch.ntb.inf.deep.runtime.ppc32.Task}. Each 24 hours at 24:00 the time will be
  * updated from the real time clock.<br>
  * 

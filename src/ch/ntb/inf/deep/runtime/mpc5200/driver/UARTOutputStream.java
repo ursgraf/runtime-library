@@ -52,7 +52,7 @@ public class UARTOutputStream extends OutputStream {
      * Writes a single byte to this stream. Only the least significant byte of
      * the integer {@code b} is written to the stream.
      *
-     * @param oneByte
+     * @param b
      *            the byte to be written.
      */
 	public void write(int b) {

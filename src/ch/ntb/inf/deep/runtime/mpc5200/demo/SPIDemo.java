@@ -16,47 +16,47 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200.test;
+package ch.ntb.inf.deep.runtime.mpc5200.demo;
 
 import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
+import ch.ntb.inf.deep.runtime.mpc5200.driver.DAC_MAX5500;
+import ch.ntb.inf.deep.runtime.mpc5200.driver.SPI_FQD;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
-import ch.ntb.inf.deep.runtime.mpc5200.driver.can.EPOS;
 
-public class EPOStest1 extends Task {
-	static EPOS drive1;
-	static int pos = 0;
-	static boolean toggle = true;
-
-	public void action() {
-		if (toggle) pos += 10; else pos -=10;
-		drive1.setPosition(pos);
-		if (this.nofActivations % 100 == 0) {
-//			CANopen.dispMsgBuf2();
-//			drive1.sendSync(); 
-			System.out.print('.');
-		}
-		if (this.nofActivations % 500 == 0) {
-			if (toggle) drive1.setOutAC(); else drive1.setOutBD();
-			toggle = !toggle;
-		}
-	}
+/**
+ * Demo for SPI on PSC1 and PSC6.
+ */
+public class SPIDemo extends Task {
+	static short i;
 	
+	public void action() {
+//		System.out.print('.');
+		DAC_MAX5500.send(0, i);
+		DAC_MAX5500.send(1, i);
+		DAC_MAX5500.send(2, i);
+		DAC_MAX5500.send(3, i);
+		i += 0x40;
+		if (i > 0xfff) i = 0;
+		SPI_FQD.receive();
+		System.out.print(SPI_FQD.getEncoder0());
+		System.out.print('\t');
+		System.out.println(SPI_FQD.getEncoder1());
+	}
 
-	static {	
+	static {
+		// Use the UART3 for stdout and stderr
 		UART3.start(9600, UART3.NO_PARITY, (short)8);
 		System.out = new PrintStream(UART3.out);
-		System.out.println("start");
-		drive1 = new EPOS((byte)1);
-		drive1.start();
-		drive1.initOutABCD(); 
-		drive1.setOutBD();
-		drive1.setParams();
-		drive1.setPDOtransmission();
-		drive1.startNode();
-		drive1.enablePower();
-		Task t = new EPOStest1();	
-		t.period = 10;
+		System.err = System.out;
+
+		System.out.print("started");
+		DAC_MAX5500.init();
+		SPI_FQD.init();
+		
+		// Create and install the demo task
+		Task t = new SPIDemo();
+		t.period = 100;
 		Task.install(t);
 	}
 }

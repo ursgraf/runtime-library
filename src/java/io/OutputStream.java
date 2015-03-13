@@ -22,11 +22,6 @@ import ch.ntb.inf.deep.marker.Modified;
 /**
  * A writable sink for bytes.
  *
- * <p>Most clients will use output streams that write data to the file system
- * ({@link FileOutputStream}), the network ({@link java.net.Socket#getOutputStream()}/{@link
- * java.net.HttpURLConnection#getOutputStream()}), or to an in-memory byte array
- * ({@link ByteArrayOutputStream}).
- *
  * <p>Use {@link OutputStreamWriter} to adapt a byte stream like this one into a
  * character stream.
  *

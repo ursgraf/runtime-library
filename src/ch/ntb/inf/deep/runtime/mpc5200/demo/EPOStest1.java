@@ -16,27 +16,29 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200.test;
+package ch.ntb.inf.deep.runtime.mpc5200.demo;
 
 import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
-import ch.ntb.inf.deep.runtime.mpc5200.driver.can.CAN1;
+import ch.ntb.inf.deep.runtime.mpc5200.driver.can.EPOS;
 
-public class CAN1Test extends Task {
-	
+public class EPOStest1 extends Task {
+	static EPOS drive1;
+	static int pos = 0;
+	static boolean toggle = true;
+
 	public void action() {
-		CAN1.sampleNodes();
-		if (nofActivations % 2000 == 0) {
-			for (int i = 0; i < CAN1.nodeData.length; i++) {
-				System.out.print(CAN1.nodeData[i].forceX);
-				System.out.print('.');
-				System.out.print(CAN1.nodeData[i].forceY);
-				System.out.print('.');
-				System.out.print(CAN1.nodeData[i].forceZ);
-				System.out.print("\t");
-			}
-			System.out.println();
+		if (toggle) pos += 10; else pos -=10;
+		drive1.setPosition(pos);
+		if (this.nofActivations % 100 == 0) {
+//			CANopen.dispMsgBuf2();
+//			drive1.sendSync(); 
+			System.out.print('.');
+		}
+		if (this.nofActivations % 500 == 0) {
+			if (toggle) drive1.setOutAC(); else drive1.setOutBD();
+			toggle = !toggle;
 		}
 	}
 	
@@ -45,9 +47,16 @@ public class CAN1Test extends Task {
 		UART3.start(9600, UART3.NO_PARITY, (short)8);
 		System.out = new PrintStream(UART3.out);
 		System.out.println("start");
-		CAN1.init();
-		Task t = new CAN1Test();	
-		t.period = 1;
+		drive1 = new EPOS((byte)1);
+		drive1.start();
+		drive1.initOutABCD(); 
+		drive1.setOutBD();
+		drive1.setParams();
+		drive1.setPDOtransmission();
+		drive1.startNode();
+		drive1.enablePower();
+		Task t = new EPOStest1();	
+		t.period = 10;
 		Task.install(t);
 	}
 }

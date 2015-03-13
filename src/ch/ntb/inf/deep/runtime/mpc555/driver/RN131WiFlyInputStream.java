@@ -66,11 +66,11 @@ public class RN131WiFlyInputStream extends InputStream{
 	 * Reads one byte from the RN131WiFly. A call of this 
 	 * method is not blocking!
 	 * 
-	 * @param buffer
+	 * @param b
 	 * 				Byte array to write the received data.
 	 * @param off
 	 * 				Offset in the array to start writing the data.
-	 * @param count 
+	 * @param len 
 	 * 				Length (number of bytes) to read.
 	 * @return the number of bytes read.
 	 */

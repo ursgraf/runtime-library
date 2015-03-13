@@ -22,6 +22,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.Override;
 
+/**
+ * A writable sink for bytes.
+ * 
+ * This is a simple helper class. <code>System.out</code> will open such a <code>DummyOutputStream</code> as a default. 
+ * A user will later redirect <code>System.out</code> to a physically available device.
+ *
+ */
 public class DummyOutputStream extends OutputStream {
 
 	@Override

@@ -37,7 +37,8 @@ public class ByteArrayFifo{
 	int size;
 
 	/**
-	 * Creates a new ByteArrrayFifo.
+	 * Creates a new <code>ByteArray</code> with <code>size</code> entries.
+	 * 
 	 * @param size The size of the queue (size = 2^x - 1)
 	 */
 	public ByteArrayFifo(int size){
@@ -77,6 +78,8 @@ public class ByteArrayFifo{
 	}
 	
 	/**
+	 * Reads the available entries in the queue.
+	 * 
 	 * @return The available <code>byte<code> arrays to read.
 	 */
 	public int availToRead(){
@@ -86,6 +89,8 @@ public class ByteArrayFifo{
 	}
 	
 	/**
+	 * Reads the available space left in the queue.
+	 * 
 	 * @return The available queue space.
 	 */
 	public int availToWrite(){
@@ -95,6 +100,8 @@ public class ByteArrayFifo{
 	}
 	
 	/**
+	 * Reads the maximum number of entries in the queue.
+	 * 
 	 * @return The size of the queue.
 	 */
 	public int getSize(){

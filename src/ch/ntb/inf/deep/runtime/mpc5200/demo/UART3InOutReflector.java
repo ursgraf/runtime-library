@@ -16,30 +16,32 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200.test;
+package ch.ntb.inf.deep.runtime.mpc5200.demo;
 
 import ch.ntb.inf.deep.runtime.ppc32.Task;
-import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
-import ch.ntb.inf.deep.unsafe.US;
+import ch.ntb.inf.deep.runtime.mpc5200.driver.*;
 
 /**
- * Simple blinker application demo. Binks LED on EVM every second.
+ * Demo for InputStream and OutputStream using UART3.
  */
-public class SimpleBlinkerDemo extends Task implements IphyCoreMpc5200tiny{
-
-	public void action(){
-		US.PUT4(GPWOUT, US.GET4(GPWOUT) ^ 0x80000000);
-	}
+public class UART3InOutReflector extends Task {
+	static UARTOutputStream out;
+	static UARTInputStream in;
 	
+	public void action() {
+		// reflect input on stdin to stdout
+		if (in.available() > 0)	out.write(in.read());
+	}
+
 	static {
-		US.PUT4(GPWER, US.GET4(GPWER) | 0x80000000);	// enable GPIO use
-		US.PUT4(GPWDDR, US.GET4(GPWDDR) | 0x80000000);	// make output
+		// Initialize SCI2 (9600 8N1)
+		UART3.start(9600, UART3.NO_PARITY, (short)8);
+		out = new UARTOutputStream(UARTOutputStream.pPSC3);
+		in = new UARTInputStream(UARTInputStream.pPSC3);
+		out.write((byte)'x');
 		
-		// Create and install the task
-		SimpleBlinkerDemo t = new SimpleBlinkerDemo();
-		t.period = 1000;
+		Task t = new UART3InOutReflector();
+		t.period = 0;
 		Task.install(t);
 	}
-
 }
-

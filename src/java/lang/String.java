@@ -137,7 +137,7 @@ public class String extends BString implements Serializable, Comparable<String>,
      * equal. The object must be an instance of string with the same characters
      * in the same order.
      *
-     * @param object
+     * @param anObject
      *            the object to compare.
      * @return {@code true} if the specified object is equal to this string,
      *         {@code false} otherwise.
