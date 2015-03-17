@@ -33,6 +33,7 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
+	/** Clock frequency of the processor. */
 	public static final int clockFrequency = 40000000; // Hz
 	static int loopAddr;
 	static int cmdAddr;
@@ -55,7 +56,9 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 	}
 	
 	/** 
-	 * @return system time in us
+	 * Reads the system time.
+	 * 
+	 * @return System time in \u00b5s
 	 */
 	public static long time() {
 		int high1, high2, low;
@@ -69,7 +72,9 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 	}
 	
 	/** 
-	 * blinks LED on MPIOSM pin 15, nTimes with approx. 100us high time and 100us low time, blocks for 1s
+	 * Blinks LED on MPIOSM pin 15, nTimes with approx. 100us high time and 100us low time, blocks for 1s
+	 * 
+	 * @param nTimes Number of times the led blinks.
 	 */
 	public static void blink(int nTimes) { 
 		US.PUT2(MPIOSMDDR, US.GET2(MPIOSMDDR) | 0x8000);
@@ -84,7 +89,7 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 	}
 
 	/** 
-	 * blinks LED on MPIOSM pin 15 if stack end was overwritten
+	 * Blinks LED on MPIOSM pin 15 if stack end was overwritten
 	 */
 	public static void checkStack() { 
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);

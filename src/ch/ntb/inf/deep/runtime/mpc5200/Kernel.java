@@ -26,6 +26,9 @@ import ch.ntb.inf.deep.unsafe.US;
  * 21.6.12	NTB/Urs Graf		creation
  */
 
+/**
+ *  This is the kernel class. It provides basic functionalities and does the booting-up. 
+ */
 public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
 	static int loopAddr;
@@ -49,7 +52,9 @@ public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstan
 	}
 	
 	/** 
-	 * @return system time in us
+	 * Reads the system time.
+	 * 
+	 * @return System time in \u00b5s
 	 */
 	public static long time() {
 		int high1, high2, low;
@@ -63,7 +68,9 @@ public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstan
 	}
 	
 	/** 
-	 * blinks LED on GPIO_WKUP_7, nTimes with approx. 100us high time and 100us low time, blocks for 1s
+	 * Blinks LED on GPIO_WKUP_7, nTimes with approx. 100us high time and 100us low time, blocks for 1s
+	 * 
+	 * @param nTimes Number of times the led blinks.
 	 */
 	public static void blink(int nTimes) { 
 		US.PUT4(GPWER, US.GET4(GPWER) | 0x80000000);	// enable GPIO use
@@ -79,7 +86,7 @@ public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstan
 	}
 
 	/** 
-	 * blinks LED on GPIO_WKUP_7 if stack end was overwritten
+	 * Blinks LED on GPIO_WKUP_7 if stack end was overwritten
 	 */
 	public static void checkStack() { 
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);

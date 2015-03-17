@@ -46,7 +46,7 @@ public class TPU_PWM implements IntbMpc555HB{
 	 * Remember: <code>period</code> and <code>highTime</code> are
 	 * 32 bit values!<br>
 	 * The period time should be defined as an integer constant.
-	 * Example for a period time of <i>T = 50 us (f = 20 kHz)</i>:
+	 * Example for a period time of <i>T = 50 \u00b5s (f = 20 kHz)</i>:
 	 * <code>private final int pwmPeriod = 50000 / TpuTimeUnit;</code>
 	 * 
 	 * @param tpuA		<code>true</code>: use TPU-A,
