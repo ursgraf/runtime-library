@@ -42,6 +42,19 @@ public class HeapTest1 {
 		obj1 = new byte[0x4000];
 	}
 	
+	// such a block size is too big to be repetively allocated
+	// it takes to mark&sweep phases to add the blocks to the free list
+	// during that time, space on the heap would have run out
+	public static void allocArr3(){
+		obj1 = new byte[0xf000];
+	}
+
+	// must throw a runtime exception
+	//the size of the array is limited to 16 bit
+	public static void allocArr4(){
+		obj1 = new byte[0x20000];
+	}
+
 	public static void deleteObj1(){
 		obj1 = null;
 	}

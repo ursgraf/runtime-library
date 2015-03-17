@@ -183,6 +183,7 @@ public class Heap implements IdeepCompilerConstants {
 	private static int getBlock(int size) throws RuntimeException {
 		int addr;
 		int blockSize = ((size + minBlockSize - 1) >> 4) << 4;
+		if (blockSize >= 0x10000) throw new RuntimeException("Exception: Array block too big");	// array length must fit into 16 bit
 		int i = blockSize / minBlockSize - 1;
 		if (i >= nofFreeLists) i = nofFreeLists - 1;
 		// search free block in free block list
@@ -215,13 +216,13 @@ public class Heap implements IdeepCompilerConstants {
 				}
 			} else {	// get block from list with block size >= 128 Bytes
 				addr = freeBlocks[nofFreeLists - 1];
-				if (addr == 0) throw new RuntimeException("Allocation in heap failed");	// no block in list 
+				if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block in list 
 				int freeBlockSize = US.GET4(addr) & 0xffffff;
 				int prev = addr;
 				while (blockSize > freeBlockSize) {	// search block which is big enough
 					prev = addr;
 					addr = US.GET4(addr + 4);
-					if (addr == 0) throw new RuntimeException("Allocation in heap failed");	// no block left 
+					if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block left 
 					freeBlockSize = US.GET4(addr) & 0xffffff;
 				}
 				// unlink block
@@ -253,6 +254,7 @@ public class Heap implements IdeepCompilerConstants {
 	 * when available heap space is low.
 	 */
 	public static void mark() {
+//		System.out.println("mark");
 		if (dbg) {nofMarkedObjs = 0; nofMarkedRegObjs = 0; nofMarkedRefArrays = 0; nofMarkedPrimArrays = 0;}
 		for (int i = 0; i < nofRoots; i++) {
 			int obj = US.GET4(roots[i]);
@@ -298,12 +300,15 @@ public class Heap implements IdeepCompilerConstants {
 	 * when available heap space is low.
 	 */
 	public static void sweep() {	// call to sweep only after marking
+//		System.out.print("start sweep, free heap size = "); System.out.printHexln(Heap.getFreeHeap());
 		int blockSize, collBlockAddr = 0, collBlockSize = 0;
 		if (dbg) {nofSweepFreeBlock = 0; nofSweepMarkedBlock = 0; nofSweepCollBlock = 0;}
 		currBlock = heapBase;
 		while (currBlock < heapEnd) {
+//			System.out.printHex(currBlock);
 			int heapInfo = US.GET4(currBlock);
 			if (heapInfo << 1 < 0) {	// block is free
+//				System.out.println(" block is free");
 				if (collBlockSize > 0) {	// close collected block till now and add to free list
 					US.PUT4(collBlockAddr, (1 << 30) | collBlockSize); // set free bit
 					int i = collBlockSize / minBlockSize - 1;
@@ -319,6 +324,7 @@ public class Heap implements IdeepCompilerConstants {
 				if (dbg) nofSweepFreeBlock++;
 			} else {	// block is marked as used or block to be collected
 				if (heapInfo < 0) {	// object is marked
+//					System.out.print(" block is marked ");
 					if (collBlockSize > 0) {	// close collected block till now and add to free list
 						US.PUT4(collBlockAddr, (1 << 30) | collBlockSize); // set free bit
 						int i = collBlockSize / minBlockSize - 1;
@@ -348,6 +354,7 @@ public class Heap implements IdeepCompilerConstants {
 						blockSize = ((nofElems * compSize + 8 + minBlockSize - 1) >> 4) << 4; 
 					}
 				}
+//				System.out.print(" size="); System.out.printHexln(blockSize);
 				if (heapInfo >= 0) {	// add to collected block
 					if (collBlockSize == 0) collBlockAddr = currBlock;
 					collBlockSize += blockSize;
@@ -356,6 +363,7 @@ public class Heap implements IdeepCompilerConstants {
 				currBlock += blockSize;
 			} // end of block is marked or block to be collected
 		}
+//		System.out.print("end sweep, free heap size = "); System.out.printHexln(Heap.getFreeHeap());
 	}
 	
 	static {

@@ -31,10 +31,15 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 public class HeapTest4 extends Task {
 	
 	public void action() {
-		int[] a = new int[10000];
-		System.out.println("allocation successful");
+		//		byte[] a = new byte[10000]; // Wrong!!
+		// such a block size is too big to be repetively allocated
+		// it takes to mark&sweep phases to add the blocks to the free list
+		// during that time, space on the heap would have run out
+		// and anyway, the size of the array is limited to 16 bit
+		byte[] a = new byte[0x3ff8];
+		System.out.print("allocation successfull, "); System.out.printHexln(Heap.getFreeHeap());
 	}
-	
+
 	private static void test1() {
 		try {
 			short[] a = new short[-2];
@@ -68,8 +73,9 @@ public class HeapTest4 extends Task {
 		System.out = new PrintStream(SCI2.out);
 		System.err = new PrintStream(SCI2.out);
 		System.out.println("HeapTest4 started");
-		test1();
-		test2();
+		System.out.print("Total heap size = "); System.out.printHexln(Heap.getHeapSize());
+//		test1();
+//		test2();
 		Task t = new HeapTest4();
 		t.period = 1000;
 		t.time = 1000;
