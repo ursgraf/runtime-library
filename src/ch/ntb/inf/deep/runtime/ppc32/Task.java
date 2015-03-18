@@ -26,7 +26,14 @@ import ch.ntb.inf.deep.unsafe.US;
  * 11.11.10	NTB/Urs Graf	creation
  * 20.3.12	NTB/Urs Graf	Interface Actionable added
  */
-
+/**
+ * This class implements a simple non-preemptive tasking system.
+ * Each task runs to completion. After this the next task in the ready queue will
+ * run. Tasks with a period equal to 0 will be rescheduled immediately after completion 
+ * Tasks with a period greater than 0 will be scheduled when their time has come.
+ * 
+ * @author urs.graf@ntb.ch 
+ */
 public class Task implements Actionable, Ippc32 {
 	public static final int maxNofTasks = 32;
 	

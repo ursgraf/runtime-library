@@ -20,16 +20,16 @@ package ch.ntb.inf.deep.runtime.ppc32;
 
 import ch.ntb.inf.deep.unsafe.US;
 
-/**
- * The class for the PPC decrementer exception.
- */
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation
  */
 
+/**
+ * The class for the PPC decrementer exception.
+ */
 public class Decrementer extends PPCException implements Ippc32 {
 	/**
-	 * The number of times a decrementer exception occured
+	 * The number of times a decrementer exception occurred
 	 */
 	public static int nofDecExceptions;
 	/** 
@@ -53,7 +53,7 @@ public class Decrementer extends PPCException implements Ippc32 {
 
 	/**
 	 * Used to install user defined handler for decrementer exceptions.
-	 * @param decrementer instance of user defined decrementer handler
+	 * @param decrementer Instance of user defined decrementer handler
 	 */
 	public static void install(Decrementer decrementer) {
 		dec = decrementer;		

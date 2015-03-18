@@ -24,7 +24,13 @@ import ch.ntb.inf.deep.runtime.Kernel;
  * 11.11.10	NTB/Urs Graf	creation
  */
 
+/**
+ * The class for the PPC system call exception.
+ */
 public class SystemCall extends PPCException {
+	/**
+	 * The number of times a floating point unavailable exception occurred
+	 */
 	public static int nofScExceptions;
 
 	static void systemCall() {

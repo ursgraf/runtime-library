@@ -23,8 +23,13 @@ import ch.ntb.inf.deep.runtime.Kernel;
 /*changes:
  * 23.8.2012	NTB/Urs Graf	creation
  */
-
+/**
+ * The class for the PPC machine check exception.
+ */
 public class MachineCheck extends PPCException {
+	/**
+	 * The number of times a machine check exception occurred
+	 */
 	public static int nofMachineCheckExceptions;
 
 	static void machineCheck() {

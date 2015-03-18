@@ -22,9 +22,9 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 
 /**
- * A class to measure a time span.
+ * A class to measure a time span. 
+ * The resolution will be in ms.
  *
- * 
  * @author 18.12.2009 simon.pertschy@ntb.ch
  */
 public class Timer {
@@ -44,7 +44,7 @@ public class Timer {
 	}
 	
 	/**
-	 * Reset the timer. This call only work if the timer has not been expired.
+	 * Reset the timer. This call only works if the timer has not been expired.
 	 */
 	public void reset(){
 		if(active){
@@ -61,7 +61,7 @@ public class Timer {
 	
 	/**
 	 * Returns <code>true</code> if the time is expired. <code>false</code> otherwise.
-	 * @return if the time is expired.
+	 * @return <code>true</code> if the time is expired.
 	 */
 	public boolean expired(){
 		if(active && Task.time() > time){

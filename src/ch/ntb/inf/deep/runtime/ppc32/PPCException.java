@@ -21,6 +21,8 @@ package ch.ntb.inf.deep.runtime.ppc32;
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation
  */
-
+/**
+ * The base class for all the PPC exceptions.
+ */
 public class PPCException {
 }

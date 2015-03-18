@@ -24,7 +24,13 @@ import ch.ntb.inf.deep.runtime.Kernel;
  * 23.8.2012	NTB/Urs Graf	creation
  */
 
+/**
+ * The class for the PPC floating point unavailable exception.
+ */
 public class FloatingPointUnavailable extends PPCException {
+	/**
+	 * The number of times a floating point unavailable exception occurred
+	 */
 	public static int nofFPUnavailableExceptions;
 
 	static void floatingPointUnavailable() {
