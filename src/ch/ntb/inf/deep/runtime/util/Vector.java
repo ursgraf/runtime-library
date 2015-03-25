@@ -18,80 +18,97 @@
 
 package ch.ntb.inf.deep.runtime.util;
 
-public class Vector extends Matrix
-{
-	public Vector(int n) { this(n, false); }
-	public Vector(int n, boolean row)
-	{
+/**
+ * This class implements a n-dimensional vector.
+ */
+public class Vector extends Matrix {
+	
+	/**
+	 * Creates a new <code>Vector</code> with <code>n</code> dimensions.
+	 * Each entry is of type <code>double</code>.
+	 * 
+	 * @param n	Dimension
+	 * @param row <code>true</code>: vector has <code>n</code> rows and one column,
+	 * 		<code>false</code>: vector has <code>n</code> columns and one row.
+	 */
+	public Vector(int n, boolean row) {
 		super(((row) ? n : 1), ((row) ? 1 : n));
 	}
-
-	public int getSize() { return (rows==1) ? columns : rows; }
 	
-	public boolean set(int i, double value)
-	{
-		if (rows == 1)
-		{
-			if (i < 1 || i > columns) return false;
-			this.value[0][i-1] = value;
-		}
-		else
-		{
-			if (i < 1 || i > rows) return false;
-			this.value[i-1][0] = value;
-		}
-		return true;
+	/**
+	 * Creates a new <code>Vector</code> with <code>n</code> dimensions.
+	 * The <code>Vector</code> has one row and <code>n</code> columns.
+	 * 
+	 * @param n Dimension
+	 */
+	public Vector(int n) {this(n, false);}
+	
+	/**
+	 * Returns the size of a <code>Vector</code>.
+	 * 
+	 * @return Dimension of the <code>Vector</code>.
+	 */
+	public int getSize() {return (rows==1) ? columns : rows; }
+	
+	/**
+	 * Set one element in a <code>Vector</code>.
+	 * 
+	 * @param i	Element number (1..n)
+	 * @param value Value to set
+	 * @return <code>false</code> if specified position is not within the vector.
+	 */
+	public boolean set(int i, double value) {
+		if (rows == 1) return set(1, i, value);
+		return set(i, 1, value);
 	}
 	
-	public double get(int i)
-	{
-		if (rows == 1)
-		{
-			if (i < 1 || i > columns)
-				return Double.NaN;
-			else
-				return value[0][i-1];
-		}
-		else
-		{
-			if (i < 1 || i > rows)
-				return Double.NaN;
-			else
-				return value[i-1][0];
-		}
+	/**
+	 * Read an entry in a <code>Vector</code>. Returns <code>Double.NaN</code> 
+	 * if specified position is not within the <code>Vector</code>.
+	 * 
+	 * @param i	Element number (1..n)
+	 * @return	Entry at <code>i</code> or <code>Double.NaN</code>
+	 * 		if specified position is not within the vector.
+	 */
+	public double get(int i) {
+		if (rows == 1) return get(1, i);
+		else return get(i, 1);
 	}
 
-	public boolean add(Vector right) { return add(this, right); }
-	
-	public boolean add(Vector right, boolean ignoreOrientation) { return add(this, right, ignoreOrientation); }
-	
-	public boolean add(Vector left, Vector right) { return add(left, right, true); }
-	
-	public boolean add(Vector left, Vector right, boolean ignoreOrientation)
-	{
+	/**
+	 * Adds two vectors and stores the result in this instance. 
+	 * Returns <code>false</code> if the dimensions of the involved vectors do not fit.
+	 * 
+	 * @param left First input vector
+	 * @param right Second input vector
+	 * @param ignoreOrientation If <code>true</code> the orientation (row vector - column vector)
+	 * 			is not checked
+	 * @return	<code>false</code> if dimensions of the involved vectors do not fit.
+	 */
+	public boolean add(Vector left, Vector right, boolean ignoreOrientation) {
 		int size = this.getSize();
-		
-		if (left.getSize() != size || right.getSize() != size)
-			return false;
-		
-		if (!ignoreOrientation && (rows != left.rows || rows != right.rows))
-			return false;
-		
-		for (int i = 1; i <= size; i++)
-			set(i, left.get(i) + right.get(i));
-		
+		if (left.getSize() != size || right.getSize() != size) return false;
+		if (!ignoreOrientation && (rows != left.rows || rows != right.rows)) return false;
+		for (int i = 1; i <= size; i++)	set(i, left.get(i) + right.get(i));		
 		return true;
 	}
-
-	public double dot(Vector right)
-	{
+	
+	/**
+	 * Calculates the dot products of a vector with this instance. 
+	 * Returns <code>Double.NaN</code> if the dimensions of the involved vectors do not fit.
+	 * 
+	 * @param Right input vector
+	 * @return Dot product or <code>Double.NaN</code>
+	 * 		if dimensions of the involved vectors do not fit.
+	 */
+	public double dot(Vector right)	{
 		int size = this.getSize();
 		if (right.getSize() != size)
 			return Double.NaN;
 		
 		double result = 0;
 		for (int i = 1; i <= size; i++)
-			result += (this.get(i) + right.get(i));
+			result += this.get(i) * right.get(i);
 		
 		return result;
 	}

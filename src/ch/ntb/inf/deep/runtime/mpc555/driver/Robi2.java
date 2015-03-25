@@ -34,10 +34,8 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
  */
 
 /**
- * This driver is used for the Robi2. Robi2 use basically the MPC555 processor.
- * Of this, the TPU B, the QADC A and the MPIOSM are used. The driver initialize
- * all required modules automatically.
- * 
+ * This driver is used for the Robi2. 
+ * Robi2 is controlled by a MPC555 processor.
  */
 public class Robi2 extends Task {
 	

@@ -80,7 +80,7 @@ public class ByteArrayFifo{
 	/**
 	 * Reads the available entries in the queue.
 	 * 
-	 * @return The available <code>byte<code> arrays to read.
+	 * @return The available <code>byte</code> arrays to read.
 	 */
 	public int availToRead(){
 		int len = tail - head;

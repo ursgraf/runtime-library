@@ -23,7 +23,6 @@ import java.lang.Math;
 
 /**
  * This class implements matrices and their operations.
- * 
  */
 public class Matrix {
 	protected int rows, columns;
@@ -80,22 +79,21 @@ public class Matrix {
 	/**
 	 * Read an entry in a matrix. Returns <code>Double.NaN</code> if specified position is not within the matrix.
 	 * 
-	 * @param i	Row
-	 * @param j Column
-	 * @return	Entry at <code>i</code>,<code>j</code>
+	 * @param i	Row (1..n)
+	 * @param j Column (1..m)
+	 * @return	Entry at <code>i</code>,<code>j</code> or <code>Double.NaN</code>
+	 * 		if specified position is not within the matrix
 	 */
 	public double get(int i, int j) {
-		if (i < 1 || i > rows || j < 1 || j > columns)
-			return Double.NaN;
-		
+		if (i < 1 || i > rows || j < 1 || j > columns) return Double.NaN;
 		return value[i-1][j-1];
 	}
 	
 	/**
 	 * Writes an entry in a matrix. Returns <code>false</code> if specified position is not within the matrix.
 	 * 
-	 * @param i	Row
-	 * @param j Column
+	 * @param i	Row (1..n)
+	 * @param j Column (1..m)
 	 * @param value Value to write.
 	 * @return	<code>false</code> if specified position is not within the matrix.
 	 */
@@ -121,36 +119,58 @@ public class Matrix {
 	 */
 	public int getColumnCount() { return columns; }
 
-	public boolean multiply(Matrix right) { return multiply(this,right); }
+	/**
+	 * Adds two matrices and stores the result in this instance. 
+	 * Returns <code>false</code> if the dimensions of the involved matrices do not fit.
+	 * 
+	 * @param left First input matrix
+	 * @param right Second input matrix
+	 * @return	<code>false</code> if dimensions of the involved matrices do not fit.
+	 */
+	public boolean add(Matrix left, Matrix right) {
+		int n = left.rows;
+		int m = left.columns;
+		
+		if (right.rows != n || this.rows != n || right.columns != m || this.columns != m) return false;
 
-	public boolean multiply(Matrix left, Matrix right)
-	{
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				this.value[i][j] = left.value[i][j] + right.value[i][j];
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Multiplies two matrices and stores the result in this instance. 
+	 * Returns <code>false</code> dimensions of the involved matrices do not fit.
+	 * 
+	 * @param left First input matrix
+	 * @param right Second input matrix
+	 * @return	<code>false</code> if the number of columns of <code>left</code> != number of rows of <code>right</code> or
+	 * 	if the number of columns of <code>right</code> != number of columns of <code>this</code> or
+	 *  if the number of rows of <code>left</code> != number of rows of <code>this</code> or.
+	 */
+	public boolean multiply(Matrix left, Matrix right) 	{
 		int n = left.rows;
 		int m = left.columns;
 		int k = this.columns;
 		
-		if (right.rows != m || right.columns != k || this.rows != n)
-			return false;
+		if (right.rows != m || right.columns != k || this.rows != n) return false;
 		
-		for (int j = 0; j < k; j++)
-		{
-			for (int i = 0; i < n; i++)
-			{
+		for (int j = 0; j < k; j++) {
+			for (int i = 0; i < n; i++) {
 				this.value[i][j] = 0;
-				for (int l = 0; l < m; l++)
-				{
+				for (int l = 0; l < m; l++) {
 					this.value[i][j] += left.value[i][l] * right.value[l][j];
 				}
 			}
 		}
-		
 		return true;
 	}
 
-	public boolean transpose(Matrix original)
-	{
-		if (this == original)
-		{
+	public boolean transpose(Matrix original) {
+		if (this == original) {
 			transpose();
 			return true;
 		}
@@ -165,12 +185,9 @@ public class Matrix {
 		return true;
 	}
 	
-	public void transpose()
-	{
-		if (tmpTranspose == null)
-			tmpTranspose = this.clone();
-		else
-			tmpTranspose.copy(this);
+	public void transpose() {
+		if (tmpTranspose == null) tmpTranspose = this.clone();
+		else tmpTranspose.copy(this);
 		transpose(tmpTranspose);
 	}
 
@@ -179,7 +196,7 @@ public class Matrix {
 	 * 
 	 * @return A clone of this instance.
 	 */
-	public Matrix clone() { return new Matrix(this); }
+	public Matrix clone() {return new Matrix(this);}
 	
 	/**
 	 * Copies the content of matrix <code>M</code> into this matrix. 
@@ -217,23 +234,7 @@ public class Matrix {
 		return true;
 	}
 	
-	public void print(PrintStream out) {
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < columns; j++) {
-				out.print('\t');
-				out.print((float)value[i][j]);
-			}
-			out.println();
-		}
-	}
-	
-	public static Matrix Rot3x(double angle) {
-		Matrix R = new Matrix(3, 3);
-		Rot3x(R, angle);
-		return R;
-	}
-	
-	public static boolean Rot3x(Matrix A, double angle) {
+	public static boolean rot3x(Matrix A, double angle) {
 		if (A.getRowCount() != 3 || A.getColumnCount() != 3)
 			return false;
 		
@@ -251,5 +252,27 @@ public class Matrix {
 		
 		return true;
 	}
+
+	public static Matrix rot3x(double angle) {
+		Matrix R = new Matrix(3, 3);
+		rot3x(R, angle);
+		return R;
+	}
+	
+	/**
+	 * Prints a matrix onto a print stream.
+	 * 
+	 * @param out Print stream
+	 */
+	public void print(PrintStream out) {
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				out.print('\t');
+				out.print((float)value[i][j]);
+			}
+			out.println();
+		}
+	}
+	
 }
 

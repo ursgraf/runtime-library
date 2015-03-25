@@ -58,7 +58,7 @@ public class DateTime extends Task {
 	}
 
 	/**
-	 * @see mpc555.Task#action()
+	 * @see ch.ntb.inf.deep.runtime.ppc32.Task#action()
 	 */
 	public void action() {
 		millisec += Task.time() - lastCallTime;

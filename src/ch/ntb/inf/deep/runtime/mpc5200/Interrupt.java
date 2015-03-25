@@ -24,6 +24,10 @@ import ch.ntb.inf.deep.unsafe.US;
 /* changes:
  * 3.9.2012	NTB/GRAU	creation
  */
+/**
+ * The class for the PPC interrupt exception.
+ * Every interrupt handler is an instance of the class <code>Interrupt</code>.
+ */
 public class Interrupt extends PPCException implements IphyCoreMpc5200tiny {
 
 	/**
@@ -43,6 +47,10 @@ public class Interrupt extends PPCException implements IphyCoreMpc5200tiny {
 	
 //	public static int data;
 	
+	/**
+	 * This is the interrupt handler. Please make sure to overwrite this method for your 
+	 * own interrupt handlers.
+	 */
 	public void action() {
 		nofUnexpInterrupts++;
 	}
@@ -83,6 +91,11 @@ public class Interrupt extends PPCException implements IphyCoreMpc5200tiny {
 //		}
 	}
 
+	/**
+	 * Used to install user defined interrupt handlers.
+	 * @param interrupt Instance of user defined interrupt handler
+	 * @param peripheralNr One of the 16 allowed hardware levels for peripheral interrupts
+	 */
 	public static void install(Interrupt interrupt, int peripheralNr) {
 //		interrupt.next = interrupts[2 * level + 1]; 
 		perInts[peripheralNr] = interrupt;

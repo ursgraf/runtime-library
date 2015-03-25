@@ -21,6 +21,12 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+*
+* Stream to read bytes from the RN131WiFly.
+* Don't forget to initialize the RN131WiFly before using this stream.
+* 
+*/
 public class RN131WiFlyInputStream extends InputStream{
 
 	/**

@@ -18,18 +18,38 @@
 
 package ch.ntb.inf.deep.runtime.util;
 
-public class Vector4 extends Vector
-{
-	public Vector4() { super(4); }
+/**
+ * This class implements a 3-dimensional vector.
+ */
+public class Vector4 extends Vector {
+
+	/**
+	 * Creates a new <code>Vector</code> with 4 dimensions.
+	 */
+	public Vector4() {super(4);}
 	
-	public Vector4(double x, double y, double z, double s)
-	{
+	/**
+	 * Creates a new <code>Vector</code> with 4 dimensions and initializes it.
+	 * 
+	 * @param x	Value of first dimension
+	 * @param y Value of second dimension
+	 * @param z Value of third dimension
+	 * @param s Value of forth dimension
+	 */
+	public Vector4(double x, double y, double z, double s) {
 		super(4);
 		set(x, y, z, s);
 	}
 	
-	public void set(double x, double y, double z, double s)
-	{
+	/**
+	 * Sets the values of the vector.
+	 * 
+	 * @param x	Value of first dimension
+	 * @param y Value of second dimension
+	 * @param z Value of third dimension
+	 * @param s Value of forth dimension
+	 */
+	public void set(double x, double y, double z, double s) {
 		set(1, x);
 		set(2, y);
 		set(3, z);

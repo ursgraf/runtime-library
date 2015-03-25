@@ -27,22 +27,19 @@ import ch.ntb.inf.deep.unsafe.US;
 *
 */
 /**
- * Treiber für den AD-Wandler TLC549.<br>
- * Der AD-Wandler ist wie folgt anzuschliessen:<br>
+ * Driver for a TLC549 8bit AD-converter connected to the QSPI.<br>
+ * Connect the converter as follows:<br>
  * MPC555 => TLC549:<br>
  * PCS0 => CS<br>
  * MISO => DATA OUT<br>
  * SCK => I/O CLOCK<br>
- * Für den Anschluss des AD-Wandlers wird die QSPI-Schnittstelle verwendet. Es
- * darf keine weitere extrene Peripherie angeschlossen werden, welche ebenfalls
- * die QSPI benötigt.
+ * Do not connect any other devices on the QSPI interface without adapting the 
+ * settings of the control lines.
  */
 public class TLC549 implements IntbMpc555HB {
 
-
-
 	/**
-	 * Initialisiert die QSPI für den Betrieb des TLC549.
+	 * Initializes the QSPI for TLC549.
 	 */
 	public static void init() {
 		US.PUT2(SPCR1, 0x0); 	// disable QSPI 
@@ -58,9 +55,9 @@ public class TLC549 implements IntbMpc555HB {
 	}
 
 	/**
-	 * Liest den gewandelten Wert aus dem AD-Wandler.
+	 * Reads a digitized analog input value.
 	 * 
-	 * @return Gewandelter Wert.
+	 * @return Input value (8bit, 0..255)
 	 */
 	public static short read() {
 			return US.GET2(RECRAM);

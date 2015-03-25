@@ -68,7 +68,7 @@ public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstan
 	}
 	
 	/** 
-	 * Blinks LED on GPIO_WKUP_7, nTimes with approx. 100us high time and 100us low time, blocks for 1s
+	 * Blinks LED on GPIO_WKUP_7, nTimes with approx. 100\u00b5s high time and 100\u00b5s low time, blocks for 1s
 	 * 
 	 * @param nTimes Number of times the led blinks.
 	 */

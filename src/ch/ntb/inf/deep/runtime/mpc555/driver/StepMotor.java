@@ -96,7 +96,7 @@ public class StepMotor implements IntbMpc555HB {
 				US.PUT2(reg, s);
 			}
 			
-			//function code (D) for Stepper
+			//function code (D) for stepper
 			//first channel
 			shiftl = ((channel % 4) * 4);
 			reg = CFSR3_A - (channel / 4) * 2;
