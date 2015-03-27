@@ -25,8 +25,10 @@ import ch.ntb.inf.deep.unsafe.US;
  * 3.9.2012	NTB/GRAU	creation
  */
 /**
- * The class for the PPC interrupt exception.
+ * The class for the PPC interrupt exception.<br>
  * Every interrupt handler is an instance of the class <code>Interrupt</code>.
+ * 
+ * @author Urs Graf
  */
 public class Interrupt extends PPCException implements IphyCoreMpc5200tiny {
 

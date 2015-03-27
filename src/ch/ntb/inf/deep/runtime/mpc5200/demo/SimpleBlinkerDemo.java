@@ -23,7 +23,9 @@ import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
- * Simple blinker application demo. Binks LED on EVM every second.
+ * Simple blinker application demo. Blinks LED on Phytec evaluation board every second.
+ * 
+ * @author Urs Graf
  */
 public class SimpleBlinkerDemo extends Task implements IphyCoreMpc5200tiny{
 

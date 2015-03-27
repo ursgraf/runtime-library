@@ -28,9 +28,11 @@ import ch.ntb.inf.deep.runtime.ppc32.Decrementer;
  */
 
 /**
- * Simple demo application how to use the Decrementer.
+ * Simple demo application showing how to use the <code>Decrementer</code>.<br>
  * This application simply outputs the character 'x' 
- * over the UART3 for each decrementer exception.
+ * over the UART3 for each <code>Decrementer</code> exception.
+ * 
+ * @author Urs Graf
  */
 public class DecrementerDemo extends Decrementer {
 	static DecrementerDemo decTest; 

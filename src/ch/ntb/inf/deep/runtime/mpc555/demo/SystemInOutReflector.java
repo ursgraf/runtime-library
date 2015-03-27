@@ -25,19 +25,23 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 
 /**
- * Demo for InputStream and OutputStream using SCI2.
+ * Demo for InputStream and OutputStream using SCI2.<br>
+ * Received characters will be sent back immediately.
+ * 
+ * @author Urs Graf
  */
 public class SystemInOutReflector extends Task {
 	static SCIOutputStream out;
 	static SCIInputStream in;
 	
+	/**
+	 * Reflect input on stdin to stdout.
+	 */
 	public void action() {
-		// reflect input on stdin to stdout
 		if (in.available() > 0)	out.write(in.read());
 	}
 
 	static {
-		// Initialize SCI2 (9600 8N1)
 		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
 		out = new SCIOutputStream(SCIOutputStream.pSCI2);
 		in = new SCIInputStream(SCIInputStream.pSCI2);

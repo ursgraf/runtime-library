@@ -19,7 +19,7 @@
 package ch.ntb.inf.deep.runtime.util;
 
 /**
- * This class implements a 3-dimensional vector.
+ * This class implements a 4-dimensional vector.
  */
 public class Vector4 extends Vector {
 

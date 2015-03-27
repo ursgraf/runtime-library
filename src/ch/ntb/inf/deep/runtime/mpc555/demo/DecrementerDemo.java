@@ -28,15 +28,15 @@ import ch.ntb.inf.deep.runtime.ppc32.Decrementer;
  */
 
 /**
- * Simple demo application how to use the Decrementer.
- * This application simply outputs the character 'x' one time
+ * Simple demo application how to use the <code>Decrementer</code>.
+ * This application simply outputs the character 'x' once
  * per second over the SCI2.
  */
 public class DecrementerDemo extends Decrementer {
 	static DecrementerDemo decTest; 
 	
-	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc555.Decrementer#action()
+	/**
+	 * Outputs 'x' once a second.
 	 */
 	public void action () {
 		System.out.print('x');

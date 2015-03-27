@@ -97,7 +97,7 @@ public class Vector extends Matrix {
 	 * Calculates the dot products of a vector with this instance. 
 	 * Returns <code>Double.NaN</code> if the dimensions of the involved vectors do not fit.
 	 * 
-	 * @param Right input vector
+	 * @param right Input vector
 	 * @return Dot product or <code>Double.NaN</code>
 	 * 		if dimensions of the involved vectors do not fit.
 	 */

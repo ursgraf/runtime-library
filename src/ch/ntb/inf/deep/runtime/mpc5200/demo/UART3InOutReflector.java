@@ -22,7 +22,10 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.*;
 
 /**
- * Demo for InputStream and OutputStream using UART3.
+ * Demo for InputStream and OutputStream using UART3.<br>
+ * Received characters will be sent back immediately.
+ * 
+ * @author Urs Graf
  */
 public class UART3InOutReflector extends Task {
 	static UARTOutputStream out;

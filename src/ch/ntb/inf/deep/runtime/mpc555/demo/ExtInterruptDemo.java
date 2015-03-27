@@ -30,7 +30,6 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
 
 /**
  * Demonstrates the usage of some external interrupts
- *
  */
 public class ExtInterruptDemo extends Interrupt {
 	int pin;

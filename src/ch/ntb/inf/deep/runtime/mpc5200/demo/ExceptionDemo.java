@@ -5,6 +5,12 @@ import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
+/** 
+ * Test class which periodically throws a <code>ArrayIndexOutOfBoundsException</code.<br>
+ * 
+ * @author Urs Graf
+ *
+ */
 public class ExceptionDemo extends Task {
 	static Task t;
 	int i = -1;

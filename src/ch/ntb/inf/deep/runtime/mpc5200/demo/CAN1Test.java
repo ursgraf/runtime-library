@@ -23,6 +23,13 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.can.CAN1;
 
+/** 
+ * Test class for the CAN1 module on the mpc5200.<br>
+ * Demonstrates the periodic sampling of a 3-dimensional force sensor.
+ * 
+ * @author Urs Graf
+ *
+ */
 public class CAN1Test extends Task {
 	
 	public void action() {
