@@ -43,11 +43,11 @@ public class TPU_PWM implements IntbMpc555HB{
 	/**
 	 * Initialize a TPU channels for the generation of PWM signals.<br>
 	 * Every channel has to be initialized before use.
-	 * Remember: <code>period</code> and <code>highTime</code> are
-	 * 32 bit values.<br>
+	 * Remember: <code>period</code> and <code>highTime</code> have a resolution of 16 bit.
+	 * However, the maximum value for both values is <code>0x8000</code>.<br>
 	 * The period time should be defined as an integer constant.
-	 * Example for a period time of <i>T = 50 \u00b5s (f = 20 kHz)</i>:
-	 * <code>private final int pwmPeriod = 50000 / TpuTimeUnit;</code>
+	 * Example for a period time of <i>T = 50 \u00b5s (f = 20 kHz)</i>: <br>
+	 * <code>private final int pwmPeriod = 50000 / TpuTimeBase;</code>
 	 * 
 	 * @param tpuA		<code>true</code>: use TPU-A,
 	 * 					<code>false</code>: use TPU-B.
@@ -123,7 +123,7 @@ public class TPU_PWM implements IntbMpc555HB{
 	/**
 	 * Update the parameters of a PWM signal at a TPU channel.<br>
 	 * This method will simply update the period and high time registers without 
-	 * initializing the channel.
+	 * initializing the channel. The maximum value for both values is <code>0x8000</code>.
 	 * 
 	 * @param tpuA		<code>true</code>: use TPU-A,
 	 * 					<code>false</code>: use TPU-B.
@@ -136,19 +136,12 @@ public class TPU_PWM implements IntbMpc555HB{
 	 */
 	public static void update(boolean tpuA, int channel, int period,
 			int highTime) {
-		int adr ;
-		if(tpuA){
-			//Define high time
-			adr = TPURAM0_A + 0x10 * channel;
-			US.PUT2(adr + 4, highTime);
-			//Define time of period
-			US.PUT2(adr + 6, period);
-		}else{
-			//Define high time
-			adr = TPURAM0_B + 0x10 * channel;
-			US.PUT2(adr + 4, highTime);
-			//Define time of period
-			US.PUT2(adr + 6, period);
+		if (tpuA) {
+			// define high time and period
+			US.PUT4(TPURAM0_A + 0x10 * channel + 4, (highTime << 16) | period);
+		} else {
+			// define high time and period
+			US.PUT4(TPURAM0_B + 0x10 * channel + 4, (highTime << 16) | period);
 		}
 	}
 }
