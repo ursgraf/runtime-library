@@ -56,7 +56,11 @@ public class Task implements Actionable, Ippc32 {
 	/** time:	0 <= time : start time in ms from install time */
 	public int time;
 
-	/** period:	0 <= period : period time in ms */
+	/** 
+	 * period:	0 <= period : period time in ms<br>
+	 * The period is must be specified before installation of the task by calling <code>install</code>.
+	 * Subsequent modifications of this value do not have any effects!
+	 */
 	public int period;
 
 	/** number of activations */

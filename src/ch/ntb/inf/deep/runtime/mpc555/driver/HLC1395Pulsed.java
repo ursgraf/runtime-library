@@ -37,14 +37,16 @@ import ch.ntb.inf.deep.unsafe.US;
 
 /**
  * Driver for up to 16 pulsed and multiplexed HLC1393 reflection distance
- * sensors.
- * 
+ * sensors.<br>
  * The driver needs 5 digital outputs of the MPIOSM and a single analog input of
  * QADC-A. 4 of the digital outputs are used as address channels and the fifth
  * one is the trigger signal. The analog input is used to read the sensor
  * values. It is highly recommended to neither use the channels AN0...AN3 nor
- * the channels AN48...AN51 because this pins have on some NTB MPC555-Headerboards
- * a RC input filter.
+ * the channels AN48...AN51 because these pins have a RC input filter on 
+ * on some NTB MPC555 header boards.<br>
+ * All the sensors are repetitively sampled within 16ms, regardless of the number of sensors.<br>  
+ * Its possible to use this driver together with 
+ * {@link ch.ntb.inf.deep.runtime.mpc555.driver.QADC_AIN} on the same QADC module.
  * 
  * <strong>IMPORTANT:</strong> Connect AGnd to Gnd!
  * 
@@ -53,7 +55,7 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 
 	private static final byte maxNofSensors = 16, maxAnalogInPortNr = 59;
 	private static final HLC1395Pulsed thisSngTask; // Singleton DistSense Task
-	private static int nofSensors; // Number of connected sensors
+	private static int nofSensors; // number of connected sensors
 	private static int trigPinPat; // trigger pin bit pattern
 	private static int outPinPat; // bit pattern for all address pins and the trigger pin
 	private static int sensAdr; // sensor address
@@ -78,34 +80,25 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 	 * Background task loop: Do not call this method!
 	 */
 	public void action() {
-		if (sensAdr >= 0) {// get result
-			resultVal[sensAdr] = (short) (US.GET2(RJURR_A + 2) - US.GET2(RJURR_A)); // dark - val
-		}
+		resultVal[sensAdr] = (short) (US.GET2(RJURR_A + 2) - US.GET2(RJURR_A)); // get result, dark - bright
 		sensAdr++;
-		period = 1;
-		if (sensAdr >= nofSensors) {
-			if (sensAdr >= maxNofSensors) {
-				sensAdr = 0;
-			} else {
-				period = maxNofSensors - sensAdr;
-				sensAdr = -1;
-			}
-		}
-		if (sensAdr >= 0) { // fire sensor
-			int dataReg = US.GET2(Kernel.MPIOSMDR);
-			dataReg = dataReg & ~outPinPat; // clear output pins (address and
-											// trigger pins)
-			dataReg = dataReg | adrPatTab[sensAdr]; // set new address and
-													// trigger pins
+		if (sensAdr >= nofSensors) sensAdr = 0;
+		
+		// fire sensor
+		int dataReg = US.GET2(Kernel.MPIOSMDR);
+		dataReg = dataReg & ~outPinPat; // clear output pins (address and
+		// trigger pins)
+		dataReg = dataReg | adrPatTab[sensAdr]; // set new address and
+		// trigger pins
 
-			US.PUT2(Kernel.MPIOSMDR, dataReg);
-			// no interrupts, enable single-scan, interval timer single-scan
-			// mode, 256 * QCLK
-			US.PUT2(QACR1_A, 0x2500);
-			// trig pulse must not be too short
-			dataReg = dataReg & ~trigPinPat; // clear trigger pin
-			US.PUT2(Kernel.MPIOSMDR, dataReg);
-		}
+		US.PUT2(Kernel.MPIOSMDR, dataReg);
+		// use queue1, no interrupts, enable single-scan, 
+		// interval timer single-scan mode, 256 * QCLK
+		US.PUT2(QACR1_A, 0x2500);
+		// trig pulse must not be too short
+		// small delay by last register access
+		dataReg = dataReg & ~trigPinPat; // clear trigger pin
+		US.PUT2(Kernel.MPIOSMDR, dataReg);
 	}
 
 	/**
@@ -159,12 +152,13 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 
 		// user access
 		US.PUT2(QADC64MCR_A, 0);
-		// internal multiplexing, use ETRIG1 for queue1, QCLK = 2 MHz
+		// internal multiplexing, QCLK = 2 MHz
 		US.PUT2(QACR0_A, 0x00B7);
 
-		// pause after conversion, max sample time, use inputChannel
+		// setup queue1 at the beginning of the CCW
+		// pause after conversion, max sample time, use input channel
 		US.PUT2(CCW_A, 0x02C0 + analogInChn);
-		// max sample time, use inputChannel
+		// max sample time, use input channel
 		US.PUT2(CCW_A + 2, 0x00C0 + analogInChn);
 		// end of queue
 		US.PUT2(CCW_A + 4, 0x003F);
@@ -173,7 +167,7 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 	}
 
 	/**
-	 * Initialize sensors.
+	 * Initialize sensors. Set unused address pins to -1.
 	 * 
 	 * @param addr3Pin		MPIOB pin for the address lane 3.
 	 * @param addr2Pin		MPIOB pin for the address lane 2.
@@ -190,19 +184,19 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 	}
 	
 	/**
-	 * Stop reading sensors.
+	 * Stop reading the sensors.
 	 */
 	public static void stop() {
 		Task.remove(thisSngTask);
 	}
 
 	/**
-	 * Start reading sensors.<br>
+	 * Start reading the sensors.<br>
 	 * This method must be called after the initialization
 	 * or after a call of <code>stop()</stop>.
 	 */
 	public static void start() {
-		thisSngTask.period = 1;
+		thisSngTask.period = maxNofSensors / nofSensors;
 		Task.install(thisSngTask);
 	}
 
