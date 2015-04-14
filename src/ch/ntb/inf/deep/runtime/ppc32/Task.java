@@ -73,7 +73,8 @@ public class Task implements Actionable, Ippc32 {
 	private long nextTime;
 	private long periodUs;
 	private int actionable = -1;
-
+	private static boolean mark = true;	// phase of garbage collection, start with mark phase
+	
 	/**
 	 * Creates a new <i>Task</i>. <br>
 	 * It's action method will be called by the task scheduler
@@ -235,6 +236,10 @@ public class Task implements Actionable, Ippc32 {
 				Kernel.cmdAddr = -1;	// stop trying to run the same method
 				e.printStackTrace();
 				Kernel.blink(1);
+			}
+			if (Heap.runGC) {
+				if (mark) {Heap.mark(); mark = false;}
+				else {Heap.sweep(); mark = true; Heap.runGC = false;}
 			}
 			long time = Kernel.time();
 			currentTask = tasks[1];

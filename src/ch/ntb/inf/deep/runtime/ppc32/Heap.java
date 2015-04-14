@@ -29,7 +29,9 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 /**
- *  Heap manager with mark-sweep garbage collection. 
+ *  Heap manager with mark-sweep garbage collection.<br>
+ *  As soon as the remaining heap space is lower than a third of the total available
+ *  heap space, a garbage collection is called.  
  */
 public class Heap implements IdeepCompilerConstants {
 	private static final boolean dbg = false;
@@ -55,6 +57,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	private static int nofSweepFreeBlock, nofSweepMarkedBlock, nofSweepCollBlock;
 	private static int currBlock;
+	static boolean runGC;
 	/**
 	 * Base address of the system table. Must be set by the boot method of the kernel.
 	 */
@@ -193,8 +196,9 @@ public class Heap implements IdeepCompilerConstants {
 			freeHeap -= blockSize;
 		} else {
 			if (freeHeap < threshold) {
-				if (mark) mark(); else sweep();
-				mark = !mark;
+				runGC = true;
+//				if (mark) mark(); else sweep();
+//				mark = !mark;
 			}
 			while (freeBlocks[i] == 0 && i < nofFreeLists - 1) i++;
 			if (i < nofFreeLists - 1) {	
@@ -403,7 +407,7 @@ public class Heap implements IdeepCompilerConstants {
 		US.PUT4(heapPtr + 4, 0);	// next field is null
 		// int i = heapPtr + 8; while (i < heapEnd) {US.PUT4(i, 0); i += 4;} // initialize heap, nice for debugging
 		threshold = heapSize / 3;
-		mark = true;
+//		mark = true;
 		freeBlocks[nofFreeLists - 1] = heapPtr;
 		nofFreeBlocks[nofFreeLists - 1] = 1;	
 	}
