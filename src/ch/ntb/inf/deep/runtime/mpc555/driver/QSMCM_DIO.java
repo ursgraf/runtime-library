@@ -21,9 +21,9 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
- * Digital-Ein-/Ausgabe über die PortQS-Schnittstelle.<br>
- * <b>Achtung:</b> Dieser Treiber belegt die gleichen Pins wie die QSPI.<br>
- * Folgende Pins können als GPIO benutzt werden.
+ * Digital I/O on the PortQS.<br>
+ * <b>Important:</b> This drivers uses the same pins as the QSPI.<br>
+ * The following pins can be used.
  * <ul>
  * <li> {@link #QDMISO}</li>
  * <li> {@link #QDMOSI}</li>
@@ -33,12 +33,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * <li> {@link #QDPCS3}</li>
  * </ul>
  * 
- * 
- * @author NTB 13.03.2009<br>
- *         Simon Pertschy<br>
  */
-
-
 public class QSMCM_DIO {
 	
 	public static final int QDMISO = 0;
@@ -50,14 +45,14 @@ public class QSMCM_DIO {
 	
 	
 	/**
-	 * Initialisiert den verlangten Pin als Ein- oder Ausgang.<br>
-	 * Jeder Pin muss vor der ersten Verwendung initialisiert werden.
+	 * Initializes a pin as an input or output.<br>
+	 * Each pin must be initialized prior to using it.
 	 * 
 	 * @param channel
-	 *            PORTQS-Pin welcher initialisiert wird.
+	 *            PortQS pin to initialize
 	 * @param out
-	 *            <code>true</code> definiert den PortQS-Pin als TTL-Ausgang.
-	 *            <code>false</code> definiert den PortQS-Pin als TTL-Eingang.
+	 *            <code>true</code>: pin will be output,
+	 *            <code>false</code>: pin will be input
 	 */
 	public static void init(int channel, boolean out) {
 		byte s = US.GET1(QSMCM.PQSPAR);
@@ -70,27 +65,20 @@ public class QSMCM_DIO {
 	}
 
 	/**
-	 * Erfasst den Zustand des TTL-Signals an diesem Pin.<br>
+	 * Reads the state on a pin.<br>
 	 * 
-	 * @param channel
-	 *            PortQS-Pin, dessen Wert erfasst werden soll.
-	 * @return Funktionswert des gewählten PortQS-Pin. <code>true</code>
-	 *         entspricht dabei dem Wert <i>logisch 1</i> während
-	 *         <code>false</code> dem Wert <i>logisch 0</i> entspricht.
+	 * @param channel PortQS pin to read
+	 * @return State of the pin
 	 */
 	public static boolean in(int channel) {
 		return (US.GET1(QSMCM.PORTQS + 1) & (1 << channel)) != 0;
 	}
 
 	/**
-	 * Ändert den Zustand eines initialisierten Pins.
+	 * Sets the state of a pin.
 	 * 
-	 * @param channel
-	 *            PortQS-Pin, dessen Wert verändert werden soll.
-	 * @param val
-	 *            Für <code>true</code> wird der Wert <i>logisch 1</i> auf
-	 *            den TTL-Ausgang gelegt. Für <code>false</code> wird der Wert
-	 *            <i>logisch 0</i> auf den TTL-Ausgang gelegt.
+	 * @param channel PortQS pin to write
+	 * @param val State to be written
 	 */
 	public static void out(int channel, boolean val) {
 		short s = US.GET1(QSMCM.PORTQS + 1);

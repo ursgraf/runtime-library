@@ -36,6 +36,8 @@ public class IntFifo{
 	int size;
 
 	/**
+	 * Creates a new <code>IntFifo</code> with <code>size</code> entries.
+	 * 
 	 * @param size The size of the queue (size = 2^x - 1).
 	 */
 	public IntFifo(int size){
@@ -76,6 +78,8 @@ public class IntFifo{
 	}
 	
 	/**
+	 * Reads the available entries in the queue.
+	 * 
 	 * @return The available <code>Integers</code> to read.
 	 */
 	public int availToRead(){
@@ -85,6 +89,8 @@ public class IntFifo{
 	}
 	
 	/**
+	 * Reads the available space left in the queue.
+	 * 
 	 * @return The available queue space.
 	 */
 	public int availToWrite(){
@@ -94,6 +100,8 @@ public class IntFifo{
 	}
 	
 	/**
+	 * Reads the maximum number of entries in the queue.
+	 * 
 	 * @return The size of the queue.
 	 */
 	public int getSize(){

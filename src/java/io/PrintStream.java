@@ -45,7 +45,7 @@ public class PrintStream extends OutputStream implements Modified {
 	 * Writes one byte to the target stream. Only the least significant byte of
 	 * the integer {@code oneByte} is written. 
 	 	 *
-	 * @param oneByte
+	 * @param b
 	 *            the byte to be written
 	 */
 	public void write(int b) {

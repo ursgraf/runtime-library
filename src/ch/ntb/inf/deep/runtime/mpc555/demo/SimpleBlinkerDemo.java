@@ -31,8 +31,8 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
  */
 public class SimpleBlinkerDemo extends Task {
 	
-	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
+	/**
+	 * Toggles the LED.
 	 */
 	public void action(){
 		MPIOSM_DIO.set(12, !MPIOSM_DIO.get(12));

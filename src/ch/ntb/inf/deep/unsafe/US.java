@@ -18,104 +18,109 @@
 
 package ch.ntb.inf.deep.unsafe;
 
+/**
+ * This class allows for accessing absolute memory locations and machine registers. 
+ * <strong>Warning: The inherent safety of Java is avoided. Use these methods with special care and only in 
+ * low-level drivers!</strong>
+ * The methods of this class will be translated by inserting machine code instructions
+ * directly in the code without a method call.
+ */
 /* changes:
  * 06.06.06	NTB/ED	creation
  */
 
 public class US {
 
-	/** put 1 byte: mem[address] = (byte)value */
+	/** Write 1 byte to hardware address: mem[address] = (byte)value */
 	public static void PUT1(int address, int value) {
 	}
 
-	/** put 2 bytes: mem[address] = (short)value */
+	/** Write 2 byte to hardware address: mem[address] = (short)value */
 	public static void PUT2(int address, int value) {
 	}
 
-	/** put 4 bytes: mem[address] = value */
+	/** Write 4 byte to hardware address: mem[address] = value */
 	public static void PUT4(int address, int value) {
 	}
 
-	/** put 8 bytes: mem[address] = value */
+	/** Write 8 byte to hardware address: mem[address] = value */
 	public static void PUT8(int address, long value) {
 	}
 
-	/** get bit: return BIT(mem[address](byte), bitNr) */
+	/** Read a bit at hardware address: return BIT(mem[address](byte), bitNr) */
 	public static boolean BIT(int address, int bitNr) {
 		return false;
 	}
 
-	/** get 1 byte: return mem[address] */
+	/** Read 1 byte from hardware address: return mem[address] */
 	public static byte GET1(int address) {
 		return 0;
 	}
 
-	/** get 2 bytes: return mem[address] */
+	/** Read 2 byte from hardware address: return mem[address] */
 	public static short GET2(int address) {
 		return 0;
 	}
 
-	/** get 4 bytes: return mem[address] */
+	/** Read 4 byte from hardware address: return mem[address] */
 	public static int GET4(int address) {
 		return 0;
 	}
 
-	/** get 8 bytes: return mem[address] */
+	/** Read 8 byte from hardware address: return mem[address] */
 	public static long GET8(int address) {
 		return 0;
 	}
 
-	/** returns object reference as address */
+	/** Returns object reference as address */
 	public static int REF(Object ref) {
 		return 0;
 	}
 
-	/** get content of general purpose register */
+	/** Read content of general purpose register */
 	public static int GETGPR(int reg) {
 		return 0;
 	}
 
-	/** get content of floating point register */
+	/** Read content of floating point register */
 	public static double GETFPR(int reg) {
 		return 0;
 	}
 
-	/** get content of special purpose register */
+	/** Read content of special purpose register */
 	public static int GETSPR(int reg) {
 		return 0;
 	}
 
-	/** write to general purpose register */
+	/** Write to general purpose register */
 	public static void PUTGPR(int reg, int value) {
 	}
 
-	/** write to floating point register */
+	/** Write to floating point register */
 	public static void PUTFPR(int reg, double value) {
 	}
 
-	/** write to special purpose register */
+	/** Write to special purpose register */
 	public static void PUTSPR(int reg, int value) {
 	}
 
-	/** insert machine code */
+	/** Insert single machine code instruction */
 	public static void ASM(String instr) {
 	}
 
-	/** get address of method */
+	/** Get absolute hardware address of class method */
 	public static int ADR_OF_METHOD(String name) {
 		return 0;
 	}
 	
-	/** halt exception: program termination, 20 <= haltNr < 256 */
+	/** Halt exception: program termination, 20 <= haltNr < 256 */
 	public static void HALT(int haltNr) {
 	}
 
-	// ---- methods which must be called before any other statement of caller
-	// (-method)
-
 	/**
-	 * saves FPSCR and all temporary FPRs (Floating Point Registers) and sets
-	 * the FP flag in MSR (usingGPR0)
+	 * Saves FPSCR and all temporary FPRs (Floating Point Registers) and sets
+	 * the FP flag in MSR (usingGPR0). This method must be called before any other statement 
+	 * in a method. 
 	 */
 	public static void ENABLE_FLOATS() {
 	}

@@ -27,7 +27,7 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 /**
- * constant definitions for QSMCM<br>
+ * Definitions for QSMCM<br>
  */
 public class QSMCM implements IntbMpc555HB{
 

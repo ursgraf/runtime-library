@@ -32,6 +32,8 @@ public class ByteLiFo{
 	int count;
 
 	/**
+	 * Creates a new <code>ByteLifo</code> with <code>size</code> entries.
+	 * 
 	 * @param size The size of the queue
 	 */
 	public ByteLiFo(int size){
@@ -71,6 +73,8 @@ public class ByteLiFo{
 	}
 	
 	/**
+	 * Reads the available entries in the queue.
+	 * 
 	 * @return The available <code>bytes</code> to read.
 	 */
 	public int availToRead(){

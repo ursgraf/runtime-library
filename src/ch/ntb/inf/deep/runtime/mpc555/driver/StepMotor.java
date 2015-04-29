@@ -29,47 +29,32 @@ import ch.ntb.inf.deep.unsafe.US;
  * 18.05.06	NTB/HS		stub creation
  */
 /**
- * Schrittmotoransteuerung mit der TPU-A oder TPU-B.<br>
- * Der Treiber muss zuerst über die Methode <code>init(...)</code>
- * initialisiert werden.<br>
- * Durch den Parameter <code>tpuA</code> wird bestimmt ob die TPU-A (<code>true</code>)
- * oder die TPU-B (<code>false</code>) benutzt wird.<br>
- * Über den Parameter <code>fullStep</code> wird die Betriebsart bestimmt. Der
- * Schrittmotor kann in zwei verschiedenen Arten betrieben werden: Fullstep- (<code>true</code>)
- * und Halfstep-Modus (<code>false</code>). Für den Betrieb im
- * Fullstep-Modus werden 2 TPU-Pins für Halfstep 4 TPU-Pins benötigt.<br>
- * Mittels dem Parameter <code>stepPeriod</code> wird die maximale
- * Schrittgeschwindigkeit in \u00B5s übergeben. Der Motor wird über eine Rampe
- * beschleunigt. Die Startgeschwindigkeit beträgt <sup>1</sup>/<sub>4</sub>
- * der maximalen Schrittgeschwindigkeit.<br>
- * Der Parameter <code>channel</code> bestimmt den TPU-Startpin.<br>
- * Für den Fullstep-Modus werden die Pins Startpin, Startpin+1 verwendet.<br>
- * Für den Halfstep-Modus werden die Kanäle Startpin, Startpin+1, Startpin+2,
- * Startpin+3 verwendet.<br>
- * Dementsprechend darf der Startpin im Fullstep-Modus im Bereich <em>0 <= Startpin <=
- * 14</em> und im Haltstep-Modus im Bereich <em>0 <= Startpin <= 12</em> gewählt werden.
- * 
+ * Step motor driver on TPU-A or TPU-B.<br>
+ * Full step and half step modes are possible.<br>
+ * Full step requires 2 pins on the TPU. The pins deliver A and B signals. These 
+ * signals have to be externally inverted to drive the coils of the motor (A, A', B, B').
+ * Half step uses 4 pins on the TPU.<br>
+ * When starting a motor the signals provide a ramping up to the final speed. 
+ * When stopping they are ramping down to zero. A ramp will also be used when the 
+ * stepping speed changes.<br> 
  */
 public class StepMotor implements IntbMpc555HB {
 	private static int openSteps;
 
 	/**
-	 * Initialisiert den Schrittmotor-Treiber.<br>
-	 * Entsprechend der Klassenbeschreibung kann die gewünschte TPU, der
-	 * Betriebsmodus, die maximale Schrittgeschwindigkeit (stepPeriod <= 6553)
-	 * und der TPU-Kanal gewählt werden.
+	 * Initializes the step motor driver.
 	 * 
 	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
+	 *            <code>true</code> uses TPU-A. <code>false</code> uses TPU-B.
 	 * @param fullStep
-	 *            <code>true</code>: Fullstep-Modus. <code>false</code>:
-	 *            Halfstep-Modus.
+	 *            <code>true</code>: full step mode. <code>false</code>: half step mode.
 	 * @param stepPeriod
-	 *            maximale Schrittgeschwindigkeit (stepPeriod <= 6553)
+	 *            Maximum stepping speed in \u00b5s (stepPeriod <= 6553)
 	 * @param channel
-	 *            TPU-Startpin (Bereich ist vom Betriebsmodus abhängig), welcher
-	 *            initialisiert wird.
+	 *            First pin on TPU. For full step channel and channel+1 pin will be used.
+	 *            For half step channel, channel+1, channel+2 and channel+3 will be used.
+	 *            Accordingly for full step channel is in the range of 0..14 while for half
+	 *            step the range is between 0..12.
 	 */
 	public static void init(boolean tpuA, boolean fullStep, int stepPeriod,
 			int channel) {
@@ -111,7 +96,7 @@ public class StepMotor implements IntbMpc555HB {
 				US.PUT2(reg, s);
 			}
 			
-			//function code (D) for Stepper
+			//function code (D) for stepper
 			//first channel
 			shiftl = ((channel % 4) * 4);
 			reg = CFSR3_A - (channel / 4) * 2;
@@ -501,17 +486,14 @@ public class StepMotor implements IntbMpc555HB {
 	}
 
 	/**
-	 * Bewegt den Motor um die in <code>steps</code> angegebenen Schritte.
+	 * Moves the motor for <code>steps</code>.
 	 * 
 	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
+	 *            <code>true</code> uses TPU-A. <code>false</code> uses TPU-B.
 	 * @param steps
-	 *            Anzahl Schritte, um welche sich der Motor bewegen soll.
-	 *            Mittels einem negaitven Wert lässt sich der Motor in die
-	 *            Gegenrichtung bewegen.
+	 *            Number of steps. A negative value moves the motor in the opposite direction.
 	 * @param channel
-	 *            TPU-Startpin.
+	 *            First pin on TPU.
 	 */
 	public static void move(boolean tpuA, int steps, int channel) {
 		int shiftl, reg;
@@ -544,18 +526,16 @@ public class StepMotor implements IntbMpc555HB {
 	}
 
 	/**
-	 * Startet den Schrittmotor.<br>
-	 * Diese Methode wird nur benötigt, wenn der Motor vorgängig mittels der
-	 * Methode <code>stop(...)</code> gestoppt wurde.
+	 * Starts the step motor.<br>
+	 * Use this method solely to start the motor after it has been stopped with <code>stop(...)</code>.
 	 * 
 	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
+	 *            <code>true</code> uses TPU-A. <code>false</code> uses TPU-B.
 	 * @param fullStep
-	 *            <code>true</code>: Fullstep-Modus. <code>false</code>:
-	 *            Halfstep-Modus.
+	 *            <code>true</code>: full step mode. <code>false</code>:
+	 *            half step mode.
 	 * @param channel
-	 *            TPU-Startpin.
+	 *            First pin on TPU.
 	 */
 	public static void start(boolean tpuA, boolean fullStep, int channel) {
 		if(tpuA){
@@ -632,18 +612,15 @@ public class StepMotor implements IntbMpc555HB {
 	}
 
 	/**
-	 * Stoppt den Schrittmotor.<br>
-	 * Der Motor kann anschliessend über die Methode <code>start(...)</code>
-	 * wieder gestartet werden.
+	 * Stops the motor.<br>
+	 * The motor can subsequently be restarted with <code>start(...)</code>.
 	 * 
 	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
+	 *            <code>true</code> uses TPU-A. <code>false</code> uses TPU-B.
 	 * @param fullStep
-	 *            <code>true</code>: Fullstep-Modus. <code>false</code>:
-	 *            Halfstep-Modus.
+	 *            <code>true</code>: full step mode. <code>false</code>: half step mode.
 	 * @param channel
-	 *            TPU-Startpin.
+	 *            First pin on TPU.
 	 */
 	public static void stop(boolean tpuA, boolean fullStep, int channel) {		
 		if(tpuA){
@@ -725,15 +702,13 @@ public class StepMotor implements IntbMpc555HB {
 	}
 
 	/**
-	 * Gibt zurück, ob der Motor die angesteuerte Position bereits erreicht hat.
+	 * Queries whether the motor has reached its required position.
 	 * 
 	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
+	 *            <code>true</code> uses TPU-A. <code>false</code> uses TPU-B.
 	 * @param channel
-	 *            TPU-Startpin.
-	 * @return <code>true</code> wenn der Motor seine angesteuerte Position
-	 *         erreicht hat.
+	 *            First pin on TPU.
+	 * @return <code>true</code> if required position has been reached.
 	 */
 	public static boolean finished(boolean tpuA, int channel) {
 		if(tpuA){
@@ -748,14 +723,13 @@ public class StepMotor implements IntbMpc555HB {
 	}
 
 	/**
-	 * Gibt die momentane Position des Motors zurück.
+	 * Queries actual position of the motor.
 	 * 
 	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
+	 *            <code>true</code> uses TPU-A. <code>false</code> uses TPU-B.
 	 * @param channel
-	 *            TPU-Startpin.
-	 * @return Momentane Position in Schritten.
+	 *            First pin on TPU.
+	 * @return Actual position in steps.
 	 */
 	public static int position(boolean tpuA, int channel) {
 		if(tpuA) return US.GET2(TPURAM0_A + 0x10 * channel + 2);
@@ -764,14 +738,13 @@ public class StepMotor implements IntbMpc555HB {
 	
 		
 	/**
-	 * Resetet den Schrittmotor-Treiber.<br>
-	 * Die akuelle Position wird als die gewünschte Position gesetzt.
+	 * Resets the position.<br>
+	 * The final position is set to the actual position. This immediately stops the motor.
 	 * 
 	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
+	 *            <code>true</code> uses TPU-A. <code>false</code> uses TPU-B.
 	 * @param channel
-	 *            TPU-Startpin.
+	 *            First pin on TPU.
 	 */
 	public static void reset(boolean tpuA, int channel) {
 		openSteps = 0;

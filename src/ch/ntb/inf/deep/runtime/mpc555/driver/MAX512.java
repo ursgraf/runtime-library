@@ -26,8 +26,8 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 /**
- * Driver for the Maxim512 Digital to Analog Converter.<br>
- * PCS0 is used.
+ * SPI Driver for the Maxim512 Digital to Analog Converter.<br>
+ * PCS0 on the SPI is used.
  * 
  */
 public class MAX512 implements IntbMpc555HB {

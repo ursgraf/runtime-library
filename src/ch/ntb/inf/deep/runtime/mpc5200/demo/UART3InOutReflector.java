@@ -16,38 +16,35 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200.test;
+package ch.ntb.inf.deep.runtime.mpc5200.demo;
 
-import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
-import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
-import ch.ntb.inf.deep.runtime.mpc5200.driver.can.CAN1;
+import ch.ntb.inf.deep.runtime.mpc5200.driver.*;
 
-public class CAN1Test extends Task {
+/**
+ * Demo for InputStream and OutputStream using UART3.<br>
+ * Received characters will be sent back immediately.
+ * 
+ * @author Urs Graf
+ */
+public class UART3InOutReflector extends Task {
+	static UARTOutputStream out;
+	static UARTInputStream in;
 	
 	public void action() {
-		CAN1.sampleNodes();
-		if (nofActivations % 2000 == 0) {
-			for (int i = 0; i < CAN1.nodeData.length; i++) {
-				System.out.print(CAN1.nodeData[i].forceX);
-				System.out.print('.');
-				System.out.print(CAN1.nodeData[i].forceY);
-				System.out.print('.');
-				System.out.print(CAN1.nodeData[i].forceZ);
-				System.out.print("\t");
-			}
-			System.out.println();
-		}
+		// reflect input on stdin to stdout
+		if (in.available() > 0)	out.write(in.read());
 	}
-	
 
-	static {	
+	static {
+		// Initialize SCI2 (9600 8N1)
 		UART3.start(9600, UART3.NO_PARITY, (short)8);
-		System.out = new PrintStream(UART3.out);
-		System.out.println("start");
-		CAN1.init();
-		Task t = new CAN1Test();	
-		t.period = 1;
+		out = new UARTOutputStream(UARTOutputStream.pPSC3);
+		in = new UARTInputStream(UARTInputStream.pPSC3);
+		out.write((byte)'x');
+		
+		Task t = new UART3InOutReflector();
+		t.period = 0;
 		Task.install(t);
 	}
 }

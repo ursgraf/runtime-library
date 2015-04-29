@@ -29,7 +29,9 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 /**
- *  Heap manager with mark-sweep garbage collection. 
+ *  Heap manager with mark-sweep garbage collection.<br>
+ *  As soon as the remaining heap space is lower than a third of the total available
+ *  heap space, a garbage collection is called.  
  */
 public class Heap implements IdeepCompilerConstants {
 	private static final boolean dbg = false;
@@ -55,11 +57,15 @@ public class Heap implements IdeepCompilerConstants {
 	
 	private static int nofSweepFreeBlock, nofSweepMarkedBlock, nofSweepCollBlock;
 	private static int currBlock;
+	static boolean runGC;
+	/**
+	 * Base address of the system table. Must be set by the boot method of the kernel.
+	 */
 	public static int sysTabBaseAddr;
 	
 	// called by new	
 	@SuppressWarnings("unused")
-	private static int newObject(int ref) {	
+	private static int newObject(int ref) throws RuntimeException {	
 		int size = US.GET4(ref) + 8;
 		int blockAddr = getBlock(size);
 		US.PUT4(blockAddr, 0x80000000 | size);	// set mark bit and size
@@ -72,7 +78,7 @@ public class Heap implements IdeepCompilerConstants {
 
 	// called by newarray	
 	private static int newPrimTypeArray(int nofElements, int type, int ref) throws NegativeArraySizeException {
-		if (nofElements < 0) throw new NegativeArraySizeException();
+		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
 		int elementSize;
 		if (type == 7 || type == 11) elementSize = 8;
 		else if (type == 6 || type == 10) elementSize = 4;
@@ -90,7 +96,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	// called by anewarray	
 	private static int newRefArray(int nofElements, int ref) throws NegativeArraySizeException {
-		if (nofElements < 0) throw new NegativeArraySizeException();
+		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
 		int size = nofElements * 4 + 8;
 		int blockAddr = getBlock(size);
 		US.PUT4(blockAddr, 0x80800000 | nofElements);	// set mark and array bit, write length
@@ -165,7 +171,8 @@ public class Heap implements IdeepCompilerConstants {
 	}
 	
 	// called by newstring in java/lang/String
-	public static int newstring(int ref, int len) {
+	@SuppressWarnings("unused")
+	private static int newstring(int ref, int len) {
 		int size = len + 8;
 		int blockAddr = getBlock(size);
 		US.PUT4(blockAddr, 0x80000000 | size);	// set mark bit and size, clear array bit and primitive array bit
@@ -176,20 +183,22 @@ public class Heap implements IdeepCompilerConstants {
 		return ref;
 	}
 
-	private static int getBlock(int size) {
+	private static int getBlock(int size) throws RuntimeException {
 		int addr;
 		int blockSize = ((size + minBlockSize - 1) >> 4) << 4;
+		if (blockSize >= 0x10000) throw new RuntimeException("Exception: Array block too big");	// array length must fit into 16 bit
 		int i = blockSize / minBlockSize - 1;
 		if (i >= nofFreeLists) i = nofFreeLists - 1;
 		// search free block in free block list
-		if (freeBlocks == null) { // there is no free list at the very beginning
+		if (freeBlocks == null) { // there is no free list at the very beginning of the boot process
 			addr = heapPtr;
 			heapPtr += blockSize;
 			freeHeap -= blockSize;
 		} else {
 			if (freeHeap < threshold) {
-				if (mark) mark(); else sweep();
-				mark = !mark;
+				runGC = true;
+//				if (mark) mark(); else sweep();
+//				mark = !mark;
 			}
 			while (freeBlocks[i] == 0 && i < nofFreeLists - 1) i++;
 			if (i < nofFreeLists - 1) {	
@@ -211,13 +220,13 @@ public class Heap implements IdeepCompilerConstants {
 				}
 			} else {	// get block from list with block size >= 128 Bytes
 				addr = freeBlocks[nofFreeLists - 1];
-//				if (addr == 0) while (true) Kernel.blink(5);	// no block in list 
+				if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block in list 
 				int freeBlockSize = US.GET4(addr) & 0xffffff;
 				int prev = addr;
 				while (blockSize > freeBlockSize) {	// search block which is big enough
 					prev = addr;
 					addr = US.GET4(addr + 4);
-//					if (addr == 0) while (true) Kernel.blink(5);	// no block left 
+					if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block left 
 					freeBlockSize = US.GET4(addr) & 0xffffff;
 				}
 				// unlink block
@@ -243,7 +252,13 @@ public class Heap implements IdeepCompilerConstants {
 		return addr;
 	}
 
+	/**
+	 * Starts mark phase of garbage collection.
+	 * This method should be solely used for test purposes. Never use it in application code! A garbage collection is automatically done
+	 * when available heap space is low.
+	 */
 	public static void mark() {
+//		System.out.println("mark");
 		if (dbg) {nofMarkedObjs = 0; nofMarkedRegObjs = 0; nofMarkedRefArrays = 0; nofMarkedPrimArrays = 0;}
 		for (int i = 0; i < nofRoots; i++) {
 			int obj = US.GET4(roots[i]);
@@ -283,13 +298,21 @@ public class Heap implements IdeepCompilerConstants {
 		}
 	}
 
+	/**
+	 * Starts sweep phase of garbage collection.
+	 * This method should be solely used for test purposes. Never use it in application code! A garbage collection is automatically done
+	 * when available heap space is low.
+	 */
 	public static void sweep() {	// call to sweep only after marking
+//		System.out.print("start sweep, free heap size = "); System.out.printHexln(Heap.getFreeHeap());
 		int blockSize, collBlockAddr = 0, collBlockSize = 0;
 		if (dbg) {nofSweepFreeBlock = 0; nofSweepMarkedBlock = 0; nofSweepCollBlock = 0;}
 		currBlock = heapBase;
 		while (currBlock < heapEnd) {
+//			System.out.printHex(currBlock);
 			int heapInfo = US.GET4(currBlock);
 			if (heapInfo << 1 < 0) {	// block is free
+//				System.out.println(" block is free");
 				if (collBlockSize > 0) {	// close collected block till now and add to free list
 					US.PUT4(collBlockAddr, (1 << 30) | collBlockSize); // set free bit
 					int i = collBlockSize / minBlockSize - 1;
@@ -305,6 +328,7 @@ public class Heap implements IdeepCompilerConstants {
 				if (dbg) nofSweepFreeBlock++;
 			} else {	// block is marked as used or block to be collected
 				if (heapInfo < 0) {	// object is marked
+//					System.out.print(" block is marked ");
 					if (collBlockSize > 0) {	// close collected block till now and add to free list
 						US.PUT4(collBlockAddr, (1 << 30) | collBlockSize); // set free bit
 						int i = collBlockSize / minBlockSize - 1;
@@ -334,6 +358,7 @@ public class Heap implements IdeepCompilerConstants {
 						blockSize = ((nofElems * compSize + 8 + minBlockSize - 1) >> 4) << 4; 
 					}
 				}
+//				System.out.print(" size="); System.out.printHexln(blockSize);
 				if (heapInfo >= 0) {	// add to collected block
 					if (collBlockSize == 0) collBlockAddr = currBlock;
 					collBlockSize += blockSize;
@@ -342,6 +367,7 @@ public class Heap implements IdeepCompilerConstants {
 				currBlock += blockSize;
 			} // end of block is marked or block to be collected
 		}
+//		System.out.print("end sweep, free heap size = "); System.out.printHexln(Heap.getFreeHeap());
 	}
 	
 	static {
@@ -381,52 +407,87 @@ public class Heap implements IdeepCompilerConstants {
 		US.PUT4(heapPtr + 4, 0);	// next field is null
 		// int i = heapPtr + 8; while (i < heapEnd) {US.PUT4(i, 0); i += 4;} // initialize heap, nice for debugging
 		threshold = heapSize / 3;
-		mark = true;
+//		mark = true;
 		freeBlocks[nofFreeLists - 1] = heapPtr;
 		nofFreeBlocks[nofFreeLists - 1] = 1;	
 	}
 
-	// debug methods
+	/**
+	 * Query total heap size.
+	 * @return Total heap size in bytes.
+	 */
 	public static int getHeapSize() {
 		return heapSize;
 	}
 	
+	/**
+	 * Query base address of heap.
+	 * @return Base address of heap.
+	 */
 	public static int getHeapBase() {
 		return heapBase;
 	}
 	
+	/**
+	 * Query free heap size.
+	 * @return Free heap size in bytes.
+	 */
 	public static int getFreeHeap() {
 		return freeHeap;
 	}
 	
+	/**
+	 * Used for debugging purposes.
+	 */
 	public static int getNofRoots() {
 		return nofRoots;
 	}
 	
+	/**
+	 * Used for debugging purposes.
+	 */
 	public static int[] getRoots() {
 		return roots;
 	}
 	
+	/**
+	 * Used for debugging purposes.
+	 */
 	public static int[] getFreeBlocks() {
 		return freeBlocks;
 	}
 	
+	/**
+	 * Used for debugging purposes.
+	 */
 	public static int[] getNofFreeBlocks() {
 		return nofFreeBlocks;
 	}
 	
+	/**
+	 * Used for debugging purposes.
+	 */
 	public static int getNofMarkedObjs() {
 		return nofMarkedObjs;
 	}
 	
+	/**
+	 * Used for debugging purposes.
+	 */
 	public static int getNofMarkedRefArrays() {
 		return nofMarkedRefArrays;
 	}
 	
+	/**
+	 * Used for debugging purposes.
+	 */
 	public static int getNofMarkedPrimArrays() {
 		return nofMarkedPrimArrays;
 	}
 	
+	/**
+	 * Used for debugging purposes.
+	 */
 	public static int getNofMarkedRegObjs() {
 		return nofMarkedRegObjs;
 	}

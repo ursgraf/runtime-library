@@ -394,7 +394,7 @@ public final class Long extends Number implements Comparable<Long>, Modified {
      * Converts the specified long value into its binary string representation.
      * The returned string is a concatenation of '0' and '1' characters.
      *
-     * @param v
+     * @param l
      *            the long value to convert.
      * @return the binary string representation of {@code v}.
      */
@@ -419,7 +419,7 @@ public final class Long extends Number implements Comparable<Long>, Modified {
      * representation. The returned string is a concatenation of characters from
      * '0' to '9' and 'a' to 'f'.
      *
-     * @param v
+     * @param l
      *            the long value to convert.
      * @return the hexadecimal string representation of {@code l}.
      */
@@ -461,7 +461,7 @@ public final class Long extends Number implements Comparable<Long>, Modified {
      * The returned string is a concatenation of a minus sign if the number is
      * negative and characters from '0' to '9'.
      *
-     * @param n
+     * @param l
      *            the long to convert.
      * @return the decimal string representation of {@code l}.
      */

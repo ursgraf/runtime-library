@@ -5,8 +5,16 @@ import ch.ntb.inf.deep.unsafe.US;
 /*changes:
  * 12.3.2014	NTB/Urs Graf	creation
  */
-
+/**
+ * The class for the PPC program exception.
+ * This class handles all exceptions. Based on the type of the exception (pre-defined 
+ * and user-defined) the proper handler will be determined and its address will be 
+ * loaded into the program counter.
+ */
 public class ProgramExc extends PPCException implements Ippc32 {
+	/**
+	 * The number of times a program exception occurred
+	 */
 	public static int nofProgExceptions;
 	static int nextOpCode;
 

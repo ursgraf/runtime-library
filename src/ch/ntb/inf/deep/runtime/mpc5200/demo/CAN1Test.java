@@ -16,41 +16,45 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200.test;
+package ch.ntb.inf.deep.runtime.mpc5200.demo;
 
 import java.io.PrintStream;
-
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
-import ch.ntb.inf.deep.runtime.ppc32.Decrementer;
+import ch.ntb.inf.deep.runtime.mpc5200.driver.can.CAN1;
 
-/* changes:
- * 24.8.2012	NTB/Urs Graf		creation
+/** 
+ * Test class for the CAN1 module on the mpc5200.<br>
+ * Demonstrates the periodic sampling of a 3-dimensional force sensor.
+ * 
+ * @author Urs Graf
+ *
  */
-
-/**
- * Simple demo application how to use the Decrementer.
- * This application simply outputs the character 'x' 
- * over the UART3 for each decrementer exception.
- */
-public class DecrementerDemo extends Decrementer {
-	static DecrementerDemo decTest; 
+public class CAN1Test extends Task {
 	
-	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc5200.Decrementer#action()
-	 */
-	public void action () {
-		System.out.print('x');
+	public void action() {
+		CAN1.sampleNodes();
+		if (nofActivations % 2000 == 0) {
+			for (int i = 0; i < CAN1.nodeData.length; i++) {
+				System.out.print(CAN1.nodeData[i].forceX);
+				System.out.print('.');
+				System.out.print(CAN1.nodeData[i].forceY);
+				System.out.print('.');
+				System.out.print(CAN1.nodeData[i].forceZ);
+				System.out.print("\t");
+			}
+			System.out.println();
+		}
 	}
 	
-	static {
-		// Initialize the UART3 (9600 8N1) and use it for System.out
+
+	static {	
 		UART3.start(9600, UART3.NO_PARITY, (short)8);
 		System.out = new PrintStream(UART3.out);
-		
-		// Create and install the Decrementer demo
-		System.out.println("decrementer started");
-		decTest = new DecrementerDemo(); 
-		decTest.decPeriodUs = 33000000;	// gives 1s with XLB clock = 132MHz
-		Decrementer.install(decTest);
+		System.out.println("start");
+		CAN1.init();
+		Task t = new CAN1Test();	
+		t.period = 1;
+		Task.install(t);
 	}
 }

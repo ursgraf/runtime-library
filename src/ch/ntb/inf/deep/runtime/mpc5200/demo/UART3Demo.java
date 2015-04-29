@@ -16,7 +16,7 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200.test;
+package ch.ntb.inf.deep.runtime.mpc5200.demo;
 
 import java.io.PrintStream;
 
@@ -25,6 +25,8 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /**
  * Demo for System.out using UART on PSC3.
+ * 
+ * @author Urs Graf
  */
 public class UART3Demo extends Task {
 	

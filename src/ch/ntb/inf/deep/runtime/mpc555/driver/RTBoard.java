@@ -22,10 +22,10 @@ import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
- * Dieser Treiber wird fuer den Regelungstechnik-Print verwendet.<br>
- * Dieser Print beinhaltet im Wesentlichen einen MPC555 als Prozessor.
- * Davon werden 2 normale analoge und 2 Power-Ausgaenge, 4 analoge Eingaenge und
- * 8 digitale Ein-/Ausgaenge auf Buchsen herausgefuehrt.
+ * Driver for the mpc555 board for control applications.
+ * This board comprises two regular analog outputs and two analog outputs with
+ * 1A current supply. Further there are 4 analog input channels as well as 
+ * 8 digital in/output channels.
  * 
  * @author Graf Urs
  */
@@ -42,67 +42,59 @@ public class RTBoard implements IntbMpc555HB {
   private static final int END_OF_QUEUE = 0x003F;
 
   /**
-   * Gibt den analogen Wert eines Eingangs zurueck.<br>
-   * Das analoge Signal wird vom gegebenen Kanal <code>channel</code>
-   * eingelesen. Die Kanaele sind mit A-In0..3 bezeichnet. Der Wertebereich
-   * fuer den zurueckgegebenen Wert betraegt -10..+10, welches dem Wert in
-   * Volt entspricht. Die Aufloesung der ADC betraegt 10Bit.
+   * Returns the value of an analog input channel.<br>
+   * The analog signal will be read from <code>channel</code>.
+   * The channels carry the names <code>A-In0..3 bezeichnet</code>. The range 
+   * of the return value is between -10..+10 corresponding to Volts.
+   * The resolution of the ADC is 10 bit.
    * 
    * @param channel
-   *            Kanal, von welchem das analoge Signal eingelesen werden soll.
-   * @return Analoges Signal in Volt [V], welches eingelesen wurde.
+   *            Channel with analog signal.
+   * @return Value in Volts (-10..+10).
    */
   public static float analogIn(int channel) {
     return ((US.GET2(RJURR_A + ADDR_OFFSET + channel * 2)) - 511.5f) / 511.5f * 10f;
   }
 
   /**
-   * Ausgabe eines analogen Signals auf einen normalen Ausgang.<br>
-   * Es wird ein analoges Signal auf den gegebenen Kanal <code>channel</code>
-   * ausgegeben. Die Kanaele sind mit A-Out0 und A-Out1 bezeichnet. Der
-   * Wertebereich fuer <code>val</code> betraegt -10..+10 welches dem Wert in
-   * Volt entspricht. Die Aufloesung der DAC betraegt 12Bit.
+   * Writes a value to an regular analog output <code>channel</code>
+   * The channels are denoted with <code>A-Out0</code> and <code>A-Out1</code>. 
+   * The range of <code>val</code> is between -10..+10 corresponding to Volts
+   * The resolution of the DAC is 12 bit.
    * 
    * @param channel
-   *            Kanal, auf welchem das analoge Signal ausgegeben werden soll.
+   *            Channel with analog signal.
    * @param val
-   *            Wert in Volt [V], welcher auf dem analogen Kanal ausgegeben
-   *            werden soll.
+   *            Value in Volts (-10..+10).
    */
   public static void analogOut(int channel, float val) {
     US.PUT2(TRANRAM + 2 * channel, (channel % 4) * 0x4000 + ((int)(val / 10 * 2047.5f + 2047.5f) & 0xfff));
 }
 
 	/**
-	 * Ausgabe eines analogen Signals auf einen Power-Ausgang.<br>
-	 * Es wird ein analoges Signal auf den gegebenen Kanal <code>channel</code>
-	 * ausgegeben. Die Kanaele sind mit Power-Out0 und Power-Out1 bezeichnet.
-	 * Der Wertebereich fuer <code>val</code> betraegt -10..+10, welches dem
-	 * Wert in Volt entspricht. Die Aufloesung der DAC betraegt 12Bit.
+	 * Writes a value to an analog output <code>channel</code> with 1A current drive capability.
+	 * The channels are denoted with <code>Power-Out0</code> and <code>Power-Out1</code>. 
+	 * The range of <code>val</code> is between -10..+10 corresponding to Volts
+	 * The resolution of the DAC is 12 bit.
 	 * 
 	 * @param channel
-	 *            Kanal, auf welchem das analoge Signal ausgegeben werden soll.
+	 *            Channel with analog signal.
 	 * @param val
-	 *            Wert in Volt [V], welcher auf dem analogen Kanal ausgegeben
-	 *            werden soll.
+	 *            Value in Volts (-10..+10).
 	 */
   public static void analogPowerOut(int channel, float val) {
-    channel += 2;
-    US.PUT2(TRANRAM + 2 * channel, (channel % 4) * 0x4000 + ((int)(val / 10 * 2047.5f + 2047.5f) & 0xfff));
+	  channel += 2;
+	  US.PUT2(TRANRAM + 2 * channel, (channel % 4) * 0x4000 + ((int)(val / 10 * 2047.5f + 2047.5f) & 0xfff));
   }
 
 
 	/**
-	 * Initialisiert einen digitalen Kanal.<br>
-	 * Es wird der mit <code>channel</code> angegebene Kanal als Ein- oder
-	 * Ausgang initialisiert.
+	 * Initializes a digital <code>channel</code> as input or output.
 	 * 
 	 * @param channel
-	 *            Kanal, welcher initialisiert werden soll.
+	 *            Channel to be initialized.
 	 * @param out
-	 *            Boolscher Wert, welcher <code>true</code> ist, wenn der Kanal
-	 *            als Ausgang initialisiert werden soll. Ansonsten
-	 *            <code>true</code>.
+	 *            If <code>true</code> the channel will be an output, otherwise it will be an input.
 	 */
 	public static void dioInit(int channel, boolean out) {
 		TPU_DIO.init(true, channel, out);
@@ -110,15 +102,12 @@ public class RTBoard implements IntbMpc555HB {
 
 
 	/**
-	 * Gibt das TTL-Signal am gewaehtlen digitalen Eingang zurueck.<br>
-	 * Das digitale Signal wird vom gegebenen Kanal <code>channel</code>
-	 * eingelesen. Die Kanaele sind mit 0..7 bezeichnet. Dabei entspricht der
-	 * Wert <code>true</code> einem logischen Signal <code>1</code>.
+	 * The digital input at <code>channel</code> is read. Channels are numbered
+	 * 0..7. The value <code>true</code> corresponds to the logical signal <code>1</code>.
 	 * 
 	 * @param channel
-	 *            Kanal, von welchem das TTL-Signal eingelesen werden soll.
-	 * @return Digitales Signal, welches vom gegebenen Kanal
-	 *         <code>channel</code> eingelesen wird.
+	 *            Channel to be read.
+	 * @return Digital signal at <code>channel</code>.
 	 */
 	public static boolean dioIn(int channel) {
 		return TPU_DIO.get(true, channel);
@@ -126,17 +115,13 @@ public class RTBoard implements IntbMpc555HB {
 
 
 	/**
-	 * Ausgabe eines TTL-Signals auf dem digitalen Ausgang.<br>
-	 * Es wird auf dem gewaehlten Kanal <code>channel</code> der in
-	 * <code>level</code> uebergebene Wert ausgegeben. Die Kanaele sind mit 0..7
-	 * bezeichnet. Dabei entspricht der Wert <code>true</code> einem logischen
-	 * Signal <code>1</code>.
+	 * Write a digital output to <code>channel</code>.
+	 * Channels are numbered <code>0..7</code>.
 	 * 
 	 * @param channel
-	 *            Kanal, auf welchem das TTL Signal ausgegeben werden soll.
+	 *            Channel to write.
 	 * @param level
-	 *            TTL-Signal, welches ausgegeben werden soll. <code>true</code>
-	 *            entspricht einem logischen Signal <code>1</code>.
+	 *            Digital signal, <code>true</code> corresponds to the logical signal <code>1</code>.
 	 */
 	public static void dioOut(int channel, boolean level) {
 		TPU_DIO.set(true, channel, level);
@@ -144,16 +129,13 @@ public class RTBoard implements IntbMpc555HB {
 
 
 	/**
-	 * Setzt den Status auf einer LED.<br>
-	 * Es wird auf dem gewaehlten Kanal in Form eines TTL-Signals die LED auf
-	 * leuchtend oder dunkel gesetzt.
+	 * Write a digital output to a led.
+	 * leds are numbered <code>0..3</code>.
 	 * 
 	 * @param channel
-	 *            Kanal, auf welcher LED das TTL Signal ausgegeben werden soll.
+	 *            Led channel.
 	 * @param level
-	 *            TTL-Signal, welches ausgegeben werden soll. <code>true</code>
-	 *            entspricht einem logischen Signal <code>1</code>, was heisst,
-	 *            dass die LED leuchtet.
+	 *            <code>true</code> corresponds to the led lightening up.
 	 */
 	public static void ledOut(int channel, boolean level) {
 		TPU_DIO.set(false, 2 * channel + 1, !level);
@@ -161,19 +143,15 @@ public class RTBoard implements IntbMpc555HB {
 
 
 	/**
-	 * Initialisiert den einen Encodereingang.<br>
-	 * Es wird der mit <code>channel</code> angegebene Kanal, der mit einen
-	 * ganzzahligen Wert zwischen 0..3 angegeben wird, als Encoder
-	 * initialisiert.<br>
+	 * Initializes two digital input channels as encoder input.<br>
+	 * <code>channel</code> can be in the range of <code>0..3</code>.
 	 * <br>
-	 * <b>Wichtig:</b><br>
-	 * Da immer zwei digitale Eingaenge fuer einen Encodereingang benoetigt
-	 * werden, wird immer der im Index naechstfolgende Eingang auch fuer den
-	 * Encoder initialisiert. Zum Beispiel wenn channel den Wert 3 hat, bilden
-	 * die digitalen Eingaenge 3 und 4 den Encodereingang.
+	 * <b>Important:</b><br>
+	 * As two digital inputs are necessary for a single encoder input,
+	 * <code>channel+1</code> will be reserved and used as well.
 	 * 
 	 * @param channel
-	 *            Kanal, auf dem der Encoder initialisiert werden soll
+	 *            <code>channel</code> and <code>channel+1</code> will be used for encoder input signals.
 	 */
 	public static void encInit(int channel) {
 		TPU_FQD.init(true, channel);
@@ -182,12 +160,10 @@ public class RTBoard implements IntbMpc555HB {
 
 
 	/**
-	 * Gibt den digitalen Zaehlerwert fuer einen Encoder zurueck.<br>
+	 * Reads the encoder position.<br>
 	 * 
-	 * @param channel
-	 *            Kanal, von welchem der Encoder-Zaehlerwert eingelesen werden
-	 *            soll.
-	 * @return Ausgelesener Zaehlerwert.
+	 * @param channel Channel of encoder input.
+	 * @return Position.
 	 */
 	public static short getEncCount(int channel) {
 		return TPU_FQD.getPosition(true, channel);
@@ -195,15 +171,10 @@ public class RTBoard implements IntbMpc555HB {
 
 
 	/**
-	 * Setzt den digitalen Zaehlerwert fuer einen Encoder.<br>
-	 * Es wird auf dem gewaehlten Kanal <code>channel</code> der in
-	 * <code>pos</code> uebergebene Zaehlerwert gesetzt.<br>
+	 * Set the encoder position.<br>
 	 * 
-	 * @param channel
-	 *            Kanal, auf welchem der Encoder-Zaehlerwert gesetzt werden
-	 *            soll.
-	 * @param pos
-	 *            Wert, mit welchem der Encoder-Zaehlerwert gesetzt werden soll.
+	 * @param channel Channel of encoder input.
+	 * @param pos Position to initialize encoder.
 	 */
 	public static void setEncCount(int channel, short pos) {
 		TPU_FQD.setPosition(true, channel, pos);

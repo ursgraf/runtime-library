@@ -30,24 +30,24 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 /**
- * Driver to using the TPU for generating pulse width modulated (PWM) signals.<br />
- * All 32 channels (2 x 16) can be used for this. All time data have to be a multiple of the
- * TPU time base (806 ns).
+ * Driver for generating pulse width modulated (PWM) signals on the TPU.<br />
+ * All 16 channels of TPU-A or TPU-B can be used. All timing data has to be a multiple of the
+ * TPU time base clock (806 ns).
  */
 public class TPU_PWM implements IntbMpc555HB{
 
 
-	/** TPU time base in nano seconds [ns]. */
+	/** TPU time base in nanoseconds [ns]. */
 	public static final int tpuTimeBase = 806;
 
 	/**
-	 * Initialize a TPU channels for generating PWM signals.<br>
-	 * Every channel has to be initialized before using it!
-	 * Remember: <code>period</code> and <code>highTime</code> are
-	 * 32 bit values!<br>
+	 * Initialize a TPU channels for the generation of PWM signals.<br>
+	 * Every channel has to be initialized before use.
+	 * Remember: <code>period</code> and <code>highTime</code> have a resolution of 16 bit.
+	 * However, the maximum value for both values is <code>0x8000</code>.<br>
 	 * The period time should be defined as an integer constant.
-	 * Example for a period time of <i>T = 50 us (f = 20 kHz)</i>:
-	 * <code>private final int pwmPeriod = 50000 / TpuTimeUnit;</code>
+	 * Example for a period time of <i>T = 50 \u00b5s (f = 20 kHz)</i>: <br>
+	 * <code>private final int pwmPeriod = 50000 / TpuTimeBase;</code>
 	 * 
 	 * @param tpuA		<code>true</code>: use TPU-A,
 	 * 					<code>false</code>: use TPU-B.
@@ -56,7 +56,7 @@ public class TPU_PWM implements IntbMpc555HB{
 	 * @param period	Period time as a multiple of the TPU time base 
 	 * @param highTime	PWM signal high time as a multiple of the TPU
 	 * 					time base. It has to be less or equal then
-	 * 					the period time!
+	 * 					the period time.
 	 */
 	public static void init(boolean tpuA, int channel, int period, int highTime) {
 		int shift, tpuAdr, s;
@@ -122,11 +122,12 @@ public class TPU_PWM implements IntbMpc555HB{
 
 	/**
 	 * Update the parameters of a PWM signal at a TPU channel.<br>
-	 * Every channel has to be initialized before using it!
+	 * This method will simply update the period and high time registers without 
+	 * initializing the channel. The maximum value for both values is <code>0x8000</code>.
 	 * 
 	 * @param tpuA		<code>true</code>: use TPU-A,
 	 * 					<code>false</code>: use TPU-B.
-	 * @param channel	TPU channel to initialize. Allowed values
+	 * @param channel	TPU channel to update. Allowed values
 	 * 					are 0..15.
 	 * @param period	Period time as a multiple of the TPU time base 
 	 * @param highTime	PWM signal high time as a multiple of the TPU
@@ -135,19 +136,12 @@ public class TPU_PWM implements IntbMpc555HB{
 	 */
 	public static void update(boolean tpuA, int channel, int period,
 			int highTime) {
-		int adr ;
-		if(tpuA){
-			//Define high time
-			adr = TPURAM0_A + 0x10 * channel;
-			US.PUT2(adr + 4, highTime);
-			//Define time of period
-			US.PUT2(adr + 6, period);
-		}else{
-			//Define high time
-			adr = TPURAM0_B + 0x10 * channel;
-			US.PUT2(adr + 4, highTime);
-			//Define time of period
-			US.PUT2(adr + 6, period);
+		if (tpuA) {
+			// define high time and period
+			US.PUT4(TPURAM0_A + 0x10 * channel + 4, (highTime << 16) | period);
+		} else {
+			// define high time and period
+			US.PUT4(TPURAM0_B + 0x10 * channel + 4, (highTime << 16) | period);
 		}
 	}
 }

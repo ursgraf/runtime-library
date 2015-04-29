@@ -18,24 +18,30 @@
 
 package ch.ntb.inf.deep.lowLevel;
 
+/**
+ * The methods of this class will be translated by inserting machine code instructions
+ * directly in the code without a method call. They offer maximum efficiency by using 
+ * special optimization.
+ */
+
 public class LL {
 
-	/** get bits of floating point value (64bit)*/
+	/** Get bits of floating point value (64bit)*/
 	public static long doubleToBits(double d) {
 		return 0;
 	}
 
-	/** set double from bits (64bit) */
+	/** Set double value directly from bits (64bit) */
 	public static double bitsToDouble(long val) {
 		return 0;
 	}
 
-	/** get bits of floating point value (32bit) */
+	/** Get bits of floating point value (32bit) */
 	public static int floatToBits(float f) {
 		return 0;
 	}
 
-	/** set float from bits (32bit) */
+	/** Set float value directly from bits (32bit) */
 	public static float bitsToFloat(int val) {
 		return 0;
 	}

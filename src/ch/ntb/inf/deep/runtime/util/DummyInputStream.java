@@ -21,6 +21,13 @@ package ch.ntb.inf.deep.runtime.util;
 import java.io.InputStream;
 import java.lang.Override;
 
+/**
+ * A readable source of bytes.
+ * 
+ * This is a simple helper class. <code>System.in</code> will open such a <code>DummyInputStream</code> as a default. 
+ * A user will later redirect <code>System.in</code> to a physically available device.
+ *
+ */
 public class DummyInputStream extends InputStream {
 
 	@Override

@@ -26,7 +26,14 @@ import ch.ntb.inf.deep.unsafe.US;
  * 11.11.10	NTB/Urs Graf	creation
  * 20.3.12	NTB/Urs Graf	Interface Actionable added
  */
-
+/**
+ * This class implements a simple non-preemptive tasking system.
+ * Each task runs to completion. After this the next task in the ready queue will
+ * run. Tasks with a period equal to 0 will be rescheduled immediately after completion 
+ * Tasks with a period greater than 0 will be scheduled when their time has come.
+ * 
+ * @author urs.graf@ntb.ch 
+ */
 public class Task implements Actionable, Ippc32 {
 	public static final int maxNofTasks = 32;
 	
@@ -49,7 +56,11 @@ public class Task implements Actionable, Ippc32 {
 	/** time:	0 <= time : start time in ms from install time */
 	public int time;
 
-	/** period:	0 <= period : period time in ms */
+	/** 
+	 * period:	0 <= period : period time in ms<br>
+	 * The period is must be specified before installation of the task by calling <code>install</code>.
+	 * Subsequent modifications of this value do not have any effects!
+	 */
 	public int period;
 
 	/** number of activations */
@@ -62,7 +73,8 @@ public class Task implements Actionable, Ippc32 {
 	private long nextTime;
 	private long periodUs;
 	private int actionable = -1;
-
+	private static boolean mark = true;	// phase of garbage collection, start with mark phase
+	
 	/**
 	 * Creates a new <i>Task</i>. <br>
 	 * It's action method will be called by the task scheduler
@@ -85,7 +97,7 @@ public class Task implements Actionable, Ippc32 {
 	}
 
 	/**
-	 * Aaction to be performed by the task
+	 * Action to be performed by the task
 	 */
 	public void action() {
 	}
@@ -224,6 +236,10 @@ public class Task implements Actionable, Ippc32 {
 				Kernel.cmdAddr = -1;	// stop trying to run the same method
 				e.printStackTrace();
 				Kernel.blink(1);
+			}
+			if (Heap.runGC) {
+				if (mark) {Heap.mark(); mark = false;}
+				else {Heap.sweep(); mark = true; Heap.runGC = false;}
 			}
 			long time = Kernel.time();
 			currentTask = tasks[1];

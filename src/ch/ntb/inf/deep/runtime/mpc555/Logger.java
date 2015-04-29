@@ -112,7 +112,7 @@ public class Logger {
 	/**
 	 * Returns the actual level of the logger.
 	 * 
-	 * @return the atual level.
+	 * @return the actual level.
 	 */
 	public int getLevel() {
 		return level;

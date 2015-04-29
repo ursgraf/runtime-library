@@ -22,17 +22,14 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.DS1302Z;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /**
- * Date and time class. This class reads on initialization the date and time
- * from the {@link mpc555.DS1302Z} real time clock. After that the time is
- * updated with a normal {@link ch.ntb.inf.deep.runtime.ppc32.Task}. Each 24 hours at 24:00 the time will be
- * updated from the real time clock.<br>
- * 
+ * Date and time class. This class reads the date and time
+ * from the {@link ch.ntb.inf.deep.runtime.mpc555.driver.DS1302Z} real time clock. 
+ * The time is updated with a periodic {@link ch.ntb.inf.deep.runtime.ppc32.Task}. <br>
+ * This class is a singleton.
  */
 public class DateTime extends Task {
 
 	private int sec, min, hour, date, month, year, millisec;
-
-	public static int maxStrLen = 21;
 
 	private int lastCallTime;
 	private static DateTime dateTime;
@@ -60,8 +57,8 @@ public class DateTime extends Task {
 		return dateTime;
 	}
 
-	/*
-	 * @see mpc555.Task#action()
+	/**
+	 * @see ch.ntb.inf.deep.runtime.ppc32.Task#action()
 	 */
 	public void action() {
 		millisec += Task.time() - lastCallTime;
@@ -197,8 +194,8 @@ public class DateTime extends Task {
 	/**
 	 * Returns the date and time as a string.
 	 * The format <i>dd.mm.yyyy hh:mm:ss</i>.
-	 * @param str
-	 * @return date and time as string
+	 * @param str date and time as string
+	 * @return The length of the string
 	 */
 	public int getString(char[] str) {
 		int off = 0;

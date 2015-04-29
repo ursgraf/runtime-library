@@ -22,10 +22,21 @@ import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
- * Driver for the QADC Module. The module has two queued analog/digital converters
- * with 16 channels each: QADC-A and QADC-B. The ADC has to be initialized before used.
- * All 16 channels of an ADC were converted every 1 ms and could be read with the method
- * <code>read(...)</code>. Allowed channel numbers are 0..3 and 48..59.
+ * This driver configures one of the QADC modules (QADC-A or QADC-B) for 
+ * analog input sampling operation.<br>
+ * Both modules comprise of 16 input channels each. If one of the modules
+ * is initialized with the method <code>init(...)</code> all its 16 channels 
+ * ADC are repetitively sampled every 1 ms and could be read with the method
+ * <code>read(...)</code>.<br>
+ * The channels are grouped into two groups of 8 channels each, PortA and PortB.<br>
+ * PortB: PQB0(AN0), PQB1(AN1), PQB2(AN2), PQB3(AN3), PQB4(AN48), PQB5(AN49), PQB6(AN50), PQB7(AN51)<br>
+ * PortA: PQA0(AN52), PQA1(AN53), PQA2(AN54), PQA3(AN55), PQA4(AN56), PQA5(AN57), PQA6(AN58), PQA7(AN59)<br>
+ * <br>
+ * One or several of the channels can be configured for digital I/O with
+ * {@link ch.ntb.inf.deep.runtime.mpc555.driver.QADC_DIO} while the remaining channels 
+ * still being used for analog input sampling. However, the method
+ * <code>read(...)</code> will not return meaningful data on the channels configured for
+ * digital I/O.
  */
 public class QADC_AIN implements IntbMpc555HB {
 
@@ -72,15 +83,14 @@ public class QADC_AIN implements IntbMpc555HB {
 			// user access
 			US.PUT2(QADC64MCR_A, 0);
 			
-			// internal multiplexing, use ETRIG1 for queue1, QCLK = 40 MHz / (11+1 + 7+1) = 2 MHz
+			// internal multiplexing, QCLK = 40 MHz / (11+1 + 7+1) = 2 MHz
 			US.PUT2(QACR0_A, 0x00B7);
 			
-			// queue2:
-			// Periodic timer continuous-scan mode:
-			// period = QCLK period x 2^11
-			// Resume execution with the aborted CCW
-			// queue2 begins at CCW + 2*16 (32 = ADDR_OFFSET)
-			// This offset is used because of the DistSense driver
+			// use queue2
+			// interval timer continuous-scan mode with period = QCLK period x 2^11
+			// resume execution with the aborted CCW
+			// queue2 begins at position 16 in the CCW
+			// this offset allows for other functions to use queue1 at lower positions
 			US.PUT2(QACR2_A, 0x1890);
 
 			// CCW for AN0 - AN3, max sample time
@@ -103,15 +113,14 @@ public class QADC_AIN implements IntbMpc555HB {
 			// user access
 			US.PUT2(QADC64MCR_B, 0);
 			
-			// internal multiplexing, use ETRIG1 for queue1, QCLK = 40 MHz / (11+1 + 7+1) = 2 MHz
+			// internal multiplexing, QCLK = 40 MHz / (11+1 + 7+1) = 2 MHz
 			US.PUT2(QACR0_B, 0x00B7);
 			
-			// queue2:
-			// Periodic timer continuous-scan mode:
-			// period = QCLK period x 2^11
-			// Resume execution with the aborted CCW
-			// queue2 begins at CCW + 2*16 (32 = ADDR_OFFSET)
-			// This offset is used because of the DistSense driver
+			// use queue2
+			// interval timer continuous-scan mode with period = QCLK period x 2^11
+			// resume execution with the aborted CCW
+			// queue2 begins at position 16 in the CCW
+			// this offset allows for other functions to use queue1 at lower positions
 			US.PUT2(QACR2_B, 0x1890);
 
 			// CCW for AN0 - AN3, max sample time

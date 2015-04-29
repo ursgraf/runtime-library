@@ -22,29 +22,22 @@ import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
- * Perioden- / Pulsweiten-Messung (PPWA) mit der TPU-A oder TPU-B.<br>
- * Es kann die Hightime oder die Periode des Signals gemessen.<br>
- * Grundsaetzlich können die folgenden Operationen auf alle 2x 16 TPU-Pins
- * angewandt werden. <br>
- * Es muss jedoch beachtet werden, dass andere Treiber ebenfalls die TPU-A oder
- * TPU-B benutzen können.<br>
- * Auf dem Experimentierprint sind die TPU-Pins <i>2x 0..15</i> im Bereich
- * TPU-A und TPU-B zu finden.<br>
+ * Period and pulse width measurement (PPWA function) with the TPU-A or TPU-B.<br>
+ * All 16 channels of TPU-A or TPU-B can be used.<br>
  */
 public class TPU_PPWA implements IntbMpc555HB{
 
 	/**
-	 * Initialisiert den verlangten TPU-Pin als PPWA-Kanal.<br>
-	 * Jeder Kanal muss vor der ersten Verwendung initialisiert werden.
+	 * Initializes a channel of the TPU for the measurement of period or pulse width.<br>
+	 * Every channel has to be initialized before use.
 	 * 
-	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
-	 * @param channel
-	 *            TPU-Pin <code>0..15</code>, welcher initialisiert wird.
+	 * @param tpuA		<code>true</code>: use TPU-A,
+	 * 					<code>false</code>: use TPU-B.
+	 * @param channel	TPU channel to initialize. Allowed values
+	 * 					are 0..15.
 	 * @param pulseWidth
-	 *            <code>true</code>: Messen der Pulsweite. <code>false</code>:
-	 *            Messen der Periodenlaenge.
+	 * 					<code>true</code>: pulse width measurement. 
+	 * 					<code>false</code>: period measurement.
 	 */
 	public static void init(boolean tpuA, int channel, boolean pulseWidth) {
 		if (tpuA) {
@@ -151,20 +144,15 @@ public class TPU_PPWA implements IntbMpc555HB{
 	}
 
 	/**
-	 * Auslesen des zuletzt gemessenen Wertes.<br>
-	 * Die Werte werden ueber die TPU permanent aktualisiert. Mittels dieser
-	 * Methode kann der zuletzt gemessene Wert ausgelesen werden.<br>
-	 * <br>
-	 * Die Werte sind in &micro;s.<br>
-	 * Da direkt innerhalb der Methode die Umrechnung bzgl. der verwendeten
-	 * CycleTime durchgefuehrt wird, ist keine weitere Umrechnung nötig.
+	 * The TPU continuously samples the input data.
+	 * This method reads the last sample.<br>
+	 * The values are in \u00b5s. 
 	 * 
-	 * @param tpuA
-	 *            <code>true</code>: benutzen der TPU-A. <code>false</code>:
-	 *            benutzen der TPU-B.
-	 * @param channel
-	 *            TPU-Pin <code>0..15</code>, welcher initialisiert wird.
-	 * @return Zuletzt gemessener Wert
+	 * @param tpuA		<code>true</code>: use TPU-A,
+	 * 					<code>false</code>: use TPU-B.
+	 * @param channel	TPU channel to read. Allowed values
+	 * 					are 0..15.
+	 * @return 			Last sample in \u00b5s.
 	 */
 	public static int read(boolean tpuA, int channel) {
 		int value = 0;

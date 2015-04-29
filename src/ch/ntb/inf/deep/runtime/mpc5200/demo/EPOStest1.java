@@ -16,13 +16,20 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200.test;
+package ch.ntb.inf.deep.runtime.mpc5200.demo;
 
 import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.can.EPOS;
 
+/** 
+ * Test class for an EPOS module (motor controller) connected to the CAN1 bus on the mpc5200.<br>
+ * A motor position is moved forward and backward.
+ * 
+ * @author Urs Graf
+ *
+ */
 public class EPOStest1 extends Task {
 	static EPOS drive1;
 	static int pos = 0;

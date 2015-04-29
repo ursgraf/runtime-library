@@ -25,7 +25,13 @@ import ch.ntb.inf.deep.unsafe.US;
 /* changes:
  * 11.11.10	NTB/GRAU	creation
  */
-
+/**
+ * The class for the PPC reset exception.
+ * The stack pointer will be initialized and the program counter will be
+ * set to the beginning of the class initializer of the kernel.
+ * 
+ * @author Urs Graf
+ */
 class Reset extends PPCException implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 	
 	static void reset() {

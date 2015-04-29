@@ -24,6 +24,10 @@ import ch.ntb.inf.deep.unsafe.US;
 /* changes:
  * 25.11.10	NTB/GRAU	creation
  */
+/**
+ * The class for the PPC interrupt exception.
+ * Every interrupt handler is an instance of the class <code>Interrupt</code>.
+ */
 public class Interrupt extends PPCException implements IntbMpc555HB {
 
 	/**
@@ -35,12 +39,31 @@ public class Interrupt extends PPCException implements IntbMpc555HB {
 	static int nofInterrupts = 0;
 	static Interrupt[] interrupts = new Interrupt[16]; 	// ext. and int. interrupts  
 	
+	/**
+	 * An interrupt handler must specify the address of the register
+	 * which contains its enable bit. The enable bit will be set whenever this
+	 * interrupt should be active.
+	 */
 	public int enableRegAdr;
+	/**
+	 * The bit position of the enable bit. 
+	 */
 	public int enBit;
+	/**
+	 * An interrupt handler must specify the address of the register
+	 * which contains its flag bit. The flag bit will indicate, whether a interrupt has occurred.
+	 */
 	public int flagRegAdr;
+	/**
+	 * The bit position of the flag bit. 
+	 */
 	public int flag;
 	private Interrupt next;
 	
+	/**
+	 * This is the interrupt handler. Please make sure to overwrite this method for your 
+	 * own interrupt handlers.
+	 */
 	public void action() {
 		nofUnexpInterrupts++;
 	}
@@ -81,6 +104,13 @@ public class Interrupt extends PPCException implements IntbMpc555HB {
 			currInt.action();	// default handler
 	}
 
+	/**
+	 * Used to install user defined interrupt handlers.
+	 * @param interrupt Instance of user defined interrupt handler
+	 * @param level One of the 16 allowed hardware levels for interrupts
+	 * @param internal <code>true</code>: this is a handler for one of the internal peripherals interrupts.
+	 * 		<code>false</code>: this is a handler for one of the external interrupts.
+	 */
 	public static void install(Interrupt interrupt, int level, boolean internal) {
 		if (internal) {
 			interrupt.next = interrupts[2 * level + 1]; 

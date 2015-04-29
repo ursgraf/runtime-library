@@ -26,7 +26,14 @@ import ch.ntb.inf.deep.unsafe.US;
 /* changes:
  * 21.6.12	NTB/GRAU	creation
  */
-
+/**
+ * The class for the PPC reset exception.<br>
+ * The stack pointer will be initialized and the program counter will be
+ * set to the beginning of the class initializer of the kernel.
+ * If the code runs out of the flash, it has to copied from there to the SDRAM.
+ * 
+ * @author Urs Graf
+ */
 class ResetPCMtiny extends PPCException implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstants {
 	
 	static void reset() {

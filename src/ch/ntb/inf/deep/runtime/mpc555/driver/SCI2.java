@@ -274,8 +274,7 @@ public class SCI2 extends Interrupt {
 	 * Reads one byte from the SCI2. A call of
 	 * this method is not blocking!
 	 * 
-	 * @return byte read or {@link ch.ntb.inf.deep.runtime.util.ByteFifo#NO_DATA} if
-	 *             no data was available.
+	 * @return byte single entry in queue.
 	 * @throws IOException 
 	 *            if no byte available.
 	 */

@@ -16,41 +16,43 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc555.demo;
+package ch.ntb.inf.deep.runtime.mpc5200.demo;
 
 import java.io.PrintStream;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+
+import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
 import ch.ntb.inf.deep.runtime.ppc32.Decrementer;
 
 /* changes:
- * 22.02.11 NTB/Martin Züger	OutT replaced by System.out
- * 11.11.10	NTB/Urs Graf		creation
+ * 24.8.2012	NTB/Urs Graf		creation
  */
 
 /**
- * Simple demo application how to use the <code>Decrementer</code>.
- * This application simply outputs the character 'x' once
- * per second over the SCI2.
+ * Simple demo application showing how to use the <code>Decrementer</code>.<br>
+ * This application simply outputs the character 'x' 
+ * over the UART3 for each <code>Decrementer</code> exception.
+ * 
+ * @author Urs Graf
  */
 public class DecrementerDemo extends Decrementer {
 	static DecrementerDemo decTest; 
 	
-	/**
-	 * Outputs 'x' once a second.
+	/* (non-Javadoc)
+	 * @see ch.ntb.inf.deep.runtime.mpc5200.Decrementer#action()
 	 */
 	public void action () {
 		System.out.print('x');
 	}
 	
 	static {
-		// Initialize the SCI2 (9600 8N1) and use it for System.out
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI2.out);
-		System.err = System.out;
+		// Initialize the UART3 (9600 8N1) and use it for System.out
+		UART3.start(9600, UART3.NO_PARITY, (short)8);
+		System.out = new PrintStream(UART3.out);
 		
 		// Create and install the Decrementer demo
+		System.out.println("decrementer started");
 		decTest = new DecrementerDemo(); 
-		decTest.decPeriodUs = 1000000;
+		decTest.decPeriodUs = 33000000;	// gives 1s with XLB clock = 132MHz
 		Decrementer.install(decTest);
 	}
 }

@@ -16,7 +16,7 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc5200.test;
+package ch.ntb.inf.deep.runtime.mpc5200.demo;
 
 import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
@@ -25,7 +25,10 @@ import ch.ntb.inf.deep.runtime.mpc5200.driver.SPI_FQD;
 import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
 
 /**
- * Demo for SPI on PSC1 and PSC6.
+ * Test class demonstrating the use of a <code>MAX5500</code> DAC connected to a PSC on the mpc5200.<br>
+ * The PSC runs in SPI mode. All four channels are driven with a ramp.  
+ * 
+ * @author Urs Graf
  */
 public class SPIDemo extends Task {
 	static short i;

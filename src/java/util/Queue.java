@@ -81,7 +81,7 @@ package java.util;
  * <p>The <tt>Queue</tt> interface does not define the <i>blocking queue
  * methods</i>, which are common in concurrent programming.  These methods,
  * which wait for elements to appear or for space to become available, are
- * defined in the {@link java.util.concurrent.BlockingQueue} interface, which
+ * defined in the java.util.concurrent.BlockingQueue interface, which
  * extends this interface.
  *
  * <p><tt>Queue</tt> implementations generally do not allow insertion
@@ -102,11 +102,6 @@ package java.util;
  * @see java.util.Collection
  * @see LinkedList
  * @see PriorityQueue
- * @see java.util.concurrent.LinkedBlockingQueue
- * @see java.util.concurrent.BlockingQueue
- * @see java.util.concurrent.ArrayBlockingQueue
- * @see java.util.concurrent.LinkedBlockingQueue
- * @see java.util.concurrent.PriorityBlockingQueue
  * @since 1.5
  * @author Doug Lea
  * @param <E> the type of elements held in this collection
