@@ -162,8 +162,6 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 		US.PUT2(CCW_A + 2, 0x00C0 + analogInChn);
 		// end of queue
 		US.PUT2(CCW_A + 4, 0x003F);
-
-		sensAdr = -1;
 	}
 
 	/**
@@ -196,6 +194,7 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 	 * or after a call of <code>stop()</stop>.
 	 */
 	public static void start() {
+		sensAdr = 0;
 		thisSngTask.period = maxNofSensors / nofSensors;
 		Task.install(thisSngTask);
 	}
