@@ -22,6 +22,11 @@ import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_FQD;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
 
+/**
+ * Speed controller (PI control) for DC motor. <br/>
+ * This controller uses two channels of the time processor unit 
+ * and operates in sign-magnitude mode.
+ */
 public class SpeedController4DCMotor {
 	
 	private int pwmChannelA, pwmChannelB;
