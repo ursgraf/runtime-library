@@ -37,6 +37,10 @@ import ch.ntb.inf.deep.unsafe.US;
  * still being used for analog input sampling. However, the method
  * <code>read(...)</code> will not return meaningful data on the channels configured for
  * digital I/O.
+ * 
+ * <strong>IMPORTANT:</strong> Connect AGnd to Gnd! 
+ * The input offset current of the internal multiplexer is rather high. Please make sure
+ * that the source impedance of your signal is below 10k&Omega;.
  */
 public class QADC_AIN implements IntbMpc555HB {
 
