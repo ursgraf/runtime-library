@@ -400,6 +400,8 @@ public class RTBoardTest extends Task implements IntbMpc555HB {
 		System.out = new PrintStream(SCI2.out);
 		System.in = SCI2.in;
 		
+		QADC_AIN.init(true);
+		
 		RTBoardTest task = new RTBoardTest();
 		task.period = 1;
 		Task.install(task);
