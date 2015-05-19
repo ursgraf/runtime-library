@@ -212,8 +212,8 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 			nofSens = nofSens >> 1;
 		}
 		int n = nofSens >> 1;
-		if (nofSens == 16)
-			nofSens = 15;
+//		if (nofSens == 16)
+//			nofSens = 15;
 		while (n > 0) {
 			pinNumbers = pinNumbers << 4 | (adr3PinNr & 0xF);
 			adr3PinNr = adr2PinNr;
