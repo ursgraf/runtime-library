@@ -66,7 +66,7 @@ public class UARTInputStream extends InputStream {
 		case pPSC5:
 			return UART3.availToRead(); 
 		case pPSC6:
-			return UART3.availToRead(); 
+			return UART6.availToRead(); 
 		default:
 			break;
 		}
@@ -94,7 +94,7 @@ public class UARTInputStream extends InputStream {
 			case pPSC5:
 				cnt = UART3.read(); break;
 			case pPSC6:
-				cnt = UART3.read(); break;
+				cnt = UART6.read(); break;
 			default:
 				break;
 			}
@@ -125,7 +125,7 @@ public class UARTInputStream extends InputStream {
 			case pPSC5:
 				cnt = UART3.read(buffer); break;
 			case pPSC6:
-				cnt = UART3.read(buffer); break;
+				cnt = UART6.read(buffer); break;
 			default:
 				break;
 			}
@@ -160,7 +160,7 @@ public class UARTInputStream extends InputStream {
 			case pPSC5:
 				cnt = UART3.read(buffer, off, count); break;
 			case pPSC6:
-				cnt = UART3.read(buffer, off, count); break;
+				cnt = UART6.read(buffer, off, count); break;
 			default:
 				break;
 			}

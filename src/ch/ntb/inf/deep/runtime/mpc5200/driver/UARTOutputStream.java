@@ -69,7 +69,7 @@ public class UARTOutputStream extends OutputStream {
 			case pPSC5:
 				UART3.write((byte)b); break;
 			case pPSC6:
-				UART3.write((byte)b); break;
+				UART6.write((byte)b); break;
 			default:
 				break;
 			}
@@ -93,7 +93,7 @@ public class UARTOutputStream extends OutputStream {
 			case pPSC5:
 				UART3.write(buffer); break;
 			case pPSC6:
-				UART3.write(buffer); break;
+				UART6.write(buffer); break;
 			default:
 				break;
 			}
@@ -126,7 +126,7 @@ public class UARTOutputStream extends OutputStream {
 			case pPSC5:
 				UART3.write(buffer, off, count); break;
 			case pPSC6:
-				UART3.write(buffer, off, count); break;
+				UART6.write(buffer, off, count); break;
 			default:
 				break;
 			}
