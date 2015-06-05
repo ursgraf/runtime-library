@@ -198,6 +198,18 @@ operatingsystem ntbSTS {
     	}
     }
     
+    exception {
+    	class = "ch/ntb/inf/deep/runtime/mpc5200/ResetPCMuBoot";
+    	condition = boardtype:phyCoreMpc5200uBoot;
+    	method reset {
+    		attributes = exchnd;
+			offset = 0x100;
+    	}
+    	method <init> {
+    		attributes = synthetic;
+    	}
+    }
+    
 	exception {
     	class = "ch/ntb/inf/deep/runtime/ppc32/MachineCheck";
   		method machineCheck {

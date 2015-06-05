@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.mpc5200;
 
-// Auto generated file (2014-05-14 13:07:31)
+// Auto generated file (2015-06-05 11:51:02)
 
 public interface IphyCoreMpc5200io {
 
@@ -31,7 +31,10 @@ public interface IphyCoreMpc5200io {
 	public static final int extRamBase = 0x0;
 
 	// Specific registers of CPU " + cpuName + "
+	public static final int SVR = 0x11e;
+	public static final int SPR286 = 0x11e;
 	public static final int PVR = 0x11f;
+	public static final int SPR287 = 0x11f;
 	public static final int SPR528 = 0x210;
 	public static final int MI_GRA = 0x210;
 	public static final int SPR536 = 0x218;
@@ -42,6 +45,12 @@ public interface IphyCoreMpc5200io {
 	public static final int L2U_MCR = 0x238;
 	public static final int SPR630 = 0x276;
 	public static final int DPDR = 0x276;
+	public static final int HID0 = 0x3f0;
+	public static final int SPR1008 = 0x3f0;
+	public static final int HID1 = 0x3f1;
+	public static final int SPR1009 = 0x3f1;
+	public static final int HID2 = 0x3f3;
+	public static final int SPR1011 = 0x3f3;
 	public static final int MBAR = 0xf0000000;
 	public static final int CS0START = 0xf0000004;
 	public static final int CS0STOP = 0xf0000008;

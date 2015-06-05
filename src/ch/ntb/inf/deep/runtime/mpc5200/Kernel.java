@@ -176,6 +176,7 @@ public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstan
 			US.ASM("mfmsr r0");	// enable interrupts
 			US.PUTGPR(0, US.GETGPR(0) | (1 << 15));
 			US.ASM("mtmsr r0");	
+			US.PUTSPR(HID0, 0x8000);		// switch on instruction cache
 			US.PUTSPR(LR, loopAddr);
 			US.ASM("bclrl always, 0");
 		} catch (Exception e) {

@@ -47,7 +47,22 @@ cpu mpc5200 {
 	registermap {
 
 		# special purpose register
+		 register SVR {
+			 type = SPR;
+			 addr = 286;
+			 size = 4;
+		}
+		 register SPR286 {
+			 type = SPR;
+			 addr = 286;
+			 size = 4;
+		}
 		 register PVR {
+			 type = SPR;
+			 addr = 287;
+			 size = 4;
+		}
+		 register SPR287 {
 			 type = SPR;
 			 addr = 287;
 			 size = 4;
@@ -100,6 +115,36 @@ cpu mpc5200 {
 		 register DPDR {
 			 type = SPR;
 			 addr = 630;
+			 size = 4;
+		}
+		 register HID0 {
+			 type = SPR;
+			 addr = 1008;
+			 size = 4;
+		}
+		 register SPR1008 {
+			 type = SPR;
+			 addr = 1008;
+			 size = 4;
+		}
+		 register HID1 {
+			 type = SPR;
+			 addr = 1009;
+			 size = 4;
+		}
+		 register SPR1009 {
+			 type = SPR;
+			 addr = 1009;
+			 size = 4;
+		}
+		 register HID2 {
+			 type = SPR;
+			 addr = 1011;
+			 size = 4;
+		}
+		 register SPR1011 {
+			 type = SPR;
+			 addr = 1011;
 			 size = 4;
 		}
 

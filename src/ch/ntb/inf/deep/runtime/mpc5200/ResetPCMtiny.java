@@ -30,7 +30,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * The class for the PPC reset exception.<br>
  * The stack pointer will be initialized and the program counter will be
  * set to the beginning of the class initializer of the kernel.
- * If the code runs out of the flash, it has to copied from there to the SDRAM.
+ * If the code runs out of the flash, it will copy itself from there to the SDRAM.
  * 
  * @author Urs Graf
  */
