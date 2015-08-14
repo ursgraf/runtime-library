@@ -30,7 +30,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 
  * @author Urs Graf
  */
-public class Interrupt extends PPCException implements IphyCoreMpc5200tiny {
+public class Interrupt extends PPCException implements Impc5200 {
 
 	/**
 	 * Each interrupt request, which cannot be handled by a registered interrupt handler
@@ -39,15 +39,7 @@ public class Interrupt extends PPCException implements IphyCoreMpc5200tiny {
 	public static int nofUnexpInterrupts = 0;
 	
 	static int nofInterrupts = 0;
-	static Interrupt[] perInts = new Interrupt[24]; 	// interrupt handlers for peripheral interrupts  
-	
-//	public int enableRegAdr;
-//	public int enBit;
-//	public int flagRegAdr;
-//	public int flag;
-//	private Interrupt next;
-	
-//	public static int data;
+	static Interrupt[] perInts = new PeripheralInterrupt[24]; 	// interrupt handlers for peripheral interrupts  
 	
 	/**
 	 * This is the interrupt handler. Please make sure to overwrite this method for your 
@@ -58,56 +50,29 @@ public class Interrupt extends PPCException implements IphyCoreMpc5200tiny {
 	}
 
 	static void interrupt() {
-//		int status = US.GET4(ICTLPISAR);
-		US.GET4(ICTLPISAR);
-//		int intNr = status;	// get the
-		perInts[17].action();
+		// read ICTLMISAR and determine main interrupt cause
+		// currently only peripheral interrupts are supported, hence, this step can be omitted
+		
+		// if peripheral interrupt
+		int status = US.GET4(ICTLPISAR);
+		int perNr = 21 - Integer.numberOfTrailingZeros(status);
+		perInts[perNr].action();
+		
 		nofInterrupts++;
-//		int pendInt = US.GET2(SIPEND);
-//		int i = 0;	// find highest bit
-//		while (pendInt != 0) {
-//	      i = (pendInt & -pendInt); // grab the lowest bit
-//	      pendInt &= ~i;            // clear the lowest bit
-//	    }
-//		int bitNr = 0;
-//		while (i > 1) {bitNr++; i >>=1;}
-//		Interrupt currInt = interrupts[15 - bitNr];
-//		if ((bitNr & 1) == 1) {		// external interrupt
-//			currInt.action();
-//			US.PUT2(SIPEND, 1 << bitNr);		// clear pending bit
-//		} else {	// internal interrupt
-//			boolean done = false;
-//			while (currInt.next != null && !done) {
-//				short sh = US.GET2(currInt.enableRegAdr);
-//				if ((sh & (1 << currInt.enBit)) != 0) {
-//					sh = US.GET2(currInt.flagRegAdr);
-//					if ((sh & (1 << currInt.flag)) != 0) {
-//						currInt.action();
-//						done = true;
-//					}
-//				}
-//				currInt = currInt.next;
-//			}
-//			if (currInt.next == null && !done)
-//				currInt.action();	// default handler
-//		}
 	}
 
 	/**
-	 * Used to install user defined interrupt handlers.
-	 * @param interrupt Instance of user defined interrupt handler
-	 * @param peripheralNr One of the 16 allowed hardware levels for peripheral interrupts
+	 * Used to install user defined peripheral interrupt handlers.
+	 * @param interrupt Instance of user defined peripheral interrupt handler
+	 * @param peripheralNr Peripherals are numbered according to table 7-4 in 
+	 * <a href="http://cache.freescale.com/files/32bit/doc/ref_manual/MPC5200BUM.pdf?fpsp=1&WT_TYPE=Reference Manuals&WT_VENDOR=FREESCALE&WT_FILE_FORMAT=pdf&WT_ASSET=Documentation">mpc5200 User Manual</a>
 	 */
-	public static void install(Interrupt interrupt, int peripheralNr) {
-//		interrupt.next = interrupts[2 * level + 1]; 
+	public static void installPeripheralInterrupt(Interrupt interrupt, int peripheralNr) {
 		perInts[peripheralNr] = interrupt;
 	}
 	
 	static {
-		for (int i = 0; i < perInts.length; i++) perInts[i] = new Interrupt(); 
-//		US.PUT4(SIEL, 0xffff0000);	// external ints are edge sensitive, exit low-power modes 
-//		US.PUT4(SIPEND, 0xffff0000);	// reset all int requests
-//		US.PUT4(SIMASK, 0x7fff0000);	// enable all interrupt levels, except NMI
+		for (int i = 0; i < perInts.length; i++) perInts[i] = new PeripheralInterrupt(); 
 	}
 
 }

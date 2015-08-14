@@ -18,7 +18,7 @@ board ntbMpc555HB {
 		dualMappedSize = 0x8000;						# 32k dual mapped memory
 		
 		heapSize = 0x40000;								# Default heap size
-		SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
+#		SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
 	}
 	
 	memorymap {

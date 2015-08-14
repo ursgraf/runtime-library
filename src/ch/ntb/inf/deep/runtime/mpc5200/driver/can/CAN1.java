@@ -18,11 +18,12 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200.driver.can;
 
+import ch.ntb.inf.deep.runtime.mpc5200.Impc5200;
 import ch.ntb.inf.deep.runtime.mpc5200.Interrupt;
-import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
+import ch.ntb.inf.deep.runtime.mpc5200.PeripheralInterrupt;
 import ch.ntb.inf.deep.unsafe.US;
 
-public class CAN1 extends Interrupt implements IphyCoreMpc5200tiny {
+public class CAN1 extends PeripheralInterrupt implements Impc5200 {
 	// supports only standard frame format (11Bit itentifier)
 	
 	private static final int maxNofNodes = 16;
@@ -90,9 +91,9 @@ public class CAN1 extends Interrupt implements IphyCoreMpc5200tiny {
 	}
 
 	public static void init() {
-		Interrupt canInt = new CAN1();
+		CAN1 canInt = new CAN1();
 		for (int i = 0; i < maxNofNodes; i++) nodeData[i] = new NodeData();
-		Interrupt.install(canInt, 17); // CAN1 is peripheral number 1
+		Interrupt.installPeripheralInterrupt(canInt, 17); // CAN1 is peripheral number 17
 		US.PUT4(ICTLPIMR, US.GET4(ICTLPIMR) & ~0x4000);	// accept interrupts from CAN1
 		US.PUT4(GPSPCR, US.GET4(GPSPCR) | 0x10);	// use pins on PCS2 for CAN
 		US.PUT1(MSCAN1Base + CANCTL0, 0x01);	// enter initialization mode

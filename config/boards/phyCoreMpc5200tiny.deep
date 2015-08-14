@@ -18,14 +18,9 @@ board phyCoreMpc5200tiny {
 
 		excpCodeFlashBase = extFlashBase;				# Base address for exception code when starting from flash
 		excpCodeRamBase = extRamBase;					# Base address for exception code when starting from ram
-		excpCodeSize = 0x4000;							# Exception code size (includes exception vectors and further methods of the exception classes
-		
-		sysTabBaseAddr = excpCodeSize;					# Place system table behind exception code
 		
 		stackSize = 0x2000;								# Default stack size
 		heapSize = 0x40000;								# Default heap size
-		
-		SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
 	}
 	
 	memorymap {

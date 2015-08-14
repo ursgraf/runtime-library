@@ -20,7 +20,7 @@ package ch.ntb.inf.deep.runtime.mpc5200.driver;
 
 import java.io.IOException;
 
-import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
+import ch.ntb.inf.deep.runtime.mpc5200.Impc5200;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
@@ -33,7 +33,7 @@ import ch.ntb.inf.deep.unsafe.US;
 /* Changes:
  * 3.6.2014		Urs Graf			exception handling added
  */
-public class UART3 implements IphyCoreMpc5200tiny{
+public class UART3 implements Impc5200 {
 	public static UARTOutputStream out;
 	public static UARTInputStream in;
 

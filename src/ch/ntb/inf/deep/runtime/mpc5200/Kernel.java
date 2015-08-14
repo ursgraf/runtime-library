@@ -29,7 +29,7 @@ import ch.ntb.inf.deep.unsafe.US;
 /**
  *  This is the kernel class. It provides basic functionalities and does the booting-up. 
  */
-public class Kernel implements Ippc32, IphyCoreMpc5200tiny, IdeepCompilerConstants {
+public class Kernel implements Ippc32, Impc5200, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
 	static int loopAddr;
 	static int cmdAddr;

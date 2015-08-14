@@ -18,10 +18,10 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200.driver;
 
-import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
+import ch.ntb.inf.deep.runtime.mpc5200.Impc5200;
 import ch.ntb.inf.deep.unsafe.US;
 
-public class SPI_FQD implements IphyCoreMpc5200tiny{
+public class SPI_FQD implements Impc5200 {
 	
 //	private static final int FIFO_LENGTH = 512;
 	private static final int PSCBase = PSC1Base;

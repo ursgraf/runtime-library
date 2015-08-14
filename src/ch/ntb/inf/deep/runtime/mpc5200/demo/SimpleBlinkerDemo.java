@@ -19,7 +19,7 @@
 package ch.ntb.inf.deep.runtime.mpc5200.demo;
 
 import ch.ntb.inf.deep.runtime.ppc32.Task;
-import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
+import ch.ntb.inf.deep.runtime.mpc5200.Impc5200;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
@@ -27,7 +27,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 
  * @author Urs Graf
  */
-public class SimpleBlinkerDemo extends Task implements IphyCoreMpc5200tiny{
+public class SimpleBlinkerDemo extends Task implements Impc5200 {
 
 	public void action(){
 		US.PUT4(GPWOUT, US.GET4(GPWOUT) ^ 0x80000000);

@@ -18,10 +18,10 @@
 
 package ch.ntb.inf.deep.runtime.mpc5200.driver.can;
 
-import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
+import ch.ntb.inf.deep.runtime.mpc5200.Impc5200;
 import ch.ntb.inf.deep.unsafe.US;
 
-public class CAN2 implements IphyCoreMpc5200tiny {
+public class CAN2 implements Impc5200 {
 	// supports only standard frame format (11Bit itentifier)
 	// doesn't use interrupts
 	

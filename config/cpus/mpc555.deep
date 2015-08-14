@@ -28,6 +28,7 @@ cpu mpc555 {
 		sysTabBaseAddr = IMB + excpCodeSize;			# Place system table behind exception code
 		
 		stackSize = 0x2000;								# Default stack size
+		SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
 	}
 	
 	memorymap {

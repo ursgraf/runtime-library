@@ -11,8 +11,8 @@ cpu mpc5200 {
 	
 	sysconst {
 		
-		SRAM_BaseAddr = 0xF0008000;				# Internal SRAM Base Address
-		SRAM_Size = 0x4000;						# Internal SRAM Size (16K)
+		SRAM_BaseAddr = 0xF0008000;						# Internal SRAM Base Address
+		SRAM_Size = 0x4000;								# Internal SRAM Size (16K)
 		
 		MemBaseAddr = 0xf0000000;
 		
@@ -25,6 +25,10 @@ cpu mpc5200 {
 		
 		MSCAN1Base = MemBaseAddr + 0x900; 
 		MSCAN2Base = MemBaseAddr + 0x980; 
+
+		excpCodeSize = 0x4000;							# Exception code size (includes exception vectors and further methods of the exception classes
+		sysTabBaseAddr = excpCodeSize;					# Place system table behind exception code
+		SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
 	}
 	
 	memorymap {
@@ -368,9 +372,59 @@ cpu mpc5200 {
 			addr = MemBaseAddr + 0x0510;
 			size = 4;
 		}
+		register ICTCPMIMR {
+			type = IOR;
+			addr = MemBaseAddr + 0x0514;
+			size = 4;
+		}
+		register ICTLMIPR1 {
+			type = IOR;
+			addr = MemBaseAddr + 0x0518;
+			size = 4;
+		}
+		register ICTLMIPR2 {
+			type = IOR;
+			addr = MemBaseAddr + 0x051C;
+			size = 4;
+		}
+		register ICTLSER {
+			type = IOR;
+			addr = MemBaseAddr + 0x0524;
+			size = 4;
+		}
+		register ICTLCISAR {
+			type = IOR;
+			addr = MemBaseAddr + 0x0528;
+			size = 4;
+		}
+		register ICTLMISAR {
+			type = IOR;
+			addr = MemBaseAddr + 0x052C;
+			size = 4;
+		}
 		register ICTLPISAR {
 			type = IOR;
 			addr = MemBaseAddr + 0x0530;
+			size = 4;
+		}
+		register ICTLBESR {
+			type = IOR;
+			addr = MemBaseAddr + 0x0538;
+			size = 4;
+		}
+		register ICTLMIEAR {
+			type = IOR;
+			addr = MemBaseAddr + 0x0540;
+			size = 4;
+		}
+		register ICTLPIEAR {
+			type = IOR;
+			addr = MemBaseAddr + 0x0544;
+			size = 4;
+		}
+		register ICTLIRQIELR {
+			type = IOR;
+			addr = MemBaseAddr + 0x0548;
 			size = 4;
 		}
 		
