@@ -45,6 +45,7 @@ public class DS1302Z {
 	private static final byte year =  (byte)0x8C;
 	private static final byte ctrl = (byte) 0x8E;
 	
+	private static TPU_DIO rst, sckl, io;
 	
 	/**
 	 * Write a value to the RTC.
@@ -54,20 +55,20 @@ public class DS1302Z {
 	 */
 	private static void write(byte type, byte val){
 		int w = ((val << 8) | (0xFF & type));
-		TPU_DIO.set(tpuB, RST, true);
-		TPU_DIO.init(tpuB,IO , true);
+		rst.set(true);
+		io.dir(true);
 		for(int i = 0x1; i < 0x10000; i<<=1){
-			TPU_DIO.set(tpuB, SCKL, false);
+			sckl.set(false);
 			if((w & i) != 0) {
-				TPU_DIO.set(tpuB, IO, true);
+				io.set(true);
 			}
 			else {
-				TPU_DIO.set(tpuB, IO, false);
+				io.set(false);
 			}
-			TPU_DIO.set(tpuB, SCKL, true);
+			sckl.set(true);
 		}
-		TPU_DIO.set(tpuB, SCKL, false);
-		TPU_DIO.set(tpuB, RST, false);
+		sckl.set(false);
+		rst.set(false);
 	}
 	
 	
@@ -78,23 +79,23 @@ public class DS1302Z {
 	 */
 	private static int read(byte type){
 		type |= 0x01;
-		TPU_DIO.set(tpuB, RST, true);
-		TPU_DIO.init(tpuB,IO , true);
+		rst.set(true);
+		io.dir(true);
 		for(int i = 0x1; i < 0x100; i<<=1){
-			TPU_DIO.set(tpuB, SCKL, false);
-			if((type & i) != 0) TPU_DIO.set(tpuB, IO, true);
-			else TPU_DIO.set(tpuB, IO, false);
-			TPU_DIO.set(tpuB, SCKL, true);
+			sckl.set(false);
+			if((type & i) != 0) io.set(true);
+			else io.set(false);
+			sckl.set(true);
 		}
 		int val = 0;
-		TPU_DIO.init(tpuB,IO , false);
+		io.dir(false);
 		for(int i = 0x1; i < 0x100; i<<=1){
-			TPU_DIO.set(tpuB, SCKL, true);		
-			TPU_DIO.set(tpuB, SCKL, false);	
-			if(TPU_DIO.get(tpuB, IO)) val |= i;	
+			sckl.set(true);		
+			sckl.set(false);	
+			if(io.get()) val |= i;	
 		}
-		TPU_DIO.init(tpuB,IO , false);	
-		TPU_DIO.set(tpuB, RST, false);
+		io.dir(false);	
+		rst.set(false);
 		return val;
 	}
 	
@@ -249,9 +250,10 @@ public class DS1302Z {
 	}
 	
 	static{
-		TPU_DIO.init(tpuB,RST , true);
-		TPU_DIO.init(tpuB, SCKL, true);
-		TPU_DIO.set(tpuB, RST, false);
-		TPU_DIO.set(tpuB, SCKL, false);
+		rst = new TPU_DIO(tpuB, RST , true);
+		sckl = new TPU_DIO(tpuB, SCKL, true);
+		io = new TPU_DIO(tpuB, IO, false);
+		rst.set(false);
+		sckl.set(false);
 	}
 }

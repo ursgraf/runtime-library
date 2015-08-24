@@ -22,7 +22,7 @@ import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.Interrupt;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 
 /* changes:
  * 09.03.2011	NTB/Urs Graf	creation
@@ -32,26 +32,26 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
  * Demonstrates the usage of some external interrupts
  */
 public class ExtInterruptDemo extends Interrupt {
-	int pin;
+	MPIOSM_DIO out;
 	static int count;
 
 	public void action() {
-		MPIOSM_DIO.set(this.pin, true);
+		out.set(true);
 		count++;
-		System.out.print(this.pin);
+		System.out.print("interrupt");
 		for (int i = 0; i < 50000; i++);
-		MPIOSM_DIO.set(this.pin, false);
+		out.set(false);
 	}
 
 	public ExtInterruptDemo(int pin) {
-		this.pin = pin;
-		MPIOSM_DIO.init(this.pin, true);
-		MPIOSM_DIO.set(this.pin, false);
+		out = new MPIOSM_DIO(pin, true);
+		out.set(false);
 	}
 
 	static {
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI2.out);
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci.out);
 		System.err = System.out;
 		System.out.println("start");
 		

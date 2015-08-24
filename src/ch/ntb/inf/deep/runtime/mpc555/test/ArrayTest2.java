@@ -20,7 +20,7 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 
 /*changes:
  * 3.3.2011	NTB/GRAU	creation
@@ -30,9 +30,10 @@ public class ArrayTest2 {
 	static double[] d = {0.5, 1.5, 2.5, 3.5, 4.5};
 	static double d1;
 	static {
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI2.out);
-		System.err = new PrintStream(SCI2.out);
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci.out);
+		System.err = new PrintStream(sci.out);
 		
 		System.out.println("array test");
 		d1 = d[0];

@@ -21,7 +21,7 @@ package ch.ntb.inf.deep.runtime.mpc555.demo;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.driver.Robi2;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 
@@ -49,10 +49,11 @@ public class Robi2SensorProximityDemo_Out extends Task {
 	
 	static {
 		// Initialize SCI1 (9600 8N1)
-		SCI1.start(9600, SCI1.NO_PARITY, (short)8);
+		SCI sci = SCI.getInstance(SCI.pSCI1);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
 		
 		// Use the SCI1 for stdout
-		System.out = new PrintStream(SCI1.out);
+		System.out = new PrintStream(sci.out);
 		count = 0;
 	}
 }

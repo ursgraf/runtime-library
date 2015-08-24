@@ -43,10 +43,10 @@ public class QSMCM_DIO {
 	public static final int QDPCS2 = 5;
 	public static final int QDPCS3 = 6;
 	
+	int channel;
 	
 	/**
-	 * Initializes a pin as an input or output.<br>
-	 * Each pin must be initialized prior to using it.
+	 * Create a digital I/O on the PortQS.<br>
 	 * 
 	 * @param channel
 	 *            PortQS pin to initialize
@@ -54,7 +54,8 @@ public class QSMCM_DIO {
 	 *            <code>true</code>: pin will be output,
 	 *            <code>false</code>: pin will be input
 	 */
-	public static void init(int channel, boolean out) {
+	public QSMCM_DIO(int channel, boolean out) {
+		this.channel = channel;
 		byte s = US.GET1(QSMCM.PQSPAR);
 		s &= ~(1 << channel);
 		US.PUT1(QSMCM.PQSPAR, s);
@@ -65,22 +66,20 @@ public class QSMCM_DIO {
 	}
 
 	/**
-	 * Reads the state on a pin.<br>
+	 * Reads the state on the pin.<br>
 	 * 
-	 * @param channel PortQS pin to read
 	 * @return State of the pin
 	 */
-	public static boolean in(int channel) {
+	public boolean get() {
 		return (US.GET1(QSMCM.PORTQS + 1) & (1 << channel)) != 0;
 	}
 
 	/**
 	 * Sets the state of a pin.
 	 * 
-	 * @param channel PortQS pin to write
 	 * @param val State to be written
 	 */
-	public static void out(int channel, boolean val) {
+	public void set(boolean val) {
 		short s = US.GET1(QSMCM.PORTQS + 1);
 		if(val) s |= (1 << channel);
 		else s &= ~(1 << channel);

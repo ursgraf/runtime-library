@@ -20,7 +20,7 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.can.CANopen;
 import ch.ntb.inf.deep.runtime.mpc555.driver.can.EPOS;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
@@ -45,8 +45,9 @@ public class EPOStest1 extends Task {
 	
 
 	static {	
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI2.out);
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci.out);
 		drive1 = new EPOS((byte)1);
 		drive1.start();
 		drive1.initOutABCD(); 

@@ -20,7 +20,7 @@ package ch.ntb.sysp.demo;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.sysp.lib.SpeedController4DCMotor;
 
@@ -144,10 +144,11 @@ public class MotorDemo1 extends Task {
 	
 	static {
 		// Initialize SCI1 (9600 8N1)
-		SCI1.start(9600, SCI1.NO_PARITY, (short)8);
+		SCI sci = SCI.getInstance(SCI.pSCI1);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
 		
 		// Use the SCI1 for stdout and stderr
-		System.out = new PrintStream(SCI1.out);
+		System.out = new PrintStream(sci.out);
 		System.err = System.out;
 		
 		// Print a string to the stdout

@@ -27,9 +27,12 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 public class TPU_PPWA implements IntbMpc555HB{
 
+	int channel;
+	boolean pulseWidth;
+	int diff;
+
 	/**
-	 * Initializes a channel of the TPU for the measurement of period or pulse width.<br>
-	 * Every channel has to be initialized before use.
+	 * Create a TPU channel for the measurement of period or pulse width.<br>
 	 * 
 	 * @param tpuA		<code>true</code>: use TPU-A,
 	 * 					<code>false</code>: use TPU-B.
@@ -39,108 +42,61 @@ public class TPU_PPWA implements IntbMpc555HB{
 	 * 					<code>true</code>: pulse width measurement. 
 	 * 					<code>false</code>: period measurement.
 	 */
-	public static void init(boolean tpuA, int channel, boolean pulseWidth) {
-		if (tpuA) {
-			// Disable interrupts for all channels
-			int intChn = US.GET2(CIER_A);
-			US.PUT2(CIER_A, 0);
-			intChn &= (channel ^ 0xffffffff);
+	public TPU_PPWA(boolean tpuA, int channel, boolean pulseWidth) {
+		this.channel = channel;
+		this.pulseWidth = pulseWidth;
+		if (tpuA) {diff = 0; TPUA.init();}
+		else {diff = TPUMCR_B - TPUMCR_A; TPUB.init();}
 
-			// function code (5) for PPWA
-			int low = (channel * 4) % 16;
-			int value = US.GET2(CFSR3_A - (channel / 4) * 2);
-			value &= ((0xf << low) ^ 0xffffffff);
-			value |= (0x5 << low);
-			US.PUT2(CFSR3_A - (channel / 4) * 2, value);
+		// Disable interrupts for all channels
+		int intChn = US.GET2(CIER_A + diff);
+		US.PUT2(CIER_A + diff, 0);
+		intChn &= (channel ^ 0xffffffff);
 
-			// 24 bit pulse widths oder period, no links for channel (0b10)
-			low = (channel * 2) % 16;
-			value = US.GET2(HSQR1_A - (channel / 8) * 2);
-			value &= ((0x3 << low) ^ 0xffffffff);
-			if (pulseWidth)
-				value |= (0x2 << low);
-			US.PUT2(HSQR1_A - (channel / 8) * 2, value);
+		// function code (5) for PPWA
+		int low = (channel * 4) % 16;
+		int value = US.GET2(CFSR3_A + diff - (channel / 4) * 2);
+		value &= ((0xf << low) ^ 0xffffffff);
+		value |= (0x5 << low);
+		US.PUT2(CFSR3_A + diff - (channel / 4) * 2, value);
 
-			// Channel control
-			if (pulseWidth) {
-				// Do not force any state, Detect falling edge
-				US.PUT2(TPURAM0_A + 0x10 * channel, 0x7);
-			} else {
-				// Do not force any state, Detect rising edge
-				US.PUT2(TPURAM0_A + 0x10 * channel, 0x0b);
-			}
-			// Max count
-			US.PUT2(TPURAM0_A + 0x10 * channel + 2, 0x0100);
-			// Channel accum_rate = minimal
-			US.PUT2(TPURAM0_A + 0x10 * channel + 8, 0xff00);
-
-			// Initialize
-			low = (channel * 2) % 16;
-			value = US.GET2(HSRR1_A - (channel / 8) * 2);
-			value &= ((0x3 << low) ^ 0xffffffff);
+		// 24 bit pulse widths oder period, no links for channel (0b10)
+		low = (channel * 2) % 16;
+		value = US.GET2(HSQR1_A + diff - (channel / 8) * 2);
+		value &= ((0x3 << low) ^ 0xffffffff);
+		if (pulseWidth)
 			value |= (0x2 << low);
-			US.PUT2(HSRR1_A - (channel / 8) * 2, value);
+		US.PUT2(HSQR1_A + diff - (channel / 8) * 2, value);
 
-			// Set priority low
-			low = (channel * 2) % 16;
-			value = US.GET2(CPR1_A - (channel / 8) * 2);
-			value &= ((0x3 << low) ^ 0xffffffff);
-			value |= (0x1 << low);
-			US.PUT2(CPR1_A - (channel / 8) * 2, value);
-
-			// Enable interrupts for other channels
-			US.PUT2(CIER_A, intChn);
+		// Channel control
+		if (pulseWidth) {
+			// Do not force any state, Detect falling edge
+			US.PUT2(TPURAM0_A + diff + 0x10 * channel, 0x7);
 		} else {
-			// Disable interrupts for all channels
-			int intChn = US.GET2(CIER_B);
-			US.PUT2(CIER_B, 0);
-			intChn &= (channel ^ 0xffffffff);
-
-			// function code (5) for PPWA
-			int low = (channel * 4) % 16;
-			int value = US.GET2(CFSR3_B - (channel / 4) * 2);
-			value &= ((0xf << low) ^ 0xffffffff);
-			value |= (0x5 << low);
-			US.PUT2(CFSR3_B - (channel / 4) * 2, value);
-
-			// 24 bit pulse widths oder period, no links for channel (0b10)
-			low = (channel * 2) % 16;
-			value = US.GET2(HSQR1_B - (channel / 8) * 2);
-			value &= ((0x3 << low) ^ 0xffffffff);
-			if (pulseWidth)
-				value |= (0x2 << low);
-			US.PUT2(HSQR1_B - (channel / 8) * 2, value);
-
-			// Channel control
-			if (pulseWidth) {
-				// Do not force any state, Detect falling edge
-				US.PUT2(TPURAM0_B + 0x10 * channel, 0x7);
-			} else {
-				// Do not force any state, Detect rising edge
-				US.PUT2(TPURAM0_B + 0x10 * channel, 0x0b);
-			}
-			// Max count
-			US.PUT2(TPURAM0_B + 0x10 * channel + 2, 0x0100);
-			// Channel accum_rate = minimal
-			US.PUT2(TPURAM0_B + 0x10 * channel + 8, 0xff00);
-
-			// Initialize
-			low = (channel * 2) % 16;
-			value = US.GET2(HSRR1_B - (channel / 8) * 2);
-			value &= ((0x3 << low) ^ 0xffffffff);
-			value |= (0x2 << low);
-			US.PUT2(HSRR1_B - (channel / 8) * 2, value);
-
-			// Set priority low
-			low = (channel * 2) % 16;
-			value = US.GET2(CPR1_B - (channel / 8) * 2);
-			value &= ((0x3 << low) ^ 0xffffffff);
-			value |= (0x1 << low);
-			US.PUT2(CPR1_B - (channel / 8) * 2, value);
-
-			// Enable interrupts for other channels
-			US.PUT2(CIER_B, intChn);
+			// Do not force any state, Detect rising edge
+			US.PUT2(TPURAM0_A + diff + 0x10 * channel, 0x0b);
 		}
+		// Max count
+		US.PUT2(TPURAM0_A + diff + 0x10 * channel + 2, 0x0100);
+		// Channel accum_rate = minimal
+		US.PUT2(TPURAM0_A + diff + 0x10 * channel + 8, 0xff00);
+
+		// Initialize
+		low = (channel * 2) % 16;
+		value = US.GET2(HSRR1_A + diff - (channel / 8) * 2);
+		value &= ((0x3 << low) ^ 0xffffffff);
+		value |= (0x2 << low);
+		US.PUT2(HSRR1_A + diff - (channel / 8) * 2, value);
+
+		// Set priority low
+		low = (channel * 2) % 16;
+		value = US.GET2(CPR1_A + diff - (channel / 8) * 2);
+		value &= ((0x3 << low) ^ 0xffffffff);
+		value |= (0x1 << low);
+		US.PUT2(CPR1_A + diff - (channel / 8) * 2, value);
+
+		// Enable interrupts for other channels
+		US.PUT2(CIER_A + diff, intChn);
 	}
 
 	/**
@@ -148,21 +104,13 @@ public class TPU_PPWA implements IntbMpc555HB{
 	 * This method reads the last sample.<br>
 	 * The values are in \u00b5s. 
 	 * 
-	 * @param tpuA		<code>true</code>: use TPU-A,
-	 * 					<code>false</code>: use TPU-B.
-	 * @param channel	TPU channel to read. Allowed values
-	 * 					are 0..15.
 	 * @return 			Last sample in \u00b5s.
 	 */
-	public static int read(boolean tpuA, int channel) {
+	public int read() {
 		int value = 0;
-		if (tpuA) {
-			int lowValue = US.GET2(TPURAM0_A + 0x10 * channel + 0xA);
-			value = lowValue * TPUA.getCycleTime() / 1000;
-		} else {
-			int lowValue = US.GET2(TPURAM0_B + 0x10 * channel + 0xA);
-			value = lowValue * TPUB.getCycleTime() / 1000;
-		}
+		int lowValue = US.GET2(TPURAM0_A + diff + 0x10 * channel + 0xA);
+		if (diff == 0) value = lowValue * TPUA.getCycleTime() / 1000;
+		else value = lowValue * TPUB.getCycleTime() / 1000;
 		return value;
 	}
 }

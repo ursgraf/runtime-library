@@ -25,7 +25,7 @@ import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.runtime.mpc555.driver.DAC7614;
 import ch.ntb.inf.deep.runtime.mpc555.driver.QADC_AIN;
 import ch.ntb.inf.deep.runtime.mpc555.driver.RTBoard;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.unsafe.US;
 
@@ -395,10 +395,11 @@ public class RTBoardTest extends Task implements IntbMpc555HB {
 
 	static {
 		//init SCI2
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
 		//hook SCI2 on System.out and in
-		System.out = new PrintStream(SCI2.out);
-		System.in = SCI2.in;
+		System.out = new PrintStream(sci.out);
+		System.in = sci.in;
 		
 		QADC_AIN.init(true);
 		

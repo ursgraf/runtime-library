@@ -26,7 +26,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
  */
 public class Blinker extends Task{
 	static int count;	// class variable
-	int pin;	// instance variable
+	MPIOSM_DIO out;	// instance variable
 	int times;	// instance variable
 
 	public static int getNofBlinkers () { 	// class method
@@ -38,15 +38,14 @@ public class Blinker extends Task{
 	}
 
 	public void action () {	// instance method, overwritten
-		MPIOSM_DIO.set(this.pin, !MPIOSM_DIO.get(this.pin));
+		out.set(!out.get());
 		if (this.nofActivations == this.times) Task.remove(this);
 	}
 	
 	public Blinker (int pin, int period, int times) {	// base constructor
-		this.pin = pin;
 		this.times = times;
-		MPIOSM_DIO.init(pin, true);
-		MPIOSM_DIO.set(pin, false);
+		out = new MPIOSM_DIO(pin, true);
+		out.set(false);
 		this.period = period;	
 		Task.install(this);
 		count++;

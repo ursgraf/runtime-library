@@ -29,7 +29,7 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 /**
- * Driver to use the MPIOSM (MIOS 16-bit parallel port I/O submodule)
+ * Driver to use pins on the MPIOSM (MIOS 16-bit parallel port I/O submodule)
  * as digital in- and outputs. The MPIOSM provides 16 independent I/Os (0..15).
  * <br><br>
  * <strong>Additional informations for using this driver with the NTB MPC555
@@ -48,14 +48,16 @@ public class MPIOSM_DIO implements IntbMpc555HB {
 	public static final boolean OUTPUT = true;
 	public static final boolean INPUT = false;
 	
+	int channel;
+	
 	/**
-	 * Initialize a pin as in- or output.<br>
-	 * You have to initialize a pin before you can use it!
+	 * Create a pin as in- or output.<br>
 	 * 
 	 * @param channel	MPIOSM pin to initialize. Allowed numbers are 0..15.
 	 * @param out		Pin usage: <strong>true</strong> configures the pin as output, <strong>false</strong> as input. 
 	 */
-	public static void init(int channel, boolean out) {
+	public MPIOSM_DIO(int channel, boolean out) {
+		this.channel = channel;
 		short s = US.GET2(MPIOSMDDR);
 		if(out) s |= (1 << channel);
 		else s &= ~(1 << channel);
@@ -63,26 +65,36 @@ public class MPIOSM_DIO implements IntbMpc555HB {
 	}
 
 	/**
-	 * Returns the current state of the TTL signal at the given pin.
+	 * Returns the current state of the TTL signal on the given pin.
 	 * 
-	 * @param channel	MPIOSM pin to capture. Allowed numbers are 0..15.
 	 * @return the current state of the TTL at the given pin. <i>true</i> means logic 1 and <i>false</i> logic 0.
 	 */
-	public static boolean get(int channel) {
+	public boolean get() {
 		return (US.GET2(MPIOSMDR) & (1 << channel)) != 0;
 	}
 
 	/**
 	 * Set the TTL signal at the given pin.
 	 * 
-	 * @param channel	MPIOSM pin to set. Allowed numbers are 0..15.
 	 * @param val		Value to set. <i>true</i> means logic 1 and <i>false</i> logic 0.
 	 */
-	public static void set(int channel, boolean val) {
+	public void set(boolean val) {
 		short s = US.GET2(MPIOSMDR);
 		if(val) s |= (1 << channel);
 		else s &= ~(1 << channel);
 		US.PUT2(MPIOSMDR, s);
+	}
+
+	/**
+	 * Sets the direction of a given pin to input or output.<br>
+	 * 
+	 * @param out		Pin usage: <strong>true</strong> configures the pin as output, <strong>false</strong> as input. 
+	 */
+	public void dir(boolean out) {
+		short s = US.GET2(MPIOSMDDR);
+		if(out) s |= (1 << channel);
+		else s &= ~(1 << channel);
+		US.PUT2(MPIOSMDDR,s);
 	}
 
 }

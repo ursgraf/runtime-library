@@ -19,7 +19,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Decrementer;
 
 /* changes:
@@ -44,8 +44,9 @@ public class DecrementerDemo extends Decrementer {
 	
 	static {
 		// Initialize the SCI2 (9600 8N1) and use it for System.out
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI2.out);
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci.out);
 		System.err = System.out;
 		
 		// Create and install the Decrementer demo

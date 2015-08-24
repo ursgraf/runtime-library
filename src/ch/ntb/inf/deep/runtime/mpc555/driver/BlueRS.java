@@ -769,10 +769,11 @@ public class BlueRS extends Task {
 
 	private static void init() {
 		//initialize SCI2
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
 		//hook SCI2
-		out = SCI2.out;
-		in = SCI2.in;
+		out = sci.out;
+		in = sci.in;
 		
 		crReceived = false;
 		mode = MODE_AT;

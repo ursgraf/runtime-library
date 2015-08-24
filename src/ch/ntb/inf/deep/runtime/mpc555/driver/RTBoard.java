@@ -40,6 +40,8 @@ public class RTBoard implements IntbMpc555HB {
   private static final int ADDR_OFFSET = 64;
   private static final int CCW_INIT = 0x0000;
   private static final int END_OF_QUEUE = 0x003F;
+  private static TPU_DIO[] led, dio;
+  private static TPU_FQD[] fqd;
 
   /**
    * Returns the value of an analog input channel.<br>
@@ -89,15 +91,15 @@ public class RTBoard implements IntbMpc555HB {
 
 
 	/**
-	 * Initializes a digital <code>channel</code> as input or output.
+	 * Initializes a digital <code>channel</code> as input or output. Channels are numbered 0..7.
 	 * 
 	 * @param channel
-	 *            Channel to be initialized.
+	 *            Channel to be initialized. 
 	 * @param out
 	 *            If <code>true</code> the channel will be an output, otherwise it will be an input.
 	 */
 	public static void dioInit(int channel, boolean out) {
-		TPU_DIO.init(true, channel, out);
+		if (channel > 0 && channel < 8) dio[channel] = new TPU_DIO(true, channel, out);
 	}
 
 
@@ -110,7 +112,7 @@ public class RTBoard implements IntbMpc555HB {
 	 * @return Digital signal at <code>channel</code>.
 	 */
 	public static boolean dioIn(int channel) {
-		return TPU_DIO.get(true, channel);
+		return dio[channel].get();
 	}
 
 
@@ -124,7 +126,7 @@ public class RTBoard implements IntbMpc555HB {
 	 *            Digital signal, <code>true</code> corresponds to the logical signal <code>1</code>.
 	 */
 	public static void dioOut(int channel, boolean level) {
-		TPU_DIO.set(true, channel, level);
+		dio[channel].set(level);
 	}
 
 
@@ -138,7 +140,7 @@ public class RTBoard implements IntbMpc555HB {
 	 *            <code>true</code> corresponds to the led lightening up.
 	 */
 	public static void ledOut(int channel, boolean level) {
-		TPU_DIO.set(false, 2 * channel + 1, !level);
+		led[channel].set(!level);
 	}
 
 
@@ -154,8 +156,8 @@ public class RTBoard implements IntbMpc555HB {
 	 *            <code>channel</code> and <code>channel+1</code> will be used for encoder input signals.
 	 */
 	public static void encInit(int channel) {
-		TPU_FQD.init(true, channel);
-		TPU_FQD.setPosition(true, channel, 0);
+		fqd[channel] = new TPU_FQD(true, channel);
+		fqd[channel].setPosition(0);
 	}
 
 
@@ -166,7 +168,7 @@ public class RTBoard implements IntbMpc555HB {
 	 * @return Position.
 	 */
 	public static short getEncCount(int channel) {
-		return TPU_FQD.getPosition(true, channel);
+		return fqd[channel].getPosition();
 	}
 
 
@@ -177,7 +179,7 @@ public class RTBoard implements IntbMpc555HB {
 	 * @param pos Position to initialize encoder.
 	 */
 	public static void setEncCount(int channel, short pos) {
-		TPU_FQD.setPosition(true, channel, pos);
+		fqd[channel].setPosition(pos);
 	}
 
 
@@ -223,7 +225,10 @@ public class RTBoard implements IntbMpc555HB {
 	  initDAC();
 
 	  /* 2) Initialize digital I/Os */
-	  for (int i = 0; i < 4; i++) TPU_DIO.init(false, i * 2 + 1, true);
+	  led = new TPU_DIO[4];
+	  for (int i = 0; i < 4; i++) led[i] = new TPU_DIO(false, i * 2 + 1, true);
+	  dio = new TPU_DIO[8];
+	  fqd = new TPU_FQD[8];
 
 	  /* 3) Initialize ADC */
 	  initADC();

@@ -36,13 +36,15 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 public class TPU_PWM implements IntbMpc555HB{
 
+	int channel;
+	int period;
+	int diff;
 
 	/** TPU time base in nanoseconds [ns]. */
 	public static final int tpuTimeBase = 806;
 
 	/**
-	 * Initialize a TPU channels for the generation of PWM signals.<br>
-	 * Every channel has to be initialized before use.
+	 * Create a TPU channel for the generation of PWM signals.<br>
 	 * Remember: <code>period</code> and <code>highTime</code> have a resolution of 16 bit.
 	 * However, the maximum value for both values is <code>0x8000</code>.<br>
 	 * The period time should be defined as an integer constant.
@@ -58,66 +60,40 @@ public class TPU_PWM implements IntbMpc555HB{
 	 * 					time base. It has to be less or equal then
 	 * 					the period time.
 	 */
-	public static void init(boolean tpuA, int channel, int period, int highTime) {
+	public TPU_PWM(boolean tpuA, int channel, int period, int highTime) {
+		this.channel = channel;
+		this.period = period;
 		int shift, tpuAdr, s;
-		if(tpuA){
-			TPUA.init();
-			shift = (channel * 4) % 16;
-			tpuAdr = CFSR3_A - (channel / 4) * 2;			
-			s = US.GET2(tpuAdr);
-			s &= ~(0xF << shift);
-			s |= 3 << shift;
-			US.PUT2(tpuAdr,(short) s);
-			//Force pin hig, use TCR1
-			tpuAdr = TPURAM0_A +0x10 * channel;
-			US.PUT2(tpuAdr, 0x91 );
-			//Define high time
-			US.PUT2(tpuAdr + 4, highTime);
-			//Define time of period
-			US.PUT2(tpuAdr  + 6, period);
-			//Request initialization
-			tpuAdr = HSRR1_A - (channel / 8) * 2;
-			shift = (channel * 2) % 16;
-			s = US.GET2(tpuAdr);
-			s &= ~(0x3 << shift);
-			s |= 2 << shift;
-			US.PUT2(tpuAdr,s);
-			//set priority low
-			tpuAdr = CPR1_A - (channel / 8) * 2;
-			s = US.GET2(tpuAdr);
-			s &= ~(0x3 << shift);
-			s |= 1 << shift;
-			US.PUT2(tpuAdr,s);
-		}
-		else {
-			TPUB.init();
-			shift = (channel * 4) % 16;
-			tpuAdr = CFSR3_B - (channel / 4) * 2;			
-			s = US.GET2(tpuAdr);
-			s &= ~(0xF << shift);
-			s |= 3 << shift;
-			US.PUT2(tpuAdr,(short) s);
-			//Force pin hig, use TCR1
-			tpuAdr = TPURAM0_B +0x10 * channel;
-			US.PUT2(tpuAdr, 0x91 );
-			//Define high time
-			US.PUT2(tpuAdr + 4, highTime);
-			//Define time of period
-			US.PUT2(tpuAdr  + 6, period);
-			//Request initialization
-			tpuAdr = HSRR1_B - (channel / 8) * 2;
-			shift = (channel * 2) % 16;
-			s = US.GET2(tpuAdr);
-			s &= ~(0x3 << shift);
-			s |= 2 << shift;
-			US.PUT2(tpuAdr,s);
-			//set priority low
-			tpuAdr = CPR1_B - (channel / 8) * 2;
-			s = US.GET2(tpuAdr);
-			s &= ~(0x3 << shift);
-			s |= 1 << shift;
-			US.PUT2(tpuAdr,s);
-		}
+
+		if (tpuA) {diff = 0; TPUA.init();}
+		else {diff = TPUMCR_B - TPUMCR_A; TPUB.init();}
+
+		shift = (channel * 4) % 16;
+		tpuAdr = CFSR3_A + diff - (channel / 4) * 2;			
+		s = US.GET2(tpuAdr);
+		s &= ~(0xF << shift);
+		s |= 3 << shift;
+		US.PUT2(tpuAdr,(short) s);
+		//Force pin hig, use TCR1
+		tpuAdr = TPURAM0_A + diff + 0x10 * channel;
+		US.PUT2(tpuAdr, 0x91 );
+		//Define high time
+		US.PUT2(tpuAdr + 4, highTime);
+		//Define time of period
+		US.PUT2(tpuAdr + 6, period);
+		//Request initialization
+		tpuAdr = HSRR1_A + diff - (channel / 8) * 2;
+		shift = (channel * 2) % 16;
+		s = US.GET2(tpuAdr);
+		s &= ~(0x3 << shift);
+		s |= 2 << shift;
+		US.PUT2(tpuAdr,s);
+		//set priority low
+		tpuAdr = CPR1_A + diff - (channel / 8) * 2;
+		s = US.GET2(tpuAdr);
+		s &= ~(0x3 << shift);
+		s |= 1 << shift;
+		US.PUT2(tpuAdr,s);
 	}
 
 	/**
@@ -125,23 +101,28 @@ public class TPU_PWM implements IntbMpc555HB{
 	 * This method will simply update the period and high time registers without 
 	 * initializing the channel. The maximum value for both values is <code>0x8000</code>.
 	 * 
-	 * @param tpuA		<code>true</code>: use TPU-A,
-	 * 					<code>false</code>: use TPU-B.
-	 * @param channel	TPU channel to update. Allowed values
-	 * 					are 0..15.
 	 * @param period	Period time as a multiple of the TPU time base 
 	 * @param highTime	PWM signal high time as a multiple of the TPU
 	 * 					time base. It has to be less or equal then
 	 * 					the period time!
 	 */
-	public static void update(boolean tpuA, int channel, int period,
-			int highTime) {
-		if (tpuA) {
-			// define high time and period
-			US.PUT4(TPURAM0_A + 0x10 * channel + 4, (highTime << 16) | period);
-		} else {
-			// define high time and period
-			US.PUT4(TPURAM0_B + 0x10 * channel + 4, (highTime << 16) | period);
-		}
+	public void update(int period, int highTime) {
+		// define high time and period
+		US.PUT4(TPURAM0_A + diff + 0x10 * channel + 4, (highTime << 16) | period);
 	}
+	
+	/**
+	 * Update the parameters of a PWM signal at a TPU channel.<br>
+	 * This method will simply update the period and high time registers without 
+	 * initializing the channel. The maximum value for both values is <code>0x8000</code>.
+	 * 
+	 * @param highTime	PWM signal high time as a multiple of the TPU
+	 * 					time base. It has to be less or equal then
+	 * 					the period time!
+	 */
+	public void update(int highTime) {
+		// define high time and period
+		US.PUT4(TPURAM0_A + diff + 0x10 * channel + 4, (highTime << 16) | period);
+	}
+
 }

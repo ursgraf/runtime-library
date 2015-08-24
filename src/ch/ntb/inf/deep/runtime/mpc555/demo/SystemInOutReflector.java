@@ -18,7 +18,7 @@
 
 package ch.ntb.inf.deep.runtime.mpc555.demo;
 
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCIInputStream;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCIOutputStream;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
@@ -35,16 +35,17 @@ public class SystemInOutReflector extends Task {
 	static SCIInputStream in;
 	
 	/**
-	 * Reflect input on stdin to stdout.
+	 * Reflect input on in stream to out stream.
 	 */
 	public void action() {
 		if (in.available() > 0)	out.write(in.read());
 	}
 
 	static {
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		out = new SCIOutputStream(SCIOutputStream.pSCI2);
-		in = new SCIInputStream(SCIInputStream.pSCI2);
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		out = sci.out;
+		in = sci.in;
 		out.write((byte)'x');
 		
 		Task t = new SystemInOutReflector();

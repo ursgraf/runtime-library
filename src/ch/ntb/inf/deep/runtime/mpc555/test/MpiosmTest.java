@@ -23,16 +23,17 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.*;
  * 11.11.10	NTB/Urs Graf	creation
  */
 class MpiosmTest {
+	static MPIOSM_DIO out;
 	
 	static void pin14on () {
-		MPIOSM_DIO.set(14, true);
+		out.set(true);
 	}
 
 	static void pin14off () {
-		MPIOSM_DIO.set(14, false);
+		out.set(false);
 	}
 	
 	static {
-		MPIOSM_DIO.init(14, true);
+		out = new MPIOSM_DIO(14, true);
 	}
 }

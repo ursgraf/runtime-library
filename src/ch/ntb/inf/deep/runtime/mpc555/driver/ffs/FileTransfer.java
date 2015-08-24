@@ -21,7 +21,7 @@ package ch.ntb.inf.deep.runtime.mpc555.driver.ffs;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /** files can be manually uploaded over SCI2, uses interrupt driven SCI driver */
@@ -34,6 +34,7 @@ public class FileTransfer extends Task {
 	static char[] str;
 	static File f;
 	static Rider r;
+	static SCI sci;
 	
 	int state = receivingCommands;
 	int subState, count, len, i;
@@ -54,9 +55,9 @@ public class FileTransfer extends Task {
 		char ch; int res; String name;
 		switch (this.state) {
 		case receivingCommands:
-			if (SCI2.availToRead() > 0) {
+			if (sci.availToRead() > 0) {
 				try {
-					res = SCI2.read();
+					res = sci.read();
 					ch = (char)res;
 					if (ch == 'g') sendFileDir();
 					if (ch == 'a') {FFS.formatAll(); System.out.println("ffs formated"); System.out.println();}
@@ -66,9 +67,9 @@ public class FileTransfer extends Task {
 			}
 			break;
 		case sendingFile:
-			if (SCI2.availToRead() > 0) {
+			if (sci.availToRead() > 0) {
 				try {
-					res = SCI2.read();
+					res = sci.read();
 					ch = (char)res;
 					if (ch != 0) {str[this.count] = ch; this.count++;}
 					else {
@@ -96,9 +97,9 @@ public class FileTransfer extends Task {
 			}				
 			break;
 		case receivingFile:
-			if (SCI2.availToRead() > 0) {
+			if (sci.availToRead() > 0) {
 				try {
-					res = SCI2.read();
+					res = sci.read();
 					ch = (char)res;
 					switch (subState) {
 					case 0:
@@ -132,9 +133,10 @@ public class FileTransfer extends Task {
 	}
 
 	static {
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI2.out);
-		System.err = new PrintStream(SCI2.out);
+		sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci.out);
+		System.err = new PrintStream(sci.out);
 		System.out.println("started");
 		Task t = new FileTransfer(); 
 		Task.install(t);

@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import java.io.IOException;
 
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
 import ch.ntb.inf.deep.runtime.util.ByteLiFo;
@@ -1147,9 +1147,10 @@ public class RN131WiFly extends Task{
 		t.period = 20;
 		Task.install(t);
 		// initialize SCI2
-		SCI2.start(115200, SCI2.NO_PARITY, (short)8);
-		outWifi = SCI2.out;
-		inWifi = SCI2.in;
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(115200, SCI.NO_PARITY, (short)8);
+		outWifi = sci.out;
+		inWifi = sci.in;
 		clear();
 		rnError = RN_OK;
 	}	

@@ -21,7 +21,7 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.ffs.FFS;
 import ch.ntb.inf.deep.runtime.mpc555.driver.ffs.File;
 import ch.ntb.inf.deep.runtime.mpc555.driver.ffs.Rider;
@@ -55,8 +55,9 @@ public class FileTest1 implements IntbMpc555HB {
 	}
 	
 	static {
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI2.out);
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci.out);
 		System.out.println("file test");
 		FFS.init();
 	}

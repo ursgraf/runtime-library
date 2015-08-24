@@ -26,7 +26,7 @@ import ch.ntb.inf.deep.runtime.util.ByteFifo;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
- * <p>Interrupt controlled driver for the <i>Serial Communication Interface 2</i>
+ * <p>Interrupt controlled driver for the <i>Serial Communication Interface 1</i>
  * of the Freescale MPC555.</p>
  * <p><b>Remember:</b><br>
  * Depending on the baudrate configured, the effective baudrate can be different.
@@ -41,12 +41,10 @@ import ch.ntb.inf.deep.unsafe.US;
  * 13.10.2011	NTB/Martin Zueger	reset() implemented, JavaDoc fixed
  * 08.03.2011	NTB/Urs Graf		ported to deep
  */
-public class SCI2 extends Interrupt {
+public class SCI extends Interrupt {
 
-	public static SCIOutputStream out;
-	public static SCIInputStream in;
-	private static int d = 0;
-	
+	public static final int pSCI1 = 0; 
+	public static final int pSCI2 = 1; 
 	public static final byte NO_PARITY = 0, ODD_PARITY = 1, EVEN_PARITY = 2;
 
 	// Driver states
@@ -59,102 +57,147 @@ public class SCI2 extends Interrupt {
 			OFFSET_NEG_ERR = -2, NULL_POINTER_ERR = -3;
 	public static final int QUEUE_LEN = 2047;
 	public static final int CLOCK = Kernel.clockFrequency;
-	private static Interrupt rxInterrupt, txInterrupt;
+	
+	/**
+	 * Output stream to write to this <i>Serial Communication Interface</i>..
+	 */
+	public SCIOutputStream out;
+	/**
+	 * Input stream to read from this <i>Serial Communication Interface</i>..
+	 */
+	public SCIInputStream in;
 
-	private static short portStat; // just for saving flag portOpen
-	private static short scc2r1; // content of SCC2R1
+	private short portStat; // just for saving flag portOpen
+	private short sccr1; // content of SCCxR1
+	private int diff; // used to access register interface for SCI1 or SCI2
 
-	private static int currentBaudRate = 9600;
-	private static short currentParity = NO_PARITY;
-	private static short currentDataBits = 8;
+	private int currentBaudRate = 9600;
+	private short currentParity = NO_PARITY;
+	private short currentDataBits = 8;
 	
 	/*
 	 * rxQueue: the receive queue, head points to the front item, tail to tail
 	 * item plus 1: head=tail -> empty q head is moved by the interrupt proc
 	 */
-	private static ByteFifo rxQueue;
+	private ByteFifo rxQueue;
 
 	/*
 	 * txQueue: the transmit queue, head points to the front item, tail to tail
 	 * item plus 1: head=tail -> empty q head is moved by the interrupt proc,
 	 * tail is moved by the send primitives called by the application
 	 */
-	private static ByteFifo txQueue;
-	private static boolean txDone;
+	private ByteFifo txQueue;
+	private boolean txDone;
+	private static SCI sci1, sci2;
 
-	@SuppressWarnings("unused")
-	private static int intCtr;
+//	@SuppressWarnings("unused")
+//	private int intCtr;	// for debugging purposes
 
+	/**
+	 * 
+	 * @param sciNr
+	 * @return
+	 */
+	public static SCI getInstance(int sciNr) {
+		if (sciNr == pSCI1) {
+			if (sci1 == null) sci1 = new SCI(0);
+			return sci1;
+		} else if (sciNr == pSCI2) {
+			if (sci2 == null) {
+				sci2 = new SCI(SCC2R0 - SCC1R0);
+			}
+			return sci2;
+		} else return null;
+	}
+	
+	private SCI(int regDiff) {
+		diff = regDiff;
+		out = new SCIOutputStream(this);
+		in = new SCIInputStream(this);
+		QSMCM.init();
+
+		rxQueue = new ByteFifo(QUEUE_LEN);
+		txQueue = new ByteFifo(QUEUE_LEN);
+
+		enableRegAdr = QSMCM.SCC1R1 + diff;
+		enBitMask = (1 << QSMCM.scc1r1TIE) | (1 << QSMCM.scc1r1RIE);
+		flagRegAdr = QSMCM.SC1SR + diff;
+		flagMask = (1 << QSMCM.sc1srTDRE) | (1 << QSMCM.sc1srRDRF);
+
+		Interrupt.install(this, 5, true);		
+	}
+	
 	/* (non-Javadoc)
 	 * @see ch.ntb.inf.deep.runtime.mpc555.Interrupt#action()
 	 */
 	public void action() {
-		intCtr++;
-		if (this == rxInterrupt) {
-			short word = US.GET2(QSMCM.SC2DR);
+//		intCtr++;	
+		if ((US.GET2(flagRegAdr) & (1 << QSMCM.sc1srRDRF)) != 0) {
+			short word = US.GET2(QSMCM.SC1DR + diff);
 			rxQueue.enqueue((byte) word);
 		} else {
 			if (txQueue.availToRead() > 0) {
+				int d = 0;
 				try {
 					d = txQueue.dequeue();
 				} catch (IOException e) {}
-				US.PUT2(QSMCM.SC2DR, d);
+				US.PUT2(QSMCM.SC1DR + diff, d);
 			} else {
 				txDone = true;
-				scc2r1 &= ~(1 << QSMCM.scc2r1TIE);
-				US.PUT2(QSMCM.SCC2R1, scc2r1);
+				sccr1 &= ~(1 << QSMCM.scc1r1TIE);
+				US.PUT2(QSMCM.SCC1R1 + diff, sccr1);
 			}
 		}
 	}
 
-	private static void startTransmission() {
+	private void startTransmission() {
 		if (txDone && (txQueue.availToRead() > 0)) {
 			txDone = false;
 			try {
-				US.PUT2(QSMCM.SC2DR, txQueue.dequeue());
+				US.PUT2(QSMCM.SC1DR + diff, txQueue.dequeue());
 			} catch (IOException e) {}
-			scc2r1 |= (1 << QSMCM.scc2r1TIE);
-			US.PUT2(QSMCM.SCC2R1, scc2r1);
+			sccr1 |= (1 << QSMCM.scc1r1TIE);
+			US.PUT2(QSMCM.SCC1R1 + diff, sccr1);
 		}
 	}
 
 	/**
 	 * Clear the receive buffer.
 	 */
-	public static void clearReceiveBuffer() {
+	public void clearReceiveBuffer() {
 		rxQueue.clear();
 	}
 
 	/**
 	 * Clear the transmit buffer.
 	 */
-	public static void clearTransmitBuffer() {
-		scc2r1 &= ~(1 << QSMCM.scc2r1TIE);
-		US.PUT2(QSMCM.SCC2R1, scc2r1);
+	public void clearTransmitBuffer() {
+		sccr1 &= ~(1 << QSMCM.scc1r1TIE);
+		US.PUT2(QSMCM.SCC1R1 + diff, sccr1);
 		txQueue.clear();
 		txDone = true;
 	}
-
+	
 	/**
 	 * Clear the receive and transmit buffers.
 	 */
-	public static void clear() {
+	public void clear() {
 		clearReceiveBuffer();
 		clearTransmitBuffer();
 	}
 
 	/**
-	 * Stop the <i>Serial Communication Interface 1</i>.
+	 * Stop the <i>Serial Communication Interface</i>.
 	 */
-	public static void stop() {
+	public void stop() {
 		clear();
-		US.PUT2(QSMCM.SCC2R1, 0);
+		US.PUT2(QSMCM.SCC1R1 + diff, 0);
 		portStat = 0;
 	}
 
 	/**
-	 * <p>Initialize and start the <i>Serial Communication Interface 2</i>.</p>
-	 * <p>This method have to be called before using the SCI1! The number of
+	 * <p>Initialize and start the <i>Serial Communication Interface</i>.</p>
+	 * <p>This method have to be called before using the SCI! The number of
 	 * stop bits can't be set. There is always one stop bit!<p>
 	 * 
 	 * @param baudRate
@@ -166,7 +209,7 @@ public class SCI2 extends Interrupt {
 	 *            Number of data bits. Allowed values are 7 to 9 bits. If you
 	 *            choose 9 data bits, than is no parity bit more available!
 	 */
-	public static void start(int baudRate, short parity, short data) {
+	public void start(int baudRate, short parity, short data) {
 		stop();
 		currentBaudRate = baudRate;
 		currentParity = parity;
@@ -176,23 +219,23 @@ public class SCI2 extends Interrupt {
 			scbr = 1;
 		else if (scbr > 8191)
 			scbr = 8191;
-		scc2r1 |= (1 << QSMCM.scc2r1TE) | (1 << QSMCM.scc2r1RE)
-				| (1 << QSMCM.scc2r1RIE); // Transmitter and Receiver enable
+		sccr1 |= (1 << QSMCM.scc1r1TE) | (1 << QSMCM.scc1r1RE)
+				| (1 << QSMCM.scc1r1RIE); // Transmitter and Receiver enable
 		if (parity == 0) {
 			if (data >= 9)
-				scc2r1 |= (1 << QSMCM.scc2r1M);
+				sccr1 |= (1 << QSMCM.scc1r1M);
 		} else {
 			if (data >= 8)
-				scc2r1 |= (1 << QSMCM.scc2r1M) | (1 << QSMCM.scc2r1PE);
+				sccr1 |= (1 << QSMCM.scc1r1M) | (1 << QSMCM.scc1r1PE);
 			else
-				scc2r1 = (1 << QSMCM.scc2r1PE);
+				sccr1 = (1 << QSMCM.scc1r1PE);
 			if (parity == 1)
-				scc2r1 |= (1 << QSMCM.scc2r1PT);
+				sccr1 |= (1 << QSMCM.scc1r1PT);
 		}
-		US.PUT2(QSMCM.SCC2R0, scbr);
-		US.PUT2(QSMCM.SCC2R1, scc2r1);
+		US.PUT2(QSMCM.SCC1R0 + diff, scbr);
+		US.PUT2(QSMCM.SCC1R1 + diff, sccr1);
 		portStat |= (1 << PORT_OPEN);
-		US.GET2(QSMCM.SC2SR); // Clear status register
+		US.GET2(QSMCM.SC1SR + diff); // Clear status register
 	}
 
 	/**
@@ -201,8 +244,8 @@ public class SCI2 extends Interrupt {
 	 * 
 	 * @return the port status bits.
 	 */
-	public static short portStatus() {
-		return (short) (portStat | US.GET2(QSMCM.SC2SR));
+	public short portStatus() {
+		return (short) (portStat | US.GET2(QSMCM.SC1SR + diff));
 	}
 
 	/**
@@ -210,7 +253,7 @@ public class SCI2 extends Interrupt {
 	 * 
 	 * @return number of bytes in the receive buffer.
 	 */
-	public static int availToRead() {
+	public int availToRead() {
 		return rxQueue.availToRead();
 	}
 
@@ -221,12 +264,12 @@ public class SCI2 extends Interrupt {
 	 * 
 	 * @return the available free bytes in the transmit buffer.
 	 */
-	public static int availToWrite() {
+	public int availToWrite() {
 		return txQueue.availToWrite();
 	}
 
 	/**
-	 * Reads the given number of bytes from the SCI2. A call of
+	 * Reads the given number of bytes from the SCI. A call of
 	 * this method is not blocking!
 	 * 
 	 * @param buffer
@@ -245,7 +288,7 @@ public class SCI2 extends Interrupt {
 	 *            {@code off + count} is bigger than the length of
 	 *            {@code buffer}.
 	 */
-	public static int read(byte[] buffer, int off, int count) throws IOException {
+	public int read(byte[] buffer, int off, int count) throws IOException {
 	   	int len = buffer.length;
         if ((off | count) < 0 || off > len || len - off < count) {
         	throw new ArrayIndexOutOfBoundsException(len, off, count);
@@ -257,7 +300,7 @@ public class SCI2 extends Interrupt {
 	}
 
 	/**
-	 * Reads the given number of bytes from the SCI2. A call of
+	 * Reads the given number of bytes from the SCI. A call of
 	 * this method is not blocking!
 	 * 
 	 * @param buffer
@@ -266,19 +309,19 @@ public class SCI2 extends Interrupt {
 	 * @throws IOException 
 	 *            if no data available.
 	 */
-	public static int read(byte[] buffer) throws IOException {
+	public int read(byte[] buffer) throws IOException {
 		return read(buffer, 0, buffer.length);
 	}
 
 	/**
-	 * Reads one byte from the SCI2. A call of
+	 * Reads one byte from the SCI. A call of
 	 * this method is not blocking!
 	 * 
 	 * @return byte single entry in queue.
 	 * @throws IOException 
 	 *            if no byte available.
 	 */
-	public static int read() throws IOException {
+	public int read() throws IOException {
 		return rxQueue.dequeue();
 	}
 
@@ -303,7 +346,7 @@ public class SCI2 extends Interrupt {
 	 *            {@code off + count} is bigger than the length of
 	 *            {@code buffer}.
 	 */
-	public static int write(byte[] buffer, int off, int count) throws IOException{
+	public int write(byte[] buffer, int off, int count) throws IOException{
 		if ((portStat & (1 << PORT_OPEN)) == 0) throw new IOException("IOException");
     	int len = buffer.length;
         if ((off | count) < 0 || off > len || len - off < count) {
@@ -327,7 +370,7 @@ public class SCI2 extends Interrupt {
 	 * @throws IOException 
 	 *            if an error occurs while writing to this stream.
 	 */
-	public static int write(byte[] buffer) throws IOException {
+	public int write(byte[] buffer) throws IOException {
 		return write(buffer, 0, buffer.length);
 	}
 
@@ -342,7 +385,7 @@ public class SCI2 extends Interrupt {
 	 * @throws IOException 
 	 *            if an error occurs while writing to this stream.
 	 */
-	public static void write(byte b) throws IOException {
+	public void write(byte b) throws IOException {
 		if ((portStat & (1 << PORT_OPEN)) == 0) throw new IOException("IOException");
 		while (txQueue.availToWrite() <= 0);
 		txQueue.enqueue(b);
@@ -350,35 +393,12 @@ public class SCI2 extends Interrupt {
 	}
 
 	/**
-	 * Resets the SCI2. This means, the SCI will be
+	 * Resets the SCI. This means, the SCI will be
 	 * stopped and reinitialized with the same configuration.
 	 */
-	public static void reset() {
+	public void reset() {
 		stop();
 		start(currentBaudRate, currentParity, currentDataBits);
 	}
 	
-	static {
-		out = new SCIOutputStream(SCIOutputStream.pSCI2);
-		in = new SCIInputStream(SCIInputStream.pSCI2);
-		QSMCM.init();
-
-		rxQueue = new ByteFifo(QUEUE_LEN);
-		txQueue = new ByteFifo(QUEUE_LEN);
-
-		rxInterrupt = new SCI2();
-		rxInterrupt.enableRegAdr = QSMCM.SCC2R1;
-		rxInterrupt.enBit = QSMCM.scc2r1RIE;
-		rxInterrupt.flagRegAdr = QSMCM.SC2SR;
-		rxInterrupt.flag = QSMCM.sc2srRDRF;
-
-		txInterrupt = new SCI2();
-		txInterrupt.enableRegAdr = QSMCM.SCC2R1;
-		txInterrupt.enBit = QSMCM.scc2r1TIE;
-		txInterrupt.flagRegAdr = QSMCM.SC2SR;
-		txInterrupt.flag = QSMCM.sc2srTDRE;
-
-		Interrupt.install(rxInterrupt, 5, true);	
-		Interrupt.install(txInterrupt, 5, true);	
-	}
 }

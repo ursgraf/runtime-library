@@ -32,15 +32,13 @@ import java.io.OutputStream;
  * 
  */
 public class SCIOutputStream extends OutputStream {
-	public static final int pSCI1 = 0; 
-	public static final int pSCI2 = 1; 
 	
-	private int port;
+	private SCI port;
 	
     /**
      * Creates an output stream on a given SCI interface.
      */
-    public SCIOutputStream(int sci) {
+    public SCIOutputStream(SCI sci) {
 		port = sci;
 	}
 
@@ -53,8 +51,7 @@ public class SCIOutputStream extends OutputStream {
      */
 	public void write(int b) {
 		try {
-			if (port == pSCI1) SCI1.write((byte)b);
-			else SCI2.write((byte)b);
+			port.write((byte)b);
 		} catch (IOException e) {e.printStackTrace();}
 	}
 
@@ -63,8 +60,7 @@ public class SCIOutputStream extends OutputStream {
      */
 	public void write(byte buffer[]) {
 		try {
-			if (port == pSCI1) SCI1.write(buffer);
-			else SCI2.write(buffer);
+			port.write(buffer);
 		} catch (IOException e) {e.printStackTrace();}
 	}
 	
@@ -82,8 +78,7 @@ public class SCIOutputStream extends OutputStream {
 	 */
 	public void write(byte buffer[], int off, int count) {
 		try {
-			if (port == pSCI1) SCI1.write(buffer, off, count);
-			else SCI2.write(buffer, off, count);
+			port.write(buffer, off, count);
 		} catch (IOException e) {e.printStackTrace();}
 	}
 }

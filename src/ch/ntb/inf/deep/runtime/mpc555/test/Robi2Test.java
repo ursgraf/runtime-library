@@ -23,7 +23,7 @@ import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.mpc555.driver.BlueRS;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.Robi2;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /**
@@ -370,20 +370,21 @@ public class Robi2Test extends Task {
 
 	static {
 		//init SCI1
-		SCI1.start(9600, SCI1.NO_PARITY, (short)8);
+		SCI sci = SCI.getInstance(SCI.pSCI1);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
 		//Hook SCI1 on System.out
-		System.out = new PrintStream(SCI1.out);
+		System.out = new PrintStream(sci.out);
 		
 		Robi2.disableAllLEDs();
 		
 		System.out.println("=== Demo for Robi 2! ===");
-		MPIOSM_DIO.init(11, true); // Init Mpiosm
-		MPIOSM_DIO.set(11, false); // Reset BlueRS
+		MPIOSM_DIO out = new MPIOSM_DIO(11, true); // Init Mpiosm
+		out.set(false); // Reset BlueRS
 		BlueRS.start(); // Start Bluetooth Drive
 		Robi2Test testTask = new Robi2Test();
 		testTask.period = 1000;
 		Task.install(testTask);
-		MPIOSM_DIO.set(11, true);
+		out.set(true);
 
 	}
 }

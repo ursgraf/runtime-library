@@ -30,12 +30,14 @@ import ch.ntb.inf.deep.unsafe.US;
 * Attention: Using this driver may lead to MDASM module to be no longer usable for double action function 
 */
 public class MMCSM_COUNT implements IntbMpc555HB {
+	int channel;
 
 	/**
-	 * Initialize an MMCSM pin as counter input.
+	 * Create a counter on a MMCSM pin.
 	 * @param channel select module channel 11 or 13
 	 */
-	public static void init(int channel) {
+	public MMCSM_COUNT(int channel) {
+		this.channel = channel;
 		if (channel == 11) {
 			US.PUT2(MMCSM6CNT, 0);
 			US.PUT2(MMCSM6ML, 0);
@@ -50,10 +52,9 @@ public class MMCSM_COUNT implements IntbMpc555HB {
 	
 	/**
 	 * Read the count value.
-	 * @param channel channel select module channel 11 or 13
 	 * @return the count value of the corresponding channel.
 	 */
-	public static short getCount(int channel) {
+	public short getCount() {
 		if (channel == 11) {
 			return US.GET2(MMCSM6CNT);	
 		} else if (channel == 13) {

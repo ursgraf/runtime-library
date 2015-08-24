@@ -23,22 +23,21 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.util.Actionable;
 
 public class ActionableTest1 implements Actionable {
-	int pin;
+	MPIOSM_DIO out;
 
 	@Override
 	public void action() {
-		MPIOSM_DIO.set(this.pin, !MPIOSM_DIO.get(this.pin));
+		out.set(!out.get());
 	}
 	
 	public ActionableTest1(int pin) {
-		this.pin = pin;
-		MPIOSM_DIO.init(pin, true);
-		MPIOSM_DIO.set(pin, false);
+		out = new MPIOSM_DIO(pin, true);
+		out.set(false);
 	}
 
 	static {
 		Task t = new Task(new ActionableTest1(15));
-		t.period = 500;
+		t.period = 100;
 		Task.install(t);
 	}
 }

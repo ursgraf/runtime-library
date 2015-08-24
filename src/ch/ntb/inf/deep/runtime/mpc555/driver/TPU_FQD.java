@@ -36,10 +36,11 @@ import ch.ntb.inf.deep.unsafe.US;
  * However, make sure to use two adjacent channels for the signal pair.
  */
 public class TPU_FQD implements IntbMpc555HB{
-
+	int channel;
+	int diff;
 
 	/**
-	 * Initializes two adjacent TPU pins for FQD function. <br>
+	 * Creates a FQD function on two adjacent TPU pins. <br>
 	 * <code>channel</code> and <code>channel+1</code>) will be used for FQD function.<br>
 	 * The signal A of the encoder has to be connected to the TPU pin <code>channel</code>, 
 	 * while signal B has to connected to the pin <code>channel+1</code>.
@@ -50,161 +51,92 @@ public class TPU_FQD implements IntbMpc555HB{
 	 * 					are 0..14. The second channel <code>channel+1</code> 
 	 * 					will be initialized as well.
 	 */
-	public static void init(boolean tpuA, int channel) {
-		 if (tpuA) {
-			 // initialize TPU for quadrature decode function code = 6;
-			 int shiftl = (channel % 4) * 4;	// first channel
-			 int reg = CFSR3_A - (channel / 4) * 2;
-			 short s = US.GET2(reg);
-			 s &= ~(0xF << shiftl);
-			 s |= (0x6 << shiftl);
-			 US.PUT2(reg, s);
-			 shiftl = ((channel + 1) % 4) * 4;	// second channel
-			 reg = CFSR3_A - ((channel + 1) / 4) * 2;
-			 s = US.GET2(reg);
-			 s &= ~(0xF << shiftl);
-			 s |= (0x6 << shiftl);
-			 US.PUT2(reg, s);
-			 System.out.printHexln(s);
-			 System.out.printHexln(reg);
-			
-			 // position count = 0
-			 US.PUT2(TPURAM0_A + 0x10 * channel + 2, 0);
-			 // edge time LSB address of first channel
-			 US.PUT2(TPURAM0_A + 0x10 * channel + 10, TPURAM0_A + 0x10 * channel + 1);
-			 // edge time LSB address of second channel
-			 US.PUT2(TPURAM0_A + 0x10 * (channel + 1) + 10, TPURAM0_A + 0x10 * channel + 1);
-			 // corresponding pin state address of first channel
-			 US.PUT2(TPURAM0_A + 0x10 * channel + 8, TPURAM0_A + 0x10 * (channel + 1) + 6);
-			 // corresponding pin state address of second channel
-			 US.PUT2(TPURAM0_A + 0x10 * (channel + 1) + 8, TPURAM0_A + 0x10 * channel + 6);
-			 
-			 // host sequence register
-			 shiftl = (channel % 8) * 2;	// first channel
-			 reg = HSQR1_A - (channel / 8) * 2;
-			 s = US.GET2(reg);
-			 s &= ~(0x3 << shiftl);
-			 US.PUT2(reg, s);
-			 shiftl = ((channel + 1) % 8) * 2;	// second channel
-			 reg = HSQR1_A - ((channel + 1) / 8) * 2;
-			 s = US.GET2(reg);
-			 s &= ~(0x2 << shiftl);
-			 s |= (0x1 << shiftl);
-			 US.PUT2(reg, s);
+	public TPU_FQD(boolean tpuA, int channel) {
+		this.channel = channel;
+		if (tpuA) {diff = 0; TPUA.init();}
+		else {diff = TPUMCR_B - TPUMCR_A; TPUB.init();}
 
-			 // initialize channel and channel + 1	 
-			 shiftl = (channel % 8) * 2;	// first channel
-			 reg = HSRR1_A - (channel / 8) * 2;
-			 s = US.GET2(reg);
-			 s |= (0x3 << shiftl);
-			 US.PUT2(reg, s);
-			 shiftl = ((channel + 1) % 8) * 2;	// second channel
-			 reg = HSRR1_A - ((channel + 1) / 8) * 2;
-			 s = US.GET2(reg);
-			 s |= (0x3 << shiftl);
-			 US.PUT2(reg, s);
-			
-			 // set priority high
-			 shiftl = (channel % 8) * 2;	// first channel
-			 reg = CPR1_A - (channel / 8) * 2;
-			 s = US.GET2(reg);
-			 s |= (0x3 << shiftl);
-			 US.PUT2(reg, s);
-			 shiftl = ((channel + 1) % 8) * 2;	// second channel
-			 reg = CPR1_A - ((channel + 1) / 8) * 2;
-			 s = US.GET2(reg);
-			 s |= (0x3 << shiftl);
-			 US.PUT2(reg, s);
-		 } else {
-			 // initialize TPU for quadrature decode function code = 6;
-			 int shiftl = (channel % 4) * 4;	// first channel
-			 int reg = CFSR3_B - (channel / 4) * 2;
-			 short s = US.GET2(reg);
-			 s &= ~(0xF << shiftl);
-			 s |= (0x6 << shiftl);
-			 US.PUT2(reg, s);
-			 shiftl = ((channel + 1) % 4) * 4;	// second channel
-			 reg = CFSR3_B - ((channel + 1) / 4) * 2;
-			 s = US.GET2(reg);
-			 s &= ~(0xF << shiftl);
-			 s |= (0x6 << shiftl);
-			 US.PUT2(reg, s);
-			 
-			 // position count = 0
-			 US.PUT2(TPURAM0_B + 0x10 * channel + 2, 0);
-			 // edge time LSB address of first channel
-			 US.PUT2(TPURAM0_B + 0x10 * channel + 10, TPURAM0_A + 0x10 * channel + 1);
-			 // edge time LSB address of second channel
-			 US.PUT2(TPURAM0_B + 0x10 * (channel + 1) + 10, TPURAM0_A + 0x10 * channel + 1);
-			 // corresponding pin state address of first channel
-			 US.PUT2(TPURAM0_B + 0x10 * channel + 8, TPURAM0_A + 0x10 * (channel + 1) + 6);
-			 // corresponding pin state address of second channel
-			 US.PUT2(TPURAM0_B + 0x10 * (channel + 1) + 8, TPURAM0_A + 0x10 * channel + 6);
-			 
-			 // host sequence register
-			 shiftl = (channel % 8) * 2;	// first channel
-			 reg = HSQR1_B - (channel / 8) * 2;
-			 s = US.GET2(reg);
-			 s &= ~(0x3 << shiftl);
-			 US.PUT2(reg, s);
-			 shiftl = ((channel + 1) % 8) * 2;	// second channel
-			 reg = HSQR1_B - ((channel + 1) / 8) * 2;
-			 s = US.GET2(reg);
-			 s &= ~(0x2 << shiftl);
-			 s |= (0x1 << shiftl);
-			 US.PUT2(reg, s);
-			 
-			 // initialize channel and channel + 1	 
-			 shiftl = (channel % 8) * 2;	// first channel
-			 reg = HSRR1_B - (channel / 8) * 2;
-			 s = US.GET2(reg);
-			 s |= (0x3 << shiftl);
-			 US.PUT2(reg, s);
-			 shiftl = ((channel + 1) % 8) * 2;	// second channel
-			 reg = HSRR1_B - ((channel + 1) / 8) * 2;
-			 s = US.GET2(reg);
-			 s |= (0x3 << shiftl);
-			 US.PUT2(reg, s);
-			 
-			 // set priority high
-			 shiftl = (channel % 8) * 2;	// first channel
-			 reg = CPR1_B - (channel / 8) * 2;
-			 s = US.GET2(reg);
-			 s |= (0x3 << shiftl);
-			 US.PUT2(reg, s);
-			 shiftl = ((channel + 1) % 8) * 2;	// second channel
-			 reg = CPR1_B - ((channel + 1) / 8) * 2;
-			 s = US.GET2(reg);
-			 s |= (0x3 << shiftl);
-			 US.PUT2(reg, s);
-		 }
+		// initialize TPU for quadrature decode function code = 6;
+		int shiftl = (channel % 4) * 4;	// first channel
+		int reg = CFSR3_A + diff - (channel / 4) * 2;
+		short s = US.GET2(reg);
+		s &= ~(0xF << shiftl);
+		s |= (0x6 << shiftl);
+		US.PUT2(reg, s);
+		shiftl = ((channel + 1) % 4) * 4;	// second channel
+		reg = CFSR3_A + diff - ((channel + 1) / 4) * 2;
+		s = US.GET2(reg);
+		s &= ~(0xF << shiftl);
+		s |= (0x6 << shiftl);
+		US.PUT2(reg, s);
+		System.out.printHexln(s);
+		System.out.printHexln(reg);
+
+		// position count = 0
+		US.PUT2(TPURAM0_A + diff + 0x10 * channel + 2, 0);
+		// edge time LSB address of first channel
+		US.PUT2(TPURAM0_A + diff + 0x10 * channel + 10, TPURAM0_A + diff + 0x10 * channel + 1);
+		// edge time LSB address of second channel
+		US.PUT2(TPURAM0_A + diff + 0x10 * (channel + 1) + 10, TPURAM0_A + diff + 0x10 * channel + 1);
+		// corresponding pin state address of first channel
+		US.PUT2(TPURAM0_A + diff + 0x10 * channel + 8, TPURAM0_A + diff + 0x10 * (channel + 1) + 6);
+		// corresponding pin state address of second channel
+		US.PUT2(TPURAM0_A + diff + 0x10 * (channel + 1) + 8, TPURAM0_A + diff + 0x10 * channel + 6);
+
+		// host sequence register
+		shiftl = (channel % 8) * 2;	// first channel
+		reg = HSQR1_A + diff - (channel / 8) * 2;
+		s = US.GET2(reg);
+		s &= ~(0x3 << shiftl);
+		US.PUT2(reg, s);
+		shiftl = ((channel + 1) % 8) * 2;	// second channel
+		reg = HSQR1_A + diff - ((channel + 1) / 8) * 2;
+		s = US.GET2(reg);
+		s &= ~(0x2 << shiftl);
+		s |= (0x1 << shiftl);
+		US.PUT2(reg, s);
+
+		// initialize channel and channel + 1	 
+		shiftl = (channel % 8) * 2;	// first channel
+		reg = HSRR1_A + diff - (channel / 8) * 2;
+		s = US.GET2(reg);
+		s |= (0x3 << shiftl);
+		US.PUT2(reg, s);
+		shiftl = ((channel + 1) % 8) * 2;	// second channel
+		reg = HSRR1_A + diff - ((channel + 1) / 8) * 2;
+		s = US.GET2(reg);
+		s |= (0x3 << shiftl);
+		US.PUT2(reg, s);
+
+		// set priority high
+		shiftl = (channel % 8) * 2;	// first channel
+		reg = CPR1_A + diff - (channel / 8) * 2;
+		s = US.GET2(reg);
+		s |= (0x3 << shiftl);
+		US.PUT2(reg, s);
+		shiftl = ((channel + 1) % 8) * 2;	// second channel
+		reg = CPR1_A + diff - ((channel + 1) / 8) * 2;
+		s = US.GET2(reg);
+		s |= (0x3 << shiftl);
+		US.PUT2(reg, s);
 	}
 
 	/**
-	 * Reads the actual encoder position on the pair of input channels.
-	 * 
-	 * @param tpuA		<code>true</code>: use TPU-A,
-	 * 					<code>false</code>: use TPU-B.
-	 * @param channel	First (lower) TPU channel of input channel pair.
+	 * Reads the actual encoder position.
 	 * 
 	 * @return Actual encoder position.
 	 */
-	public static short getPosition(boolean tpuA, int channel) {
-		if (tpuA) return US.GET2(TPURAM0_A + 0x10 * channel + 2);
-		else return US.GET2(TPURAM0_B + 0x10 * channel + 2);
+	public short getPosition() {
+		return US.GET2(TPURAM0_A + diff + 0x10 * channel + 2);
 	}
 
 	/**
 	 * Sets the encoder position to a given value.
 	 * 
-	 * @param tpuA		<code>true</code>: use TPU-A,
-	 * 					<code>false</code>: use TPU-B.
-	 * @param channel	First (lower) TPU channel of input channel pair.
 	 * @param pos		New position to be set.
 	 */
-	public static void setPosition(boolean tpuA, int channel, int pos) {
-		if (tpuA) US.PUT2(TPURAM0_A + 0x10 * channel + 2, pos);
-		else US.PUT2(TPURAM0_B + 0x10 * channel + 2, pos);
+	public void setPosition(int pos) {
+		US.PUT2(TPURAM0_A + diff + 0x10 * channel + 2, pos);
 	}
 
 }

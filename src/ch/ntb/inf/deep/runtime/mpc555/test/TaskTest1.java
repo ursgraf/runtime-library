@@ -21,7 +21,7 @@ import java.io.IOException;
 
 import ch.ntb.inf.deep.runtime.mpc555.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /*changes:
@@ -31,19 +31,22 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 public class TaskTest1 extends Task {
 	static long time1;
 	static Task t1;
+	static MPIOSM_DIO out;
+	static SCI sci;
 	
 	public void action() {
 		try {
-			SCI2.write((byte)'c');
+			sci.write((byte)'c');
 		} catch (IOException e) {}
-		MPIOSM_DIO.set(12, !MPIOSM_DIO.get(12));
+		out.set(!out.get());
 	}
 	
 	static {
-		MPIOSM_DIO.init(12, true);
-		SCI2.start(9600, (byte)0, (short)8);
+		out = new MPIOSM_DIO(12, true);
+		sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, (byte)0, (short)8);
 		try {
-			SCI2.write((byte)'a');
+			sci.write((byte)'a');
 		} catch (IOException e) {}
 		time1 = Kernel.time();
 		t1 = new TaskTest1();
@@ -51,7 +54,7 @@ public class TaskTest1 extends Task {
 		t1.action();
 		Task.install(t1);
 		try {
-			SCI2.write((byte)'b');
+			sci.write((byte)'b');
 		} catch (IOException e) {}
 	}
 }

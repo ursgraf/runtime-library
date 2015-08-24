@@ -23,6 +23,7 @@ import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
  * 25.11.10	NTB/GRAU	creation
+ * 20.08.15	NTB/GRAU	checking for internal interrupt changed to multi bit mask
  */
 /**
  * The class for the PPC interrupt exception.
@@ -41,23 +42,23 @@ public class Interrupt extends PPCException implements IntbMpc555HB {
 	
 	/**
 	 * An interrupt handler must specify the address of the register
-	 * which contains its enable bit. The enable bit will be set whenever this
+	 * which contains its enable bit or bits. The enable bit will be set whenever this
 	 * interrupt should be active.
 	 */
 	public int enableRegAdr;
 	/**
-	 * The bit position of the enable bit. 
+	 * The enable bit mask gives the position of the enable bit (or bits if several are present). 
 	 */
-	public int enBit;
+	public int enBitMask;
 	/**
 	 * An interrupt handler must specify the address of the register
-	 * which contains its flag bit. The flag bit will indicate, whether a interrupt has occurred.
+	 * which contains its flag bit or bits. The flag bit will indicate, whether a interrupt has occurred.
 	 */
 	public int flagRegAdr;
 	/**
-	 * The bit position of the flag bit. 
+	 * The flag mask gives the position of the flag (or flags if several are present).
 	 */
-	public int flag;
+	public int flagMask;
 	private Interrupt next;
 	
 	/**
@@ -91,9 +92,9 @@ public class Interrupt extends PPCException implements IntbMpc555HB {
 		boolean done = false;
 		while (currInt.next != null && !done) {
 			short sh = US.GET2(currInt.enableRegAdr);
-			if ((sh & (1 << currInt.enBit)) != 0) {
+			if ((sh & currInt.enBitMask) != 0) {
 				sh = US.GET2(currInt.flagRegAdr);
-				if ((sh & (1 << currInt.flag)) != 0) {
+				if ((sh & currInt.flagMask) != 0) {
 					currInt.action();
 					done = true;
 				}

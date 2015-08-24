@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 
 public class ExceptionTest1 {
 	
@@ -98,8 +98,9 @@ public class ExceptionTest1 {
 	}
 
 	static {
-		SCI1.start(9600, SCI1.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI1.out);
+		SCI sci = SCI.getInstance(SCI.pSCI1);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci.out);
 		System.err = System.out;
 		System.out.println("Exception demo");
 	}

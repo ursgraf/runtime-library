@@ -21,7 +21,7 @@ package ch.ntb.inf.deep.runtime.mpc555.demo;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.RN131WiFlyCmdInt;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
@@ -134,18 +134,19 @@ public class RN131WiFlyCmdIntDemo extends Task{
 	
 	static{
 		//initialize SCI1
-		SCI1.start(19200, SCI1.NO_PARITY, (short) 8);
+		SCI sci = SCI.getInstance(SCI.pSCI1);
+		sci.start(19200, SCI.NO_PARITY, (short) 8);
 		//hook SCI1 to System.out
-		System.out = new PrintStream(SCI1.out);
+		System.out = new PrintStream(sci.out);
 		System.err = System.out;
 		
-		MPIOSM_DIO.init(resetPin,true); //Init Mpiosm
-		MPIOSM_DIO.set(resetPin,false); //Reset RN131C
+		MPIOSM_DIO out = new MPIOSM_DIO(resetPin,true); //Init Mpiosm
+		out.set(false); //Reset RN131C
 		
 		Task t = new RN131WiFlyCmdIntDemo();
 		t.period = 100;
 		Task.install(t);
-		MPIOSM_DIO.set(resetPin, true); // release Reset of RN131C
+		out.set(true); // release Reset of RN131C
 	}
 
 }

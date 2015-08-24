@@ -20,7 +20,7 @@ package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.BlueRSCmdInt;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
@@ -95,15 +95,16 @@ public class BlueRSCmdIntDemo extends Task {
 
 	static {
 		//initialize SCI1
-		SCI1.start(9600, SCI1.NO_PARITY, (short) 8);
+		SCI sci = SCI.getInstance(SCI.pSCI1);
+		sci.start(9600, SCI.NO_PARITY, (short) 8);
 		//hook SCI1 to System.out
-		System.out = new PrintStream(SCI1.out);
+		System.out = new PrintStream(sci.out);
 
-		MPIOSM_DIO.init(resetPin, true); // Init Mpiosm
-		MPIOSM_DIO.set(resetPin, false); // Reset BlueRS
+		MPIOSM_DIO out = new MPIOSM_DIO(resetPin, true); // Init Mpiosm
+		out.set(false); // Reset BlueRS
 		Task t = new BlueRSCmdIntDemo();
 		t.period = 100;
 		Task.install(t);
-		MPIOSM_DIO.set(resetPin, true);
+		out.set(true);
 	}
 }

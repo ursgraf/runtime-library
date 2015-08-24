@@ -35,12 +35,12 @@ public class SCIInputStream extends InputStream{
 	public static final int pSCI1 = 0; 
 	public static final int pSCI2 = 1; 
 	
-	private int port;
+	private SCI port;
 	
     /**
      * Creates an input stream on a given SCI interface.
      */
-    public SCIInputStream(int sci) {
+    public SCIInputStream(SCI sci) {
 		port = sci;
 	}
 
@@ -50,12 +50,11 @@ public class SCIInputStream extends InputStream{
 	 * @return number of bytes available.
 	 */
 	public int available() {
-		if (port == pSCI1) return SCI1.availToRead();
-		else return SCI2.availToRead();
+		return port.availToRead();
 	}
 
 	/**
-	 * Reads one byte from the SCI1. A call of
+	 * Reads one byte from the SCI. A call of
 	 * this method is not blocking!
 	 * 
 	 * @return byte read
@@ -63,14 +62,13 @@ public class SCIInputStream extends InputStream{
 	public int read() {
 		int cnt = 0;
 		try {
-			if (port == pSCI1) cnt = SCI1.read();
-			else cnt = SCI2.read();
+			cnt = port.read();
 		} catch (IOException e) {e.printStackTrace();}
 		return cnt;
 	}
 
 	/**
-	 * Reads the given number of bytes from the SCI1. A call of
+	 * Reads the given number of bytes from the SCI. A call of
 	 * this method is not blocking!
 	 * 
 	 * @param buffer
@@ -80,14 +78,13 @@ public class SCIInputStream extends InputStream{
 	public int read(byte buffer[]){
 		int cnt = 0;
 		try {
-			if (port == pSCI1) cnt = SCI1.read(buffer);
-			else cnt = SCI2.read(buffer);
+			cnt = port.read(buffer);
 		} catch (IOException e) {e.printStackTrace();}
 		return cnt;
 	}
 
 	/**
-	 * Reads the given number of bytes from the SCI1. A call of
+	 * Reads the given number of bytes from the SCI. A call of
 	 * this method is not blocking!
 	 * 
 	 * @param buffer
@@ -101,8 +98,7 @@ public class SCIInputStream extends InputStream{
 	public int read(byte buffer[], int off, int count){
 		int cnt = 0;
 		try {
-			if (port == pSCI1) cnt = SCI1.read(buffer, off, count);
-			else cnt = SCI2.read(buffer, off, count);
+			cnt = port.read(buffer, off, count);
 		} catch (IOException e) {e.printStackTrace();}
 		return cnt;
 	}

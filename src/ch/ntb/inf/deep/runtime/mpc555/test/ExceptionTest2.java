@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import java.io.PrintStream;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 public class ExceptionTest2 extends Task {
@@ -16,8 +16,9 @@ public class ExceptionTest2 extends Task {
 	}
 
 	static {
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI2.out);
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci.out);
 		System.err = System.out;
 		System.out.println("Exception demo");
 		Task t = new ExceptionTest2();

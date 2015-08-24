@@ -21,7 +21,7 @@ package ch.ntb.inf.deep.runtime.mpc555.test;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.ffs.AM29LV160;
 import ch.ntb.inf.deep.unsafe.US;
 
@@ -33,8 +33,9 @@ public class FlashTest1 implements IntbMpc555HB {
 	
 	static final int flashAddr = extFlashBase + 0x20008;
 	static {
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI2.out);
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci.out);
 		
 		System.out.println("flash test");
 		System.out.printHexln(US.GET4(flashAddr));

@@ -19,8 +19,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.test;
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.runtime.mpc555.driver.QADC_DIO;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Heap;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
@@ -30,6 +29,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 public class HeapTest4 extends Task {
 	
+	@SuppressWarnings("unused")
 	public void action() {
 		//		byte[] a = new byte[10000]; // Wrong!!
 		// such a block size is too big to be repetively allocated
@@ -40,6 +40,7 @@ public class HeapTest4 extends Task {
 		System.out.print("allocation successfull, "); System.out.printHexln(Heap.getFreeHeap());
 	}
 
+	@SuppressWarnings("unused")
 	private static void test1() {
 		try {
 			short[] a = new short[-2];
@@ -60,6 +61,7 @@ public class HeapTest4 extends Task {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private static void test2() {
 		try {
 			int[] a = new int[100000];
@@ -69,9 +71,10 @@ public class HeapTest4 extends Task {
 	}
 
 	static {
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI2.out);
-		System.err = new PrintStream(SCI2.out);
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci.out);
+		System.err = new PrintStream(sci.out);
 		System.out.println("HeapTest4 started");
 		System.out.print("Total heap size = "); System.out.printHexln(Heap.getHeapSize());
 //		test1();

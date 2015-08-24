@@ -22,26 +22,28 @@ import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.driver.RN131WiFly;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 public class RN131WiFlyDemo extends Task{
-	private static final String ssidNet = "SysPNet_Team33";	//Adhoc net name
+	private static final String ssidNet = "SysPNet_Team33";	// Adhoc net name
 	private static final boolean createNet = true;
-	private static final String ip_adr = "169.254.1.3";		//IP Address
-	private static final int resetPin = 11;
+	private static final String ip_adr = "169.254.1.3";		// IP Address
 	private static int num = 1;
 	private static int err=0, lastErr=0;
+	private static final int resetPin = 11;
+	private static MPIOSM_DIO reset;
 	
 	static{
-		SCI1.start(19200, SCI1.NO_PARITY,(short)8);
-		System.out = new PrintStream(SCI1.out);
-		MPIOSM_DIO.init(resetPin,true); //Init Mpiosm
-		MPIOSM_DIO.set(resetPin,false); //Reset RN131C
+		SCI sci = SCI.getInstance(SCI.pSCI1);
+		sci.start(19200, SCI.NO_PARITY,(short)8);
+		System.out = new PrintStream(sci.out);
+		reset = new MPIOSM_DIO(resetPin, true); // init reset pin
+		reset.set(false); // reset RN131C
 		Task t = new RN131WiFlyDemo();
 		t.period = 20;
 		Task.install(t);
-		MPIOSM_DIO.set(resetPin, true); // release Reset RN131C
+		reset.set(true); // release Reset RN131C
 		RN131WiFly.clear();
 	}
 	
@@ -128,8 +130,7 @@ public class RN131WiFlyDemo extends Task{
 	}
 		
 	public static void restart(){
-		MPIOSM_DIO.set(resetPin,false); //Reset RN131C
-		
-		MPIOSM_DIO.set(resetPin, true); // release Reset RN131C
+		reset.set(false); // reset RN131C
+		reset.set(true); // release Reset RN131C
 	}
 }

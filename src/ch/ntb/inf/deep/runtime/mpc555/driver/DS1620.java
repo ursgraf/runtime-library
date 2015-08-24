@@ -24,18 +24,18 @@ package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 /**
  *  Driver for the temperature sensor DS1620
- *  connected to MPIOSM-pins.
+ *  connected to pins of the MPIOSM.
  */
 public class DS1620 {
-	byte rst, clk, dq;
+	MPIOSM_DIO rst, clk, dq;
 	
 	void outPattern (byte pat) {
 		for (int i = 0; i < 8; i++) {
-			MPIOSM_DIO.set(this.dq, (pat & (1 << i)) != 0);
+			dq.set((pat & (1 << i)) != 0);
 //			for (int k = 0; k < 20; k++);
-			MPIOSM_DIO.set(this.clk, false);
+			clk.set(false);
 //			for (int k = 0; k < 20; k++);
-			MPIOSM_DIO.set(this.clk, true);
+			clk.set(true);
 //			for (int k = 0; k < 20; k++);
 		}
 	}
@@ -44,31 +44,31 @@ public class DS1620 {
 	 * start conversions, must be called once upon power-up
 	 */
 	public void startConvert () {
-		MPIOSM_DIO.set(this.rst, true);
+		rst.set(true);
 		this.outPattern((byte)0xee);
-		MPIOSM_DIO.set(this.rst, false);
+		rst.set(false);
 	}
 			
 	/**
 	 * reads temperature, returns value in deg. centigrade times 2
 	 */
 	public short read () {
-		MPIOSM_DIO.set(this.rst, true);
+		rst.set(true);
 		this.outPattern((byte)0xaa);
-		MPIOSM_DIO.init(this.dq, false);
-		MPIOSM_DIO.set(this.clk, false);
+		dq.dir(false);
+		clk.set(false);
 		short data = 0;
 		for (int i = 0; i < 9; i++) {
-			if (MPIOSM_DIO.get(this.dq)) data |= 1 << i;
+			if (dq.get()) data |= 1 << i;
 //			for (int k = 0; k < 10; k++);
-			MPIOSM_DIO.set(this.clk, true);
+			clk.set(true);
 //			for (int k = 0; k < 10; k++);
-			MPIOSM_DIO.set(this.clk, false);
+			clk.set(false);
 //			for (int k = 0; k < 10; k++);
 		}
-		MPIOSM_DIO.set(this.clk, true);
-		MPIOSM_DIO.init(this.dq, true);
-		MPIOSM_DIO.set(this.rst, false);
+		clk.set(true);
+		dq.dir(true);
+		rst.set(false);
 		return data;
 	}
 
@@ -77,51 +77,48 @@ public class DS1620 {
 	 * must be called only once, not for each power-cycle
 	 */
 	public void writeConfig () {
-		MPIOSM_DIO.set(this.rst, true);
+		rst.set(true);
 		this.outPattern((byte)0x0c);
 		this.outPattern((byte)0x0a);
-		MPIOSM_DIO.set(this.rst, false);
+		rst.set(false);
 	}
 	
 	/**
 	 * returns configuration data
 	 */
 	public byte readConfig () {
-		MPIOSM_DIO.set(this.rst, true);
+		rst.set(true);
 		this.outPattern((byte)0xac);
-		MPIOSM_DIO.init(this.dq, false);
-		MPIOSM_DIO.set(this.clk, false);
+		dq.dir(false);
+		clk.set(false);
 		byte data = 0;
 		for (int i = 0; i < 8; i++) {
 //			for (int k = 0; k < 20; k++);
-			if (MPIOSM_DIO.get(this.dq)) data |= 1 << i;
+			if (dq.get()) data |= 1 << i;
 //			for (int k = 0; k < 20; k++);
-			MPIOSM_DIO.set(this.clk, true);
+			clk.set(true);
 //			for (int k = 0; k < 20; k++);
-			MPIOSM_DIO.set(this.clk, false);
+			clk.set(false);
 		}
-		MPIOSM_DIO.set(this.clk, true);
-		MPIOSM_DIO.init(this.dq, true);
-		MPIOSM_DIO.set(this.rst, false);
+		clk.set(true);
+		dq.dir(true);
+		rst.set(false);
 		return data;
 	}
 			
 	/**
 	 * creates new sensor
-	 * @param rst
+	 * @param reset
 	 *            pin number (MPIOSM) for rst signal
-	 * @param clk
+	 * @param clock
 	 *            pin number (MPIOSM) for clk signal
-	 * @param dq
+	 * @param data
 	 *            pin number (MPIOSM) for dq signal
 	 */
-	public DS1620 (byte rst, byte clk, byte dq) {
-		this.rst = rst;
-		this.clk = clk;
-		this.dq = dq;
-		MPIOSM_DIO.init(this.rst, true); MPIOSM_DIO.set(this.rst, false);
-		MPIOSM_DIO.init(this.clk, true); MPIOSM_DIO.set(this.clk, true);
-		MPIOSM_DIO.init(this.dq, true);
+	public DS1620 (byte reset, byte clock, byte data) {
+		rst = new MPIOSM_DIO(reset, true); rst.set(false);
+		clk = new MPIOSM_DIO(clock, true); clk.set(true);
+		dq = new MPIOSM_DIO(data, true);
 	}
 }
 			

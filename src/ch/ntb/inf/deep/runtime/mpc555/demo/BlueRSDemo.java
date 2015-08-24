@@ -22,7 +22,7 @@ import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.driver.BlueRS;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI1;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /* CHANGES:
@@ -410,17 +410,18 @@ public class BlueRSDemo extends Task {
 	}
 
 	static {
-		SCI1.start(9600, SCI1.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI1.out);
+		SCI sci = SCI.getInstance(SCI.pSCI1);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci.out);
 				
 		System.out.println("Demo");
-		MPIOSM_DIO.init(15, true); // Init Mpiosm
-		MPIOSM_DIO.set(15, false); // Reset BlueRS
+		MPIOSM_DIO out = new MPIOSM_DIO(15, true); // Init Mpiosm
+		out.set(false); // Reset BlueRS
 		BlueRS.start();
 		task = new BlueRSDemo();
 		task.period = 100;
 		startTask();
-		MPIOSM_DIO.set(15, true);
+		out.set(true);
 	}
 
 }

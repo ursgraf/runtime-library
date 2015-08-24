@@ -73,15 +73,5 @@ public class TPUA implements IntbMpc555HB{
 	
 	static{
 		US.PUT2(TPUMCR3_A,0x0);
-		
-		//SYS.PUT2(TPUMCR,0x000); //IMB Clock not divided for TCR1, 1 cycle = 0.8us
-		//SYS.PUT2(TPUMCR,0x050); //IMB Clock divided by 4 instead of 32, 1 cycle = 0.1us
-		//SYS.PUT2(TPUMCR3,0x40); // Enable the enhanced pre-scaler, 1 cycle = 0.05us
-		
-		/*
-		 * CAUTION:
-		 * If you change the cycle time, you have to adapt the TpuTimeUnit in the PWM.java file
-		 */
-		
 	}
 }

@@ -31,16 +31,18 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
  */
 public class SimpleBlinkerDemo extends Task {
 	
+	static MPIOSM_DIO out;
+	
 	/**
 	 * Toggles the LED.
 	 */
 	public void action(){
-		MPIOSM_DIO.set(12, !MPIOSM_DIO.get(12));
+		out.set(!out.get());
 	}
 	
 	static {
-		MPIOSM_DIO.init(12, true); // Initialize MPIOSM12 as output
-		MPIOSM_DIO.set(12, false); // Set MPIOSM12 to low
+		out = new MPIOSM_DIO(12, true); // Initialize MPIOSM12 as output
+		out.set(false); // Set MPIOSM12 to low
 		
 		// Create and install the task
 		SimpleBlinkerDemo t = new SimpleBlinkerDemo();

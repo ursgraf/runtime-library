@@ -105,7 +105,13 @@ public class Robi2 extends Task {
 		w_R = 0,					// rotation speed of the robot [rad/s]
 		phi = 0,					// orientation of the robot [rad]
 		x = 0, y = 0;				// position of the robot [m]
-
+	
+	private static MPIOSM_DIO sw12, sw13, sw14, sw15;		// HEX-switch
+	private static TPU_PWM mot1_PWMA, mot1_PWMB;			// pwm signals for motor 1
+	private static TPU_PWM mot2_PWMA, mot2_PWMB;			// pwm signals for motor 2
+	private static TPU_FQD mot1_Enc, mot2_Enc;				// encoder for motor 1 and 2
+	private static TPU_DIO[] led;							// 16 led
+	
 
 	/* Background task */
 	/*****************************************************************************/
@@ -133,13 +139,13 @@ public class Robi2 extends Task {
 		lastTime = time;
 
 		// calculate distance traveled and speed for each wheel
-		actualPos = TPU_FQD.getPosition(TPUB, Mot1_EncA_Pin);
+		actualPos = mot1_Enc.getPosition();
 		deltaPos = (short)(actualPos - prevPos1);
 		prevPos1 = actualPos;
 		s_R += deltaPos * scale;
 		v_R = deltaPos * scale / dt;
 
-		actualPos = TPU_FQD.getPosition(TPUB, Mot2_EncA_Pin);
+		actualPos = mot2_Enc.getPosition();
 		deltaPos = (short)(actualPos - prevPos2);
 		prevPos2 = actualPos;
 		s_L += deltaPos * scale;
@@ -217,7 +223,7 @@ public class Robi2 extends Task {
 	 */
 	public static void activatePosLEDs() {
 		for (int i = 12; i < 15; i++)
-			TPU_DIO.set(true, i, false);
+			led[i].set(false);
 	}
 
 	/**
@@ -225,7 +231,7 @@ public class Robi2 extends Task {
 	 */
 	public static void deactivatePosLEDs() {
 		for (int i = 12; i < 15; i++)
-			TPU_DIO.set(true, i, true);
+			led[i].set(true);
 	}
 
 	/**
@@ -237,7 +243,7 @@ public class Robi2 extends Task {
 	 */
 	public static void setPosLEDs(boolean state) {
 		for (int i = 12; i < 15; i++)
-			TPU_DIO.set(true, i, !state);
+			led[i].set(!state);
 	}
 
 	/**
@@ -247,7 +253,7 @@ public class Robi2 extends Task {
 	 *            the state of LED16 (true = on, false = off)
 	 */
 	public static void setHeadPosLED(boolean state) {
-		TPU_DIO.set(true, 12, !state);
+		led[12].set(!state);
 	}
 
 	/**
@@ -256,7 +262,7 @@ public class Robi2 extends Task {
 	 * @return the state of LED16 (true = on, false = off)
 	 */
 	public static boolean getHeadPosLED() {
-		return !TPU_DIO.get(true, 12);
+		return !led[12].get();
 	}
 
 	/**
@@ -266,7 +272,7 @@ public class Robi2 extends Task {
 	 *            the state of LED17 (true = on, false = off)
 	 */
 	public static void setLeftPosLED(boolean state) {
-		TPU_DIO.set(true, 13, !state);
+		led[13].set(!state);
 	}
 
 	/**
@@ -275,7 +281,7 @@ public class Robi2 extends Task {
 	 * @return the state of LED17. (true = on, false = off)
 	 */
 	public static boolean getLeftPosLED() {
-		return !TPU_DIO.get(true, 13);
+		return !led[13].get();
 	}
 
 	/**
@@ -285,7 +291,7 @@ public class Robi2 extends Task {
 	 *            the state of LED18 (true = on, false = off)
 	 */
 	public static void setRightPosLED(boolean state) {
-		TPU_DIO.set(true, 14, !state);
+		led[14].set(!state);
 	}
 
 	/**
@@ -294,7 +300,7 @@ public class Robi2 extends Task {
 	 * @return the state of LED18 (true = off, false = on)
 	 */
 	public static boolean getRightPosLED() {
-		return TPU_DIO.get(true, 14);
+		return led[14].get();
 	}
 
 	/**
@@ -317,52 +323,52 @@ public class Robi2 extends Task {
 		case 0:
 			switch (c) {
 			case 0:
-				TPU_DIO.set(true, 7, state);
+				led[7].set(state);
 				break;
 			case 1:
-				TPU_DIO.set(true, 6, state);
+				led[6].set(state);
 				break;
 			case 2:
-				TPU_DIO.set(true, 5, state);
+				led[5].set(state);
 				break;
 			}
 			break;
 		case 1:
 			switch (c) {
 			case 0:
-				TPU_DIO.set(true, 4, state);
+				led[4].set(state);
 				break;
 			case 1:
-				TPU_DIO.set(true, 3, state);
+				led[3].set(state);
 				break;
 			case 2:
-				TPU_DIO.set(true, 2, state);
+				led[2].set(state);
 				break;
 			}
 			break;
 		case 2:
 			switch (c) {
 			case 0:
-				TPU_DIO.set(true, 1, state);
+				led[1].set(state);
 				break;
 			case 1:
-				TPU_DIO.set(true, 0, state);
+				led[0].set(state);
 				break;
 			case 2:
-				TPU_DIO.set(true, 8, state);
+				led[8].set(state);
 				break;
 			}
 			break;
 		case 3:
 			switch (c) {
 			case 0:
-				TPU_DIO.set(true, 11, state);
+				led[11].set(state);
 				break;
 			case 1:
-				TPU_DIO.set(true, 10, state);
+				led[10].set(state);
 				break;
 			case 2:
-				TPU_DIO.set(true, 9, state);
+				led[9].set(state);
 				break;
 			}
 			break;
@@ -386,52 +392,52 @@ public class Robi2 extends Task {
 		case 0:
 			switch (c) {
 			case 0:
-				state = TPU_DIO.get(true, 7);
+				state = led[7].get();
 				break;
 			case 1:
-				state = TPU_DIO.get(true, 6);
+				state = led[6].get();
 				break;
 			case 2:
-				state = TPU_DIO.get(true, 5);
+				state = led[5].get();
 				break;
 			}
 			break;
 		case 1:
 			switch (c) {
 			case 0:
-				state = TPU_DIO.get(true, 4);
+				state = led[4].get();
 				break;
 			case 1:
-				state = TPU_DIO.get(true, 3);
+				state = led[3].get();
 				break;
 			case 2:
-				state = TPU_DIO.get(true, 2);
+				state = led[2].get();
 				break;
 			}
 			break;
 		case 2:
 			switch (c) {
 			case 0:
-				state = TPU_DIO.get(true, 1);
+				state = led[1].get();
 				break;
 			case 1:
-				state = TPU_DIO.get(true, 0);
+				state = led[0].get();
 				break;
 			case 2:
-				state = TPU_DIO.get(true, 8);
+				state = led[8].get();
 				break;
 			}
 			break;
 		case 3:
 			switch (c) {
 			case 0:
-				state = TPU_DIO.get(true, 11);
+				state = led[11].get();
 				break;
 			case 1:
-				state = TPU_DIO.get(true, 10);
+				state = led[10].get();
 				break;
 			case 2:
-				state = TPU_DIO.get(true, 9);
+				state = led[9].get();
 				break;
 			}
 			break;
@@ -445,7 +451,7 @@ public class Robi2 extends Task {
 	 * @param state		the state of the blue center LED (true = on, false = off)
 	 */
 	public static void setCenterLED(boolean state) {
-		TPU_DIO.set(true, 15, !state);
+		led[15].set(!state);
 	}
 
 	/**
@@ -454,12 +460,12 @@ public class Robi2 extends Task {
 	 * @return the state of the blue center LED (true = on, false = off)
 	 */
 	public static boolean getCenterLED() {
-		return !TPU_DIO.get(true, 15);
+		return !led[15].get();
 	}
 
 	public static void enableAllLEDs() {
 		for (int i = 0; i < 16; i++)
-			TPU_DIO.set(true, i, false);
+			led[i].set(false);
 	}
 	
 	/**
@@ -467,7 +473,7 @@ public class Robi2 extends Task {
 	 */
 	public static void disableAllLEDs() {
 		for (int i = 0; i < 16; i++)
-			TPU_DIO.set(true, i, true);
+			led[i].set(true);
 	}
 
 	/* Hex switch */
@@ -480,15 +486,10 @@ public class Robi2 extends Task {
 	 */
 	public static int getSwitchValue() {
 		int value = 0;
-		if (MPIOSM_DIO.get(12))
-			value |= 0x01;
-		if (MPIOSM_DIO.get(13))
-			value |= 0x02;
-		if (MPIOSM_DIO.get(14))
-			value |= 0x04;
-		if (MPIOSM_DIO.get(15))
-			value |= 0x08;
-
+		if (sw12.get())	value |= 0x01;
+		if (sw13.get()) value |= 0x02;
+		if (sw14.get()) value |= 0x04;
+		if (sw15.get()) value |= 0x08;
 		return value;
 	}
 
@@ -693,12 +694,12 @@ public class Robi2 extends Task {
 	private static void setPwmForLeftMotor(float dutyCycle) {
 		dutyCycle = limitDutyCycle(dutyCycle);
 		if (dutyCycle >= 0) { // forward
-			TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, 0); // direction
+			mot2_PWMA.update(pwmPeriod, 0); // direction
 		} else { // backward
-			TPU_PWM.update(TPUB, Mot2_PWMA_Pin, pwmPeriod, pwmPeriod); // direction
+			mot2_PWMA.update(pwmPeriod, pwmPeriod); // direction
 			dutyCycle = dutyCycle + 1;
 		}
-		TPU_PWM.update(TPUB, Mot2_PWMB_Pin, pwmPeriod, (int)(dutyCycle * pwmPeriod)); // speed
+		mot2_PWMB.update(pwmPeriod, (int)(dutyCycle * pwmPeriod)); // speed
 	}
 	
 	/**
@@ -709,12 +710,12 @@ public class Robi2 extends Task {
 		dutyCycle = limitDutyCycle(dutyCycle);
 
 		if (dutyCycle >= 0) { // forward
-			TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, 0); // direction
+			mot1_PWMA.update(pwmPeriod, 0); // direction
 		} else { // backward
-			TPU_PWM.update(TPUB, Mot1_PWMA_Pin, pwmPeriod, pwmPeriod); // direction
+			mot1_PWMA.update(pwmPeriod, pwmPeriod); // direction
 			dutyCycle = dutyCycle + 1;
 		}
-		TPU_PWM.update(TPUB, Mot1_PWMB_Pin, pwmPeriod, (int)(dutyCycle * pwmPeriod)); // speed
+		mot1_PWMB.update(pwmPeriod, (int)(dutyCycle * pwmPeriod)); // speed
 
 	}
 	
@@ -748,30 +749,33 @@ public class Robi2 extends Task {
 	static {
 
 		// Initialize all LEDs
+		led = new TPU_DIO[16];
 		for (int i = 0; i <= 15; i++) {
-			TPU_DIO.init(true, i, true);
-			TPU_DIO.set(true, i, true);
+			led[i] = new TPU_DIO(true, i, true);
+			led[i].set(true);
 		}
 
 		// Initialize I/Os for hex switch
-		for (int i = 12; i < 16; i++)
-			MPIOSM_DIO.init(i, false);
+		sw12 = new MPIOSM_DIO(12, false);
+		sw13 = new MPIOSM_DIO(13, false);
+		sw14 = new MPIOSM_DIO(14, false);
+		sw15 = new MPIOSM_DIO(15, false);
 
 		// Initialize distance sensors
 		HLC1395Pulsed.init(16, 0x00059876, 59);
 		HLC1395Pulsed.start();
 
 		// Initialize drive
-		TPU_FQD.init(TPUB, Mot1_EncA_Pin);
-		TPU_FQD.init(TPUB, Mot2_EncA_Pin);
-		TPU_PWM.init(TPUB, Mot1_PWMA_Pin, pwmPeriod, 0);
-		TPU_PWM.init(TPUB, Mot1_PWMB_Pin, pwmPeriod, 0);
-		TPU_PWM.init(TPUB, Mot2_PWMA_Pin, pwmPeriod, 0);
-		TPU_PWM.init(TPUB, Mot2_PWMB_Pin, pwmPeriod, 0);
-		TPU_DIO.init(TPUB, Mot_BridgeMode_Pin, OUTPUT);
-		TPU_DIO.set(TPUB, Mot_BridgeMode_Pin, Mot_BridgeMode_SM);
+		mot1_Enc = new TPU_FQD(TPUB, Mot1_EncA_Pin);
+		mot2_Enc = new TPU_FQD(TPUB, Mot2_EncA_Pin);
+		mot1_PWMA = new TPU_PWM(TPUB, Mot1_PWMA_Pin, pwmPeriod, 0);
+		mot1_PWMB = new TPU_PWM(TPUB, Mot1_PWMB_Pin, pwmPeriod, 0);
+		mot2_PWMA = new TPU_PWM(TPUB, Mot2_PWMA_Pin, pwmPeriod, 0);
+		mot2_PWMB = new TPU_PWM(TPUB, Mot2_PWMB_Pin, pwmPeriod, 0);
+		TPU_DIO out = new TPU_DIO(TPUB, Mot_BridgeMode_Pin, OUTPUT);
+		out.set(Mot_BridgeMode_SM);
 
-		// Initialize ADC for battery voltage messuring
+		// Initialize ADC for battery voltage measuring
 		QADC_AIN.init(QADCB);
 
 		// Install task for controller

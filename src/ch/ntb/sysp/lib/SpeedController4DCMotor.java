@@ -29,10 +29,8 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
  */
 public class SpeedController4DCMotor {
 	
-	private int pwmChannelA, pwmChannelB;
-	private boolean pwmTPUA;
-	private int encChannelA;
-	private boolean encTPUA;
+	private TPU_PWM pwmA, pwmB;
+	private TPU_FQD enc;
 	
 	private static final int pwmPeriod = 50000 / TPU_PWM.tpuTimeBase;	// period time of the PWM signal as multiple of the TPU time base
 	private static final int fqd = 4;			// factor for fast quadrature decoding
@@ -55,7 +53,7 @@ public class SpeedController4DCMotor {
 	/**
 	 * Create a new speed controller for a DC motor.
 	 * @param ts task period in seconds [s]
-	 * @param pwmChannelA TPU channel for the first PWM signal. For the second PWM signal the channel of the first + 1 will be used.
+	 * @param pwmChannel TPU channel for the first PWM signal. For the second PWM signal the channel of the first + 1 will be used.
 	 * @param useTPUA4PWM Time processing unit to use for PWM signals: true for TPU-A and false for TPU-B.
 	 * @param encChannelA TPU channel for the encoder signal A. For the signal B the channel of A + 1 will be used.
 	 * @param useTPUA4Enc Time processing unit to use for FQD: true for TPU-A and false for TPU-B.
@@ -64,7 +62,7 @@ public class SpeedController4DCMotor {
 	 * @param kp controller gain factor. For experimental evaluating the controller parameters, begin with kp = 1.
 	 * @param tn time constant of the controller. For experimental evaluating the controller parameters, set tn to the mechanical time constant of your axis. If the motor has a gear it's assumed that the torque of inertia of the rotor is dominant. That means you can set tn equals to the mechanical time constant of your motor. 
 	 */
-	public SpeedController4DCMotor(float ts, int pwmChannelA, boolean useTPUA4PWM, int encChannelA, boolean useTPUA4Enc, int encTPR, float umax, float i, float kp, float tn) {
+	public SpeedController4DCMotor(float ts, int pwmChannel, boolean useTPUA4PWM, int encChannelA, boolean useTPUA4Enc, int encTPR, float umax, float i, float kp, float tn) {
 		// set parameters
 		this.scale = (float)((2 * Math.PI) / (encTPR * fqd * i));
 		this.b0 = kp * (1f + ts / (2f * tn));
@@ -72,16 +70,11 @@ public class SpeedController4DCMotor {
 		this.umax = umax;
 		
 		// initialize PWM channels
-		this.pwmChannelA = pwmChannelA;
-		this.pwmChannelB = pwmChannelA + 1;
-		this.pwmTPUA = useTPUA4PWM;
-		TPU_PWM.init(useTPUA4PWM, pwmChannelA, pwmPeriod, 0);
-		TPU_PWM.init(useTPUA4PWM, pwmChannelA + 1, pwmPeriod, 0);
+		pwmA = new TPU_PWM(useTPUA4PWM, pwmChannel, pwmPeriod, 0);
+		pwmB = new TPU_PWM(useTPUA4PWM, pwmChannel + 1, pwmPeriod, 0);
 		
 		// initialize FQD channels
-		this.encChannelA = encChannelA;
-		this.encTPUA = useTPUA4Enc;
-		TPU_FQD.init(useTPUA4Enc, encChannelA);
+		enc = new TPU_FQD(useTPUA4Enc, encChannelA);
 	}
 
 	
@@ -95,7 +88,7 @@ public class SpeedController4DCMotor {
 		lastTime = time;
 		
 		// Read encoder and calculate actual speed
-		actualPos = TPU_FQD.getPosition(encTPUA, encChannelA);
+		actualPos = enc.getPosition();
 		deltaPos = (short)(actualPos - prevPos);
 		absPos += deltaPos;
 		speed = (deltaPos * scale) / dt;
@@ -154,12 +147,12 @@ public class SpeedController4DCMotor {
 		dutyCycle = limitDutyCycle(dutyCycle);
 
 		if (dutyCycle >= 0) { // forward
-			TPU_PWM.update(pwmTPUA, pwmChannelA, pwmPeriod, 0); // direction
+			pwmA.update(pwmPeriod, 0); // direction
 		} else { // backward
-			TPU_PWM.update(pwmTPUA, pwmChannelA, pwmPeriod, pwmPeriod); // direction
+			pwmA.update(pwmPeriod, pwmPeriod); // direction
 			dutyCycle = dutyCycle + 1;
 		}
-		TPU_PWM.update(pwmTPUA, pwmChannelB, pwmPeriod,	(int)(dutyCycle * pwmPeriod)); // speed
+		pwmB.update(pwmPeriod, (int)(dutyCycle * pwmPeriod)); // speed
 	}
 	
 }

@@ -31,37 +31,35 @@ import ch.ntb.inf.deep.unsafe.US;
 */
 public class MDASM_DIO implements IntbMpc555HB {
 
+	int channel;
+
 	/**
-	 * Initialize an MDASM pin as digital I/O.
+	 * Create a digital I/O on a MDASM pin.
 	 * @param channel select module channel 11-15 or 27-31
 	 * @param out set I/O direction, <code>true</code> => output, <code>false</code> => input.
 	 */
-	public static void init(int channel, boolean out) {
-		channel -= 11;
+	public MDASM_DIO(int channel, boolean out) {
+		this.channel = channel - 11;
 		if (out) US.PUT2(MDASM11SCR + channel * 8, 8);
 		else US.PUT2(MDASM11SCR + channel * 8, 3);
 	}
 	
 	
 	/**
-	 * Set the TTL-Signal value <code>val</code> to the corresponding channel.
-	 * @param channel channel select module channel 11-15 or 27-31
+	 * Set the TTL signal value <code>val</code> of this digital I/O.
 	 * @param val the TTL-Signal value
 	 */
-	public static void set(int channel, boolean val) {
-		channel -= 11;
+	public void set(boolean val) {
 		if (val) US.PUT2(MDASM11SCR + channel * 8, 0x408);
 		else US.PUT2(MDASM11SCR + channel * 8, 0x208);
 	}
 	
 	/**
 	 * 
-	 * Read the TTL-Signal of the corresponding channel.
-	 * @param channel channel select module channel 11-15 or 27-31
+	 * Read the TTL signal of this digital I/O.
 	 * @return the TTL value of the corresponding channel.
 	 */
-	public static boolean get(int channel) {
-		channel -= 11;
+	public boolean get() {
 		return (US.GET2(MDASM11SCR + channel * 8) & 0x8000) != 0;
 	}
 }

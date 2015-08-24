@@ -24,7 +24,7 @@ import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPWMSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.QADC_DIO;
-import ch.ntb.inf.deep.runtime.mpc555.driver.SCI2;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_DIO;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
@@ -43,7 +43,9 @@ public class DioTest extends Task {
 	private static final String HI = "HI";
 	private static final String LO = "LO";
 	private static final int periodTime = 250;
-	
+	private static MPIOSM_DIO[] dioMPIOSM;
+	private static MPWMSM_DIO[] dioMPWMSM;
+	private static TPU_DIO[] dioTPUA, dioTPUB;
 	
 	private static int action = print;
 	private static int timeToToggle = 0;
@@ -57,23 +59,28 @@ public class DioTest extends Task {
 	
 	private static void initializeIOs(boolean out) {
 		// MPIOSM
+		dioMPIOSM = new MPIOSM_DIO[16];
 		for(int i = 0; i < 16; i++) {
-			MPIOSM_DIO.init(i, out);
+			dioMPIOSM[i] = new MPIOSM_DIO(i, out);
 		}
 		
 		// TPU-A
+		dioTPUA = new TPU_DIO[16];
 		for(int i = 0; i < 16; i++) {
-			TPU_DIO.init(TPUA, i, out);
+			dioTPUA[i] = new TPU_DIO(TPUA, i, out);
 		}
 		
 		// TPU-B
+		dioTPUB = new TPU_DIO[16];
 		for(int i = 0; i < 16; i++) {
-			TPU_DIO.init(TPUB, i, out);
+			dioTPUB[i] = new TPU_DIO(TPUB, i, out);
 		}
 		
 		// MPWMSM
-		for(int i = 0; i < 10; i++) {
-			MPWMSM_DIO.init(i, out);
+		dioMPWMSM = new MPWMSM_DIO[20];
+		for (int i = 0; i < 4; i++) {
+			dioMPWMSM[i] = new MPWMSM_DIO(i, out);
+			dioMPWMSM[i + 16] = new MPWMSM_DIO(i + 16, out);
 		}
 		
 		// QADC-A
@@ -90,22 +97,23 @@ public class DioTest extends Task {
 	private static void toggleLEDs() {
 		// MPIOSM
 		for(int i = 0; i < 16; i++) {
-			MPIOSM_DIO.set(i, !ledStat);
+			dioMPIOSM[i].set(!ledStat);
 		}
 		
 		// TPU-A
 		for(int i = 0; i < 16; i++) {
-			TPU_DIO.set(TPUA, i, !ledStat);
+			dioTPUA[i].set(!ledStat);
 		}
 		
 		// TPU-B
 		for(int i = 0; i < 16; i++) {
-			TPU_DIO.set(TPUB, i, !ledStat);
+			dioTPUB[i].set(!ledStat);
 		}
 		
 		// MPWMSM
-		for(int i = 0; i < 10; i++) {
-			MPWMSM_DIO.set(i, !ledStat);
+		for(int i = 0; i < 4; i++) {
+			dioMPWMSM[i].set(!ledStat);
+			dioMPWMSM[i + 16].set(!ledStat);
 		}
 		
 		// QADC-A
@@ -127,7 +135,7 @@ public class DioTest extends Task {
 		for(int i = 0; i < 16; i++) {
 			System.out.print(i);
 			System.out.print(": ");
-			System.out.print(getState(MPIOSM_DIO.get(i)));
+			System.out.print(getState(dioMPIOSM[i].get()));
 			System.out.print('\t');
 		}
 		System.out.println();
@@ -138,7 +146,7 @@ public class DioTest extends Task {
 		for(int i = 0; i < 16; i++) {
 			System.out.print(i);
 			System.out.print(": ");
-			System.out.print(getState(TPU_DIO.get(TPUA, i)));
+			System.out.print(getState(dioTPUA[i].get()));
 			System.out.print('\t');
 		}
 		System.out.println();
@@ -149,7 +157,7 @@ public class DioTest extends Task {
 		for(int i = 0; i < 16; i++) {
 			System.out.print(i);
 			System.out.print(": ");
-			System.out.print(getState(TPU_DIO.get(TPUB, i)));
+			System.out.print(getState(dioTPUB[i].get()));
 			System.out.print('\t');
 		}
 		System.out.println();
@@ -157,10 +165,16 @@ public class DioTest extends Task {
 		
 		// MPWMSM
 		System.out.println("MPWMSM:");
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i < 4; i++) {
 			System.out.print(i);
 			System.out.print(": ");
-			System.out.print(getState(MPWMSM_DIO.get(i)));
+			System.out.print(getState(dioMPWMSM[i].get()));
+			System.out.print('\t');
+		}
+		for(int i = 16; i < 20; i++) {
+			System.out.print(i);
+			System.out.print(": ");
+			System.out.print(getState(dioMPWMSM[i].get()));
 			System.out.print('\t');
 		}
 		
@@ -241,11 +255,12 @@ public class DioTest extends Task {
 	}
 	
 	static {
-		// Initialize SCI1 and set stdout to SCI1
-		SCI2.start(9600, SCI2.NO_PARITY, (short)8);
-		System.out = new PrintStream(SCI2.out);
-		System.err = new PrintStream(SCI2.out);
-		System.in = SCI2.in;
+		// Initialize SCI2 and set stdout to SCI2
+		SCI sci = SCI.getInstance(SCI.pSCI2);
+		sci.start(9600, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci.out);
+		System.err = new PrintStream(sci.out);
+		System.in = sci.in;
 		
 		System.out.println("DIO-Test");
 		System.out.println();
