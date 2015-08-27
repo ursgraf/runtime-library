@@ -26,8 +26,8 @@ import ch.ntb.inf.deep.runtime.util.ByteFifo;
 import ch.ntb.inf.deep.unsafe.US;
 
 /**
- * <p>Interrupt controlled driver for the <i>Serial Communication Interface 1</i>
- * of the Freescale MPC555.</p>
+ * <p>Interrupt controlled driver for the <i>Serial Communication Interface 1</i> or
+ * the <i>Serial Communication Interface 2</i> of the Freescale MPC555.</p>
  * <p><b>Remember:</b><br>
  * Depending on the baudrate configured, the effective baudrate can be different.
  * This may cause miss interpretation of the bytes sent at the receiver! For more
