@@ -99,7 +99,7 @@ public class RTBoard implements IntbMpc555HB {
 	 *            If <code>true</code> the channel will be an output, otherwise it will be an input.
 	 */
 	public static void dioInit(int channel, boolean out) {
-		if (channel > 0 && channel < 8) dio[channel] = new TPU_DIO(true, channel, out);
+		if (channel >= 0 && channel < 8) dio[channel] = new TPU_DIO(true, channel, out);
 	}
 
 
