@@ -48,6 +48,7 @@ public class Heap implements IdeepCompilerConstants {
 	private static int freeHeap;	// size of free heap in bytes
 	private static int heapPtr;		// used for allocation before Heap class is initialized
 	private static int threshold;	// limit, when gc is started 
+	@SuppressWarnings("unused")
 	private static boolean mark;	// phase of gc
 	private static int nofRoots;	// number of roots in all classes
 	private static int[] roots;		// addresses of roots in all classes

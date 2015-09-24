@@ -109,6 +109,7 @@ public class UtilTest {
 		CmdTransmitter.sendDone();
 	}	
 
+	@SuppressWarnings("unused")
 	@Test
 	public static void matrix4(){
 		Matrix A = Matrix.rot3x(30);
