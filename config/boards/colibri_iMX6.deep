@@ -1,13 +1,13 @@
 #deep-1
 
 meta {
-	version = "2012-06-14";
+	version = "2015-10-04";
 	description = "Board description file for Colibri iMX6 board";
 }
 
-board colibri.iMX6 {
-	description = "NTB MPC555 header board";
-	cputype = mpc555;
+board colibri_iMX6 {
+	description = "ARM header board";
+	cputype = iMX6;
 	
 	sysconst {
 		extRamSize   = 0x200000 + IMB;					# 2M external RAM
@@ -105,14 +105,6 @@ board colibri.iMX6 {
 	reginit {
 		SYPCR = 0xFFFFFF83;								# Disable Watchdog, enable bus monitor
 		SIUMCR = 0x40000;								# Set Freeze when LWP0 is active
-		BR0 = 0x01000003;								# Set base address for chip select CS0 (external Flash)
-		OR0 = 0xFFC00020; 								# Set address mask for CS0 to 4M, address type mask = 0, 2 + 2 wait states
-		BR1 = 0x0800003;								# Set base address for chip select CS1 (external RAM)
-		OR1 = 0xFFE00020;								# Set address mask for CS0 to 2M, address type mask = 0, 2 + 2 wait states
-		ICTRL = 7;										# ???
-		RSR = -1;										# Set reset status register back
-		DER = 0x3143400F;								# Set debug enable register // 0x31C3400F includes program exc
-		SRR1 = SRR1init;								# Set Machine Status Save/Restore Register 1
 	}
 
 	runconfiguration BootFromRam {
@@ -126,8 +118,8 @@ board colibri.iMX6 {
 				default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;      
 		}
 		reginit {
-			DMBR = 0x3;									# Dual mapping enable, map from address 0, use CS1 (external RAM)
-			DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
+#			DMBR = 0x3;									# Dual mapping enable, map from address 0, use CS1 (external RAM)
+#			DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
 		}
 	}
 
@@ -142,8 +134,8 @@ board colibri.iMX6 {
 				default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;      
 		}
 		reginit {
-			DMBR = 0x3;									# Dual mapping enable, map from address 0, use CS1 (external RAM)
-			DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
+#			DMBR = 0x3;									# Dual mapping enable, map from address 0, use CS1 (external RAM)
+#			DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
 		}
 	}
 
@@ -158,8 +150,8 @@ board colibri.iMX6 {
 				default: code@ExternalFlash.Default, const@ExternalFlash.Default, var@ExternalRam.Default;
 		}
 		reginit {
-			DMBR = 0x1;									# Dual mapping enable, map from address 0, use CS0 (external Flash)
-			DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
+#			DMBR = 0x1;									# Dual mapping enable, map from address 0, use CS0 (external Flash)
+#			DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
 		}
 	}
 }

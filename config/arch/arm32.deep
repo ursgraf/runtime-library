@@ -32,66 +32,66 @@ arch arm32 {
 			addr = 0;
 			size = 4;
 		}
-		 register R1 {
-		        type = GPR;
-		        addr = 1;
-		        size = 4;
-		 }
-		 register R2 {
+		register R1 {
+			type = GPR;
+			addr = 1;
+			size = 4;
+		}
+		register R2 {
 		        type = GPR;
 		        addr = 2;
 		        size = 4;
-		 }
-		 register R3 {
+		}
+		register R3 {
 		        type = GPR;
 		        addr = 3;
 		        size = 4;
-		 }
-		 register R4 {
+		}
+		register R4 {
 		        type = GPR;
 		        addr = 4;
 		        size = 4;
-		 }
-		 register R5 {
+		}
+		register R5 {
 		        type = GPR;
 		        addr = 5;
 		        size = 4;
-		 }
-		 register R6 {
+		}
+		register R6 {
 		        type = GPR;
 		        addr = 6;
 		        size = 4;
-		 }
-		 register R7 {
+		}
+		register R7 {
 		        type = GPR;
 		        addr = 7;
 		        size = 4;
-		 }
-		 register R8 {
+		}
+		register R8 {
 		        type = GPR;
 		        addr = 8;
 		        size = 4;
-		 }
-		 register R9 {
+		}
+		register R9 {
 		        type = GPR;
 		        addr = 9;
 		        size = 4;
-		 }
-		 register R10 {
+		}
+		register R10 {
 		        type = GPR;
 		        addr = 10;
 		        size = 4;
-		 }
-		 register R11 {
+		}
+		register R11 {
 		        type = GPR;
 		        addr = 11;
 		        size = 4;
-		 }
-		 register R12 {
+		}
+		register R12 {
 		        type = GPR;
 		        addr = 12;
 		        size = 4;
-		 }
+		}
 		 register R13 {
 		        type = GPR;
 		        addr = 13;
@@ -109,17 +109,17 @@ arch arm32 {
 		 }
 		 
 		 # floating point registers
-		 register FPR0 {
+		 register D0 {
 		        type = FPR;
 		        addr = 0;
 		        size = 8;
 		 }
-		 register FPR1 {
+		 register D1 {
 		        type = FPR;
 		        addr = 1;
 		        size = 8;
 		 }
-		 register FPR2 {
+		 register D2 {
 		        type = FPR;
 		        addr = 2;
 		        size = 8;
