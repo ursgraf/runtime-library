@@ -90,62 +90,93 @@ public class SCI extends Interrupt {
 	private boolean txDone;
 	private static SCI sci1, sci2;
 
-//	@SuppressWarnings("unused")
-//	private int intCtr;	// for debugging purposes
+	@SuppressWarnings("unused")
+	static private int intCtr1, intCtr2;	// for debugging purposes
 
 	/**
-	 * 
-	 * @param sciNr
-	 * @return
+	 * Returns an instance of <i>Serial Communication Interface</i> 
+	 * operating the SCI1 or SCI2.
+	 * @param sciNr 0 selects SCI1, 1 selects SCI2
+	 * @return Instance of SCI
 	 */
 	public static SCI getInstance(int sciNr) {
 		if (sciNr == pSCI1) {
-			if (sci1 == null) sci1 = new SCI(0);
+			if (sci1 == null) {
+				sci1 = new SCI(0);
+				SCI rxInt = new SCI(-1);
+				rxInt.enableRegAdr = QSMCM.SCC1R1;
+				rxInt.enBitMask = 1 << QSMCM.scc1r1RIE;
+				rxInt.flagRegAdr = QSMCM.SC1SR;
+				rxInt.flagMask = 1 << QSMCM.sc1srRDRF;
+				rxInt.diff = 0;
+				Interrupt.install(rxInt, 5, true);		
+
+				SCI txInt = new SCI(-1);
+				txInt.enableRegAdr = QSMCM.SCC1R1;
+				txInt.enBitMask = 1 << QSMCM.scc1r1TIE;
+				txInt.flagRegAdr = QSMCM.SC1SR;
+				txInt.flagMask = 1 << QSMCM.sc1srTDRE;
+				txInt.txQueue = sci1.txQueue;
+				txInt.diff = 0;
+				Interrupt.install(txInt, 5, true);		
+			}
 			return sci1;
 		} else if (sciNr == pSCI2) {
 			if (sci2 == null) {
 				sci2 = new SCI(SCC2R0 - SCC1R0);
+				SCI rxInt = new SCI(-1);
+				rxInt.enableRegAdr = QSMCM.SCC2R1;
+				rxInt.enBitMask = 1 << QSMCM.scc1r1RIE;
+				rxInt.flagRegAdr = QSMCM.SC2SR;
+				rxInt.flagMask = 1 << QSMCM.sc1srRDRF;
+				rxInt.diff = SCC2R0 - SCC1R0;
+				Interrupt.install(rxInt, 5, true);		
+
+				SCI txInt = new SCI(-1);
+				txInt.enableRegAdr = QSMCM.SCC2R1;
+				txInt.enBitMask = 1 << QSMCM.scc1r1TIE;
+				txInt.flagRegAdr = QSMCM.SC2SR;
+				txInt.flagMask = 1 << QSMCM.sc1srTDRE;
+				txInt.diff = SCC2R0 - SCC1R0;
+				Interrupt.install(txInt, 5, true);		
 			}
 			return sci2;
 		} else return null;
 	}
 	
 	private SCI(int regDiff) {
-		diff = regDiff;
-		out = new SCIOutputStream(this);
-		in = new SCIInputStream(this);
-		QSMCM.init();
+		if (regDiff >= 0) {
+			diff = regDiff;
+			out = new SCIOutputStream(this);
+			in = new SCIInputStream(this);
+			QSMCM.init();
 
-		rxQueue = new ByteFifo(QUEUE_LEN);
-		txQueue = new ByteFifo(QUEUE_LEN);
-
-		enableRegAdr = QSMCM.SCC1R1 + diff;
-		enBitMask = (1 << QSMCM.scc1r1TIE) | (1 << QSMCM.scc1r1RIE);
-		flagRegAdr = QSMCM.SC1SR + diff;
-		flagMask = (1 << QSMCM.sc1srTDRE) | (1 << QSMCM.sc1srRDRF);
-
-		Interrupt.install(this, 5, true);		
+			rxQueue = new ByteFifo(QUEUE_LEN);
+			txQueue = new ByteFifo(QUEUE_LEN);
+		}
 	}
 	
 	/* (non-Javadoc)
 	 * @see ch.ntb.inf.deep.runtime.mpc555.Interrupt#action()
 	 */
 	public void action() {
-//		intCtr++;	
+		SCI sci;
+		if (diff == 0) sci = sci1; else sci = sci2;
+//		if (diff == 0) intCtr1++; else intCtr2++;
 		if ((US.GET2(flagRegAdr) & (1 << QSMCM.sc1srRDRF)) != 0) {
 			short word = US.GET2(QSMCM.SC1DR + diff);
-			rxQueue.enqueue((byte) word);
+			sci.rxQueue.enqueue((byte) word);
 		} else {
-			if (txQueue.availToRead() > 0) {
+			if (sci.txQueue.availToRead() > 0) {
 				int d = 0;
 				try {
-					d = txQueue.dequeue();
+					d = sci.txQueue.dequeue();
 				} catch (IOException e) {}
 				US.PUT2(QSMCM.SC1DR + diff, d);
 			} else {
-				txDone = true;
-				sccr1 &= ~(1 << QSMCM.scc1r1TIE);
-				US.PUT2(QSMCM.SCC1R1 + diff, sccr1);
+				sci.txDone = true;
+				sci.sccr1 &= ~(1 << QSMCM.scc1r1TIE);
+				US.PUT2(QSMCM.SCC1R1 + diff, sci.sccr1);
 			}
 		}
 	}
