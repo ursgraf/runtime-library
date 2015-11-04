@@ -30,11 +30,13 @@ import ch.ntb.inf.deep.marker.Modified;
  */
 /* Changes:
  * 27.5.2014	Urs Graf	initial import and modified
+ * 3.11.2015	Urs Graf	writing to out stream simplified
  */
 public class PrintStream extends OutputStream implements Modified {
 	private static final boolean enableCR = true;
 	
-	private static final char [ ] chars = new char[32];
+	private static final byte [ ] chars = new byte[32];
+	private static final char [ ] charsChar = new char[32];
 	private OutputStream out;
 	
 	public PrintStream(OutputStream out){
@@ -198,13 +200,12 @@ public class PrintStream extends OutputStream implements Modified {
 				}
 				int ctr = chars.length;
 				while (val != 0) {
-					chars[--ctr] = (char) ('0' + (val % 10));
+					chars[--ctr] = (byte) ('0' + (val % 10));
 					val /= 10;
 				}
 				if (neg)
 					chars[--ctr] = '-';
-				for (int i = ctr; i < chars.length; i++)
-					out.write((byte)chars[i]);
+				out.write(chars, ctr, chars.length-ctr);
 			}
 		} catch(IOException e) {e.printStackTrace();} 
 	}
@@ -234,7 +235,7 @@ public class PrintStream extends OutputStream implements Modified {
 				}
 				int ctr = chars.length;
 				while (val != 0) {
-					chars[--ctr] = (char) ('0' + (val % 10));
+					chars[--ctr] = (byte) ('0' + (val % 10));
 					val /= 10;
 				}
 				if (neg)
@@ -260,10 +261,10 @@ public class PrintStream extends OutputStream implements Modified {
 	 * @param val the float to write.
 	 */
 	public void print(float val){
-		int	nofChars = Double.doubleToChars(val, 6, chars);
-		int	n = 0;
+		int	nofChars = Double.doubleToChars(val, 6, charsChar);
+		for (int i = 0; i < nofChars; i++) chars[i] = (byte)charsChar[i];
 		try {
-			while (n < nofChars) {out.write((byte)chars[n]); n++;}
+			out.write(chars, 0, nofChars);
 		} catch(IOException e) {e.printStackTrace();}
 	}
 	
@@ -283,10 +284,10 @@ public class PrintStream extends OutputStream implements Modified {
 	 * @param val the double to write.
 	 */
 	public void print(double val){
-		int	nofChars = Double.doubleToChars(val, 15, chars);
-		int	n = 0;
+		int	nofChars = Double.doubleToChars(val, 15, charsChar);
+		for (int i = 0; i < nofChars; i++) chars[i] = (byte)charsChar[i];
 		try {
-			while (n < nofChars) {out.write((byte)chars[n]); n++;}
+			out.write(chars, 0, nofChars);
 		} catch(IOException e) {e.printStackTrace();}
 	}
 	
@@ -310,7 +311,7 @@ public class PrintStream extends OutputStream implements Modified {
 			else {
 				int ctr = chars.length;
 				while (val != 0) {
-					char ch = (char) ('0' + (val & 0xf));
+					byte ch = (byte) ('0' + (val & 0xf));
 					if (ch > '9') ch += 39;
 					chars[--ctr] = ch;
 					val = val >>> 4;
@@ -343,7 +344,7 @@ public class PrintStream extends OutputStream implements Modified {
 			else {
 				int ctr = chars.length;
 				while (val != 0) {
-					char ch = (char) ('0' + (val & 0xf));
+					byte ch = (byte) ('0' + (val & 0xf));
 					if (ch > '9') ch += 39;
 					chars[--ctr] = ch;
 					val = val >>> 4;
