@@ -48,7 +48,6 @@ public class MPWMSM_PWM implements IntbMpc555HB {
 	/** 
 	 * Update the PWM signal at the given channel.
 	 * The period and high time have to be a multiple of the TIME_BASE ({@value TIME_BASE}ns)!
-	 * @param channel	Module channel to update. Allowed channels are 0..3 and 6..9 or 0..3 and 16..19.
 	 * @param period	Period of the PWM signal. Have to be a multiple of the MPWMSM time base!
 	 * @param highTime	High time of the PWM signal. Have to be a multiple of the MPWMSM time base!
 	 */
