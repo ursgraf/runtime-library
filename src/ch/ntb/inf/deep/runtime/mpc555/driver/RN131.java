@@ -19,6 +19,16 @@ import ch.ntb.inf.deep.runtime.util.SLIP;
  * The WiFly module can also be configured with a Terminal Program like PuTTY with a baud rate
  * of 115200 kbps, no flow control. More information to the RN131WiFly can be found at 
  * <a href = "http://www.microchip.com/wwwproducts/Devices.aspx?dDocName=en558369">microchip.com</a><br>
+ * <br>
+ * 
+ * The WiFly module has to be configured as follows:
+ * <p><code>
+ * factory RESET<br>
+ * set uart baudrate 115200<br>
+ * set sys printlvl 0<br>
+ * set uart mode 0x21<br>
+ * savee<br>
+ * </code></p>
  */
 
 public class RN131 extends Task {
