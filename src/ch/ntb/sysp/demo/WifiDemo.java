@@ -21,13 +21,14 @@ public class WifiDemo extends Task {
 		config.in = sci.in;
 		config.out = sci.out;
 		config.reset = new MPIOSM_DIO(11, true);
-		
+
+		config.configure = false;
 		config.ssid = "SysPNet_TeamXY";
 		config.localIP = "169.254.1.1";
 		config.remoteIP = "169.254.1.2";
-		config.autoConnect = false;
 		config.apMode = true;
-		config.configure = false;
+		config.autoConnect = false;
+		config.useExternalAntenna = true;
 		
 		wifi = new RN131(config);
 	}
@@ -98,10 +99,10 @@ public class WifiDemo extends Task {
 		
 		try {
 			task = new WifiDemo();
+			Task.install(task);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		Task.install(task);
 	}
 }
