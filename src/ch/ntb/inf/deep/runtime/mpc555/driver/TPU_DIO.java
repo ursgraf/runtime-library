@@ -31,7 +31,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * Each 16 channels of both time processing units can be used as
  * general purpose in- or output.
  */
-public class TPU_DIO implements IntbMpc555HB {
+public class TPU_DIO implements IntbMpc555HB, DigitalOutput {
 
 	int channel;
 	int diff;
