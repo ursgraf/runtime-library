@@ -69,8 +69,6 @@ public class TPU_FQD implements IntbMpc555HB{
 		s &= ~(0xF << shiftl);
 		s |= (0x6 << shiftl);
 		US.PUT2(reg, s);
-		System.out.printHexln(s);
-		System.out.printHexln(reg);
 
 		// position count = 0
 		US.PUT2(TPURAM0_A + diff + 0x10 * channel + 2, 0);
