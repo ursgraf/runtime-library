@@ -43,7 +43,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * For further informations please read the corresponding documentation on the <i>NTB
  * Infoportal</i>.
  */
-public class MPIOSM_DIO implements IntbMpc555HB {
+public class MPIOSM_DIO implements IntbMpc555HB, DigitalOutput {
 
 	public static final boolean OUTPUT = true;
 	public static final boolean INPUT = false;
@@ -64,20 +64,18 @@ public class MPIOSM_DIO implements IntbMpc555HB {
 		US.PUT2(MPIOSMDDR,s);
 	}
 
-	/**
-	 * Returns the current state of the TTL signal on the given pin.
-	 * 
-	 * @return the current state of the TTL at the given pin. <i>true</i> means logic 1 and <i>false</i> logic 0.
+	/* (non-Javadoc)
+	 * @see ch.ntb.inf.deep.runtime.mpc555.driver.DigitalInput#get()
 	 */
+	@Override
 	public boolean get() {
 		return (US.GET2(MPIOSMDR) & (1 << channel)) != 0;
 	}
 
-	/**
-	 * Set the TTL signal at the given pin.
-	 * 
-	 * @param val		Value to set. <i>true</i> means logic 1 and <i>false</i> logic 0.
+	/* (non-Javadoc)
+	 * @see ch.ntb.inf.deep.runtime.mpc555.driver.DigitalOutput#set(boolean)
 	 */
+	@Override
 	public void set(boolean val) {
 		short s = US.GET2(MPIOSMDR);
 		if(val) s |= (1 << channel);
