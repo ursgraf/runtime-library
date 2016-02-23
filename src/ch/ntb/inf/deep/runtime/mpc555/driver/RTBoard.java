@@ -146,7 +146,7 @@ public class RTBoard implements IntbMpc555HB {
 
 	/**
 	 * Initializes two digital input channels as encoder input.<br>
-	 * <code>channel</code> can be in the range of <code>0..3</code>.
+	 * <code>channel</code> can be in the range of <code>0..6</code>.
 	 * <br>
 	 * <b>Important:</b><br>
 	 * As two digital inputs are necessary for a single encoder input,
