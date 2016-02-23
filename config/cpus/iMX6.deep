@@ -12,18 +12,13 @@ cpu iMX6 {
 	sysconst {
 		IMB = 0x0;										# Internal Memory Base
 		
-		SRAMA_BaseAddr = IMB + 0x3F9800;				# Internal SRAM A Base Address
+		SRAMA_BaseAddr = IMB + 0;				# Internal SRAM A Base Address
 		SRAMA_Size = 0x2800;							# Internal SRAM A Size (10 KiB)
 		SRAMB_BaseAddr = SRAMA_BaseAddr + SRAMA_Size;	# Internal SRAM B Base Address
 		SRAMB_Size = 0x4000;							# Internal SRAM B Size (16 KiB)
 		
-		CMFA_BaseAddr = IMB + 0x0;						# Internal Flash A Base Address
-		CMFA_Size = 0x40000;							# Internal Flash A Size (256 KiB)
-		CMFB_BaseAddr = CMFA_BaseAddr + CMFA_Size;		# Internal Flash B Base Address
-		CMFB_Size = 0x30000;							# Internal Flash B Size (192 KiB)
-		
 		excpCodeBase = IMB;								# Base address for exception code
-		excpCodeSize = 0x4000;							# Exception code size
+		excpCodeSize = 0x1000;							# Exception code size
 		
 		sysTabBaseAddr = IMB + excpCodeSize;			# Place system table behind exception code
 		
@@ -42,9 +37,14 @@ cpu iMX6 {
 			technology = ram;
 		}
 		
-		segment InternalRam.SysTab {
-			base = sysTabBaseAddr;
-			attributes = read, write, systab;
+		segment InternalRam.ExceptionCode {				# Exception code in dual mapped address space
+			base = excpCodeBase;
+			size = excpCodeSize;
+		}
+
+		segment InternalRam.SysTab {					# System table in dual mapped address space
+			base = excpCodeBase + excpCodeSize;			# Place system table behind exception code
+			size = excpCodeSize;
 		}
 		
 		segment InternalRam.Constants {
@@ -59,44 +59,14 @@ cpu iMX6 {
 			attributes = read, write, var;
 		}
 		
+		segment InternalRam.Default {
+			attributes = read, write, const, code, var;
+		}
 
 		segment InternalRam.Stack {
 			attributes = read, write, stack;
 			size = stackSize;
 			base = SRAMB_BaseAddr + SRAMB_Size - stackSize ;
-		}
-		
-		# ===== Internal Flash =====
-		device InternalFlash {
-			attributes = read;
-			width = 4; # byte
-			size = CMFA_Size + CMFB_Size;
-			base = CMFA_BaseAddr;
-			technology = flash;
-			memorytype = "mpc555interalflash";
-			
-			memorysectorarray A {
-			  base = CMFA_BaseAddr;
-			  sectorsize = 0x08000;
-			  nofsectors = 8;
-			}
-			
-			memorysectorarray B {
-			  base = CMFB_BaseAddr;
-			  sectorsize = 0x08000;
-			  nofsectors = 6;
-			}
-		}
-				
-		segment InternalFlash.A {
-			base = CMFA_BaseAddr;
-			size = CMFA_Size;
-		}
-		
-		segment InternalFlash.B {
-			base =  CMFB_BaseAddr;
-			size = CMFB_Size;
-
 		}
 	}
 	
@@ -115,15 +85,44 @@ cpu iMX6 {
 			 size = 4;
 		}
 
-		# input/output registers
-		 register SIUMCR {
+		# ARM MP core registers
+		
+		register GTCR_L {
 			 type = IOR;
-			 addr = 0x2FC000;
+			 addr = 0xA00200;
 			 size = 4;
 		}
-		 register SYPCR {
+		register GTCR_U {
 			 type = IOR;
-			 addr = 0x2FC004;
+			 addr = 0xA00204;
+			 size = 4;
+		}
+		register GTCR {
+			 type = IOR;
+			 addr = 0xA00208;
+			 size = 4;
+		}
+
+		# input/output registers
+		
+		register GPIO2_DR {
+			 type = IOR;
+			 addr = 0x20A0000;
+			 size = 4;
+		}
+		register GPIO2_GDIR {
+			 type = IOR;
+			 addr = 0x20A0004;
+			 size = 4;
+		}
+		register GPIO2_PSR {
+			 type = IOR;
+			 addr = 0x20A0008;
+			 size = 4;
+		}
+		register IOMUXC_NAND_DATA02 {
+			 type = IOR;
+			 addr = 0x20E028C;
 			 size = 4;
 		}
 

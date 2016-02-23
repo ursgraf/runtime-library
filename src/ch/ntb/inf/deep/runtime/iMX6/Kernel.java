@@ -115,7 +115,7 @@ public class Kernel implements Iarm32, Icolibri_iMX6, IdeepCompilerConstants {
 	
 	private static void boot() {
 //		blink(1);
-		US.PUT4(SIUMCR, 0x00040000);	// internal arb., no data show cycles, BDM operation, CS functions,
+//		US.PUT4(SIUMCR, 0x00040000);	// internal arb., no data show cycles, BDM operation, CS functions,
 			// output FREEZE, no lock, use data & address bus, use as RSTCONF, no reserv. logic
 //		US.PUT4(PLPRCR, (clockFrequency / 4000000 - 1) << 20);	// MF = 9, 40MHz operation with 4MHz quarz
 //		int reg;
@@ -183,7 +183,7 @@ public class Kernel implements Iarm32, Icolibri_iMX6, IdeepCompilerConstants {
 			int clinitAddr = US.GET4(constBlkBase + cblkClinitAddrOffset);
 			if (clinitAddr != -1) {	
 				if (clinitAddr != kernelClinitAddr) {	// skip kernel 
-					US.PUTSPR(LR, clinitAddr);
+//					US.PUTSPR(LR, clinitAddr);
 					US.ASM("bclrl always, 0");
 				} else {	// kernel
 					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/iMX6/Kernel/loop");

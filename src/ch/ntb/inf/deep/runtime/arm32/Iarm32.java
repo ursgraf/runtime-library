@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.arm32;
 
-// Auto generated file (2015-10-06 07:18:50)
+// Auto generated file (2016-02-09 16:04:52)
 
 public interface Iarm32 {
 
@@ -40,10 +40,4 @@ public interface Iarm32 {
 	public static final int FPR13 = 0xd;
 	public static final int FPR14 = 0xe;
 	public static final int FPR15 = 0xf;
-	public static final int SPR1 = 0x1;
-	public static final int XER = 0x1;
-	public static final int SPR8 = 0x8;
-	public static final int LR = 0x8;
-	public static final int SPR9 = 0x9;
-	public static final int CTR = 0x9;
 }

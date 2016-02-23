@@ -190,36 +190,5 @@ arch arm32 {
 		        size = 8;
 		 }
 		 
-		 # special purpose register
-		 register SPR1 {
-		        type = SPR;
-		        addr = 1;
-		        size = 4;
-		 }
-		 register XER {
-		        type = SPR;
-		        addr = 1;
-		        size = 4;
-		 }
-		 register SPR8 {
-		        type = SPR;
-		        addr = 8;
-		        size = 4;
-		 }
-		 register LR {
-		        type = SPR;
-		        addr = 8;
-		        size = 4;
-		 }
-		 register SPR9 {
-		        type = SPR;
-		        addr = 9;
-		        size = 4;
-		 }
-		 register CTR {
-		        type = SPR;
-		        addr = 9;
-		        size = 4;
-		 }
     }
 }

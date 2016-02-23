@@ -32,14 +32,52 @@ import ch.ntb.inf.deep.unsafe.US;
  * 
  * @author Urs Graf
  */
-class Reset extends PPCException implements Iarm32, Icolibri_iMX6, IdeepCompilerConstants {
+class Reset extends PPCException implements Iarm32, IiMX6, Icolibri_iMX6, IdeepCompilerConstants {
 	
 	static void reset() {
-		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
-		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 8);
-		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
-		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
-		US.ASM("rfi");
+//		US.ASM("setend BE"); // data memory organized in big endian format
+//		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
+		
+//		int a = US.GET4(0x18000000);
+//		int c = a + b;
+		
+		int a = 0;
+		US.PUT4(GPIO2_GDIR, 4);
+		while (true) {
+			a ^= -1;
+//			a <<= 1;
+			US.PUT4(GPIO2_DR, a);
+//			if (a == 16) a = 1;
+			for (int i = 1000000; i > 0; i--); 
+//			US.PUT4(GPIO2_DR, 0);
+//			for (int i = 10000000; i > 0; i--); 
+//			US.PUT4(GPIO2_DR, 4);
+//			for (int i = 10000000; i > 0; i--); 
+//			US.PUT4(GPIO2_DR, 0);
+//			for (int i = 10000000; i > 0; i--); 
+		}
+//		US.PUT4(GPIO2_DR, 0);
+//		US.PUT4(GPIO2_DR, 4);
+//		US.PUT4(GPIO2_DR, 0);
+//		
+//		while(true);
+//		int b = 0x10;
+//		while (b != 0) {
+//			b--;
+//			a += 0x11;
+//		}
+//		b++;
+//		US.ASM("b -8"); 
+//		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
+//		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 8);
+//		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
+//		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
+//		int c = 0x1122;
+//		while (c != 0) c++;
+//		int d = 0x3344;
+//		while (true);
+//		US.PUTSPR(SRR0, kernelClinitAddr);
+//		US.PUTSPR(SRR1, SRR1init);
+//		US.ASM("rfi");
 	}
 }
