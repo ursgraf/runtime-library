@@ -18,48 +18,48 @@
 
 package ch.ntb.inf.deep.trglib.targettest;
 
-import ch.ntb.inf.deep.runtime.mpc555.*;
+import ch.ntb.inf.deep.runtime.mpc5200.*;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.util.Actionable;
 import ch.ntb.inf.deep.unsafe.US;
 import ch.ntb.inf.junitTarget.*;
 
-public class TaskTest implements IntbMpc555HB {
+public class TaskTestMpc5200 implements Impc5200 {
 	static int res;
 
 	@Before
 	public static void startTask() {
 		res = 1;
-		new TaskExt();
-		new ActionableImpl(2);
+		new TaskExt1();
+		new ActionableImpl1(2);
 		CmdTransmitter.sendDone();
 	}
 	
 	@Test
 	public static void testTask() {
 		Assert.assertEquals("Test1", 1, res);
-		Assert.assertEquals("Test2", 5, TaskExt.count);
+		Assert.assertEquals("Test2", 5, TaskExt1.count);
 		CmdTransmitter.sendDone();
 	}	
 
 	@Test
 	public static void testActionable() {
-		Assert.assertEquals("Test2", 5, ActionableImpl.count);
+		Assert.assertEquals("Test2", 5, ActionableImpl1.count);
 		CmdTransmitter.sendDone();
 	}	
 	
 	@Test
 	public static void testTaskTime() {
-		US.PUT2(TBSCR, 0); 	// stop timer
+		US.PUT4(XLBACR, 0); 	// stop timer
 		long time = Kernel.time();
 		int timeMs = Task.time();	
 		Assert.assertEquals("Test1", timeMs, time / 1000);
-		US.PUT2(TBSCR, 1); 	// restart timer
+		US.PUT4(XLBACR, 0x00002006); 	// restart timer
 		CmdTransmitter.sendDone();
 	}	
 }
 
-class TaskExt extends Task {
+class TaskExt1 extends Task {
 	static int count;
 	
 	public void action() {
@@ -67,12 +67,12 @@ class TaskExt extends Task {
 		if (nofActivations == 5) Task.remove(this);
 	}
 	
-	TaskExt() {
+	TaskExt1() {
 		Task.install(this);
 	}
 }
 
-class ActionableImpl implements Actionable {
+class ActionableImpl1 implements Actionable {
 	static int count;
 	static Task t;
 	
@@ -82,11 +82,11 @@ class ActionableImpl implements Actionable {
 	}
 	
 	public static void init() {
-		t = new Task(new ActionableImpl(2));
+		t = new Task(new ActionableImpl1(2));
 		Task.install(t);
 	}
 	
-	ActionableImpl(int x) {
+	ActionableImpl1(int x) {
 		count = x;
 		t = new Task(this);
 		Task.install(t);
