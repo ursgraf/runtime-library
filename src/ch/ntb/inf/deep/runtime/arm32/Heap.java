@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 - 2013 NTB University of Applied Sciences in Technology
+ * Copyright 2011 - 2015 NTB University of Applied Sciences in Technology
  * Buchs, Switzerland, http://www.ntb.ch/inf
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,16 +16,13 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.ppc32;
+package ch.ntb.inf.deep.runtime.arm32;
 
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
- * 11.11.10	NTB/Urs Graf	creation
- * 22.1.11	Urs Graf		newstring added
- * 1.1.11	Urs Graf		two- and three dimensional arrays supported
- * 1.5.12	Urs Graf		GC added
+ * 6.10.2015	NTB/Urs Graf	creation
  */
 
 /**

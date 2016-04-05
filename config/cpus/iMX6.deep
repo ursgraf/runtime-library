@@ -1,0 +1,130 @@
+#deep-1
+
+meta {
+	version = "2015-10-04";
+	description = "CPU description file for Freescale i.MX6 processor";
+}
+
+cpu iMX6 {
+	description = "Freescale i.MX6";
+	cpuarch = arm32;
+	
+	sysconst {
+		IMB = 0x0;										# Internal Memory Base
+		
+		SRAMA_BaseAddr = IMB + 0;				# Internal SRAM A Base Address
+		SRAMA_Size = 0x2800;							# Internal SRAM A Size (10 KiB)
+		SRAMB_BaseAddr = SRAMA_BaseAddr + SRAMA_Size;	# Internal SRAM B Base Address
+		SRAMB_Size = 0x4000;							# Internal SRAM B Size (16 KiB)
+		
+		excpCodeBase = IMB;								# Base address for exception code
+		excpCodeSize = 0x1000;							# Exception code size
+		
+		sysTabBaseAddr = IMB + excpCodeSize;			# Place system table behind exception code
+		
+		stackSize = 0x2000;								# Default stack size
+		SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
+	}
+	
+	memorymap {
+
+		# ===== Internal RAM =====
+		device InternalRam {
+			attributes = read, write;
+			width = 4; # byte
+			size = SRAMA_Size + SRAMB_Size;
+			base = SRAMA_BaseAddr;
+			technology = ram;
+		}
+		
+		segment InternalRam.ExceptionCode {				# Exception code in dual mapped address space
+			base = excpCodeBase;
+			size = excpCodeSize;
+		}
+
+		segment InternalRam.SysTab {					# System table in dual mapped address space
+			base = excpCodeBase + excpCodeSize;			# Place system table behind exception code
+			size = excpCodeSize;
+		}
+		
+		segment InternalRam.Constants {
+			attributes = read, write, const;
+		}
+		
+		segment InternalRam.Code {
+			attributes = read, write, code;
+		}
+		
+		segment InternalRam.Variables {
+			attributes = read, write, var;
+		}
+		
+		segment InternalRam.Default {
+			attributes = read, write, const, code, var;
+		}
+
+		segment InternalRam.Stack {
+			attributes = read, write, stack;
+			size = stackSize;
+			base = SRAMB_BaseAddr + SRAMB_Size - stackSize ;
+		}
+	}
+	
+	registermap {
+			
+		# special purpose register
+
+		 register SPR80 {
+			 type = SPR;
+			 addr = 80;
+			 size = 4;
+		}
+		 register EIE {
+			 type = SPR;
+			 addr = 80;
+			 size = 4;
+		}
+
+		# ARM MP core registers
+		
+		register GTCR_L {
+			 type = IOR;
+			 addr = 0xA00200;
+			 size = 4;
+		}
+		register GTCR_U {
+			 type = IOR;
+			 addr = 0xA00204;
+			 size = 4;
+		}
+		register GTCR {
+			 type = IOR;
+			 addr = 0xA00208;
+			 size = 4;
+		}
+
+		# input/output registers
+		
+		register GPIO2_DR {
+			 type = IOR;
+			 addr = 0x20A0000;
+			 size = 4;
+		}
+		register GPIO2_GDIR {
+			 type = IOR;
+			 addr = 0x20A0004;
+			 size = 4;
+		}
+		register GPIO2_PSR {
+			 type = IOR;
+			 addr = 0x20A0008;
+			 size = 4;
+		}
+		register IOMUXC_NAND_DATA02 {
+			 type = IOR;
+			 addr = 0x20E028C;
+			 size = 4;
+		}
+
+	}
+}

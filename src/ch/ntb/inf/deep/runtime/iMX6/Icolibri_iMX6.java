@@ -1,11 +1,10 @@
-package ch.ntb.inf.deep.runtime.mpc555;
+package ch.ntb.inf.deep.runtime.iMX6;
 
-// Auto generated file (2016-02-10 09:58:22)
+// Auto generated file (2016-02-09 16:04:52)
 
-public interface IntbMpc555HB extends Impc555 {
+public interface Icolibri_iMX6 extends IiMX6 {
 
-	// System constants of board ntbMpc555HB
-	public static final int SRR1init = 0x3802;
+	// System constants of board colibri_iMX6
 	public static final int heapSize = 0x40000;
 	public static final int dualMappedSize = 0x8000;
 	public static final int extFlashBase = 0x1000000;
