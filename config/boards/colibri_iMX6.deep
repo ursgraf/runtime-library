@@ -10,12 +10,13 @@ board colibri_iMX6 {
 	cputype = iMX6;
 	
 	sysconst {
-		extRamSize   = 0x200000 + IMB;					# 2M external RAM
-		extRamBase   = 0x800000;						# starting at 0x800000
-		extFlashSize = 0x400000;						# 4M external Flash
-		extFlashBase = 0x1000000;						# starting at 0x1000000
+		extRamSize   = 0x200000;					# 2M external RAM
+		extRamBase   = 0x10000000;						# starting at 0x800000
 		
-		dualMappedSize = 0x8000;						# 32k dual mapped memory
+		excpCodeBase = extRamBase;						# Base address for exception code
+		excpCodeSize = 0x1000;
+		
+		sysTabBaseAddr = extRamBase + excpCodeSize;
 		
 		heapSize = 0x40000;								# Default heap size
 #		SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
@@ -23,7 +24,7 @@ board colibri_iMX6 {
 	
 	memorymap {
 
-		# ===== Internal RAM =====
+		# ===== External RAM =====
 		device ExternalRam {							# External RAM device configuration
 			base = extRamBase;
 			size = extRamSize;
@@ -43,14 +44,20 @@ board colibri_iMX6 {
 		}
 
 		segment ExternalRam.Default {					# Default Segment for code, constants and class fields
-			base = extRamBase + dualMappedSize;			# Place it behind the dual mapped memory part
+			base = extRamBase + 0x2000;							# Place it behind the dual mapped memory part
 			attributes = read, write, const, code, var;
 		}
 
 		segment ExternalRam.Heap {						# Default Segment for the heap
-			base = extRamBase + extRamSize - heapSize;	# Place it at the end of the device
+			base = extRamBase + 0x400000 - heapSize;	# Place it at the end of the device
 			size = heapSize;
 			attributes = read, write, heap;
+		}
+		
+		segment ExternalRam.Stack {
+			attributes = read, write, stack;
+			size = stackSize;
+			base = extRamBase + 0x800000 - stackSize ;
 		}
 	}
 	
@@ -62,12 +69,12 @@ board colibri_iMX6 {
 	runconfiguration BootFromRam {
 		description = "load program to external ram";
 		system {
-			systemtable: systab@InternalRam.SysTab;
+			systemtable: systab@ExternalRam.SysTab;
 		}
 		modules {
-				kernel, heap: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default; 
-				exception: code@InternalRam.ExceptionCode, const@InternalRam.Default, var@InternalRam.Default;
-				default: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default;      
+				kernel, heap: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default; 
+				exception: code@ExternalRam.ExceptionCode, const@ExternalRam.Default, var@ExternalRam.Default;
+				default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;      
 		}
 		reginit {
 #			DMBR = 0x3;									# Dual mapping enable, map from address 0, use CS1 (external RAM)

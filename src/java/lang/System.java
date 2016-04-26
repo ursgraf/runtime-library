@@ -22,7 +22,6 @@ import java.io.PrintStream;
 
 import ch.ntb.inf.deep.marker.Modified;
 import ch.ntb.inf.deep.runtime.Kernel;
-import ch.ntb.inf.deep.runtime.ppc32.*;
 import ch.ntb.inf.deep.runtime.util.DummyInputStream;
 import ch.ntb.inf.deep.runtime.util.DummyOutputStream;
 import ch.ntb.inf.deep.unsafe.US;
@@ -36,7 +35,7 @@ import ch.ntb.inf.deep.unsafe.US;
 /* Changes:
  * 27.5.2014	Urs Graf	initial import and modified
  */
-public final class System implements Ippc32, Modified {
+public final class System implements Modified {
 	public static PrintStream err;
 	public static PrintStream out;
 	public static InputStream in;

@@ -19,7 +19,7 @@
 package ch.ntb.inf.deep.runtime.iMX6;
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
-import ch.ntb.inf.deep.runtime.arm32.PPCException;
+import ch.ntb.inf.deep.runtime.arm32.ARMException;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
@@ -32,14 +32,17 @@ import ch.ntb.inf.deep.unsafe.US;
  * 
  * @author Urs Graf
  */
-class Reset extends PPCException implements Iarm32, IiMX6, Icolibri_iMX6, IdeepCompilerConstants {
+class Reset extends ARMException implements Iarm32, IiMX6, Icolibri_iMX6, IdeepCompilerConstants {
 	
 	static void reset() {
 //		US.ASM("setend BE"); // data memory organized in big endian format
 //		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
 		
-//		int a = US.GET4(0x18000000);
+		US.PUT1(0x18000000, 0x11);
+		US.PUT1(0x18000001, 0x22);
+		US.PUT2(0x18000002, 0x3344);
 //		int c = a + b;
+//		US.PUT4(0x18000000, 0x11223344);
 		
 		int a = 0;
 		US.PUT4(GPIO2_GDIR, 4);
@@ -48,7 +51,7 @@ class Reset extends PPCException implements Iarm32, IiMX6, Icolibri_iMX6, IdeepC
 //			a <<= 1;
 			US.PUT4(GPIO2_DR, a);
 //			if (a == 16) a = 1;
-			for (int i = 1000000; i > 0; i--); 
+			for (int i = 500000; i > 0; i--); 
 //			US.PUT4(GPIO2_DR, 0);
 //			for (int i = 10000000; i > 0; i--); 
 //			US.PUT4(GPIO2_DR, 4);

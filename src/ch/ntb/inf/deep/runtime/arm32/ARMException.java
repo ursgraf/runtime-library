@@ -19,10 +19,10 @@
 package ch.ntb.inf.deep.runtime.arm32;
 
 /* changes:
- * 11.11.10	NTB/Urs Graf	creation
+ * 11.4.2016	NTB/Urs Graf	creation
  */
 /**
- * The base class for all the PPC exceptions.
+ * The base class for all the ARM exceptions.
  */
-public class PPCException {
+public class ARMException {
 }

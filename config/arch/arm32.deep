@@ -9,23 +9,6 @@ arch arm32 {
 
 	registermap {
 	
-		# special registers
-		register MSR {
-			type = MSR;
-			addr = 1;
-			size = 4;
-		}	
-		register CR {
-			type = CR;
-			addr = 1;
-			size = 4;
-		}
-		register FPSCR {
-			type = FPSCR;
-			addr = 1;
-			size = 4;
-		}
- 
 		# general purpose registers
 		register R0 {
 			type = GPR;
@@ -92,21 +75,24 @@ arch arm32 {
 		        addr = 12;
 		        size = 4;
 		}
-		 register R13 {
-		        type = GPR;
-		        addr = 13;
-		        size = 4;
-		 }
-		 register R14 {
-		        type = GPR;
-		        addr = 14;
-		        size = 4;
-		 }
-		 register R15 {
-		        type = GPR;
-		        addr = 15;
-		        size = 4;
-		 }
+		
+		# general purpose registers with special function
+		register SP {
+			type = GPR;
+			addr = 13;
+			size = 4;
+		}
+		register LR {
+			type = GPR;
+			addr = 14;
+			size = 4;
+		}
+		register PC {
+			type = GPR;
+			addr = 15;
+			size = 4;
+		}
+
 		 
 		 # floating point registers
 		 register D0 {

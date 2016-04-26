@@ -158,7 +158,7 @@ operatingsystem ntbSTS {
     }
 	        
     exceptionbaseclass {
-    	class = "ch/ntb/inf/deep/runtime/arm32/PPCException";
+    	class = "ch/ntb/inf/deep/runtime/arm32/ARMException";
     }
     
 	exception {

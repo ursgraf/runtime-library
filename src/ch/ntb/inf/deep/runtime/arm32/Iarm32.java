@@ -1,13 +1,13 @@
 package ch.ntb.inf.deep.runtime.arm32;
 
-// Auto generated file (2016-02-09 16:04:52)
+// Auto generated file (2016-04-11 11:48:00)
 
 public interface Iarm32 {
 
 	// Registermap for architecture "arm32"
-	public static final int MSR = 0x1;
-	public static final int CR = 0x1;
-	public static final int FPSCR = 0x1;
+	public static final int SP = 0xd;
+	public static final int LR = 0xe;
+	public static final int PC = 0xf;
 	public static final int R0 = 0x0;
 	public static final int R1 = 0x1;
 	public static final int R2 = 0x2;

@@ -12,17 +12,17 @@ cpu iMX6 {
 	sysconst {
 		IMB = 0x0;										# Internal Memory Base
 		
-		SRAMA_BaseAddr = IMB + 0;				# Internal SRAM A Base Address
+		SRAMA_BaseAddr = IMB + 0;						# Internal SRAM A Base Address
 		SRAMA_Size = 0x2800;							# Internal SRAM A Size (10 KiB)
 		SRAMB_BaseAddr = SRAMA_BaseAddr + SRAMA_Size;	# Internal SRAM B Base Address
 		SRAMB_Size = 0x4000;							# Internal SRAM B Size (16 KiB)
 		
-		excpCodeBase = IMB;								# Base address for exception code
-		excpCodeSize = 0x1000;							# Exception code size
+#		excpCodeBase = IMB;								# Base address for exception code
+#		excpCodeSize = 0x1000;							# Exception code size
 		
-		sysTabBaseAddr = IMB + excpCodeSize;			# Place system table behind exception code
+#		sysTabBaseAddr = IMB + excpCodeSize;			# Place system table behind exception code
 		
-		stackSize = 0x2000;								# Default stack size
+		stackSize = 0x10000;								# Default stack size
 		SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
 	}
 	
@@ -37,37 +37,6 @@ cpu iMX6 {
 			technology = ram;
 		}
 		
-		segment InternalRam.ExceptionCode {				# Exception code in dual mapped address space
-			base = excpCodeBase;
-			size = excpCodeSize;
-		}
-
-		segment InternalRam.SysTab {					# System table in dual mapped address space
-			base = excpCodeBase + excpCodeSize;			# Place system table behind exception code
-			size = excpCodeSize;
-		}
-		
-		segment InternalRam.Constants {
-			attributes = read, write, const;
-		}
-		
-		segment InternalRam.Code {
-			attributes = read, write, code;
-		}
-		
-		segment InternalRam.Variables {
-			attributes = read, write, var;
-		}
-		
-		segment InternalRam.Default {
-			attributes = read, write, const, code, var;
-		}
-
-		segment InternalRam.Stack {
-			attributes = read, write, stack;
-			size = stackSize;
-			base = SRAMB_BaseAddr + SRAMB_Size - stackSize ;
-		}
 	}
 	
 	registermap {
