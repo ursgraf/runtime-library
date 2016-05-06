@@ -40,8 +40,8 @@ public class MDASM_DIO implements IntbMpc555HB {
 	 */
 	public MDASM_DIO(int channel, boolean out) {
 		this.channel = channel - 11;
-		if (out) US.PUT2(MDASM11SCR + channel * 8, 8);
-		else US.PUT2(MDASM11SCR + channel * 8, 3);
+		if (out) US.PUT2(MDASM11SCR + this.channel * 8, 8);
+		else US.PUT2(MDASM11SCR + this.channel * 8, 3);
 	}
 	
 	
