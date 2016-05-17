@@ -61,37 +61,39 @@ public class Heap implements IdeepCompilerConstants {
 	 */
 	public static int sysTabBaseAddr;
 	
-//	// called by new	
-//	@SuppressWarnings("unused")
-//	private static int newObject(int ref) {	
-//		int size = US.GET4(ref) + 8;
+	// called by new	
+	@SuppressWarnings("unused")
+	private static int newObject(int ref) {	
+		int size = US.GET4(ref) + 8;
 //		int blockAddr = getBlock(size);
-//		US.PUT4(blockAddr, 0x80000000 | size);	// set mark bit and size
-//		US.PUT4(blockAddr + 4, ref);	// write tag
-//		ref = blockAddr + 8;
-//		int i = ref;
-//		while (i < blockAddr + size) {US.PUT4(i, 0); i += 4;}
-//		return ref;
-//	}	
-//
-//	// called by newarray	
-//	private static int newPrimTypeArray(int nofElements, int type, int ref) {
-////		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
-//		int elementSize;
-//		if (type == 7 || type == 11) elementSize = 8;
-//		else if (type == 6 || type == 10) elementSize = 4;
-//		else if (type == 5 || type == 9) elementSize = 2;
-//		else elementSize = 1;
-//		int size = nofElements * elementSize + 8;
-//		int blockAddr = getBlock(size);
-//		US.PUT4(blockAddr, 0x80810000 | nofElements);	// set mark and array bit, set primitive array bit, write length
-//		US.PUT4(blockAddr + 4, ref);	// write tag
-//		ref = blockAddr + 8;
-//		int i = ref;
-//		while (i < blockAddr + size) {US.PUT4(i, 0); i += 4;}
-//		return ref;
-//	}
-//	
+		int blockAddr = 17;
+		US.PUT4(blockAddr, 0x80000000 | size);	// set mark bit and size
+		US.PUT4(blockAddr + 4, ref);	// write tag
+		ref = blockAddr + 8;
+		int i = ref;
+		while (i < blockAddr + size) {US.PUT4(i, 0); i += 4;}
+		return ref;
+	}	
+
+	// called by newarray	
+	private static int newPrimTypeArray(int nofElements, int type, int ref) {
+//		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
+		int elementSize;
+		if (type == 7 || type == 11) elementSize = 8;
+		else if (type == 6 || type == 10) elementSize = 4;
+		else if (type == 5 || type == 9) elementSize = 2;
+		else elementSize = 1;
+		int size = nofElements * elementSize + 8;
+		int blockAddr = getBlock(size);
+//		int blockAddr = 0x10401000;
+		US.PUT4(blockAddr, 0x80810000 | nofElements);	// set mark and array bit, set primitive array bit, write length
+		US.PUT4(blockAddr + 4, ref);	// write tag
+		ref = blockAddr + 8;
+		int i = ref;
+		while (i < blockAddr + size) {US.PUT4(i, 0); i += 4;}
+		return ref;
+	}
+	
 //	// called by anewarray	
 //	private static int newRefArray(int nofElements, int ref)  {
 ////		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
@@ -180,76 +182,79 @@ public class Heap implements IdeepCompilerConstants {
 //		while (i < blockAddr + size) {US.PUT4(i, 0); i += 4;}
 //		return ref;
 //	}
-//
-//	private static int getBlock(int size) {
-//		int addr;
-//		int blockSize = ((size + minBlockSize - 1) >> 4) << 4;
-////		if (blockSize >= 0x10000) throw new RuntimeException("Exception: Array block too big");	// array length must fit into 16 bit
+
+	private static int getBlock(int size) {
+//		US.ASM("b -8");
+		int addr;
+		int blockSize = ((size + minBlockSize - 1) >> 4) << 4;
+//		if (blockSize >= 0x10000) throw new RuntimeException("Exception: Array block too big");	// array length must fit into 16 bit
 //		int i = blockSize / minBlockSize - 1;
-//		if (i >= nofFreeLists) i = nofFreeLists - 1;
-//		// search free block in free block list
-//		if (freeBlocks == null) { // there is no free list at the very beginning of the boot process
-//			addr = heapPtr;
-//			heapPtr += blockSize;
-//			freeHeap -= blockSize;
-//		} else {
-//			if (freeHeap < threshold) {
-//				runGC = true;
-////				if (mark) mark(); else sweep();
-////				mark = !mark;
-//			}
-//			while (freeBlocks[i] == 0 && i < nofFreeLists - 1) i++;
-//			if (i < nofFreeLists - 1) {	
-//				addr = freeBlocks[i];	// unlink block from list
-//				freeBlocks[i] = US.GET4(addr + 4);	
-//				nofFreeBlocks[i]--;
-//				int freeBlockSize = (i+1) * minBlockSize;
-//				freeHeap -= freeBlockSize;
-//				int restBlockSize = freeBlockSize - blockSize;	// put rest into free list
-//				i = restBlockSize / minBlockSize;
-//				if (i > 0) {	// there is a rest block
-//					i--;
-//					int nextBlockAddr = addr + blockSize;
-//					US.PUT4(nextBlockAddr, (1 << 30) | restBlockSize);	// set free bit
-//					US.PUT4(nextBlockAddr + 4, freeBlocks[i]);
-//					freeBlocks[i] = nextBlockAddr;
-//					nofFreeBlocks[i]++;
-//					freeHeap += restBlockSize;
-//				}
-//			} else {	// get block from list with block size >= 128 Bytes
-//				addr = freeBlocks[nofFreeLists - 1];
-////				if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block in list 
-//				int freeBlockSize = US.GET4(addr) & 0xffffff;
-//				int prev = addr;
-//				while (blockSize > freeBlockSize) {	// search block which is big enough
-//					prev = addr;
-//					addr = US.GET4(addr + 4);
-////					if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block left 
-//					freeBlockSize = US.GET4(addr) & 0xffffff;
-//				}
-//				// unlink block
-//				if (prev == addr) freeBlocks[nofFreeLists - 1] = US.GET4(addr + 4);	// first block in list
-//				else US.PUT4(prev + 4, US.GET4(addr + 4));
-//				freeHeap -= freeBlockSize;
-//				nofFreeBlocks[nofFreeLists - 1]--;
-//				// put rest in free list
-//				int restBlockSize = freeBlockSize - blockSize;
-//				i = restBlockSize / minBlockSize;
-//				if (i > 0) {	// there is a rest block
-//					i--;
-//					if (i >= nofFreeLists) i = nofFreeLists - 1; 
-//					int nextBlockAddr = addr + blockSize;
-//					US.PUT4(nextBlockAddr, (1 << 30) | restBlockSize);	// set free bit
-//					US.PUT4(nextBlockAddr + 4, freeBlocks[i]);
-//					freeBlocks[i] = nextBlockAddr;
-//					nofFreeBlocks[i]++;
-//					freeHeap += restBlockSize;
-//				}
-//			}
-//		}
-//		return addr;
-//	}
-//
+		int i = (blockSize >> 4) - 1;
+		if (i >= nofFreeLists) i = nofFreeLists - 1;
+		// search free block in free block list
+		if (freeBlocks == null) { // there is no free list at the very beginning of the boot process
+			addr = heapPtr;
+			heapPtr += blockSize;
+			freeHeap -= blockSize;
+		} else {
+			addr = 0;/*
+			if (freeHeap < threshold) {
+				runGC = true;
+//				if (mark) mark(); else sweep();
+//				mark = !mark;
+			}
+			while (freeBlocks[i] == 0 && i < nofFreeLists - 1) i++;
+			if (i < nofFreeLists - 1) {	
+				addr = freeBlocks[i];	// unlink block from list
+				freeBlocks[i] = US.GET4(addr + 4);	
+				nofFreeBlocks[i]--;
+				int freeBlockSize = (i+1) * minBlockSize;
+				freeHeap -= freeBlockSize;
+				int restBlockSize = freeBlockSize - blockSize;	// put rest into free list
+				i = restBlockSize / minBlockSize;
+				if (i > 0) {	// there is a rest block
+					i--;
+					int nextBlockAddr = addr + blockSize;
+					US.PUT4(nextBlockAddr, (1 << 30) | restBlockSize);	// set free bit
+					US.PUT4(nextBlockAddr + 4, freeBlocks[i]);
+					freeBlocks[i] = nextBlockAddr;
+					nofFreeBlocks[i]++;
+					freeHeap += restBlockSize;
+				}
+			} else {	// get block from list with block size >= 128 Bytes
+				addr = freeBlocks[nofFreeLists - 1];
+//				if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block in list 
+				int freeBlockSize = US.GET4(addr) & 0xffffff;
+				int prev = addr;
+				while (blockSize > freeBlockSize) {	// search block which is big enough
+					prev = addr;
+					addr = US.GET4(addr + 4);
+//					if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block left 
+					freeBlockSize = US.GET4(addr) & 0xffffff;
+				}
+				// unlink block
+				if (prev == addr) freeBlocks[nofFreeLists - 1] = US.GET4(addr + 4);	// first block in list
+				else US.PUT4(prev + 4, US.GET4(addr + 4));
+				freeHeap -= freeBlockSize;
+				nofFreeBlocks[nofFreeLists - 1]--;
+				// put rest in free list
+				int restBlockSize = freeBlockSize - blockSize;
+				i = restBlockSize / minBlockSize;
+				if (i > 0) {	// there is a rest block
+					i--;
+					if (i >= nofFreeLists) i = nofFreeLists - 1; 
+					int nextBlockAddr = addr + blockSize;
+					US.PUT4(nextBlockAddr, (1 << 30) | restBlockSize);	// set free bit
+					US.PUT4(nextBlockAddr + 4, freeBlocks[i]);
+					freeBlocks[i] = nextBlockAddr;
+					nofFreeBlocks[i]++;
+					freeHeap += restBlockSize;
+				}
+			}
+	*/	}
+		return addr;
+	}
+
 //	/**
 //	 * Starts mark phase of garbage collection.
 //	 * This method should be solely used for test purposes. Never use it in application code! A garbage collection is automatically done
@@ -367,126 +372,126 @@ public class Heap implements IdeepCompilerConstants {
 //		}
 ////		System.out.print("end sweep, free heap size = "); System.out.printHexln(Heap.getFreeHeap());
 //	}
-//	
-//	static {
-//		int heapOffset = US.GET4(sysTabBaseAddr + stHeapOffset);
-//		heapBase = US.GET4(sysTabBaseAddr + heapOffset + 4);
-//		heapPtr = heapBase;
-//		heapSize = US.GET4(sysTabBaseAddr + heapOffset + 8);
-//		heapEnd = heapBase + heapSize;
-//		freeHeap = heapSize;
-//		// read the roots of all classes into array
-//		int classConstOffset = US.GET4(sysTabBaseAddr);
-//		while (true) {
-//			// get addresses of classes from system table
-//			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);
-//			if (constBlkBase == 0) break;
-//			nofRoots += US.GET4(constBlkBase + cblkNofPtrsOffset);	// get nof roots
-//			classConstOffset += 4;
-//		}
-//		roots = new int[nofRoots]; 
-//		int n = 0;
-//		classConstOffset = US.GET4(sysTabBaseAddr);
-//		while (true) {
-//			// get addresses of classes from system table
-//			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);
-//			if (constBlkBase == 0) break;
-//			int nofPtrs = US.GET4(constBlkBase + cblkNofPtrsOffset);
-//			for (int i = 0; i < nofPtrs; i++) {
-//				roots[n] = US.GET4(constBlkBase + cblkNofPtrsOffset + 4 + i * 4);
-//				n++;
-//			}
-//			classConstOffset += 4;
-//		}
-//		nofFreeBlocks = new int[nofFreeLists];
-//		freeBlocks = new int[nofFreeLists];
+	
+	static {
+		int heapOffset = US.GET4(sysTabBaseAddr + stHeapOffset);
+		heapBase = US.GET4(sysTabBaseAddr + heapOffset + 4);
+		heapPtr = heapBase;
+		heapSize = US.GET4(sysTabBaseAddr + heapOffset + 8);
+		heapEnd = heapBase + heapSize;
+		freeHeap = heapSize;
+		// read the roots of all classes into array
+		int classConstOffset = US.GET4(sysTabBaseAddr);
+		while (true) {
+			// get addresses of classes from system table
+			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);
+			if (constBlkBase == 0) break;
+			nofRoots += US.GET4(constBlkBase + cblkNofPtrsOffset);	// get nof roots
+			classConstOffset += 4;
+		}
+		roots = new int[nofRoots]; 
+		int n = 0;
+		classConstOffset = US.GET4(sysTabBaseAddr);
+		while (true) {
+			// get addresses of classes from system table
+			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);
+			if (constBlkBase == 0) break;
+			int nofPtrs = US.GET4(constBlkBase + cblkNofPtrsOffset);
+			for (int i = 0; i < nofPtrs; i++) {
+				roots[n] = US.GET4(constBlkBase + cblkNofPtrsOffset + 4 + i * 4);
+				n++;
+			}
+			classConstOffset += 4;
+		}
+		nofFreeBlocks = new int[nofFreeLists];
+		freeBlocks = new int[nofFreeLists];
 //		// whole heap is one big free block
-//		US.PUT4(heapPtr, (1 << 30) | freeHeap);	// set free bit
-//		US.PUT4(heapPtr + 4, 0);	// next field is null
-//		// int i = heapPtr + 8; while (i < heapEnd) {US.PUT4(i, 0); i += 4;} // initialize heap, nice for debugging
+		US.PUT4(heapPtr, (1 << 30) | freeHeap);	// set free bit
+		US.PUT4(heapPtr + 4, 0);	// next field is null
+		int i = heapPtr + 8; while (i < heapEnd) {US.PUT4(i, 0); i += 4;} // initialize heap, nice for debugging
 //		threshold = heapSize / 3;
-////		mark = true;
-//		freeBlocks[nofFreeLists - 1] = heapPtr;
-//		nofFreeBlocks[nofFreeLists - 1] = 1;	
-//	}
-//
-//	/**
-//	 * Query total heap size.
-//	 * @return Total heap size in bytes.
-//	 */
-//	public static int getHeapSize() {
-//		return heapSize;
-//	}
-//	
-//	/**
-//	 * Query base address of heap.
-//	 * @return Base address of heap.
-//	 */
-//	public static int getHeapBase() {
-//		return heapBase;
-//	}
-//	
-//	/**
-//	 * Query free heap size.
-//	 * @return Free heap size in bytes.
-//	 */
-//	public static int getFreeHeap() {
-//		return freeHeap;
-//	}
-//	
-//	/**
-//	 * Used for debugging purposes.
-//	 */
-//	public static int getNofRoots() {
-//		return nofRoots;
-//	}
-//	
-//	/**
-//	 * Used for debugging purposes.
-//	 */
-//	public static int[] getRoots() {
-//		return roots;
-//	}
-//	
-//	/**
-//	 * Used for debugging purposes.
-//	 */
-//	public static int[] getFreeBlocks() {
-//		return freeBlocks;
-//	}
-//	
-//	/**
-//	 * Used for debugging purposes.
-//	 */
-//	public static int[] getNofFreeBlocks() {
-//		return nofFreeBlocks;
-//	}
-//	
-//	/**
-//	 * Used for debugging purposes.
-//	 */
-//	public static int getNofMarkedObjs() {
-//		return nofMarkedObjs;
-//	}
-//	
-//	/**
-//	 * Used for debugging purposes.
-//	 */
-//	public static int getNofMarkedRefArrays() {
-//		return nofMarkedRefArrays;
-//	}
-//	
-//	/**
-//	 * Used for debugging purposes.
-//	 */
-//	public static int getNofMarkedPrimArrays() {
-//		return nofMarkedPrimArrays;
-//	}
-//	
-//	/**
-//	 * Used for debugging purposes.
-//	 */
-//	public static int getNofMarkedRegObjs() {
-//		return nofMarkedRegObjs;
-//	}
+//		mark = true;
+		freeBlocks[nofFreeLists - 1] = heapPtr;
+		nofFreeBlocks[nofFreeLists - 1] = 1;	
+	}
+
+	/**
+	 * Query total heap size.
+	 * @return Total heap size in bytes.
+	 */
+	public static int getHeapSize() {
+		return heapSize;
+	}
+	
+	/**
+	 * Query base address of heap.
+	 * @return Base address of heap.
+	 */
+	public static int getHeapBase() {
+		return heapBase;
+	}
+	
+	/**
+	 * Query free heap size.
+	 * @return Free heap size in bytes.
+	 */
+	public static int getFreeHeap() {
+		return freeHeap;
+	}
+	
+	/**
+	 * Used for debugging purposes.
+	 */
+	public static int getNofRoots() {
+		return nofRoots;
+	}
+	
+	/**
+	 * Used for debugging purposes.
+	 */
+	public static int[] getRoots() {
+		return roots;
+	}
+	
+	/**
+	 * Used for debugging purposes.
+	 */
+	public static int[] getFreeBlocks() {
+		return freeBlocks;
+	}
+	
+	/**
+	 * Used for debugging purposes.
+	 */
+	public static int[] getNofFreeBlocks() {
+		return nofFreeBlocks;
+	}
+	
+	/**
+	 * Used for debugging purposes.
+	 */
+	public static int getNofMarkedObjs() {
+		return nofMarkedObjs;
+	}
+	
+	/**
+	 * Used for debugging purposes.
+	 */
+	public static int getNofMarkedRefArrays() {
+		return nofMarkedRefArrays;
+	}
+	
+	/**
+	 * Used for debugging purposes.
+	 */
+	public static int getNofMarkedPrimArrays() {
+		return nofMarkedPrimArrays;
+	}
+	
+	/**
+	 * Used for debugging purposes.
+	 */
+	public static int getNofMarkedRegObjs() {
+		return nofMarkedRegObjs;
+	}
 }

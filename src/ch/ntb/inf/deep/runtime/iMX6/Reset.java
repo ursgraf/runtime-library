@@ -23,10 +23,10 @@ import ch.ntb.inf.deep.runtime.arm32.ARMException;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
- * 11.11.10	NTB/GRAU	creation
+ * 13.05.16	NTB/Urs Graf	creation
  */
 /**
- * The class for the PPC reset exception.
+ * The class for the ARM reset exception.
  * The stack pointer will be initialized and the program counter will be
  * set to the beginning of the class initializer of the kernel.
  * 
@@ -36,51 +36,16 @@ class Reset extends ARMException implements Iarm32, IiMX6, Icolibri_iMX6, IdeepC
 	
 	static void reset() {
 //		US.ASM("setend BE"); // data memory organized in big endian format
-//		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		
-		US.PUT1(0x18000000, 0x11);
-		US.PUT1(0x18000001, 0x22);
-		US.PUT2(0x18000002, 0x3344);
-//		int c = a + b;
-//		US.PUT4(0x18000000, 0x11223344);
-		
-		int a = 0;
-		US.PUT4(GPIO2_GDIR, 4);
-		while (true) {
-			a ^= -1;
-//			a <<= 1;
-			US.PUT4(GPIO2_DR, a);
-//			if (a == 16) a = 1;
-			for (int i = 500000; i > 0; i--); 
-//			US.PUT4(GPIO2_DR, 0);
-//			for (int i = 10000000; i > 0; i--); 
-//			US.PUT4(GPIO2_DR, 4);
-//			for (int i = 10000000; i > 0; i--); 
-//			US.PUT4(GPIO2_DR, 0);
-//			for (int i = 10000000; i > 0; i--); 
-		}
-//		US.PUT4(GPIO2_DR, 0);
-//		US.PUT4(GPIO2_DR, 4);
-//		US.PUT4(GPIO2_DR, 0);
-//		
-//		while(true);
-//		int b = 0x10;
-//		while (b != 0) {
-//			b--;
-//			a += 0x11;
-//		}
-//		b++;
-//		US.ASM("b -8"); 
-//		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
-//		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 8);
-//		US.PUTGPR(1, stackBase + stackSize - 4);	// set stack pointer
-//		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
-//		int c = 0x1122;
-//		while (c != 0) c++;
-//		int d = 0x3344;
-//		while (true);
-//		US.PUTSPR(SRR0, kernelClinitAddr);
-//		US.PUTSPR(SRR1, SRR1init);
-//		US.ASM("rfi");
+
+		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
+		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
+		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 8);
+		US.PUTGPR(SP, stackBase + stackSize - 4);	// set stack pointer
+
+		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
+		US.PUTGPR(PC, kernelClinitAddr);	// never come back
+
+//		US.ASM("b -8"); // stop here
 	}
+	
 }
