@@ -65,8 +65,7 @@ public class Heap implements IdeepCompilerConstants {
 	@SuppressWarnings("unused")
 	private static int newObject(int ref) {	
 		int size = US.GET4(ref) + 8;
-//		int blockAddr = getBlock(size);
-		int blockAddr = 17;
+		int blockAddr = getBlock(size);
 		US.PUT4(blockAddr, 0x80000000 | size);	// set mark bit and size
 		US.PUT4(blockAddr + 4, ref);	// write tag
 		ref = blockAddr + 8;
@@ -85,7 +84,6 @@ public class Heap implements IdeepCompilerConstants {
 		else elementSize = 1;
 		int size = nofElements * elementSize + 8;
 		int blockAddr = getBlock(size);
-//		int blockAddr = 0x10401000;
 		US.PUT4(blockAddr, 0x80810000 | nofElements);	// set mark and array bit, set primitive array bit, write length
 		US.PUT4(blockAddr + 4, ref);	// write tag
 		ref = blockAddr + 8;
@@ -188,8 +186,7 @@ public class Heap implements IdeepCompilerConstants {
 		int addr;
 		int blockSize = ((size + minBlockSize - 1) >> 4) << 4;
 //		if (blockSize >= 0x10000) throw new RuntimeException("Exception: Array block too big");	// array length must fit into 16 bit
-//		int i = blockSize / minBlockSize - 1;
-		int i = (blockSize >> 4) - 1;
+		int i = blockSize / minBlockSize - 1;
 		if (i >= nofFreeLists) i = nofFreeLists - 1;
 		// search free block in free block list
 		if (freeBlocks == null) { // there is no free list at the very beginning of the boot process
@@ -197,12 +194,11 @@ public class Heap implements IdeepCompilerConstants {
 			heapPtr += blockSize;
 			freeHeap -= blockSize;
 		} else {
-			addr = 0;/*
-			if (freeHeap < threshold) {
-				runGC = true;
-//				if (mark) mark(); else sweep();
-//				mark = !mark;
-			}
+//			if (freeHeap < threshold) {
+//				runGC = true;
+////				if (mark) mark(); else sweep();
+////				mark = !mark;
+//			}
 			while (freeBlocks[i] == 0 && i < nofFreeLists - 1) i++;
 			if (i < nofFreeLists - 1) {	
 				addr = freeBlocks[i];	// unlink block from list
@@ -251,7 +247,7 @@ public class Heap implements IdeepCompilerConstants {
 					freeHeap += restBlockSize;
 				}
 			}
-	*/	}
+		}
 		return addr;
 	}
 
