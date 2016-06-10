@@ -92,8 +92,8 @@ public class Heap implements IdeepCompilerConstants {
 		return ref;
 	}
 	
-//	// called by anewarray	
-//	private static int newRefArray(int nofElements, int ref)  {
+	// called by anewarray	
+	private static int newRefArray(int nofElements, int ref)  {
 ////		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
 //		int size = nofElements * 4 + 8;
 //		int blockAddr = getBlock(size);
@@ -102,9 +102,9 @@ public class Heap implements IdeepCompilerConstants {
 //		ref = blockAddr + 8;
 //		int i = ref;
 //		while (i < blockAddr + size) {US.PUT4(i, 0); i += 4;}
-//		return ref;
-//	}
-//	
+		return ref;
+	}
+	
 //	// called by multianewarray	
 //	@SuppressWarnings("unused")
 //	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3) {
@@ -167,10 +167,10 @@ public class Heap implements IdeepCompilerConstants {
 //		}
 //		return addr;
 //	}
-//	
-//	// called by newstring in java/lang/String
-//	@SuppressWarnings("unused")
-//	private static int newstring(int ref, int len) {
+	
+	// called by newstring in java/lang/String
+	@SuppressWarnings("unused")
+	private static int newstring(int ref, int len) {
 //		int size = len + 8;
 //		int blockAddr = getBlock(size);
 //		US.PUT4(blockAddr, 0x80000000 | size);	// set mark bit and size, clear array bit and primitive array bit
@@ -178,8 +178,8 @@ public class Heap implements IdeepCompilerConstants {
 //		ref = blockAddr + 8;
 //		int i = ref;
 //		while (i < blockAddr + size) {US.PUT4(i, 0); i += 4;}
-//		return ref;
-//	}
+		return ref;
+	}
 
 	private static int getBlock(int size) {
 //		US.ASM("b -8");

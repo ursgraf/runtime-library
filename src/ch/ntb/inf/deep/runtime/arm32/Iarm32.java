@@ -1,13 +1,10 @@
 package ch.ntb.inf.deep.runtime.arm32;
 
-// Auto generated file (2016-04-11 11:48:00)
+// Auto generated file (2016-06-07 16:06:01)
 
 public interface Iarm32 {
 
 	// Registermap for architecture "arm32"
-	public static final int SP = 0xd;
-	public static final int LR = 0xe;
-	public static final int PC = 0xf;
 	public static final int R0 = 0x0;
 	public static final int R1 = 0x1;
 	public static final int R2 = 0x2;
@@ -21,9 +18,9 @@ public interface Iarm32 {
 	public static final int R10 = 0xa;
 	public static final int R11 = 0xb;
 	public static final int R12 = 0xc;
-	public static final int R13 = 0xd;
-	public static final int R14 = 0xe;
-	public static final int R15 = 0xf;
+	public static final int SP = 0xd;
+	public static final int LR = 0xe;
+	public static final int PC = 0xf;
 	public static final int D0 = 0x0;
 	public static final int D1 = 0x1;
 	public static final int D2 = 0x2;

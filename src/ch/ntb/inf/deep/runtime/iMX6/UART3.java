@@ -11,7 +11,8 @@ public class UART3 implements IiMX6 {
 	}
 
 	public static void write(byte b) { 	 
-		US.PUT1(0x2020040, b); 
+		while((US.GET4(UART1_USR1) & (1 << 13)) == 0);
+		US.PUT1(UART1_UTXD, b); 
 	}
 
 	public static int write(byte[] buffer) {
