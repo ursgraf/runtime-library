@@ -30,51 +30,41 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 * Über die unten aufgeführten Methoden können die verschiedenen Funktionen des
 * Displays getestet werden.
 */
-public class CharLCDTest extends Task {
+public class CharLCDTest {
 	
+	static HD44780U disp;
 	
-	/**
-	 * Schaltet das Display aus.
-	 * 
-	 */
-	public static void DispOff() {
-		HD44780U.onOff(false, true, true);
+	public static void dispOff() {
+		disp.onOff(false, true, true);
 	}
 
-	/**
-	 * Schaltet das Display ein.
-	 * 
-	 */
-	public static void DispOn() {
-		HD44780U.onOff(true, true, true);
+	public static void dispOn() {
+		disp.onOff(true, true, true);
 	}
 
-	/**
-	 * Schreibt das Zeichen <code>T</code> auf das Display.
-	 * 
-	 */
 	public static void writeT() {
-		HD44780U.wrChar('T');
+		disp.writeChar('T');
 	}
 
-	/**
-	 * Löscht das Display.
-	 * 
-	 */
+	public static void writeInt() {
+		disp.writeInt(8635, 6);
+	}
+
+	public static void writeLn() {
+		disp.writeLn();
+	}
+
 	public static void clearDisplay() {
-		HD44780U.clearDisplay();
+		disp.clearDisplay();
 	}
 
-	/**
-	 * Setzt den Cursor auf die 3. Zeile an der Position 4.
-	 * 
-	 */
 	public static void setCursor() {
-		HD44780U.setCursor(2, 4);
+		disp.setCursor(2, 4);
 	}
 
-	static { // Task Initialisierung
-		HD44780U.init(2);
+	static { 
+		disp = HD44780U.getInstance();
+		disp.init(2);
 	}
 
 }
