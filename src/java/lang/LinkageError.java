@@ -48,6 +48,8 @@ public class LinkageError extends Error {
 
     /**
      * Constructs a new {@code LinkageError} with the given detail message and cause.
+     * @param detailMessage The detail message for this error.
+ 	 * @param cause Exception cause.
      * @since 1.7
      */
     public LinkageError(String detailMessage, Throwable cause) {

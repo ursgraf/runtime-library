@@ -74,6 +74,7 @@ public class Random implements Serializable, Modified {
      *
      * <p>This constructor is mainly useful for <i>predictability</i> in tests.
      * The default constructor is likely to provide better randomness.
+     * @param seed Seed value.
      */
     public Random(long seed) {
         setSeed(seed);
@@ -86,6 +87,8 @@ public class Random implements Serializable, Modified {
      * Volume 2: Seminumerical Algorithms</i>, section 3.2.1.
      *
      * <p>Most applications will want to use one of this class' convenience methods instead.
+     * @param bits Number of bits.
+     * @return Random value.
      */
     protected synchronized int next(int bits) {
         seed = (seed * multiplier + 0xbL) & ((1L << 48) - 1);
@@ -94,6 +97,7 @@ public class Random implements Serializable, Modified {
 
     /**
      * Returns a pseudo-random uniformly distributed {@code boolean}.
+     * @return Random value.
      */
     public boolean nextBoolean() {
         return next(1) != 0;
@@ -101,6 +105,7 @@ public class Random implements Serializable, Modified {
 
     /**
      * Fills {@code buf} with random bytes.
+     * @param buf Buffer to fill.
      */
     public void nextBytes(byte[] buf) {
         int rand = 0, count = 0, loop = 0;
@@ -119,6 +124,7 @@ public class Random implements Serializable, Modified {
     /**
      * Returns a pseudo-random uniformly distributed {@code double}
      * in the half-open range [0.0, 1.0).
+     * @return Random value.
      */
     public double nextDouble() {
         return ((((long) next(26) << 27) + next(27)) / (double) (1L << 53));
@@ -127,6 +133,7 @@ public class Random implements Serializable, Modified {
     /**
      * Returns a pseudo-random uniformly distributed {@code float}
      * in the half-open range [0.0, 1.0).
+     * @return Random value.
      */
     public float nextFloat() {
         return (next(24) / 16777216f);
@@ -139,6 +146,7 @@ public class Random implements Serializable, Modified {
      * E. Muller, and G. Marsaglia, as described by Donald E. Knuth in <i>The
      * Art of Computer Programming, Volume 2: Seminumerical Algorithms</i>,
      * section 3.4.1, subsection C, algorithm P.
+     * @return Random value.
      */
     public synchronized double nextGaussian() {
         if (haveNextNextGaussian) {
@@ -163,6 +171,7 @@ public class Random implements Serializable, Modified {
 
     /**
      * Returns a pseudo-random uniformly distributed {@code int}.
+     * @return Random value.
      */
     public int nextInt() {
         return next(32);
@@ -171,6 +180,8 @@ public class Random implements Serializable, Modified {
     /**
      * Returns a pseudo-random uniformly distributed {@code int}
      * in the half-open range [0, n).
+     * @param n Upper limit.
+     * @return Random value.
      */
     public int nextInt(int n) {
         if (n <= 0) {
@@ -190,6 +201,7 @@ public class Random implements Serializable, Modified {
 
     /**
      * Returns a pseudo-random uniformly distributed {@code long}.
+     * @return Random value.
      */
     public long nextLong() {
         return ((long) next(32) << 32) + next(32);
@@ -198,6 +210,7 @@ public class Random implements Serializable, Modified {
     /**
      * Modifies the seed using a linear congruential formula presented in <i>The
      * Art of Computer Programming, Volume 2</i>, Section 3.2.1.
+     * @param seed Seed value.
      */
     public synchronized void setSeed(long seed) {
         this.seed = (seed ^ multiplier) & ((1L << 48) - 1);

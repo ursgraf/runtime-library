@@ -47,6 +47,11 @@ public final class System implements Modified {
 	 * to the array destination starting at destinationPosition. 
 	 * The destination array must already exist when System.arraycopy() is called. 
 	 * The method does not create it. The source and destination arrays must be of the same type
+	 * @param src Source array.
+	 * @param srcPos Start element in source array.
+	 * @param dest Destination array.
+	 * @param destPos Start element in destination array.
+	 * @param length Number of elements to be copied.
 	 */
 	public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length) {
 		int tag = US.GET4(US.REF(src) - 4);

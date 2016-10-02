@@ -31,7 +31,7 @@ public class SPI_FQD implements Impc5200 {
 
 	/**
 	 * <p>Initialize the <i>SPI</i> on PSC1.</p>
-	 * <p>This method has to be called before using the SPI!<p>
+	 * <p>This method has to be called before using the SPI!</p>
 	 */
 	public static void init() {
 		US.PUT1(PSCBase + PSCCR, 0xa); // disable Tx, Rx

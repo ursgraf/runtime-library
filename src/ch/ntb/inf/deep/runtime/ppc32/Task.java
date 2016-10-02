@@ -53,11 +53,11 @@ public class Task implements Actionable, Ippc32 {
 	private static Task highestPrioStub = new Task(); // to be put at the front of the prioQ (periodic Task[0])
 	private static Actionable[] actionables = new Actionable[maxNofTasks];	
 	
-	/** time:	0 <= time : start time in ms from install time */
+	/** time:	0 &lt;= time : start time in ms from install time */
 	public int time;
 
 	/** 
-	 * period:	0 <= period : period time in ms<br>
+	 * period:	0 &lt;= period : period time in ms<br>
 	 * The period is must be specified before installation of the task by calling <code>install</code>.
 	 * Subsequent modifications of this value do not have any effects!
 	 */
@@ -66,7 +66,7 @@ public class Task implements Actionable, Ippc32 {
 	/** number of activations */
 	public int nofActivations;
 
-	/** safe=FALSE -> task gets removed on trap, currently not used */
+	/** safe=FALSE -&gt; task gets removed on trap, currently not used */
 	public boolean safe;
 	
 	private boolean installed;
@@ -84,7 +84,8 @@ public class Task implements Actionable, Ippc32 {
 	
 	/**
 	 * Creates a new <i>Task</i>. <br>
-	 * The action method of the parameter <i>Actionable<i> will be called by the task scheduler
+	 * The action method of the parameter <i>Actionable</i> will be called by the task scheduler
+	 * @param act Actionable to be installed.
 	 */
 	public Task(Actionable act) {
 		actionable = nofActionables;
@@ -104,6 +105,7 @@ public class Task implements Actionable, Ippc32 {
 
 	/**
 	 * Returns system time in milliseconds, time starts at powerup
+	 * @return Current time in ms.
 	 */
 	public static int time() {
 		return (int)(Kernel.time() / 1000);
@@ -111,6 +113,7 @@ public class Task implements Actionable, Ippc32 {
 
 	/**
 	 * Installs a new <i>Task</i>. <br>
+	 * @param task Task to be installed.
 	 */
 	public static void install(Task task) {
 		remove(task);
@@ -143,7 +146,10 @@ public class Task implements Actionable, Ippc32 {
 		}
 	}
 
-	/** Removes an installed task */
+	/** 
+	 * Removes an installed task
+ 	 * @param task Task to be removed.
+	 */
 	public static void remove(Task task) {
 		int remTaskNo = tasks.length - nofReadyTasks;
 		while ((remTaskNo < tasks.length) && (tasks[remTaskNo] != task)) remTaskNo++;

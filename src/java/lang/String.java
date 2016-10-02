@@ -25,7 +25,7 @@ import ch.ntb.inf.deep.marker.Modified;
  * {@code String} is represented by array of UTF-16 values.
  * This class is highly optimized version compared to the standard String class.
  *
- * <a name="backing_array"><h3>Backing Arrays</h3></a>
+ * <h3><a name="backing_array">Backing Arrays</a></h3>
  * This class is implemented using a char[]. The length of the array may exceed
  * the length of the string. For example, the string "Hello" may be backed by
  * the array {@code ['H', 'e', 'l', 'l', 'o', 'W'. 'o', 'r', 'l', 'd']} with
@@ -76,7 +76,7 @@ public class String extends BString implements Serializable, Comparable<String>,
 	 * @param offset
 	 *            the initial offset.
 	 * @param count
-	 *            the length (count > 0).
+	 *            the length (count &gt; 0).
 	 */
 	public String(char[] value, int offset, int count) {
 		// This constructor is empty as it is replaced by the corresponding 
@@ -109,6 +109,10 @@ public class String extends BString implements Serializable, Comparable<String>,
 	/**
 	 * Copy characters from this string into dst starting at dstBegin. This
 	 * method doesn't perform any range checking.
+	 * @param dst
+	 *            The destination array.
+	 * @param dstBegin
+	 *            The start offset in the destination array.
 	 */
 	public void getChars(char dst[], int dstBegin) {
 		for (int i = 0; i < this.count; i++) {

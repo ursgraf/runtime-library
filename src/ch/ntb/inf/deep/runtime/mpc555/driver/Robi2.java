@@ -306,10 +306,10 @@ public class Robi2 extends Task {
 
 	/**
 	 * Set the state of the chosen pattern LED. Pattern LEDs are the red ones.
-	 * <p><b>Examples:</b><ul>
+	 * <b>Examples:</b><ul>
 	 * <li><code>setPatternLED(0,0,true)</code> turns LED11 on</li>
 	 * <li><code>setPatternLED(3,2,false)</code> turns LED13 off</li>
-	 * </ul></p>
+	 * </ul>
 	 * 
 	 * @param r
 	 *            row of the LED(range 0..3);
@@ -378,10 +378,10 @@ public class Robi2 extends Task {
 
 	/**
 	 * Set the state of the chosen pattern LED. Pattern LEDs are the red ones.
-	 * <p><b>Examples:</b><ul>
+	 * <b>Examples:</b><ul>
 	 * <li><code>getPatternLED(0,0)</code> gets the state of LED11</li>
-	 * <li><code>getPatternLED(3,2)</code> gets the state of LED13</li><br>
-	 * </ul></p>
+	 * <li><code>getPatternLED(3,2)</code> gets the state of LED13</li>
+	 * </ul>
 	 * 
 	 * @param r		row of the LED (range 0..3);
 	 * @param c		column of the LED (range 0..2)

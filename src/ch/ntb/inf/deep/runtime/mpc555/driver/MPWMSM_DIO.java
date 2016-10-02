@@ -38,7 +38,7 @@ public class MPWMSM_DIO implements IntbMpc555HB {
 	 * Create a digital I/O on a MPWM pin.
 	 * 
 	 * @param channel Select module channel. Allowed values are 0..3, 6..9 or 0..3, 16-19.
-	 * @param out Set I/O direction, <code>true</code> => output, <code>false</code> => input.
+	 * @param out Set I/O direction, <code>true</code> =&gt; output, <code>false</code> =&gt; input.
 	 */
 	public MPWMSM_DIO(int channel, boolean out) {
 		if(channel >=6  && channel <= 9) channel += 10;

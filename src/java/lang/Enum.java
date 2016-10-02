@@ -171,6 +171,8 @@ public abstract class Enum<E extends Enum<E>> implements Serializable, Comparabl
     /**
      * Returns the constant with the specified name of the specified enum type.
      *
+     * @param <T>
+     *            The enum type whose constant is to be returned.
      * @param enumValues
      *            the class of the enumerated type to search for the constant
      *            value.

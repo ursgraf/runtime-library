@@ -23,9 +23,9 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_FQD;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
 
 /**
- * Speed controller (PI control) for DC motor. <br/>
+ * Speed controller (PI control) for DC motor. <br>
  * This controller uses two channels of the time processor unit 
- * and operates in sign-magnitude mode. <br/>
+ * and operates in sign-magnitude mode. <br>
  * 
  *  <strong>IMPORTANT:</strong> The motor and the encoder have to be connected carefully. A positive speed control must lead to a positive speed reading.
  *  If this is not the case you have to change either the connections to the motor or the signals of the encoder (but not both!). 
@@ -56,12 +56,13 @@ public class SpeedController4DCMotor {
 	/**
 	 * Create a new speed controller for a DC motor.
 	 * @param ts task period in seconds [s]
-	 * @param pwmChannel TPU channel for the first PWM signal.
-	 * @param pwmChannel TPU channel for the second PWM signal.
+	 * @param pwmChannel1 TPU channel for the first PWM signal.
+	 * @param pwmChannel2 TPU channel for the second PWM signal.
 	 * @param useTPUA4PWM Time processing unit to use for PWM signals: true for TPU-A and false for TPU-B.
 	 * @param encChannelA TPU channel for the encoder signal A. For the signal B the channel of A + 1 will be used.
 	 * @param useTPUA4Enc Time processing unit to use for FQD: true for TPU-A and false for TPU-B.
 	 * @param encTPR impulse/ticks per rotation of the encoder.
+	 * @param umax maximum output voltage of set value.
 	 * @param i gear transmission ratio.
 	 * @param kp controller gain factor. For experimental evaluating the controller parameters, begin with kp = 1.
 	 * @param tn time constant of the controller. For experimental evaluating the controller parameters, set tn to the mechanical time constant of your axis. If the motor has a gear it's assumed that the torque of inertia of the rotor is dominant. That means you can set tn equals to the mechanical time constant of your motor. 

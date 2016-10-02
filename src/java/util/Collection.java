@@ -304,6 +304,8 @@ public interface Collection<E> extends Iterable<E> {
      * {@code toArray(new Object[0])} behaves exactly the same way as
      * {@code toArray()} does.
      *
+     * @param <T>
+     *            the type.
      * @param array
      *            the array.
      * @return an array of the elements from this {@code Collection}.

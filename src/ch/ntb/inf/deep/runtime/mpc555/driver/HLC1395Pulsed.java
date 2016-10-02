@@ -115,7 +115,7 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 	/**
 	 * Initialize sensors.
 	 * 
-	 * @param numberOfSensors	Number of connected sensors: 0 < numberOfSensors <= 16
+	 * @param numberOfSensors	Number of connected sensors: 0 &lt; numberOfSensors &lt;= 16
 	 * @param pinNumbers		Pin numbers of the 4 address pins and of the trigger pin.
 	 * 							Use 4 bits per pin in the following order: trgPin, adr3Pin,
 	 * 							adr2Pin, adr1Pin, adr0Pin. Example: 0xF85AC means trgPin =
@@ -202,7 +202,7 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 	/**
 	 * Start reading the sensors.<br>
 	 * This method must be called after the initialization
-	 * or after a call of <code>stop()</stop>.
+	 * or after a call of <code>stop()</code>.
 	 */
 	public void start() {
 		sensAdr = 0;

@@ -115,6 +115,8 @@ public final class Byte extends Number implements Comparable<Byte>, Modified {
 
     /**
      * Compares two {@code byte} values.
+     * @param lhs First value.
+     * @param rhs Second value.
      * @return 0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.
      * @since 1.7
      */

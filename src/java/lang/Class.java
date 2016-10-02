@@ -68,6 +68,8 @@ public final class Class<T> implements Serializable, Modified {
      * or one of its parent class loaders. It is possible that a static initializer is run as
      * a result of this call.
      *
+     * @param className Name of the class.
+     * @return Class
      * @throws ClassNotFoundException
      *             if the requested class can not be found.
      * @throws LinkageError
@@ -85,6 +87,7 @@ public final class Class<T> implements Serializable, Modified {
      * Returns the name of the class represented by this {@code Class}. For a
      * description of the format which is used, see the class definition of
      * {@link Class}.
+     * @return Name of the class.
      */
     public String getName() {
         return name;

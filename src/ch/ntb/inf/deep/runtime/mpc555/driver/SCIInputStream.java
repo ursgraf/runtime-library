@@ -39,6 +39,7 @@ public class SCIInputStream extends InputStream{
 	
     /**
      * Creates an input stream on a given SCI interface.
+     * @param sci SCI number.
      */
     public SCIInputStream(SCI sci) {
 		port = sci;

@@ -48,7 +48,11 @@ public class RN131 extends Task {
 
 	/**
 	 * Creates a new RN131 object.
-	 * @param config	the configuration to use
+	 * @param config	The configuration to use
+     * @throws NullPointerException
+     *            Wrong configuration.
+     * @throws IOException
+     *            Wrong channel.
 	 */
 	public RN131(RN131Config config) throws Exception {
 		

@@ -27,7 +27,7 @@ import ch.ntb.inf.deep.unsafe.US;
  * 08.02.2006	NTB/HS	stub creation
  */
 /**
- * Driver to use a channel of the TPU (A or B) as a GPIO.<br/>
+ * Driver to use a channel of the TPU (A or B) as a GPIO.<br>
  * Each 16 channels of both time processing units can be used as
  * general purpose in- or output.
  */

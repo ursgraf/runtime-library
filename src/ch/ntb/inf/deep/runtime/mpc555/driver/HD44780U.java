@@ -117,6 +117,8 @@ public class HD44780U extends Task{
 		setCursor((cursPos /  lcdMaxColumns), cursPos);
 	}
 
+	private static char[] digits = new char[12];
+	
 	/**
 	 * Writes an integer value on the display.
 	 * 
@@ -125,7 +127,6 @@ public class HD44780U extends Task{
 	 * @param fieldLen
 	 *            number of characters which should be used to display the value. 
 	 */
-	private static char[] digits = new char[12];
 	public void writeInt(int i, int fieldLen) {
 		
 		int m, n;

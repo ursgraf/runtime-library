@@ -43,6 +43,7 @@ public class UARTOutputStream extends OutputStream {
 	
     /**
      * Creates an output stream on a given UART interface.
+     * @param uart UART number.
      */
     public UARTOutputStream(int uart) {
 		port = uart;

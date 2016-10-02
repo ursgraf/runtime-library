@@ -48,15 +48,12 @@ import ch.ntb.inf.deep.marker.Modified;
  * point or a UTF-16 unit that's part of a surrogate pair. The {@code int} type
  * is used to represent all Unicode code points.
  *
- * <a name="unicode_categories"><h3>Unicode categories</h3></a>
+ * <h3><a name="unicode_categories">Unicode categories</a></h3>
  * <p>Here's a list of the Unicode character categories and the corresponding Java constant,
  * grouped semantically to provide a convenient overview. This table is also useful in
- * conjunction with {@code \p} and {@code \P} in {@link java.util.regex.Pattern regular expressions}.
- * <span class="datatable">
- * <style type="text/css">
- * .datatable td { padding-right: 20px; }
- * </style>
- * <p><table>
+ * conjunction with {@code \p} and {@code \P} in {@link java.util.regex.Pattern regular expressions}.</p>
+ * <table>
+ * <caption>Categories</caption>
  * <tr> <td> Cn </td> <td> Unassigned </td>  <td>{@link #UNASSIGNED}</td> </tr>
  * <tr> <td> Cc </td> <td> Control </td>     <td>{@link #CONTROL}</td> </tr>
  * <tr> <td> Cf </td> <td> Format </td>      <td>{@link #FORMAT}</td> </tr>
@@ -94,7 +91,6 @@ import ch.ntb.inf.deep.marker.Modified;
  * <tr> <td> Zl </td> <td> Line separator </td>      <td>{@link #LINE_SEPARATOR}</td> </tr>
  * <tr> <td> Zp </td> <td> Paragraph separator </td> <td>{@link #PARAGRAPH_SEPARATOR}</td> </tr>
  * </table>
- * </span>
  *
  * @since 1.0
  */
@@ -1578,6 +1574,8 @@ public final class Character implements Serializable, Comparable<Character>, Mod
 
     /**
      * Compares two {@code char} values.
+     * @param lhs First value.
+     * @param rhs Second value.
      * @return 0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.
      * @since 1.7
      */
@@ -1688,6 +1686,8 @@ public final class Character implements Serializable, Comparable<Character>, Mod
     /**
      * Returns true if the given character is a high or low surrogate.
      * @since 1.7
+     * @param ch Character
+     * @return {@code true} if surrogate.
      */
     public static boolean isSurrogate(char ch) {
         return ch >= MIN_SURROGATE && ch <= MAX_SURROGATE;
@@ -2602,6 +2602,8 @@ public final class Character implements Serializable, Comparable<Character>, Mod
     /**
      * Returns the high surrogate for the given code point. The result is meaningless if
      * the given code point is not a supplementary character.
+     * @param codePoint Code point.
+     * @return High surrogate.
      * @since 1.7
      */
     public static char highSurrogate(int codePoint) {
@@ -2611,6 +2613,8 @@ public final class Character implements Serializable, Comparable<Character>, Mod
     /**
      * Returns the low surrogate for the given code point. The result is meaningless if
      * the given code point is not a supplementary character.
+     * @param codePoint Code point.
+     * @return Low surrogate.
      * @since 1.7
      */
     public static char lowSurrogate(int codePoint) {
@@ -2627,6 +2631,8 @@ public final class Character implements Serializable, Comparable<Character>, Mod
     /**
      * Returns true if the given code point is in the Basic Multilingual Plane (BMP).
      * Such code points can be represented by a single {@code char}.
+     * @param codePoint Code point.
+     * @return {@code true} if in plane.
      * @since 1.7
      */
     public static boolean isBmpCodePoint(int codePoint) {
@@ -2964,6 +2970,8 @@ public final class Character implements Serializable, Comparable<Character>, Mod
     /**
      * Use {@link #isWhitespace(char)} instead.
      * @deprecated Use {@link #isWhitespace(char)} instead.
+     * @param c Character
+     * @return {@code true} if white space.
      */
     @Deprecated
     public static boolean isSpace(char c) {
@@ -2972,6 +2980,8 @@ public final class Character implements Serializable, Comparable<Character>, Mod
 
     /**
      * See {@link #isSpaceChar(int)}.
+     * @param c Character
+     * @return {@code true} if space character.
      */
     public static boolean isSpaceChar(char c) {
         return isSpaceChar((int) c);
@@ -2983,6 +2993,8 @@ public final class Character implements Serializable, Comparable<Character>, Mod
      * Note that non-breaking spaces are considered whitespace.
      * Note also that line separators are not considered whitespace; see {@link #isWhitespace}
      * for an alternative.
+     * @param codePoint Code point.
+     * @return {@code true} if space character
      */
     public static boolean isSpaceChar(int codePoint) {
         // We don't just call into icu4c because of the JNI overhead. Ideally we'd fix that.
@@ -3130,6 +3142,8 @@ public final class Character implements Serializable, Comparable<Character>, Mod
 
     /**
      * See {@link #isWhitespace(int)}.
+     * @param c Character
+     * @return {@code true} if white space
      */
     public static boolean isWhitespace(char c) {
         return isWhitespace((int) c);
@@ -3141,6 +3155,8 @@ public final class Character implements Serializable, Comparable<Character>, Mod
      * Note that non-breaking spaces are not considered whitespace.
      * Note also that line separators are considered whitespace; see {@link #isSpaceChar}
      * for an alternative.
+     * @param codePoint Code point
+     * @return {@code true} if white space
      */
     public static boolean isWhitespace(int codePoint) {
         // We don't just call into icu4c because of the JNI overhead. Ideally we'd fix that.

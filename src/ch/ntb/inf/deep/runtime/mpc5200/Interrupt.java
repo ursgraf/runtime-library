@@ -65,7 +65,7 @@ public class Interrupt extends PPCException implements Impc5200 {
 	 * Used to install user defined peripheral interrupt handlers.
 	 * @param interrupt Instance of user defined peripheral interrupt handler
 	 * @param peripheralNr Peripherals are numbered according to table 7-4 in 
-	 * <a href="http://cache.freescale.com/files/32bit/doc/ref_manual/MPC5200BUM.pdf?fpsp=1&WT_TYPE=Reference Manuals&WT_VENDOR=FREESCALE&WT_FILE_FORMAT=pdf&WT_ASSET=Documentation">mpc5200 User Manual</a>
+	 * <a href="http://wiki.ntb.ch/infoportal/_media/embedded_systems/mpc555/mpc555_usermanual.pdf">mpc5200 User Manual</a>
 	 */
 	public static void installPeripheralInterrupt(Interrupt interrupt, int peripheralNr) {
 		perInts[peripheralNr] = interrupt;

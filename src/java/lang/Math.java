@@ -141,6 +141,8 @@ public final class Math implements Modified {
 	 * <li>{@code abs(-infinity) = +infinity}</li>
 	 * <li>{@code abs(NaN) = NaN}</li>
 	 * </ul>
+	 * @param d Input value.
+	 * @return Absolute value.
 	 */
 	public static double abs(double d) {
 		return (d >= 0) ? d : -d;
@@ -156,6 +158,8 @@ public final class Math implements Modified {
 	 * <li>{@code abs(-infinity) = +infinity}</li>
 	 * <li>{@code abs(NaN) = NaN}</li>
 	 * </ul>
+	 * @param f Input value.
+	 * @return Absolute value.
 	 */
 	public static float abs(float f) {
 		return (f >= 0) ? f : -f;
@@ -166,6 +170,8 @@ public final class Math implements Modified {
      * <p>
      * If the argument is {@code Integer.MIN_VALUE}, {@code Integer.MIN_VALUE}
      * is returned.
+	 * @param i Input value.
+	 * @return Absolute value.
      */
     public static int abs(int i) {
         return (i >= 0) ? i : -i;
@@ -174,6 +180,8 @@ public final class Math implements Modified {
     /**
      * Returns the absolute value of the argument. If the argument is {@code
      * Long.MIN_VALUE}, {@code Long.MIN_VALUE} is returned.
+	 * @param l Input value.
+	 * @return Absolute value.
      */
     public static long abs(long l) {
         return (l >= 0) ? l : -l;
@@ -182,6 +190,9 @@ public final class Math implements Modified {
     /**
      * Returns the most positive (closest to positive infinity) of the two
      * arguments.
+	 * @param i1 First value.
+	 * @param i2 Second value.
+	 * @return Maximum of the two input values.
      */
     public static int max(int i1, int i2) {
         return i1 > i2 ? i1 : i2;
@@ -190,6 +201,9 @@ public final class Math implements Modified {
     /**
      * Returns the most positive (closest to positive infinity) of the two
      * arguments.
+	 * @param l1 First value.
+	 * @param l2 Second value.
+	 * @return Maximum of the two input values.
      */
     public static long max(long l1, long l2) {
         return l1 > l2 ? l1 : l2;
@@ -198,9 +212,10 @@ public final class Math implements Modified {
 	/**
 	 * Returns maximum value<br>
 	 * 
-	 * @param a
-	 * @param b
-	 * @return b if b > a, else a
+	 * @param a First value.
+	 * @param b Second value.
+	 * @return Maximum of the two input values.
+	 * @return b if b &gt; a, else a
 	 */
 	public static double max(double a, double b) {
 		if (b > a)
@@ -211,6 +226,9 @@ public final class Math implements Modified {
 	/**
 	 * Returns the most negative (closest to negative infinity) of the two
 	 * arguments.
+	 * @param i1 First value.
+	 * @param i2 Second value.
+	 * @return Minimum of the two input values.
 	 */
 	public static int min(int i1, int i2) {
 		return i1 < i2 ? i1 : i2;
@@ -219,6 +237,9 @@ public final class Math implements Modified {
 	/**
 	 * Returns the most negative (closest to negative infinity) of the two
 	 * arguments.
+	 * @param l1 First value.
+	 * @param l2 Second value.
+	 * @return Minimum of the two input values.
 	 */
 	public static long min(long l1, long l2) {
         return l1 < l2 ? l1 : l2;
@@ -227,9 +248,10 @@ public final class Math implements Modified {
 	/**
 	 * Returns minimum value<br>
 	 * 
-	 * @param a
-	 * @param b
-	 * @return b if b < a, else a
+	 * @param a First value.
+	 * @param b Second value.
+	 * @return Minimum of the two input values.
+	 * @return b if b &lt; a, else a
 	 */
 	public static double min(double a, double b) {
 		if (b < a)
@@ -240,7 +262,7 @@ public final class Math implements Modified {
 	/**
 	 * Calculates square root.<br>
 	 * 
-	 * @param arg
+	 * @param arg Input value
 	 * @return square root
 	 */
 	public static double sqrt(double arg) {
@@ -541,8 +563,8 @@ public final class Math implements Modified {
 	 * arctan(arg1/arg2) is calculated considering signs of the inputs<br>
 	 * Special cases:<br>
 	 * If both arguments are zero, NaN is returned
-	 * @param arg1
-	 * @param arg2
+	 * @param arg1 Nominator	
+	 * @param arg2 Denominator
 	 * @return the arc tangent of the argument
 	 */
 	public static double atan2(double arg1, double arg2){

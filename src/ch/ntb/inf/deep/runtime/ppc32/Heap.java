@@ -439,6 +439,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	/**
 	 * Used for debugging purposes.
+	 * @return Number of roots.
 	 */
 	public static int getNofRoots() {
 		return nofRoots;
@@ -446,6 +447,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	/**
 	 * Used for debugging purposes.
+	 * @return Array of roots.
 	 */
 	public static int[] getRoots() {
 		return roots;
@@ -453,6 +455,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	/**
 	 * Used for debugging purposes.
+	 * @return Array of free blocks.
 	 */
 	public static int[] getFreeBlocks() {
 		return freeBlocks;
@@ -460,6 +463,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	/**
 	 * Used for debugging purposes.
+	 * @return Array of number of free blocks.
 	 */
 	public static int[] getNofFreeBlocks() {
 		return nofFreeBlocks;
@@ -467,6 +471,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	/**
 	 * Used for debugging purposes.
+	 * @return Number of marked objects.
 	 */
 	public static int getNofMarkedObjs() {
 		return nofMarkedObjs;
@@ -474,6 +479,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	/**
 	 * Used for debugging purposes.
+	 * @return Array of number of marked reference arrays.
 	 */
 	public static int getNofMarkedRefArrays() {
 		return nofMarkedRefArrays;
@@ -481,6 +487,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	/**
 	 * Used for debugging purposes.
+	 * @return Array of number of marked primitives arrays.
 	 */
 	public static int getNofMarkedPrimArrays() {
 		return nofMarkedPrimArrays;
@@ -488,6 +495,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	/**
 	 * Used for debugging purposes.
+	 * @return Array of number of marked regular objects arrays.
 	 */
 	public static int getNofMarkedRegObjs() {
 		return nofMarkedRegObjs;

@@ -74,7 +74,7 @@ public final class Double extends Number implements Comparable<Double>, Modified
 	 * A constant holding the smallest positive normalized value of type
 	 * <code>double</code>, 2<sup>-1074</sup>. It is equal to the
 	 * hexadecimal floating-point literal
-	 * <code>Double.longBitsToDouble(1L << 52)</code>.
+	 * <code>Double.longBitsToDouble(1L &lt;&lt; 52)</code>.
 	 */
 	public static final double MIN_VALUE_NORM = MIN_VALUE * (double) (1L << 52);
 
@@ -174,6 +174,8 @@ public final class Double extends Number implements Comparable<Double>, Modified
      * Returns an integer corresponding to the upper 32 bits of the given
      * <a href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE 754</a> double precision
      * {@code value}. 
+     * @param arg Double argument.
+     * @return Upper 32 bits.
      */
 	public static int highPartToIntBits(double arg) {
 		long doubleBits = LL.doubleToBits(arg);	
@@ -184,6 +186,8 @@ public final class Double extends Number implements Comparable<Double>, Modified
      * Returns an integer corresponding to the lower 32 bits of the given
      * <a href="http://en.wikipedia.org/wiki/IEEE_754-1985">IEEE 754</a> double precision
      * {@code value}. 
+     * @param arg Double argument.
+     * @return Lower 32 bits.
      */
 	public static int lowPartToIntBits(double arg) {
 		long doubleBits = LL.doubleToBits(arg);
@@ -193,6 +197,8 @@ public final class Double extends Number implements Comparable<Double>, Modified
 	/**
 	 * Returns the exponent of a double precision {@code value} 
 	 * to the base of 2.
+     * @param arg Double argument.
+     * @return Exponent.
 	 */
 	public static int getExponent(double arg) {
 		int highBits = highPartToIntBits(arg);
@@ -202,6 +208,9 @@ public final class Double extends Number implements Comparable<Double>, Modified
 	/**
 	 * Sets the exponent of a double precision {@code value} 
 	 * to the base of 2 and returns the new value.
+     * @param d Double
+     * @param newExp New exponent.
+     * @return New double value.
 	 */
 	public static double setExponent(double d, int newExp) {
 		long bits = LL.doubleToBits(d);

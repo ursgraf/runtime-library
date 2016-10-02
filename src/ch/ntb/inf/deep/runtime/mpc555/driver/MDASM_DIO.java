@@ -36,7 +36,7 @@ public class MDASM_DIO implements IntbMpc555HB {
 	/**
 	 * Create a digital I/O on a MDASM pin.
 	 * @param channel select module channel 11-15 or 27-31
-	 * @param out set I/O direction, <code>true</code> => output, <code>false</code> => input.
+	 * @param out set I/O direction, <code>true</code> =&gt; output, <code>false</code> =&gt; input.
 	 */
 	public MDASM_DIO(int channel, boolean out) {
 		this.channel = channel - 11;

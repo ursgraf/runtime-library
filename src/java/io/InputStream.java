@@ -147,6 +147,7 @@ public abstract class InputStream extends Object implements Closeable, Modified 
      * reached. Blocks until one byte has been read, the end of the source
      * stream is detected or an exception is thrown.
      *
+     * @return Byte read.
      * @throws IOException
      *             if the stream is closed or another IOException occurs.
      */
@@ -154,6 +155,10 @@ public abstract class InputStream extends Object implements Closeable, Modified 
 
     /**
      * Equivalent to {@code read(buffer, 0, buffer.length)}.
+     * @param buffer Buffer to store read values into.     
+     * @return Number of bytes read.
+     * @throws IOException
+     *             if the stream is closed or another IOException occurs.
      */
     public int read(byte[] buffer) throws IOException {
         return read(buffer, 0, buffer.length);
@@ -165,6 +170,10 @@ public abstract class InputStream extends Object implements Closeable, Modified 
      * Returns the number of bytes actually read or -1 if the end of the stream
      * has been reached.
      *
+     * @param buffer Buffer to store read values into.     
+     * @param byteOffset Byte offset in buffer where first value is stored.
+     * @param byteCount Number of bytes to read.
+     * @return Number of bytes read.
      * @throws IndexOutOfBoundsException
      *   if {@code byteOffset < 0 || byteCount < 0 || byteOffset + byteCount > buffer.length}.
      * @throws IOException

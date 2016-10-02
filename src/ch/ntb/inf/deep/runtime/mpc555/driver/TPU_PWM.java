@@ -30,7 +30,7 @@ import ch.ntb.inf.deep.unsafe.US;
  */
 
 /**
- * Driver for generating pulse width modulated (PWM) signals on the TPU.<br />
+ * Driver for generating pulse width modulated (PWM) signals on the TPU.<br>
  * All 16 channels of TPU-A or TPU-B can be used. All timing data has to be a multiple of the
  * TPU time base clock (806 ns).
  */

@@ -25,7 +25,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.sysp.lib.SpeedController4DCMotor;
 
 /**
- * Demo application for motor controller. <br/>
+ * Demo application for motor controller. <br>
  * Use the Maxon Motor Module with a RE-max13 and connect it as follows:
  * <ul>
  *   <li>PWM A (Right): TPU A, Channel 0</li>
