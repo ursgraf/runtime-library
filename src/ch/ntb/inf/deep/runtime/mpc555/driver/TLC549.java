@@ -29,10 +29,10 @@ import ch.ntb.inf.deep.unsafe.US;
 /**
  * Driver for a TLC549 8bit AD-converter connected to the QSPI.<br>
  * Connect the converter as follows:<br>
- * MPC555 => TLC549:<br>
- * PCS0 => CS<br>
- * MISO => DATA OUT<br>
- * SCK => I/O CLOCK<br>
+ * MPC555 =&gt; TLC549:<br>
+ * PCS0 =&gt; CS<br>
+ * MISO =&gt; DATA OUT<br>
+ * SCK =&gt; I/O CLOCK<br>
  * Do not connect any other devices on the QSPI interface without adapting the 
  * settings of the control lines.
  */

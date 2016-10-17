@@ -53,7 +53,7 @@ public class StepMotor implements IntbMpc555HB {
 	 * @param fullStep
 	 *            <code>true</code>: full step mode. <code>false</code>: half step mode.
 	 * @param stepPeriod
-	 *            Maximum stepping speed in \u00b5s (stepPeriod <= 6553)
+	 *            Maximum stepping speed in \u00b5s (stepPeriod &lt;= 6553)
 	 * @param channel
 	 *            First pin on TPU. For full step channel and channel+1 pin will be used.
 	 *            For half step channel, channel+1, channel+2 and channel+3 will be used.

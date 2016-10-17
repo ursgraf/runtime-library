@@ -64,7 +64,6 @@ public class Object {
      * <p>
      * As an example, the following code actually compiles, although one might
      * think it shouldn't:
-     * <p>
      * <pre>{@code
      *   List<Integer> l = new ArrayList<Integer>();
      *   Class<? extends List> c = l.getClass();}</pre>

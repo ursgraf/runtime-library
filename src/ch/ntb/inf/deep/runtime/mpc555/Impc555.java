@@ -1,8 +1,10 @@
 package ch.ntb.inf.deep.runtime.mpc555;
 
-// Auto generated file (2015-08-14 11:29:44)
+import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
 
-public interface Impc555 {
+// Auto generated file (2016-04-15 16:09:23)
+
+public interface Impc555 extends Ippc32 {
 
 	// System constants of CPU mpc555
 	public static final int SRR1init = 0x3802;

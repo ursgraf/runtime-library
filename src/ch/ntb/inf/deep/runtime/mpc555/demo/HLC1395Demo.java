@@ -41,12 +41,14 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
  */
 public class HLC1395Demo extends Task {
 	
+	static HLC1395Pulsed sense;
+	
 	/* (non-Javadoc)
 	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
 	 */
 	public void action() {
 		for(int i = 0; i < 4; i++) {
-			System.out.print(HLC1395Pulsed.read(i));
+			System.out.print(sense.read(i));
 			System.out.print('\t');
 		}
 		System.out.println();
@@ -54,8 +56,9 @@ public class HLC1395Demo extends Task {
 	
 	static {
 		// Initialize HLC1395Pulsed driver for 4 sensors and start reading values
-		HLC1395Pulsed.init(4, 0x50076, 59); // initialize 4 sensors (addrPin0 = MPIOB6, addrPin1 = MPIOB7, trgPin = MPIOB5, analogInPin = AN59)
-		HLC1395Pulsed.start();
+		sense = HLC1395Pulsed.getInstance();
+		sense.init(4, 0x50076, 59); // initialize 4 sensors (addrPin0 = MPIOB6, addrPin1 = MPIOB7, trgPin = MPIOB5, analogInPin = AN59)
+		sense.start();
 		
 		// Initialize SCI1 and set stdout to SCI1
 		SCI sci = SCI.getInstance(SCI.pSCI1);

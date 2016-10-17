@@ -50,7 +50,8 @@ public class DS1620 {
 	}
 			
 	/**
-	 * reads temperature, returns value in deg. centigrade times 2
+	 * Reads temperature, returns value in deg. centigrade times 2.
+	 * @return Temperature in degrees centigrade times 2.
 	 */
 	public short read () {
 		rst.set(true);
@@ -73,8 +74,8 @@ public class DS1620 {
 	}
 
 	/**
-	 * configures the sensor for serial connection
-	 * must be called only once, not for each power-cycle
+	 * Configures the sensor for serial connection
+	 * must be called only once, not for each power-cycle.
 	 */
 	public void writeConfig () {
 		rst.set(true);
@@ -84,7 +85,8 @@ public class DS1620 {
 	}
 	
 	/**
-	 * returns configuration data
+	 * Returns configuration data
+	 * @return Configuration word.
 	 */
 	public byte readConfig () {
 		rst.set(true);
@@ -107,7 +109,7 @@ public class DS1620 {
 	}
 			
 	/**
-	 * creates new sensor
+	 * Creates new sensor
 	 * @param reset
 	 *            pin number (MPIOSM) for rst signal
 	 * @param clock

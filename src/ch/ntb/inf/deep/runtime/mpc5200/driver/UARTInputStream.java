@@ -43,6 +43,7 @@ public class UARTInputStream extends InputStream {
 	
     /**
      * Creates an input stream on a given SCI interface.
+     * @param uart UART number.
      */
     public UARTInputStream(int uart) {
 		port = uart;

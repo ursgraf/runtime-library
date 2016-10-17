@@ -75,6 +75,14 @@ public abstract class OutputStream implements Closeable, Flushable, Modified {
 
     /**
      * Equivalent to {@code write(buffer, 0, buffer.length)}.
+     * @param buffer
+     *            the buffer to be written.
+     * @throws IOException
+     *             if an error occurs while writing to this stream.
+     * @throws IndexOutOfBoundsException
+     *             if {@code offset < 0} or {@code count < 0}, or if
+     *             {@code offset + count} is bigger than the length of
+     *             {@code buffer}.
      */
     public void write(byte[] buffer) throws IOException {
         write(buffer, 0, buffer.length);
@@ -123,6 +131,7 @@ public abstract class OutputStream implements Closeable, Flushable, Modified {
     /**
      * Returns true if this writer has encountered and suppressed an error. Used
      * by PrintStreams as an alternative to checked exceptions.
+     * @return {@code true} if error occurred.
      */
     boolean checkError() {
         return false;

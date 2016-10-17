@@ -63,6 +63,8 @@ public class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException im
 
     /**
      * Used internally for consistent high-quality error reporting.
+     * @param sourceLength Length of array.
+     * @param index Array index.
      */
     public ArrayIndexOutOfBoundsException(int sourceLength, int index) {
 //        super("length=" + sourceLength + "; index=" + index);
@@ -71,6 +73,9 @@ public class ArrayIndexOutOfBoundsException extends IndexOutOfBoundsException im
 
     /**
      * Used internally for consistent high-quality error reporting.
+     * @param sourceLength Length of array.
+     * @param offset Array offset.
+     * @param count Array count.
      */
     public ArrayIndexOutOfBoundsException(int sourceLength, int offset,
             int count) {

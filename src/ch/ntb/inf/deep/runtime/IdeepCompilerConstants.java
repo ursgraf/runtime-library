@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime;
 
-// Auto generated file (2015-08-14 11:57:01)
+// Auto generated file (2016-06-07 16:06:01)
 
 public interface IdeepCompilerConstants {
 

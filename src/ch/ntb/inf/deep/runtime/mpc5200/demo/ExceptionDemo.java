@@ -6,7 +6,7 @@ import ch.ntb.inf.deep.runtime.mpc5200.driver.UART3;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 /** 
- * Test class which periodically throws a <code>ArrayIndexOutOfBoundsException</code.<br>
+ * Test class which periodically throws a <code>ArrayIndexOutOfBoundsException</code>.
  * 
  * @author Urs Graf
  *

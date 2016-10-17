@@ -25,7 +25,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.sysp.lib.SpeedController4DCMotor;
 
 /**
- * Demo application for motor controller. <br/>
+ * Demo application for motor controller. <br>
  * Use the Maxon Motor Module with a RE-max13 and connect it as follows:
  * <ul>
  *   <li>PWM A (Right): TPU A, Channel 0</li>
@@ -40,6 +40,7 @@ public class MotorDemo1 extends Task {
 	
 	private static final float ts = 0.001f;				// task period [s]
 	private static final int pwmChannelA = 0;			// channel for PWM signal A
+	private static final int pwmChannelB = 1;			// channel for PWM signal A
 	private static final boolean useTPUA4PWM = true;	// use TPU-A for PWM signals
 	private static final int encChannelA = 2;			// channel for encoder signal A
 	private static final boolean useTPUA4Enc = true;	// use TPU-A for encoder signals
@@ -53,7 +54,7 @@ public class MotorDemo1 extends Task {
 	private static boolean auto = false;
 	private static short counter = 0;
 	private static float speed = 0;
-	private static SpeedController4DCMotor controller = new SpeedController4DCMotor(ts, pwmChannelA, useTPUA4PWM, encChannelA, useTPUA4Enc, encTPR, umax, i, kp, tn);
+	private static SpeedController4DCMotor controller = new SpeedController4DCMotor(ts, pwmChannelA, pwmChannelB, useTPUA4PWM, encChannelA, useTPUA4Enc, encTPR, umax, i, kp, tn);
 	
 	private MotorDemo1() {}
 	

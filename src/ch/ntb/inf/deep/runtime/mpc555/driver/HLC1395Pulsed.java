@@ -24,6 +24,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* CHANGES:
+ * 27.09.16 NTB/UG	changed to singleton
  * 31.08.11 NTB/MZ	JavaDoc updated
  * 09.06.11 NTB/RM	TpuTimeUnit renamed to tpuTimeBase
  * 25.05.11 NTB/RM	conflict with QADC_AIN driver fixed
@@ -54,16 +55,26 @@ import ch.ntb.inf.deep.unsafe.US;
 public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 
 	private static final byte maxNofSensors = 16, maxAnalogInPortNr = 59;
-	private static final HLC1395Pulsed thisSngTask; // Singleton DistSense Task
-	private static int nofSensors; // number of connected sensors
-	private static int trigPinPat; // trigger pin bit pattern
-	private static int outPinPat; // bit pattern for all address pins and the trigger pin
-	private static int sensAdr; // sensor address
+	private static HLC1395Pulsed thisSngTask; // Singleton DistSense Task
+	private int nofSensors; // number of connected sensors
+	private int trigPinPat; // trigger pin bit pattern
+	private int outPinPat; // bit pattern for all address pins and the trigger pin
+	private int sensAdr; // sensor address
 
 	// Address pattern table, adrPatTab[s]: address bit pattern for sensor s
-	private static final short[] adrPatTab = new short[maxNofSensors];
-	private static short[] resultVal = new short[16];
+	private final short[] adrPatTab = new short[maxNofSensors];
+	private short[] resultVal = new short[16];
 
+	/**
+	 * Returns an instance of <i>HLC1395Pulsed Driver</i> 
+	 * @return Instance of HLC1395Pulsed Driver
+	 */
+	public static HLC1395Pulsed getInstance() {
+		if (thisSngTask == null) {
+			thisSngTask = new HLC1395Pulsed();
+		}
+		return thisSngTask;
+	}
 	private HLC1395Pulsed() {}
 
 	/**
@@ -72,7 +83,7 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 	 * @param channel	channel/sensor number
 	 * @return converted value
 	 */
-	public static short read(int channel) {
+	public short read(int channel) {
 		return resultVal[channel];
 	}
 
@@ -104,7 +115,7 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 	/**
 	 * Initialize sensors.
 	 * 
-	 * @param numberOfSensors	Number of connected sensors: 0 < numberOfSensors <= 16
+	 * @param numberOfSensors	Number of connected sensors: 0 &lt; numberOfSensors &lt;= 16
 	 * @param pinNumbers		Pin numbers of the 4 address pins and of the trigger pin.
 	 * 							Use 4 bits per pin in the following order: trgPin, adr3Pin,
 	 * 							adr2Pin, adr1Pin, adr0Pin. Example: 0xF85AC means trgPin =
@@ -112,7 +123,7 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 	 * 							MPIOB10 and adr0Pin = MPIOB12.
 	 * @param analogInChn		Pin number for the analog input channel (ANx).
 	 */
-	public static void init(int numberOfSensors, int pinNumbers, int analogInChn) {
+	public void init(int numberOfSensors, int pinNumbers, int analogInChn) {
 		if (numberOfSensors > maxNofSensors)
 			numberOfSensors = maxNofSensors;
 		else if (numberOfSensors < 1)
@@ -174,7 +185,7 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 	 * @param trgPin		MPIOB pin for the trigger signal.
 	 * @param analogInPin	ADC-A channel for the sensor signal.
 	 */
-	public static void init(int addr3Pin, int addr2Pin, int addr1Pin,
+	public void init(int addr3Pin, int addr2Pin, int addr1Pin,
 			int addr0Pin, int trgPin, int analogInPin) {
 		int val = getNofSensAndPinNumbers(addr3Pin, addr2Pin, addr1Pin,
 				addr0Pin, trgPin);
@@ -184,22 +195,22 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 	/**
 	 * Stop reading the sensors.
 	 */
-	public static void stop() {
+	public void stop() {
 		Task.remove(thisSngTask);
 	}
 
 	/**
 	 * Start reading the sensors.<br>
 	 * This method must be called after the initialization
-	 * or after a call of <code>stop()</stop>.
+	 * or after a call of <code>stop()</code>.
 	 */
-	public static void start() {
+	public void start() {
 		sensAdr = 0;
 		thisSngTask.period = maxNofSensors / nofSensors;
 		Task.install(thisSngTask);
 	}
 
-	private static int getNofSensAndPinNumbers(int adr3PinNr, int adr2PinNr,
+	private int getNofSensAndPinNumbers(int adr3PinNr, int adr2PinNr,
 			int adr1PinNr, int adr0PinNr, int trigPinNr) {
 		int pinNumbers = trigPinNr & 0xF;
 		int nofSens = 16;
@@ -224,8 +235,4 @@ public class HLC1395Pulsed extends Task implements IntbMpc555HB {
 		return pinNumbers | (nofSens << 20);
 	}
 
-	static {
-		thisSngTask = new HLC1395Pulsed();
-	}
-	
 }

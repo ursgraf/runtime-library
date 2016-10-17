@@ -26,22 +26,38 @@ package ch.ntb.inf.deep.lowLevel;
 
 public class LL {
 
-	/** Get bits of floating point value (64bit)*/
+	/** 
+	 * Get bits of floating point value (64bit)
+	 * @param d Double value.
+	 * @return Bit pattern.
+	 */
 	public static long doubleToBits(double d) {
 		return 0;
 	}
 
-	/** Set double value directly from bits (64bit) */
+	/** 
+	 * Set double value directly from bits (64bit) 
+	 * @param val Bit pattern.
+	 * @return Double value.
+	 */
 	public static double bitsToDouble(long val) {
 		return 0;
 	}
 
-	/** Get bits of floating point value (32bit) */
+	/** 
+	 * Get bits of floating point value (32bit)
+	 * @param f Double value.
+	 * @return Bit pattern.
+	 */
 	public static int floatToBits(float f) {
 		return 0;
 	}
 
-	/** Set float value directly from bits (32bit) */
+	/** 
+	 * Set float value directly from bits (32bit) 
+	 * @param val Bit pattern.
+	 * @return Float value.
+	 */
 	public static float bitsToFloat(int val) {
 		return 0;
 	}

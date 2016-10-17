@@ -51,7 +51,7 @@ public class DAC7614 implements IntbMpc555HB {
 	}
 
 	/**
-	 * Write the output value <code>val</code> to the channel <code>chn<code>
+	 * Write the output value <code>val</code> to the channel <code>ch</code>
 	 * @param ch Channel
 	 * @param val Value
 	 * 

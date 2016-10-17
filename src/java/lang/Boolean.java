@@ -130,6 +130,8 @@ public final class Boolean implements Serializable, Comparable<Boolean>, Modifie
 
     /**
      * Compares two {@code boolean} values.
+     * @param lhs First value.
+     * @param rhs Second value.
      * @return 0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.
      *         (Where true &gt; false.)
      * @since 1.7

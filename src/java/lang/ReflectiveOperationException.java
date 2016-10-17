@@ -36,6 +36,7 @@ public class ReflectiveOperationException extends Exception {
 
 	/**
 	 * Constructs a new exception with the given detail message.
+	 * @param message Exception message
 	 */
 	public ReflectiveOperationException(String message) {
 		super(message);
@@ -43,6 +44,7 @@ public class ReflectiveOperationException extends Exception {
 
 	/**
 	 * Constructs a new exception with the given cause.
+	 * @param cause Exception cause.
 	 */
 	public ReflectiveOperationException(Throwable cause) {
 		super(cause);
@@ -50,6 +52,8 @@ public class ReflectiveOperationException extends Exception {
 
 	/**
 	 * Constructs a new exception with the given detail message and cause.
+	 * @param message Exception message
+	 * @param cause Exception cause.
 	 */
 	public ReflectiveOperationException(String message, Throwable cause) {
 		super(message, cause);

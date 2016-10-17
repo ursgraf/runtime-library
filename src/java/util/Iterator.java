@@ -35,6 +35,7 @@ package java.util;
 public interface Iterator<E> {
     /**
      * Returns true if there is at least one more element, false otherwise.
+     * @return {@code true} if there is a next element.
      * @see #next
      */
     public boolean hasNext();

@@ -128,6 +128,7 @@ public class GenericsTest {
 }
 
 class List<T> {
+	@SuppressWarnings("unchecked")
 	T[] data = (T[])new Object[10];
 	static int in, out;
 	void add(T x) {data[in++] = x;}

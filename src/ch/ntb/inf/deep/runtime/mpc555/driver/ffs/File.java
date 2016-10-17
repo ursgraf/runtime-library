@@ -37,21 +37,23 @@ public class File {
 	boolean valid;	// indicates if file in directory is valid
 
 	/**
-	 * returns address of first block of file
+	 * Returns address of first block of file.
+	 * @return Address of file.
 	 */
 	public int address () {
 		return this.addr;
 	} 
 
 	/**
-	 * returns length of file in bytes
+	 * Returns length of file in bytes.
+	 * @return Length in bytes.
 	 */
 	public int length () {
 		return this.len;
 	} 
 
 	/**
-	 * writes file length into directory
+	 * Writes file length into directory.
 	 */
 	public void register () {	// blocking
 		if (this.len % 2 == 1) {
@@ -65,7 +67,7 @@ public class File {
 	} 
 
 	/**
-	 * deletes file in directory
+	 * Deletes file in directory.
 	 */
 	public void delete () {	// blocking
 		this.valid = false;
@@ -74,9 +76,10 @@ public class File {
 	} 
 
 	/**
-	 * creates new file
+	 * Creates new file,
 	 * if file with this name already exists, existing file is deleted first 
 	 * returns null if maximum number of files is exceeded
+	 * @param name Name of the file
 	 */
 	public File (String name) { 
 		File f = FFS.old(name); 

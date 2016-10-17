@@ -44,7 +44,7 @@ public class QADC_DIO implements IntbMpc555HB{
 	 * 
 	 * @param qadcA Select module QADC_A (<code>true</code>) or QADC_B (<code>false</code>)
 	 * @param channel Select pin 0-15 (or 0-3 and 48-59)
-	 * @param out Set I/O direction,<code>true</code> => output, <code>false</code> => input
+	 * @param out Set I/O direction,<code>true</code> =&gt;output, <code>false</code> =&gt; input
 	 */
 	public static void init(boolean qadcA, int channel, boolean out){
 		short oldState;

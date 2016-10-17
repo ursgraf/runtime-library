@@ -39,6 +39,7 @@ public class SCIInputStream extends InputStream{
 	
     /**
      * Creates an input stream on a given SCI interface.
+     * @param sci SCI number.
      */
     public SCIInputStream(SCI sci) {
 		port = sci;
@@ -60,11 +61,9 @@ public class SCIInputStream extends InputStream{
 	 * @return byte read
 	 */
 	public int read() {
-		int cnt = 0;
 		try {
-			cnt = port.read();
-		} catch (IOException e) {e.printStackTrace();}
-		return cnt;
+			return port.read();
+		} catch (IOException e) {e.printStackTrace(); return 0;}
 	}
 
 	/**
@@ -76,11 +75,9 @@ public class SCIInputStream extends InputStream{
 	 * @return the number of bytes read. 
 	 */
 	public int read(byte buffer[]){
-		int cnt = 0;
 		try {
-			cnt = port.read(buffer);
-		} catch (IOException e) {e.printStackTrace();}
-		return cnt;
+			return port.read(buffer);
+		} catch (IOException e) {e.printStackTrace(); return 0;}
 	}
 
 	/**
@@ -96,11 +93,9 @@ public class SCIInputStream extends InputStream{
 	 * @return the number of bytes read.
 	 */
 	public int read(byte buffer[], int off, int count){
-		int cnt = 0;
 		try {
-			cnt = port.read(buffer, off, count);
-		} catch (IOException e) {e.printStackTrace();}
-		return cnt;
+			return port.read(buffer, off, count);
+		} catch (IOException e) {e.printStackTrace(); return 0;}
 	}
 	
 }

@@ -109,6 +109,7 @@ public class UtilTest {
 		CmdTransmitter.sendDone();
 	}	
 
+	@SuppressWarnings("unused")
 	@Test
 	public static void matrix4(){
 		Matrix A = Matrix.rot3x(30);
@@ -130,7 +131,8 @@ public class UtilTest {
         B.set(1, 2, 1);
         B.set(1, 3, 1);
         
-        Vector v1 = new Vector(3);
+        @SuppressWarnings("unused")
+		Vector v1 = new Vector(3);
         Vector3 v2 = new Vector3(1, 2, 3);
         Vector4 v4 = new Vector4(4, 3, 2, 1);
         Vector v5 = new Vector(4);

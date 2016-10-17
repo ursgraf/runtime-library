@@ -111,6 +111,7 @@ public class Robi2 extends Task {
 	private static TPU_PWM mot2_PWMA, mot2_PWMB;			// pwm signals for motor 2
 	private static TPU_FQD mot1_Enc, mot2_Enc;				// encoder for motor 1 and 2
 	private static TPU_DIO[] led;							// 16 led
+	static HLC1395Pulsed distSense;							// distance sensors
 	
 
 	/* Background task */
@@ -305,10 +306,10 @@ public class Robi2 extends Task {
 
 	/**
 	 * Set the state of the chosen pattern LED. Pattern LEDs are the red ones.
-	 * <p><b>Examples:</b><ul>
+	 * <b>Examples:</b><ul>
 	 * <li><code>setPatternLED(0,0,true)</code> turns LED11 on</li>
 	 * <li><code>setPatternLED(3,2,false)</code> turns LED13 off</li>
-	 * </ul></p>
+	 * </ul>
 	 * 
 	 * @param r
 	 *            row of the LED(range 0..3);
@@ -377,10 +378,10 @@ public class Robi2 extends Task {
 
 	/**
 	 * Set the state of the chosen pattern LED. Pattern LEDs are the red ones.
-	 * <p><b>Examples:</b><ul>
+	 * <b>Examples:</b><ul>
 	 * <li><code>getPatternLED(0,0)</code> gets the state of LED11</li>
-	 * <li><code>getPatternLED(3,2)</code> gets the state of LED13</li><br>
-	 * </ul></p>
+	 * <li><code>getPatternLED(3,2)</code> gets the state of LED13</li>
+	 * </ul>
 	 * 
 	 * @param r		row of the LED (range 0..3);
 	 * @param c		column of the LED (range 0..2)
@@ -503,7 +504,7 @@ public class Robi2 extends Task {
 	 * @return			converted value (range 0..1023), -1 = failed.
 	 */
 	public static int getDistSensorValue(int sensor) {
-		if(sensor >= 0 && sensor < 16)	return HLC1395Pulsed.read(sensor);
+		if(sensor >= 0 && sensor < 16)	return distSense.read(sensor);
 		return -1;
 	}
 
@@ -762,8 +763,9 @@ public class Robi2 extends Task {
 		sw15 = new MPIOSM_DIO(15, false);
 
 		// Initialize distance sensors
-		HLC1395Pulsed.init(16, 0x00059876, 59);
-		HLC1395Pulsed.start();
+		distSense = HLC1395Pulsed.getInstance();
+		distSense.init(16, 0x00059876, 59);
+		distSense.start();
 
 		// Initialize drive
 		mot1_Enc = new TPU_FQD(TPUB, Mot1_EncA_Pin);

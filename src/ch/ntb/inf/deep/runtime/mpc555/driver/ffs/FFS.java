@@ -60,18 +60,19 @@ public class FFS implements IntbMpc555HB {
 	}
 
 	/**
-	 * returns address of sector
-	 * @param sector sector, of which address is returned
+	 * Returns address of sector.
+	 * @param sector Sector, of which address is returned.
+	 * @return Address of sector.
 	 */
 	public static int getSectorAddr(int sector) {
 		return devAddr + fsOffset + sector * sectorSize;
 	}
 
 	/**
-	 * programs an integer value
-	 * @param sector address of sector
-	 * @param offset offset
-	 * @param val value to be programmed
+	 * Programs an integer value.
+	 * @param sector address of sector.
+	 * @param offset offset.
+	 * @param val value to be programmed.
 	 */
 	public static void programInt(int sector, int offset, int val) { // blocking 
 		int addr = devAddr + fsOffset + sector * sectorSize + offset;
@@ -93,6 +94,7 @@ public class FFS implements IntbMpc555HB {
 	 * reads a byte from flash file system
 	 * @param sector sector
 	 * @param offset offset
+	 * @return Byte read.
 	 */
 	public static byte readByte(int sector, int offset) {
 		int addr = devAddr + fsOffset + sector * sectorSize + offset;
@@ -103,6 +105,7 @@ public class FFS implements IntbMpc555HB {
 	 * reads a short from flash file system
 	 * @param sector sector
 	 * @param offset offset
+	 * @return Short read.
 	 */
 	public static short readShort(int sector, int offset) {
 		int addr = devAddr + fsOffset + sector * sectorSize + offset;
@@ -113,6 +116,7 @@ public class FFS implements IntbMpc555HB {
 	 * reads an integer from flash file system
 	 * @param sector sector
 	 * @param offset offset
+	 * @return Integer read.
 	 */
 	public static int readInt(int sector, int offset) {
 		int addr = devAddr + fsOffset + sector * sectorSize + offset;
@@ -217,8 +221,10 @@ public class FFS implements IntbMpc555HB {
 	}
 
 	/**
-	 * returns file with filename
-	 * null if file does not exist
+	 * Returns file with filename,
+	 * null if file does not exist.
+	 * @param filename Name of file to be opened.
+	 * @return Opened file.
 	 */
 	public static File old (String filename) {	// searches file table for file name
 		File f = null; int i = 0, len, len1; boolean eq;
@@ -242,7 +248,9 @@ public class FFS implements IntbMpc555HB {
 	}
 
 	/**
-	 * returns true if directory at index has a valid entry
+	 * Returns true if directory at index has a valid entry.
+	 * @param index Index into file directory.
+	 * @return {@code true} if directory contains valid entry at this index.
 	 */
 	public static boolean directory (int index) {	
 		if ((index < 0) || (index >= maxFiles)) return false;

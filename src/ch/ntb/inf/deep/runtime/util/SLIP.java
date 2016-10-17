@@ -71,7 +71,8 @@ public class SLIP {
 	 * @param packet buffer where to put the packet
 	 * @param offset offset in the buffer
 	 * @param length length of the buffer
-	 * @return <p><table>
+	 * @return <table>
+	 * <caption>return values</caption>
 	 *   <tr>
 	 *     <th> &gt;= 0 </th>
 	 *     <td>number of received bytes</td>
@@ -84,7 +85,7 @@ public class SLIP {
 	 *     <th>-2</th>
 	 *     <td>buffer overflow</td>
 	 *   </tr>
-	 * </table></p>
+	 * </table>
 	 */
 	public int read(byte[] packet, int offset, int length) {
 		if (packetReceived) {

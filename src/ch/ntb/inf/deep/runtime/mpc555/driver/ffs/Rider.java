@@ -50,8 +50,8 @@ public class Rider {
 	
 	/**
 	 * sets rider at position
-	 * if pos < 0, sets position to 0
-	 * if pos > length of file, sets position to file.len 
+	 * if pos &lt; 0, sets position to 0
+	 * if pos &gt; length of file, sets position to file.len 
 	 * 
 	 * @param f
 	 *            file
@@ -69,21 +69,24 @@ public class Rider {
 	}
 	
 	/**
-	 * returns position of rider
+	 * Returns position of rider.
+	 * @return Position of rider in byte offset.
 	 */
 	public int pos () {	
 		return this.offset;
 	}
 	
 	/**
-	 * returns file associated with this rider
+	 * Returns file associated with this rider.
+	 * @return File where this rider is placed on.
 	 */
 	public File base () {	
 		return this.f;
 	}
 	
 	/**
-	 * reads byte from rider
+	 * Reads byte from rider.
+	 * @return Byte read.
 	 */
 	private byte read () {	
 		int offset, sector, i; byte x = 0;
@@ -103,6 +106,7 @@ public class Rider {
 
 	/**
 	 * reads boolean
+	 * @return Boolean value.
 	 */
 	public boolean readBool () {	
 		byte x = read();
@@ -111,6 +115,7 @@ public class Rider {
 
 	/**
 	 * reads byte
+	 * @return Byte value.
 	 */
 	public byte readByte () {	
 		return read();
@@ -118,6 +123,7 @@ public class Rider {
 
 	/**
 	 * reads short
+	 * @return Short value.
 	 */
 	public short readShort () {	
 		int x = (read() << 8) + (read() & 0xff);
@@ -126,6 +132,7 @@ public class Rider {
 
 	/**
 	 * reads int
+	 * @return Integer value.
 	 */
 	public int readInt () {	
 		int x = (read() << 24) + ((read() << 16) & 0xff0000) + ((read() << 8) & 0xff00) + (read() & 0xff);
@@ -133,7 +140,8 @@ public class Rider {
 	}
 
 	/**
-	 * writes byte to file 
+	 * Writes byte to file.
+	 * @param x Byte to write.
 	 */
 	private void write (byte x) {	
 		int offset, sector, i, k; short data;
@@ -168,6 +176,7 @@ public class Rider {
 
 	/**
 	 * writes boolean
+	 * @param x Boolean value.
 	 */
 	public void writeBool (boolean x) {	
 		if (x) write((byte)0xff); else write((byte)0);
@@ -175,6 +184,7 @@ public class Rider {
 
 	/**
 	 * writes byte
+	 * @param x Byte value.
 	 */
 	public void writeByte (byte x) {	
 		write(x); 
@@ -182,6 +192,7 @@ public class Rider {
 
 	/**
 	 * writes short
+	 * @param x Short value.
 	 */
 	public void writeShort (short x) {	
 		write((byte)(x >> 8)); write((byte)(x)); 
@@ -189,6 +200,7 @@ public class Rider {
 
 	/**
 	 * writes int
+	 * @param x Integer value.
 	 */
 	public void writeInt (int x) {	
 		write((byte)(x >> 24)); write((byte)(x >> 16)); write((byte)(x >> 8)); write((byte)(x)); 

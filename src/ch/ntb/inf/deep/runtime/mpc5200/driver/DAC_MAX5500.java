@@ -34,7 +34,7 @@ public class DAC_MAX5500 implements Impc5200 {
 
 	/**
 	 * <p>Initialize the <i>SPI</i> on PSC6.</p>
-	 * <p>This method has to be called before using the SPI!<p>
+	 * <p>This method has to be called before using the SPI!</p>
 	 */
 	public static void init() {
 		US.PUT1(PSCBase + PSCCR, 0xa); // disable Tx, Rx

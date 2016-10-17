@@ -37,6 +37,7 @@ public class SCIOutputStream extends OutputStream {
 	
     /**
      * Creates an output stream on a given SCI interface.
+     * @param sci SCI number.
      */
     public SCIOutputStream(SCI sci) {
 		port = sci;

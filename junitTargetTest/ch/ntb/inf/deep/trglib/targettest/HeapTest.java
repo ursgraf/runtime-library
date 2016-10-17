@@ -21,7 +21,6 @@ package ch.ntb.inf.deep.trglib.targettest;
 import ch.ntb.inf.deep.runtime.ppc32.Heap;
 import ch.ntb.inf.junitTarget.Assert;
 import ch.ntb.inf.junitTarget.CmdTransmitter;
-import ch.ntb.inf.junitTarget.Ignore;
 import ch.ntb.inf.junitTarget.MaxErrors;
 import ch.ntb.inf.junitTarget.Test;
 
@@ -30,6 +29,7 @@ import ch.ntb.inf.junitTarget.Test;
  * 
  */
 @MaxErrors(100)
+	@SuppressWarnings("unused")
 public class HeapTest {
 	
 //	@Ignore
@@ -38,6 +38,7 @@ public class HeapTest {
 		int free = Heap.getFreeHeap();
 		for (int i = 0; i < 100; i++);
 		Assert.assertEquals("test1", free, Heap.getFreeHeap());
+		@SuppressWarnings("unused")
 		int[] a1 = {10, 20};
 		Assert.assertEquals("test2", free - 16, Heap.getFreeHeap());
 		free = Heap.getFreeHeap();
