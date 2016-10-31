@@ -9,6 +9,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
 import ch.ntb.inf.deep.runtime.util.CmdInt;
 import ch.ntb.inf.deep.runtime.util.SLIP;
+import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 
 
 /**
@@ -38,49 +39,39 @@ public class RN131 extends Task {
 		error,
 		reset,
 		boot,
-		enterCmdMode,
-		waitForCmdMode,
-		configure,
-		reboot,
 		ready
 	};
 	
 
 	/**
 	 * Creates a new RN131 object.
-	 * @param config	The configuration to use
-     * @throws NullPointerException
-     *            Wrong configuration.
-     * @throws IOException
-     *            Wrong channel.
-	 */
-	public RN131(RN131Config config) throws Exception {
-		
-		if (config.in == null)
-			throw new NullPointerException("RN131Config.in");
-		
-		if (config.out == null)
-			throw new NullPointerException("RN131Config.out");
-		
-		if (config.reset == null)
-			throw new NullPointerException("RN131Config.reset");
-		
-		this.in = config.in;
-		this.out = config.out;
-		this.reset = config.reset;
-		this.config = config;
-		
-		local_ip = config.localIP.getBytes();
-		remote_ip = config.remoteIP.getBytes();
-		ssid = config.ssid.getBytes();
-//		passphrase = config.passphrase.getBytes();
-		passphrase = "0".getBytes();
-		
-		if (config.channel < 1 || config.channel > 13)
-			throw new IOException("RN131Config.channel out of range");
 
-		channel[0] = (byte)((config.channel >= 10) ? '1' : ' ');
-		channel[1] = (byte)((config.channel % 10) + '0');
+	 * @param in
+	 * 			SCI Inputstream
+	 * @param out
+	 * 			SCI Outputstream
+	 * @param reset
+	 * 			Resetpin
+	 * @param config 
+	 * 
+	 * @throws NullPointerException
+	 * 			Wrong configuration.
+	 * @throws IOException
+	 * 			Wrong configuration.
+	 */
+	public RN131(SCIInputStream in, SCIOutputStream out, MPIOSM_DIO reset) throws Exception {
+		if (in == null)
+			throw new NullPointerException("SCIInputStream in");
+		
+		if (out == null)
+			throw new NullPointerException("SCIOutputStream out");
+		
+		if (reset == null)
+			throw new NullPointerException("MPIOSM_DIO reset");
+
+		this.in = in;
+		this.out = out;
+		this.reset = reset;
 		
 		period = 20;
 		LOCAL_HEARTBEAT = sec2ticks(1);
@@ -139,30 +130,7 @@ public class RN131 extends Task {
 				
 			case boot:
 				reset.set(true);
-				if (config.configure)
-					next(2, State.enterCmdMode);
-				else
-					next(2, State.ready);
-				break;
-				
-			case enterCmdMode:
-				out.write(CMD_MODE);
-				next(0.3, State.waitForCmdMode);
-				break;
-		
-			case waitForCmdMode:
-				if (checkResult(CMD_MODE_ENTERED))
-					next(State.configure);
-				break;
-				
-			case configure:
-				if (configure())
-					next(State.reboot);
-				break;
-				
-			case reboot:
-				if (reboot())
-					next(1, State.ready);
+				next(3, State.ready);
 				break;
 				
 			case ready:
@@ -293,116 +261,6 @@ public class RN131 extends Task {
 		}
 	}
 	
-	private boolean configure() {
-		boolean done = false;
-		switch (configStep) {
-			case 0:
-				done = sendCommand(CMD_UART_MODE);
-				break;
-				
-			case 1:
-				done = sendCommand(CMD_PRINTLVL);
-				break;
-				
-			case 2:
-				done = sendCommand(CMD_COMM_OPEN, CMD_COMM_OPEN_BYTE, CMD_RESULT_OK);
-				break;
-				
-			case 3:
-				done = sendCommand(CMD_COMM_CLOSE, CMD_COMM_CLOSE_BYTE, CMD_RESULT_OK);
-				break;
-				
-			case 4:
-				done = sendCommand(CMD_COMM_REMOTE, CMD_COMM_REMOTE_BYTE, CMD_RESULT_OK);
-				break;
-				
-			case 5:
-				done = sendCommand(CMD_COMM_IDLE);
-				break;
-				
-			case 6:
-				done = sendCommand(CMD_IP_ADDRESS, local_ip, CMD_RESULT_OK);
-				break;
-				
-			case 7:
-				done = sendCommand(CMD_IP_HOST, remote_ip, CMD_RESULT_OK);
-				break;
-				
-			case 8:
-				done = sendCommand(CMD_IP_NETMASK);
-				break;
-				
-			case 9:
-				done = sendCommand(CMD_IP_FLAGS);
-				break;
-				
-			case 10:
-				if (config.apMode)
-					done = sendCommand(CMD_IP_DHCP_SERVER);
-				else
-					done = sendCommand(CMD_IP_DHCP_CLIENT);
-				break;
-				
-			case 11:
-				if (config.apMode)
-					done = sendCommand(CMD_WLAN_AP);
-				else
-					done = sendCommand(CMD_WLAN_CLIENT);
-				break;
-				
-			case 12:
-				if (config.apMode)
-					done = sendCommand(CMD_AP_SSID, ssid, CMD_RESULT_OK);
-				else
-					done = sendCommand(CMD_WLAN_SSID, ssid, CMD_RESULT_OK);
-				break;
-				
-			case 13:
-				if (config.apMode)
-					done = sendCommand(CMD_AP_PHRASE, passphrase, CMD_RESULT_OK);
-				else
-					done = sendCommand(CMD_WLAN_PHRASE, passphrase, CMD_RESULT_OK);
-				break;
-				
-			case 14:
-				done = sendCommand(CMD_WLAN_AUTH);
-				break;
-				
-			case 15:
-				if (config.apMode)
-					done = sendCommand(CMD_WLAN_CHANNEL, channel, CMD_RESULT_OK);
-				else
-					done = sendCommand(CMD_WLAN_CHANNEL_AUTO);
-				break;
-				
-			case 16:
-				if (config.autoConnect)
-					done = sendCommand(CMD_WLAN_AUTOCONNECT_ON);
-				else
-					done = sendCommand(CMD_WLAN_AUTOCONNECT_OFF);
-				break;
-				
-			case 17:
-				if (config.useExternalAntenna)
-					done = sendCommand(CMD_WLAN_EXTANTENNA);
-				else
-					done = sendCommand(CMD_WLAN_INTANTENNA);
-				break;
-				
-			case 18:
-				done = sendCommand(CMD_SAVE, CMD_SAVE_OK);
-				break;
-				
-			default:
-				configStep = 0;
-				return true;
-		}
-		if (done) {
-			configStep++;
-		}
-		return false;
-	}
-	
 	private boolean sendCommand(byte[] cmd) {
 		return sendCommand(cmd, CMD_RESULT_OK);
 	}
@@ -443,31 +301,6 @@ public class RN131 extends Task {
 			}
 			else if (isWhitespace(b)) continue;
 			else rxcmd.enqueue(b);
-		}
-		return false;
-	}
-	
-	private boolean reboot() {
-		if (commandSent) {
-			while (in.available() > 0) {
-				byte b = (byte)in.read();
-				if (rxcmd.availToRead() == CMD_REBOOT_OK.length) {
-					if (compare(rxcmd, CMD_REBOOT_OK)) {
-						commandSent = false;
-						return true;
-					}
-					else {
-						next(State.error);
-					}
-				}
-				else if (isWhitespace(b)) continue;
-				else rxcmd.enqueue(b);
-			}
-		}
-		else {
-			out.write(CMD_REBOOT);
-			out.write(CMD_TERMINATOR);
-			commandSent = true;
 		}
 		return false;
 	}
@@ -527,8 +360,6 @@ public class RN131 extends Task {
 	
 	private final int LOCAL_HEARTBEAT;
 	private final int REMOTE_HEARTBEAT;
-	
-	private RN131Config config;
 	
 	private byte[] local_ip = "169.254.1.101".getBytes();
 	private byte[] remote_ip = "169.254.1.102".getBytes();
