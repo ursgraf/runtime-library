@@ -4,7 +4,6 @@ import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.util.CmdInt;
 import ch.ntb.inf.deep.runtime.mpc555.driver.RN131;
-import ch.ntb.inf.deep.runtime.mpc555.driver.RN131Config;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
@@ -16,21 +15,8 @@ public class WifiDemo extends Task {
 		
 		SCI sci = SCI.getInstance(SCI.pSCI2);
 		sci.start(115200, SCI.NO_PARITY, (short)8);
-		
-		config = new RN131Config();
-		config.in = sci.in;
-		config.out = sci.out;
-		config.reset = new MPIOSM_DIO(11, true);
 
-		config.configure = false;
-		config.ssid = "SysPNet_TeamXY";
-		config.localIP = "169.254.1.1";
-		config.remoteIP = "169.254.1.2";
-		config.apMode = true;
-		config.autoConnect = false;
-		config.useExternalAntenna = true;
-		
-		wifi = new RN131(config);
+		wifi = new RN131(sci.in , sci.out, new MPIOSM_DIO(11, true));
 	}
 	
 	public void action() {
@@ -84,7 +70,6 @@ public class WifiDemo extends Task {
 		}
 	}
 	
-	private RN131Config config;
 	private RN131 wifi;
 	
 	private static WifiDemo task;
