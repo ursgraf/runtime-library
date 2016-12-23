@@ -5,7 +5,7 @@ import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
-public class Sensor extends Task{
+public class ToFSensor extends Task{
 	static VL6180X_SC18IS600 vs;
 	
 	public void action(){
@@ -67,7 +67,7 @@ public class Sensor extends Task{
 		
 		vs = new VL6180X_SC18IS600(4);
 		
-		Task s = new Sensor();
+		Task s = new ToFSensor();
 		s.period = 1000;
 		
 		Task.install(s);
