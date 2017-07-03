@@ -1,8 +1,9 @@
-package ch.ntb.sysp.spezausb.tof;
+package ch.ntb.sysp.demo;
 
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
+import ch.ntb.inf.deep.runtime.mpc555.driver.VL6180X_SC18IS600;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 public class ToFSensor extends Task{

@@ -1,4 +1,4 @@
-package ch.ntb.sysp.spezausb.tof;
+package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 import ch.ntb.inf.deep.unsafe.US;
 import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;

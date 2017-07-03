@@ -1,4 +1,4 @@
-package ch.ntb.sysp.spezausb.tof;
+package ch.ntb.inf.deep.runtime.mpc555.driver;
 
 public interface VL6180XAddr {
 	public static final int IDENTIFICATION__MODEL_ID 				= 0x000;
