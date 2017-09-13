@@ -2,11 +2,11 @@
 
 meta {
 	version = "2012-11-26";
-	description = "Description file for the NTB deep simple tasking system";
+	description = "Description file for the NTB deep simple tasking system for PowerPC architecture";
 }
 
-operatingsystem ntbSTS {
-	description = "NTB Simple Tasking System";
+operatingsystem ntbSTS_ppc {
+	description = "NTB Simple Tasking System for PPC";
 		
 	us {
         class = "ch/ntb/inf/deep/unsafe/US";
