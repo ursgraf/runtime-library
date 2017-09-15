@@ -1,3 +1,5 @@
+package ch.ntb.inf.deep.runtime.mpc555.test;
+
 /*
  * Copyright 2011 - 2013 NTB University of Applied Sciences in Technology
  * Buchs, Switzerland, http://www.ntb.ch/inf
@@ -15,8 +17,6 @@
  * limitations under the License.
  * 
  */
-
-package ch.ntb.inf.deep.runtime.mpc555.test;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -115,14 +115,16 @@ public class RTBoardTest extends Task implements IntbMpc555HB {
 	}
 
 	/**
-	 * Testet den SPI Port (CS2) mit einem 4Bit Shift Register.
+	 * Testet den SPI Port (CS2) mit einem 4 Bit Shift Register.
+	 * Die beiden Anschlüsse MOSI und MISO müssen miteinander verbunden werden.
+	 * <li>MOSI -> MISO</li>
 	 */
 	private void spiTest() {
 		initSpiShiftReg();
 		System.out.print("\nSpi test:\t");
 		for (int i = 0; i < 10; i++) {
 			byte d = writeShiftReg((byte) 0x55);
-			if (d != 0x5) {
+			if (d != 0x55) {
 				System.out.print(d);
 				System.out.println(" Failed\n");
 				actualTest = shCiTest;
@@ -145,9 +147,11 @@ public class RTBoardTest extends Task implements IntbMpc555HB {
 			state = wait;
 			break;
 		case wait:
-			int cmd;
+			int cmd = 0;
 			try {
-				cmd = System.in.read();
+				if(System.in.available() > 0){
+					cmd = System.in.read();
+				}
 			} catch (IOException e) {break;}
 			if (cmd == breakCmd) {
 				System.out.println("Break");
@@ -203,9 +207,11 @@ public class RTBoardTest extends Task implements IntbMpc555HB {
 			state = wait;
 			break;
 		case wait:
-			int cmd;
+			int cmd = 0;
 			try {
-				cmd = System.in.read();
+				if(System.in.available() > 0){
+					cmd = System.in.read();
+				}
 			} catch (IOException e) {break;}
 			if (cmd == breakCmd) {
 				System.out.println("Break");
@@ -278,18 +284,20 @@ public class RTBoardTest extends Task implements IntbMpc555HB {
 			DAC7614.write(6, (dacCtr));
 			DAC7614.write(7, (dacCtr));
 			try {
-				if (System.in.read() == contCmd){
-					dacCtr = (dacCtr + 1024) % 5119;
-					if(dacCtr == 4096) dacCtr--;
-					voltage += 5;
-					if(dacCtr == 0){
-						voltage = -10;
-						state = runTest;
-						System.out.println("DAC test, press ESC to break");
-					}else{
-						System.out.print("DAC set to ");
-						System.out.print(voltage);
-						System.out.println("V --> Enter");
+				if(System.in.available() > 0){				
+					if (System.in.read() == contCmd){
+						dacCtr = (dacCtr + 1024) % 5119;
+						if(dacCtr == 4096) dacCtr--;
+						voltage += 5;
+						if(dacCtr == 0){
+							voltage = -10;
+							state = runTest;
+							System.out.println("DAC test, press ESC to break");
+						}else{
+							System.out.print("DAC set to ");
+							System.out.print(voltage);
+							System.out.println("V --> Enter");
+						}
 					}
 				}
 			} catch (IOException e) {}
@@ -301,10 +309,12 @@ public class RTBoardTest extends Task implements IntbMpc555HB {
 			DAC7614.write(7, (dacCtr + 3072) % 4096);
 			dacCtr = (dacCtr + 1) % 4096;
 			try {
-				if (System.in.read() == breakCmd) {
-					System.out.println("Break");
-					state = sendMessage;
-					actualTest = adcTest;
+				if(System.in.available() > 0){				
+					if (System.in.read() == breakCmd) {
+						System.out.println("Break");
+						state = sendMessage;
+						actualTest = adcTest;
+					}
 				}
 			} catch (IOException e) {}
 			break;
@@ -338,10 +348,12 @@ public class RTBoardTest extends Task implements IntbMpc555HB {
 			DAC7614.write(6, QADC_AIN.read(true, 56) * 4);
 			DAC7614.write(7, QADC_AIN.read(true, 58) * 4);
 			try {
-				if (System.in.read() == breakCmd) {
-					System.out.println("Break");
-					state = sendMessage;
-					actualTest = -1;
+				if(System.in.available() > 0){
+					if (System.in.read() == breakCmd) {
+						System.out.println("Break");
+						state = sendMessage;
+						actualTest = -1;
+					}
 				}
 			} catch (IOException e) {}
 			break;
