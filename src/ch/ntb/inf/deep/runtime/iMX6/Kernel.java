@@ -94,6 +94,13 @@ public class Kernel implements Iarm32, Icolibri_iMX6, IdeepCompilerConstants {
 		for (int k = 0; k < (10 * delay + nTimes * 2 * delay); k++);
 	}
 
+	/**
+	 * Enables interrupts globally. 
+	 * Individual interrupts for peripheral components must be enabled locally.
+	 */
+	public static void enableInterrupts() {
+	}
+
 	/** 
 	 * Blinks LED on MPIOSM pin 15 if stack end was overwritten
 	 */

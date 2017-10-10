@@ -85,6 +85,16 @@ public class Kernel implements Ippc32, Impc5200, IdeepCompilerConstants {
 		for (int k = 0; k < (10 * delay + nTimes * 2 * delay); k++);
 	}
 
+	/**
+	 * Enables interrupts globally. 
+	 * Individual interrupts for peripheral components must be enabled locally.
+	 */
+	public static void enableInterrupts() {
+		US.ASM("mfmsr r0");	// enable interrupts
+		US.PUTGPR(0, US.GETGPR(0) | (1 << 15));
+		US.ASM("mtmsr r0");	
+	}
+
 	/** 
 	 * Blinks LED on GPIO_WKUP_7 if stack end was overwritten
 	 */
@@ -173,9 +183,9 @@ public class Kernel implements Ippc32, Impc5200, IdeepCompilerConstants {
 		try {
 			boot();
 			cmdAddr = -1;	// must be after class variables are zeroed by boot
-			US.ASM("mfmsr r0");	// enable interrupts
-			US.PUTGPR(0, US.GETGPR(0) | (1 << 15));
-			US.ASM("mtmsr r0");	
+//			US.ASM("mfmsr r0");	// enable interrupts
+//			US.PUTGPR(0, US.GETGPR(0) | (1 << 15));
+//			US.ASM("mtmsr r0");	
 			US.PUTSPR(HID0, 0x8000);		// switch on instruction cache
 			US.PUTSPR(LR, loopAddr);
 			US.ASM("bclrl always, 0");

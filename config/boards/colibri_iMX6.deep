@@ -11,7 +11,7 @@ board colibri_iMX6 {
 	
 	sysconst {
 		extRamSize   = 0x200000;					# 2M external RAM
-		extRamBase   = 0x10000000;						# starting at 0x800000
+		extRamBase   = 0x10000000;						# starting at 0x10000000
 		
 		excpCodeBase = extRamBase;						# Base address for exception code
 		excpCodeSize = 0x1000;

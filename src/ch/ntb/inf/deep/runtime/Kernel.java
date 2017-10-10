@@ -33,8 +33,12 @@ public abstract class Kernel {
 	 * 
 	 * @param i Number of times the led blinks.
 	 */
-	public static void blink(int i) {
-	
-	}
+	public static void blink(int i) { }
+
+	/**
+	 * Enables interrupts globally. 
+	 * Individual interrupts for peripheral components must be enabled locally.
+	 */
+	public static void enableInterrupts() { }
 
 }

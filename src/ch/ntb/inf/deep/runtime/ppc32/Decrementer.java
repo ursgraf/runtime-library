@@ -18,6 +18,7 @@
 
 package ch.ntb.inf.deep.runtime.ppc32;
 
+import ch.ntb.inf.deep.runtime.Kernel;
 import ch.ntb.inf.deep.unsafe.US;
 
 /* changes:
@@ -36,7 +37,7 @@ public class Decrementer extends PPCException implements Ippc32 {
 	 * Value loaded into DEC register upon occurrence of decrementer exception
 	 */
 	public int decPeriodUs = -1; 	// use longest period per default
-	private static Decrementer dec = new Decrementer();
+	private static Decrementer dec;
 	
 	/**
 	 * Method to be called when decrementer exception occurs.
@@ -58,6 +59,11 @@ public class Decrementer extends PPCException implements Ippc32 {
 	public static void install(Decrementer decrementer) {
 		dec = decrementer;		
 		US.PUTSPR(DEC, dec.decPeriodUs);
+	}
+	
+	static {
+		dec = new Decrementer();
+		Kernel.enableInterrupts();
 	}
 
 }

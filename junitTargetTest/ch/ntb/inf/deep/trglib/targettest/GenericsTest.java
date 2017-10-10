@@ -93,7 +93,7 @@ public class GenericsTest {
 		b = random(-1, (byte)10, (byte)20);
 		Assert.assertEquals("testByte2", 20, b);
 		
-		short sh = random(1, (byte)100, (byte)200);
+		short sh = (short) random(1, (byte)100, (byte)200);
 		Assert.assertEquals("testShort1", 100, sh);
 		sh = random(-1, (short)100, (short)200);
 		Assert.assertEquals("testShort2", 200, sh);
@@ -103,9 +103,9 @@ public class GenericsTest {
 		i = random(-1, 1000, 2000);
 		Assert.assertEquals("testInteger2", 2000, i);
 		
-		long l = random(1, 10000, 20000);
+		long l = (long) random(1, 10000, 20000);
 		Assert.assertEquals("testLong1", 10000, l);
-		l = random(-1, 10000, 20000);
+		l = (long) random(-1, 10000, 20000);
 		Assert.assertEquals("testLong2", 20000, l);
 		
 		char ch = random(1, 'a', 'b');

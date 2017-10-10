@@ -87,6 +87,14 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 		}
 		for (int k = 0; k < (10 * delay + nTimes * 2 * delay); k++);
 	}
+	
+	/**
+	 * Enables interrupts globally. 
+	 * Individual interrupts for peripheral components must be enabled locally.
+	 */
+	public static void enableInterrupts() {
+		US.ASM("mtspr EIE, r0");
+	}
 
 	/** 
 	 * Blinks LED on MPIOSM pin 15 if stack end was overwritten
@@ -206,7 +214,6 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 		try {
 			boot();
 			cmdAddr = -1;	// must be after class variables are zeroed by boot
-			US.ASM("mtspr EIE, r0");
 			US.PUTSPR(LR, loopAddr);
 			US.ASM("bclrl always, 0");
 		} catch (Exception e) {

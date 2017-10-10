@@ -407,9 +407,10 @@ public class SCI extends Interrupt {
 
 	/**
 	 * Writes a given byte into the transmit buffer.
-	 * A call of this method is blocking! That means
-	 * this method won't terminate until the byte is
-	 * written to the buffer!
+	 * A call of this method is blocking! 
+	 * If the buffer is full, the method blocks for a short period of time
+	 * until a small amount of space is available again.
+	 * After this an IOException is thrown.
 	 * 
 	 * @param b
 	 *            Byte to write.
@@ -418,8 +419,11 @@ public class SCI extends Interrupt {
 	 */
 	public void write(byte b) throws IOException {
 		if ((portStat & (1 << PORT_OPEN)) == 0) throw new IOException("IOException");
-		while (txQueue.availToWrite() <= 0);
-		txQueue.enqueue(b);
+		if (txQueue.availToWrite() <= 0) {
+			while (txQueue.availToWrite() < 40);
+			throw new IOException("IOException");
+		}
+		if (txQueue.availToWrite() > 0)	txQueue.enqueue(b);
 		startTransmission();
 	}
 

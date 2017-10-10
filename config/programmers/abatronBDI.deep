@@ -7,6 +7,6 @@ meta {
 
 programmer abatronBDI {
 	description = "Abatron BDI2000/3000";
-	pluginid = "ch.ntb.inf.abatronIface";
-	classname = "ch.ntb.inf.abatronIface.AbatronTelnet";
+	pluginid = "ch.ntb.inf.abatronInterface";
+	classname = "ch.ntb.inf.abatronInterface.AbatronTelnet";
 }

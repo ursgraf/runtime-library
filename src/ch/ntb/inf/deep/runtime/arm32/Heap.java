@@ -94,14 +94,14 @@ public class Heap implements IdeepCompilerConstants {
 	
 	// called by anewarray	
 	private static int newRefArray(int nofElements, int ref)  {
-////		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
-//		int size = nofElements * 4 + 8;
-//		int blockAddr = getBlock(size);
-//		US.PUT4(blockAddr, 0x80800000 | nofElements);	// set mark and array bit, write length
-//		US.PUT4(blockAddr + 4, ref);	// write tag
-//		ref = blockAddr + 8;
-//		int i = ref;
-//		while (i < blockAddr + size) {US.PUT4(i, 0); i += 4;}
+//		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
+		int size = nofElements * 4 + 8;
+		int blockAddr = getBlock(size);
+		US.PUT4(blockAddr, 0x80800000 | nofElements);	// set mark and array bit, write length
+		US.PUT4(blockAddr + 4, ref);	// write tag
+		ref = blockAddr + 8;
+		int i = ref;
+		while (i < blockAddr + size) {US.PUT4(i, 0); i += 4;}
 		return ref;
 	}
 	
@@ -171,13 +171,13 @@ public class Heap implements IdeepCompilerConstants {
 	// called by newstring in java/lang/String
 	@SuppressWarnings("unused")
 	private static int newstring(int ref, int len) {
-//		int size = len + 8;
-//		int blockAddr = getBlock(size);
-//		US.PUT4(blockAddr, 0x80000000 | size);	// set mark bit and size, clear array bit and primitive array bit
-//		US.PUT4(blockAddr + 4, ref);	// write tag
-//		ref = blockAddr + 8;
-//		int i = ref;
-//		while (i < blockAddr + size) {US.PUT4(i, 0); i += 4;}
+		int size = len + 8;
+		int blockAddr = getBlock(size);
+		US.PUT4(blockAddr, 0x80000000 | size);	// set mark bit and size, clear array bit and primitive array bit
+		US.PUT4(blockAddr + 4, ref);	// write tag
+		ref = blockAddr + 8;
+		int i = ref;
+		while (i < blockAddr + size) {US.PUT4(i, 0); i += 4;}
 		return ref;
 	}
 
