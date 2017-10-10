@@ -43,9 +43,9 @@ class Reset extends ARMException implements Iarm32, IiMX6, Icolibri_iMX6, IdeepC
 		US.PUTGPR(SP, stackBase + stackSize - 4);	// set stack pointer
 
 		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
+//		US.ASM("b -8"); // stop here
 		US.PUTGPR(PC, kernelClinitAddr);	// never come back
 
-//		US.ASM("b -8"); // stop here
 	}
 	
 }

@@ -1,5 +1,6 @@
-package ch.ntb.inf.deep.runtime.iMX6;
+package ch.ntb.inf.deep.runtime.iMX6.driver;
 
+import ch.ntb.inf.deep.runtime.iMX6.IiMX6;
 import ch.ntb.inf.deep.unsafe.US;
 
 
@@ -11,7 +12,7 @@ public class UART3 implements IiMX6 {
 	}
 
 	public static void write(byte b) { 	 
-		while((US.GET4(UART1_USR1) & (1 << 13)) == 0);
+		while((US.GET4(UART1_USR1) & (1 << 13)) != 0);
 		US.PUT1(UART1_UTXD, b); 
 	}
 

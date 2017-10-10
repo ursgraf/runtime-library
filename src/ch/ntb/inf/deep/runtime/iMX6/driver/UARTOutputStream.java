@@ -1,4 +1,4 @@
-package ch.ntb.inf.deep.runtime.iMX6;
+package ch.ntb.inf.deep.runtime.iMX6.driver;
 
 import java.io.OutputStream;
 

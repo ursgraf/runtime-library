@@ -130,7 +130,8 @@ public class Kernel implements Iarm32, Icolibri_iMX6, IdeepCompilerConstants {
 	}
 	
 	private static void boot() {	// set to private later
-//		blink(2);
+		blink(2);
+//		US.ASM("b -8"); // stop here
 		
 		// mark stack end with specific pattern
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
