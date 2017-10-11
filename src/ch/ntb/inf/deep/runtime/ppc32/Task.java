@@ -73,6 +73,8 @@ public class Task implements Actionable, Ippc32 {
 	private long nextTime;
 	private long periodUs;
 	private int actionable = -1;
+	@SuppressWarnings("unused")
+	private int diffTime;
 	private static boolean mark = true;	// phase of garbage collection, start with mark phase
 	
 	/**
@@ -252,8 +254,10 @@ public class Task implements Actionable, Ippc32 {
 			if (currentTask.nextTime < time) {
 				currentTask.nofActivations++;
 				try {
+					long startTime = Kernel.time();
 					if (currentTask.actionable < 0)	currentTask.action();
 					else actionables[currentTask.actionable].action();
+					currentTask.diffTime = (int) (Kernel.time() - startTime);
 				} catch (Exception e) {
 					Kernel.cmdAddr = -1;	// stop trying to run the same method
 					e.printStackTrace();
@@ -274,8 +278,10 @@ public class Task implements Actionable, Ippc32 {
 				if (curRdyTask >= tasks.length) curRdyTask = tasks.length - nofReadyTasks;
 				currentTask = tasks[curRdyTask];
 				currentTask.nofActivations++;
+				long startTime = Kernel.time();
 				if (currentTask.actionable < 0)	currentTask.action();
 				else actionables[currentTask.actionable].action();
+				currentTask.diffTime = (int) (Kernel.time() - startTime);
 			}
 		}
 	}
