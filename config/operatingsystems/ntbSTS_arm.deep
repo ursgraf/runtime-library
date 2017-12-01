@@ -173,9 +173,26 @@ operatingsystem ntbSTS_arm {
     	}
     }
 
+	exception {
+    	class = "ch/ntb/inf/deep/runtime/zynq7000/Reset";
+    	condition = boardtype:zybo7000;
+    	method reset {
+    		attributes = exchnd;
+			offset = 0x100;
+    	}
+    	method <init> {
+    		attributes = synthetic;
+    	}
+    }
+
 	kernel {
 		class = "ch/ntb/inf/deep/runtime/iMX6/Kernel";
 		condition = cputype:iMX6;
+	}
+
+	kernel {
+		class = "ch/ntb/inf/deep/runtime/zynq7000/Kernel";
+		condition = cputype:zynq7000;
 	}
 
 }

@@ -1,0 +1,57 @@
+#deep-1
+
+meta {
+	version = "2017-11-14";
+	description = "Board description file for ZYBO Zynq-7000 board";
+}
+
+board ZYBO7000 {
+	description = "ZYBO Zynq-7000 digilent evm";
+	cputype = zynq7000;
+	
+	sysconst {
+		extRamSize   = 0x40000;							# 256k external RAM
+		extRamBase   = 0x1000000;								# starting at 0x0
+		
+#		excpCodeBase = extRamBase;						# Base address for exception code
+#		excpCodeSize = 0x1000;
+		
+#		sysTabBaseAddr = extRamBase + excpCodeSize;
+		
+#		heapSize = 0x10000;								# Default heap size
+#		SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
+	}
+	
+	memorymap {
+
+		# ===== External RAM =====
+		device ExternalRam {							# External RAM device configuration
+			base = extRamBase;
+			size = extRamSize;
+			width = 4;
+			technology = ram;
+			attributes = read, write;
+		}
+	}
+	
+	reginit {
+#		SYPCR = 0xFFFFFF83;								# Disable Watchdog, enable bus monitor
+#		SIUMCR = 0x40000;								# Set Freeze when LWP0 is active
+	}
+
+	runconfiguration BootFromRam {
+		description = "load program to external ram";
+		system {
+			systemtable: systab@InternalRam.SysTab;
+		}
+		modules {
+				kernel, heap: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default; 
+				exception: code@InternalRam.ExceptionCode, const@InternalRam.Default, var@InternalRam.Default;
+				default: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default;      
+		}
+		reginit {
+#			DMBR = 0x3;									# Dual mapping enable, map from address 0, use CS1 (external RAM)
+#			DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
+		}
+	}
+}
