@@ -11,7 +11,7 @@ cpu zynq7010 {
 	
 	sysconst {
 		OCM_BaseAddr = 0;								# On-chip memory base address
-		OCM_Size = 0x10000;								# On-chip memory size (64k)
+		OCM_Size = 0x30000;								# On-chip memory size (192k)
 		
 		excpCodeBase = OCM_BaseAddr;					# Base address for exception code
 		excpCodeSize = 0x1000;							# Exception code size
@@ -19,7 +19,7 @@ cpu zynq7010 {
 		sysTabBaseAddr = excpCodeBase + excpCodeSize;	# Place system table behind exception code
 		
 		stackSize = 0x1000;							# Default stack size
-		heapSize = 0x1000;								# Default heap size
+		heapSize = 0x8000;								# Default heap size
 
 		ioReg = 0xe0000000;								# I/O peripheral registers
 		uartController = ioReg + 0;						# UART controller

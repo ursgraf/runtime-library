@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2017-11-29 21:33:21)
+// Auto generated file (2017-12-06 13:39:53)
 
 public interface Izynq7000 extends Iarm32 {
 
@@ -13,12 +13,12 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int gpioController = 0xe000a000;
 	public static final int uartController = 0xe0000000;
 	public static final int ioReg = 0xe0000000;
-	public static final int heapSize = 0x1000;
+	public static final int heapSize = 0x8000;
 	public static final int stackSize = 0x1000;
 	public static final int sysTabBaseAddr = 0x1000;
 	public static final int excpCodeSize = 0x1000;
 	public static final int excpCodeBase = 0x0;
-	public static final int OCM_Size = 0x10000;
+	public static final int OCM_Size = 0x30000;
 	public static final int OCM_BaseAddr = 0x0;
 
 	// Specific registers of CPU zynq7000

@@ -59,7 +59,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 				US.PUT4(GPIO_DATA0, US.GET4(GPIO_DATA0) ^ 0x80);
 //				t = time();
 //				US.ASM("b -8");
-				for (int i = 1000000; i > 0; i--); 
+				for (int i = 2000000; i > 0; i--); 
 		}
 	}
 	
@@ -75,8 +75,8 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 			low = US.GET4(GTCR_L);
 			high2 = US.GET4(GTCR_U); 
 		} while (high1 != high2);
-//		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
-		return 0x33679;
+		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
+		return time;
 	}
 	
 	/** 
@@ -196,14 +196,6 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	static {
 //		try {
 //		US.ASM("b -8"); // stop here
-//		US.ASM("b -8"); // stop here
-//		US.ASM("b -8"); // stop here
-//		US.PUT4(SCLR_UNLOCK, 0xdf0d);
-//		US.PUT4(SCLR_MIO_PIN_07, 0x600);
-//		US.PUT4(GPIO_DIR0, 0x80);
-//		US.PUT4(GPIO_DATA0, US.GET4(GPIO_DATA0)^0x80);
-//		US.ASM("b -8"); // stop here
-//		 	blink(10);
 			boot();
 			cmdAddr = -1;	// must be after class variables are zeroed by boot
 //			blink(1);
