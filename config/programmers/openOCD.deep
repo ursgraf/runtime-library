@@ -1,0 +1,12 @@
+#deep-1
+
+meta {
+	version = "2018-02-28";
+	description = "Programmer description file for use with OpenOCD";
+}
+
+programmer abatronBDI {
+	description = "OpenOCD";
+	pluginid = "ch.ntb.inf.openOCDInterface";
+	classname = "ch.ntb.inf.openOCDInterface.OpenOCD";
+}
