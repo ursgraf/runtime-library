@@ -137,6 +137,23 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 		blink(2);
 //		US.ASM("b -8"); // stop here
 		
+        // _ init VFP (FPU
+        // _ _ enable coprocessor 10 and 11
+		US.ASM("mrc p15, 0, r1, c1, c0, 2");
+		US.ASM("orr r1, r1, #0xf00000");
+        US.ASM("mcr p15, 0, r1, c1, c0, 2");
+//		US.ASM("b -8");
+
+        // _ _ enable vfp
+		US.ASM("vmrs r1, FPEXC");	//US.ASM("fmrx r1, FPEXC");
+        US.ASM("orr r1, r1, #0x40000000");      // FPEXC_EN bit"
+        US.ASM("vmsr FPEXC, r1");	//US.ASM("fmxr FPEXC, r1");
+        
+        // fill the number 100 into d0
+        US.PUTGPR(5, 0x40590000);
+        US.PUTGPR(6, 0);
+        US.ASM("vmov d0, r6, r5");
+
 		// mark stack end with specific pattern
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
 		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
