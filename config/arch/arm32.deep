@@ -92,6 +92,160 @@ arch arm32 {
 			addr = 15;
 			size = 4;
 		}
+		
+		# general purpose registers in state 'fast interrupt' (fiq)
+		register R8_FIQ {
+		        type = GPR;
+		        addr = 16;
+		        size = 4;
+		}
+		register R9_FIQ {
+		        type = GPR;
+		        addr = 17;
+		        size = 4;
+		}
+		register R10_FIQ {
+		        type = GPR;
+		        addr = 18;
+		        size = 4;
+		}
+		register R11_FIQ {
+		        type = GPR;
+		        addr = 19;
+		        size = 4;
+		}
+		register R12_FIQ {
+		        type = GPR;
+		        addr = 20;
+		        size = 4;
+		}
+		register SP_FIQ {
+			type = GPR;
+			addr = 21;
+			size = 4;
+		}
+		register LR_FIQ {
+			type = GPR;
+			addr = 22;
+			size = 4;
+		}
+		
+		# general purpose registers in mode 'interrupt' (irq)
+		register SP_FIQ {
+			type = GPR;
+			addr = 23;
+			size = 4;
+		}
+		register LR_FIQ {
+			type = GPR;
+			addr = 24;
+			size = 4;
+		}
+		
+		# general purpose registers in mode 'supervisor' (svc)
+		register SP_SVC {
+			type = GPR;
+			addr = 25;
+			size = 4;
+		}
+		register LR_SVC {
+			type = GPR;
+			addr = 26;
+			size = 4;
+		}
+		
+		# general purpose registers in mode 'abort' (abt)
+		register SP_ABT {
+			type = GPR;
+			addr = 27;
+			size = 4;
+		}
+		register LR_ABT {
+			type = GPR;
+			addr = 28;
+			size = 4;
+		}
+		
+		# general purpose registers in mode 'undefined' (und)
+		register SP_UND {
+			type = GPR;
+			addr = 29;
+			size = 4;
+		}
+		register LR_UND {
+			type = GPR;
+			addr = 30;
+			size = 4;
+		}
+		
+		# general purpose registers in mode 'secure monitor' (mon)
+		register SP_MON {
+			type = GPR;
+			addr = 39;
+			size = 4;
+		}
+		register LR_MON {
+			type = GPR;
+			addr = 40;
+			size = 4;
+		}
+		register SPSR_MON {
+#			type = PSR;
+			type = GPR;
+			addr = 41;
+			size = 4;
+		}
+		
+		# process status registers (CPSR / SPSR)
+		register CPSR {
+#			type = PSR;
+			type = GPR;
+			addr = 31;
+			size = 4;
+		}
+		register SPSR_FIQ {
+#			type = PSR;
+			type = GPR;
+			addr = 32;
+			size = 4;
+		}
+		register SPSR_IRQ {
+#			type = PSR;
+			type = GPR;
+			addr = 33;
+			size = 4;
+		}
+		register SPSR_SVC {
+#			type = PSR;
+			type = GPR;
+			addr = 34;
+			size = 4;
+		}
+		register SPSR_ABT {
+#			type = PSR;
+			type = GPR;
+			addr = 35;
+			size = 4;
+		}
+		register SPSR_UND {
+#			type = PSR;
+			type = GPR;
+			addr = 36;
+			size = 4;
+		}
+		
+		# remaining registers
+		# SP2 and LR2 are different registers than r13 and r14
+		register SP2 {
+			type = GPR;
+			addr = 37;
+			size = 4;
+		}
+		register LR2 {
+			type = GPR;
+			addr = 38;
+			size = 4;
+		}
 
 		 
 		 # floating point registers

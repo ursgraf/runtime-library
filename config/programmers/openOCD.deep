@@ -5,7 +5,7 @@ meta {
 	description = "Programmer description file for use with OpenOCD";
 }
 
-programmer abatronBDI {
+programmer openOCD {
 	description = "OpenOCD";
 	pluginid = "ch.ntb.inf.openOCDInterface";
 	classname = "ch.ntb.inf.openOCDInterface.OpenOCD";
