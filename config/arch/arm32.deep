@@ -249,17 +249,17 @@ arch arm32 {
 
 		 
 		 # floating point registers
-		 register D0 {
+		 register FPR0 {
 		        type = FPR;
 		        addr = 0;
 		        size = 8;
 		 }
-		 register D1 {
+		 register FPR1 {
 		        type = FPR;
 		        addr = 1;
 		        size = 8;
 		 }
-		 register D2 {
+		 register FPR2 {
 		        type = FPR;
 		        addr = 2;
 		        size = 8;
