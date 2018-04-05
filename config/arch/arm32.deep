@@ -249,6 +249,12 @@ arch arm32 {
 
 		 
 		 # floating point registers
+		register FPSCR {
+			type = FPSCR;
+			addr = 0;
+			size = 4;
+		}
+		
 		 register FPR0 {
 		        type = FPR;
 		        addr = 0;
