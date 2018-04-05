@@ -335,6 +335,86 @@ arch arm32 {
 		        addr = 15;
 		        size = 8;
 		 }
+		 register FPR16 {
+		        type = FPR;
+		        addr = 16;
+		        size = 8;
+		 }
+		 register FPR17 {
+		        type = FPR;
+		        addr = 17;
+		        size = 8;
+		 }
+		 register FPR18 {
+		        type = FPR;
+		        addr = 18;
+		        size = 8;
+		 }
+		 register FPR19 {
+		        type = FPR;
+		        addr = 19;
+		        size = 8;
+		 }
+		 register FPR20 {
+		        type = FPR;
+		        addr = 20;
+		        size = 8;
+		 }
+		 register FPR21 {
+		        type = FPR;
+		        addr = 21;
+		        size = 8;
+		 }
+		 register FPR22 {
+		        type = FPR;
+		        addr = 22;
+		        size = 8;
+		 }
+		 register FPR23 {
+		        type = FPR;
+		        addr = 23;
+		        size = 8;
+		 }
+		 register FPR24 {
+		        type = FPR;
+		        addr = 24;
+		        size = 8;
+		 }
+		 register FPR25 {
+		        type = FPR;
+		        addr = 25;
+		        size = 8;
+		 }
+		 register FPR26 {
+		        type = FPR;
+		        addr = 26;
+		        size = 8;
+		 }
+		 register FPR27 {
+		        type = FPR;
+		        addr = 27;
+		        size = 8;
+		 }
+		 register FPR28 {
+		        type = FPR;
+		        addr = 28;
+		        size = 8;
+		 }
+		 register FPR29 {
+		        type = FPR;
+		        addr = 29;
+		        size = 8;
+		 }
+		 register FPR30 {
+		        type = FPR;
+		        addr = 30;
+		        size = 8;
+		 }
+		 register FPR31 {
+		        type = FPR;
+		        addr = 31;
+		        size = 8;
+		 }
 		 
     }
 }
