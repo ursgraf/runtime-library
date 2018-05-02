@@ -41,19 +41,6 @@ cpu iMX6 {
 	
 	registermap {
 			
-		# special purpose register
-
-		 register SPR80 {
-			 type = SPR;
-			 addr = 80;
-			 size = 4;
-		}
-		 register EIE {
-			 type = SPR;
-			 addr = 80;
-			 size = 4;
-		}
-
 		# ARM MP core registers
 		
 		register GTCR_L {

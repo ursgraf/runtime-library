@@ -30,6 +30,7 @@ import ch.ntb.inf.deep.unsafe.US;
  *  As soon as the remaining heap space is lower than a third of the total available
  *  heap space, a garbage collection is called.  
  */
+@SuppressWarnings("unused")
 public class Heap implements IdeepCompilerConstants {
 	private static final boolean dbg = false;
 	private static final int minBlockSize = 16;	// smallest block size to allocate

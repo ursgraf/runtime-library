@@ -31,7 +31,7 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
  * savee<br>
  * </code></p>
  */
-
+@SuppressWarnings("unused")
 public class RN131 extends Task {
 	
 	public static enum State {

@@ -73,12 +73,12 @@ cpu zynq7010 {
 		# I/O peripheral registers
 
 		 register GPIO_DATA0 {
-			 type = SPR;
+			 type = IOR;
 			 addr = gpioController + 0x40;
 			 size = 4;
 		}
 		 register GPIO_DIR0 {
-			 type = SPR;
+			 type = IOR;
 			 addr = gpioController + 0x204;
 			 size = 4;
 		}

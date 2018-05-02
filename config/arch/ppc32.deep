@@ -491,26 +491,26 @@ arch ppc32 {
 		        addr = 275;
 		        size = 4;
 		 }
-		 register SPR284 {
-		        type = SPR;
-		        addr = 284;
-		        size = 4;
-		 }
-		 register TBLwrite {
-		        type = SPR;
-		        addr = 284;
-		        size = 4;
-		 }
-		 register SPR285 {
-		        type = SPR;
-		        addr = 285;
-		        size = 4;
-		 }
-		 register TBUwrite {
-		        type = SPR;
-		        addr = 285;
-		        size = 4;
-		 }
+#		 register SPR284 {
+#		        type = SPR;
+#		        addr = 284;
+#		        size = 4;
+#		 }
+#		 register TBLwrite {
+#		        type = SPR;
+#		        addr = 284;
+#		        size = 4;
+#		 }
+#		 register SPR285 {
+#		        type = SPR;
+#		        addr = 285;
+#		        size = 4;
+#		 }
+#		 register TBUwrite {
+#		        type = SPR;
+#		        addr = 285;
+#		        size = 4;
+#		 }
 		 register SPR287 {
 		        type = SPR;
 		        addr = 287;
