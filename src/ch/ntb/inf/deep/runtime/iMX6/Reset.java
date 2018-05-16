@@ -20,7 +20,7 @@ package ch.ntb.inf.deep.runtime.iMX6;
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 import ch.ntb.inf.deep.runtime.arm32.ARMException;
-import ch.ntb.inf.deep.unsafe.US;
+import ch.ntb.inf.deep.unsafe.arm.US;
 
 /* changes:
  * 13.05.16	NTB/Urs Graf	creation

@@ -21,7 +21,7 @@ package ch.ntb.inf.deep.runtime.mpc5200;
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
 import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
 import ch.ntb.inf.deep.runtime.ppc32.PPCException;
-import ch.ntb.inf.deep.unsafe.US;
+import ch.ntb.inf.deep.unsafe.ppc.US;
 
 /* changes:
  * 10.5.2014	NTB/GRAU	creation

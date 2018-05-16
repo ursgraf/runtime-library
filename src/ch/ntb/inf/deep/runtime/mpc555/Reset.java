@@ -20,7 +20,7 @@ package ch.ntb.inf.deep.runtime.mpc555;
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
 import ch.ntb.inf.deep.runtime.ppc32.Ippc32;
 import ch.ntb.inf.deep.runtime.ppc32.PPCException;
-import ch.ntb.inf.deep.unsafe.US;
+import ch.ntb.inf.deep.unsafe.ppc.US;
 
 /* changes:
  * 11.11.10	NTB/GRAU	creation

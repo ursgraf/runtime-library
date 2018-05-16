@@ -83,6 +83,7 @@ public class CmdInt {
 	 * @return Type.Cmd, Type.Code or Type.None if data was received. Type.Illegal if a corrupted packet was received and Type.None if buffer is empty.
 	 */
 	public Type readCmd() {
+		@SuppressWarnings("unused")
 		Type result = Type.None; // workaround for deep bug (null pointer exception)
 		while (true) {
 			int r = slip.read(rx, count, BUFFER_SIZE);

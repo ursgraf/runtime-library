@@ -9,7 +9,7 @@ operatingsystem ntbSTS_ppc {
 	description = "NTB Simple Tasking System for PPC";
 		
 	us {
-        class = "ch/ntb/inf/deep/unsafe/US";
+        class = "ch/ntb/inf/deep/unsafe/ppc/US";
         attributes = synthetic;
         method PUT1 {
             attributes = unsafe, synthetic;

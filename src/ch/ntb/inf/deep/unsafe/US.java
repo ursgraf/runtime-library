@@ -29,7 +29,7 @@ package ch.ntb.inf.deep.unsafe;
  * 06.06.06	NTB/ED	creation
  */
 
-public class US {
+public abstract class US {
 
 	/** 
 	 * Write 1 byte to hardware address: mem[address] = (byte)value
@@ -119,57 +119,6 @@ public class US {
 	}
 
 	/** 
-	 * Read content of general purpose register 
-	 * @param reg Register number.
-	 * @return Register content. 
-	 */
-	public static int GETGPR(int reg) {
-		return 0;
-	}
-
-	/** 
-	 * Read content of floating point register 
-	 * @param reg Register number.
-	 * @return Register content. 
-	 */
-	public static double GETFPR(int reg) {
-		return 0;
-	}
-
-	/** 
-	 * Read content of special purpose register 
-	 * @param reg Register number.
-	 * @return Register content. 
-	 */
-	public static int GETSPR(int reg) {
-		return 0;
-	}
-
-	/** 
-	 * Write to general purpose register 
-	 * @param reg Register number.
-	 * @param value Register content. 
-	 */
-	public static void PUTGPR(int reg, int value) {
-	}
-
-	/** 
-	 * Write to floating point register 
-	 * @param reg Register number.
-	 * @param value Register content. 
-	 */
-	public static void PUTFPR(int reg, double value) {
-	}
-
-	/** 
-	 * Write to special purpose register 
-	 * @param reg Register number.
-	 * @param value Register content. 
-	 */
-	public static void PUTSPR(int reg, int value) {
-	}
-
-	/** 
 	 * Insert single machine code instruction 
 	 * @param instr Machine instruction as string.
 	 */
@@ -177,27 +126,12 @@ public class US {
 	}
 
 	/** 
-	 * Get absolute hardware address of class method 
+	 * Get absolute address of class method 
 	 * @param name Name of method.
 	 * @return Memory address of method. 
 	 */
 	public static int ADR_OF_METHOD(String name) {
 		return 0;
-	}
-	
-	/** 
-	 * Halt exception: program termination, 20 &lt;= haltNr &lt; 256 
-	 * @param haltNr User definable halt number.
-	 */
-	public static void HALT(int haltNr) {
-	}
-
-	/**
-	 * Saves FPSCR and all temporary FPRs (Floating Point Registers) and sets
-	 * the FP flag in MSR (usingGPR0). This method must be called before any other statement 
-	 * in a method. 
-	 */
-	public static void ENABLE_FLOATS() {
 	}
 	
 }

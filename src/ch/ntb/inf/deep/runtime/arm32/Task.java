@@ -20,7 +20,7 @@ package ch.ntb.inf.deep.runtime.arm32;
 
 import ch.ntb.inf.deep.runtime.Kernel;
 import ch.ntb.inf.deep.runtime.util.Actionable;
-import ch.ntb.inf.deep.unsafe.US;
+import ch.ntb.inf.deep.unsafe.arm.US;
 
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation
@@ -75,6 +75,7 @@ public class Task implements Actionable, Iarm32 {
 	private int actionable = -1;
 	@SuppressWarnings("unused")
 	private int diffTime;
+	@SuppressWarnings("unused")
 	private static boolean mark = true;	// phase of garbage collection, start with mark phase
 	
 	/**

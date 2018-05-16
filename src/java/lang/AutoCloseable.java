@@ -16,8 +16,6 @@
 
 package java.lang;
 
-import java.io.IOException;
-
 /**
  * Defines an interface for classes that can (or need to) be closed once they
  * are not used any longer. Calling the {@code close} method releases resources

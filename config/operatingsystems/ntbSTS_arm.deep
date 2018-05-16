@@ -9,7 +9,7 @@ operatingsystem ntbSTS_arm {
 	description = "NTB Simple Tasking System for ARM";
 		
 	us {
-        class = "ch/ntb/inf/deep/unsafe/US";
+        class = "ch/ntb/inf/deep/unsafe/arm/US";
         attributes = synthetic;
         method PUT1 {
             attributes = unsafe, synthetic;

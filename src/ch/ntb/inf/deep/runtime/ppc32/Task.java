@@ -20,7 +20,7 @@ package ch.ntb.inf.deep.runtime.ppc32;
 
 import ch.ntb.inf.deep.runtime.Kernel;
 import ch.ntb.inf.deep.runtime.util.Actionable;
-import ch.ntb.inf.deep.unsafe.US;
+import ch.ntb.inf.deep.unsafe.ppc.US;
 
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation

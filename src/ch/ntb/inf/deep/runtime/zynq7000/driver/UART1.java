@@ -1,7 +1,7 @@
 package ch.ntb.inf.deep.runtime.zynq7000.driver;
 
 import ch.ntb.inf.deep.runtime.zynq7000.Izynq7000;
-import ch.ntb.inf.deep.unsafe.US;
+import ch.ntb.inf.deep.unsafe.arm.US;
 
 public class UART1 implements Izynq7000 {
 	public static UARTOutputStream out;

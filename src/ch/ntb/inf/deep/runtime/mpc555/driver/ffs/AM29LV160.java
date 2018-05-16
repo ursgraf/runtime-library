@@ -19,7 +19,7 @@
 package ch.ntb.inf.deep.runtime.mpc555.driver.ffs;
 
 import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
-import ch.ntb.inf.deep.unsafe.US;
+import ch.ntb.inf.deep.unsafe.ppc.US;
 
 /*
  * Changes: 
