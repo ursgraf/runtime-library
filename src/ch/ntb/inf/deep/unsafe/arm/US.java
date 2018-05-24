@@ -41,20 +41,29 @@ public class US extends ch.ntb.inf.deep.unsafe.US {
 	}
 
 	/** 
-	 * Read content of extension register (SIMD and VFP)
+	 * Read content of extension double precision register (SIMD and VFP)
 	 * @param reg Register number.
 	 * @return Register content. 
 	 */
-	public static double GETEXTR(int reg) {
+	public static double GETEXTRD(int reg) {
 		return 0;
 	}
 
 	/** 
-	 * Read content of special purpose register 
+	 * Read content of extension single precision register (SIMD and VFP)
 	 * @param reg Register number.
 	 * @return Register content. 
 	 */
-	public static int GETSPR(int reg) {
+	public static float GETEXTRS(int reg) {
+		return 0;
+	}
+
+	/** 
+	 * Read content of coprocessor register 
+	 * @param reg Register number.
+	 * @return Register content. 
+	 */
+	public static int GETCPR(int coproc, int CRn, int opc1, int CRm, int opc2) {
 		return 0;
 	}
 
@@ -67,11 +76,19 @@ public class US extends ch.ntb.inf.deep.unsafe.US {
 	}
 
 	/** 
-	 * Write to extension register (SIMD and VFP)
+	 * Write to extension double precision register (SIMD and VFP)
 	 * @param reg Register number.
 	 * @param value Register content. 
 	 */
-	public static void PUTEXTR(int reg, double value) {
+	public static void PUTEXTRD(int reg, double value) {
+	}
+
+	/** 
+	 * Write to extension single precision register (SIMD and VFP)
+	 * @param reg Register number.
+	 * @param value Register content. 
+	 */
+	public static void PUTEXTRS(int reg, float value) {
 	}
 
 	/** 
@@ -79,7 +96,7 @@ public class US extends ch.ntb.inf.deep.unsafe.US {
 	 * @param reg Register number.
 	 * @param value Register content. 
 	 */
-	public static void PUTSPR(int reg, int value) {
+	public static void PUTCP(int reg, int value) {
 	}
 
 	/** 

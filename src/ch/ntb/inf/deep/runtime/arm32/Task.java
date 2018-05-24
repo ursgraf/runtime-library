@@ -237,7 +237,7 @@ public class Task implements Actionable, Iarm32 {
 			cmd = Kernel.cmdAddr;
 			try {
 				if (cmd != -1) {
-					US.PUTSPR(LR, cmd);	
+//					US.PUTSPR(LR, cmd);	insert later
 					US.ASM("bclrl always, 0");
 					Kernel.cmdAddr = -1;
 				}

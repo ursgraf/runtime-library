@@ -9,7 +9,7 @@ operatingsystem ntbSTS_ppc {
 	description = "NTB Simple Tasking System for PPC";
 		
 	us {
-        class = "ch/ntb/inf/deep/unsafe/ppc/US";
+        class = "ch/ntb/inf/deep/unsafe/US";
         attributes = synthetic;
         method PUT1 {
             attributes = unsafe, synthetic;
@@ -51,46 +51,51 @@ operatingsystem ntbSTS_ppc {
             attributes = unsafe, synthetic;
             id = 0x00A;
         }
-        method GETGPR {
+        method ADR_OF_METHOD {
             attributes = unsafe, synthetic;
             id = 0x00B;
+        }                
+        method REF {
+            attributes = unsafe, synthetic;
+            id = 0x00C;
+        }                
+    }
+
+	us {
+        class = "ch/ntb/inf/deep/unsafe/ppc/US";
+        attributes = synthetic;
+        method GETGPR {
+            attributes = unsafe, synthetic;
+            id = 0x010;
         }
         method GETFPR {
             attributes = unsafe, synthetic;
-            id = 0x00C;
+            id = 0x011;
         }
         method GETSPR {
             attributes = unsafe, synthetic;
-            id = 0x00D;
+            id = 0x012;
         }
         method PUTGPR {
             attributes = unsafe, synthetic;
-            id = 0x00E;
+            id = 0x013;
         }
         method PUTFPR {
             attributes = unsafe, synthetic;
-            id = 0x00F;
+            id = 0x014;
         }
         method PUTSPR {
             attributes = unsafe, synthetic;
-            id = 0x010;
-        }                
-        method ADR_OF_METHOD {
-            attributes = unsafe, synthetic;
-            id = 0x011;
+            id = 0x015;
         }                
         method HALT {
             attributes = unsafe, synthetic;
-            id = 0x012;
+            id = 0x016;
         }                
         method ENABLE_FLOATS {
             attributes = unsafe, synthetic;
-            id = 0x013;
+            id = 0x017;
         }
-        method REF {
-            attributes = unsafe, synthetic;
-            id = 0x014;
-        }                
     }
     
     lowlevel {

@@ -9,7 +9,7 @@ operatingsystem ntbSTS_arm {
 	description = "NTB Simple Tasking System for ARM";
 		
 	us {
-        class = "ch/ntb/inf/deep/unsafe/arm/US";
+        class = "ch/ntb/inf/deep/unsafe/US";
         attributes = synthetic;
         method PUT1 {
             attributes = unsafe, synthetic;
@@ -51,46 +51,59 @@ operatingsystem ntbSTS_arm {
             attributes = unsafe, synthetic;
             id = 0x00A;
         }
-        method GETGPR {
-            attributes = unsafe, synthetic;
-            id = 0x00B;
-        }
-        method GETFPR {
-            attributes = unsafe, synthetic;
-            id = 0x00C;
-        }
-        method GETSPR {
-            attributes = unsafe, synthetic;
-            id = 0x00D;
-        }
-        method PUTGPR {
-            attributes = unsafe, synthetic;
-            id = 0x00E;
-        }
-        method PUTFPR {
-            attributes = unsafe, synthetic;
-            id = 0x00F;
-        }
-        method PUTSPR {
-            attributes = unsafe, synthetic;
-            id = 0x010;
-        }                
         method ADR_OF_METHOD {
             attributes = unsafe, synthetic;
-            id = 0x011;
+            id = 0x00B;
         }                
-        method HALT {
+        method REF {
+            attributes = unsafe, synthetic;
+            id = 0x00C;
+        }                
+    }
+
+	us {
+        class = "ch/ntb/inf/deep/unsafe/arm/US";
+        attributes = synthetic;
+        method GETGPR {
+            attributes = unsafe, synthetic;
+            id = 0x010;
+        }
+        method GETEXTRD {
+            attributes = unsafe, synthetic;
+            id = 0x011;
+        }
+        method GETEXTRS {
             attributes = unsafe, synthetic;
             id = 0x012;
-        }                
-        method ENABLE_FLOATS {
+        }
+        method GETCPR {
             attributes = unsafe, synthetic;
             id = 0x013;
         }
-        method REF {
+        method PUTGPR {
             attributes = unsafe, synthetic;
             id = 0x014;
+        }
+        method PUTEXTRD {
+            attributes = unsafe, synthetic;
+            id = 0x015;
+        }
+        method PUTEXTRS {
+            attributes = unsafe, synthetic;
+            id = 0x016;
+        }
+        method PUTSPR {
+            attributes = unsafe, synthetic;
+            id = 0x017;
         }                
+        method HALT {
+            attributes = unsafe, synthetic;
+            id = 0x018;
+        }                
+        method ENABLE_FLOATS {
+            attributes = unsafe, synthetic;
+            id = 0x019;
+        }
     }
     
     lowlevel {
