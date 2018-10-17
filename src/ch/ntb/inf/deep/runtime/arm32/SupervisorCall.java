@@ -16,25 +16,25 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.ppc32;
+package ch.ntb.inf.deep.runtime.arm32;
 
 import ch.ntb.inf.deep.runtime.Kernel;
 
 /*changes:
- * 11.11.10	NTB/Urs Graf	creation
+ * 17.10.18	NTB/Urs Graf	creation
  */
 
 /**
- * The class for the PPC system call exception.
+ * The class for the ARM supervisor call.
  */
-public class SystemCall extends PPCException {
+public class SupervisorCall extends ARMException {
 	/**
-	 * The number of times a system call exception occurred
+	 * The number of times a supervisor call was executed
 	 */
-	public static int nofScExceptions;
+	public static int nofSvc;
 
-	static void systemCall() {
-		nofScExceptions++;
+	static void superVisorCall() {
+		nofSvc++;
 		while (true) {
 			Kernel.blink(1); Kernel.blink(3);
 		}

@@ -34,6 +34,14 @@ import ch.ntb.inf.deep.unsafe.arm.US;
  */
 class Reset extends ARMException implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	
+	static void vectorTable() {
+		US.ASM("b -8"); // stop here
+		US.ASM("b -8"); // stop here
+		US.ASM("movw R15 512"); // stop here
+		US.ASM("b -8"); // stop here
+		US.PUTGPR(PC, 0x100);	// never come back
+	}
+	
 	static void reset() {
 //		US.ASM("setend BE"); // data memory organized in big endian format
 
