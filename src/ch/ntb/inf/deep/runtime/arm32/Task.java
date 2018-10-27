@@ -25,6 +25,7 @@ import ch.ntb.inf.deep.unsafe.arm.US;
 /* changes:
  * 11.11.10	NTB/Urs Graf	creation
  * 20.3.12	NTB/Urs Graf	Interface Actionable added
+ * 17.10.18	NTB/Urs Graf	ported to ARM
  */
 /**
  * This class implements a simple non-preemptive tasking system.
@@ -111,7 +112,7 @@ public class Task implements Actionable, Iarm32 {
 	 * @return Current time in ms.
 	 */
 	public static int time() {
-		return (int)(Kernel.time() / 1000);
+		return (int)(Kernel.time() >> 10);
 	}
 
 	/**
@@ -234,36 +235,39 @@ public class Task implements Actionable, Iarm32 {
 		int cmd;
 		Task currentTask;
 		while(true) {
+//			boolean run = true;
+//			while(run) Kernel.blink(2);
 			cmd = Kernel.cmdAddr;
-			try {
+//			try {
 				if (cmd != -1) {
-//					US.PUTSPR(LR, cmd);	insert later
-					US.ASM("bclrl always, 0");
+					US.PUTGPR(6, cmd);	// use scratch register
+					US.ASM("mov r14, r15");	// copy PC to LR 
+					US.ASM("mov r15, r6");	// jump 
 					Kernel.cmdAddr = -1;
 				}
-			} catch (Exception e) {
-				Kernel.cmdAddr = -1;	// stop trying to run the same method
-				e.printStackTrace();
-				Kernel.blink(1);
-			}
-			if (Heap.runGC) {
-//				if (mark) {Heap.mark(); mark = false;}
-//				else {Heap.sweep(); mark = true; Heap.runGC = false;}
-			}
+//			} catch (Exception e) {
+//				Kernel.cmdAddr = -1;	// stop trying to run the same method
+//				e.printStackTrace();
+//				Kernel.blink(1);
+//			}
+//			if (Heap.runGC) {
+////				if (mark) {Heap.mark(); mark = false;}
+////				else {Heap.sweep(); mark = true; Heap.runGC = false;}
+//			}
 			long time = Kernel.time();
 			currentTask = tasks[1];
 			if (currentTask.nextTime < time) {
 				currentTask.nofActivations++;
-				try {
+//				try {
 					long startTime = Kernel.time();
 					if (currentTask.actionable < 0)	currentTask.action();
 					else actionables[currentTask.actionable].action();
 					currentTask.diffTime = (int) (Kernel.time() - startTime);
-				} catch (Exception e) {
-					Kernel.cmdAddr = -1;	// stop trying to run the same method
-					e.printStackTrace();
-					Kernel.blink(3);
-				}
+//				} catch (Exception e) {
+//					Kernel.cmdAddr = -1;	// stop trying to run the same method
+//					e.printStackTrace();
+//					Kernel.blink(3);
+//				}
 				if (currentTask.installed) {
 					if (currentTask.period == 0) {
 						nofReadyTasks++;
@@ -297,7 +301,7 @@ public class Task implements Actionable, Iarm32 {
 		highestPrioStub.nextTime = Long.MIN_VALUE;
 		tasks[0] = highestPrioStub;
 		for (int i = 1; i < tasks.length; i++) tasks[i] = lowestPrioStub;
-		Kernel.loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/ppc32/Task/loop");
+		Kernel.loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/arm32/Task/loop");
 	}
 	
 }

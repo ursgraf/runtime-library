@@ -46,9 +46,9 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 		while (true) {
 //			try {
 				if (cmdAddr != -1) {
-					US.PUTGPR(0, cmdAddr);
-					US.ASM("mov r14, r15");	// copy PC to LR
-					US.ASM("mov r15, r0");
+					US.PUTGPR(6, cmdAddr);	// use scratch register
+					US.ASM("mov r14, r15");	// copy PC to LR 
+					US.ASM("mov r15, r6");	// jump 
 					cmdAddr = -1;
 				}
 //			} catch (Exception e) {
@@ -56,10 +56,10 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 //				e.printStackTrace();
 //				Kernel.blink(2);
 //			}
-				US.PUT4(GPIO_DATA0, US.GET4(GPIO_DATA0) ^ 0x80);
+//				US.PUT4(GPIO_DATA0, US.GET4(GPIO_DATA0) ^ 0x80);
 //				t = time();
 //				US.ASM("b -8");
-				for (int i = 2000000; i > 0; i--); 
+//				for (int i = 2000000; i > 0; i--); 
 		}
 	}
 	
@@ -76,7 +76,8 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 			high2 = US.GET4(GTCR_U); 
 		} while (high1 != high2);
 		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
-		return time;
+		
+		return time >> 7;
 	}
 	
 	/** 
@@ -134,7 +135,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	}
 	
 	private static void boot() {	// set to private later
-		blink(2);
+//		blink(2);
 //		US.ASM("b -8"); // stop here
 		
         // _ init VFP (FPU
@@ -216,9 +217,9 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 			boot();
 			cmdAddr = -1;	// must be after class variables are zeroed by boot
 //			blink(1);
-			US.PUTGPR(0, loopAddr);
+			US.PUTGPR(6, loopAddr);	// use scratch register
 			US.ASM("mov r14, r15");	// copy PC to LR 
-			US.ASM("mov r15, r0");	 
+			US.ASM("mov r15, r6");	// jump 
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //			while (true) Kernel.blink(5);
