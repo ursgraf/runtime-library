@@ -130,8 +130,8 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 			crc = (crc >>> 8) ^ temp;
 			addr++;
 		}
-//		return crc;
-		return 0;
+		return crc;
+//		return 0;	// for test purposes
 	}
 	
 	private static void boot() {	// set to private later

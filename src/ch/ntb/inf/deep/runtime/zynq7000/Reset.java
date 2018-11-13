@@ -37,7 +37,7 @@ class Reset extends ARMException implements Iarm32, Izybo7000, IdeepCompilerCons
 	static void vectorTable() {
 		US.ASM("b -8"); // stop here
 		US.ASM("b -8"); // stop here
-		US.ASM("movw R15 512"); // stop here
+		US.ASM("movw R15 512"); // jump to supervisor call
 		US.ASM("b -8"); // stop here
 		US.PUTGPR(PC, 0x100);	// never come back
 	}
