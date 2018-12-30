@@ -35,25 +35,24 @@ import ch.ntb.inf.deep.unsafe.arm.US;
 class Reset extends ARMException implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	
 	static void vectorTable() {
-		US.ASM("b -8"); // stop here
+		US.ASM("movw R15 256"); // jump to reset method
 		US.ASM("b -8"); // stop here
 		US.ASM("movw R15 512"); // jump to supervisor call
 		US.ASM("b -8"); // stop here
-		US.PUTGPR(PC, 0x100);	// never come back
+		US.ASM("b -8"); // stop here
+		US.ASM("b -8"); // stop here
+		US.ASM("b -8"); // stop here
+		US.ASM("b -8"); // stop here
 	}
 	
 	static void reset() {
-//		US.ASM("setend BE"); // data memory organized in big endian format
-
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
 		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
 		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 8);
 		US.PUTGPR(SP, stackBase + stackSize - 4);	// set stack pointer
 
 		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
-//		US.ASM("b -8"); // stop here
 		US.PUTGPR(PC, kernelClinitAddr);	// never come back
-
 	}
 	
 }
