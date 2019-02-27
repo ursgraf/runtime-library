@@ -71,8 +71,8 @@ public class Task implements Actionable, Iarm32 {
 	public boolean safe;
 	
 	private boolean installed;
-	private long nextTime;
-	private long periodUs;
+	public long nextTime;	// in ns
+	public long periodNs;	// in ns
 	private int actionable = -1;
 	@SuppressWarnings("unused")
 	private int diffTime;
@@ -112,7 +112,7 @@ public class Task implements Actionable, Iarm32 {
 	 * @return Current time in ms.
 	 */
 	public static int time() {
-		return (int)(Kernel.time() >> 10);
+		return (int)(Kernel.time() / 1000000);
 	}
 
 	/**
@@ -126,9 +126,9 @@ public class Task implements Actionable, Iarm32 {
 		else {
 			long time = Kernel.time();
 			if (task.time > 0 || task.period > 0) {
-				task.nextTime = time + task.time*1000;
+				task.nextTime = time + (long)task.time * 1000000;
 				task.nofActivations = 0;
-				task.periodUs = (long)(task.period) * 1000;
+				task.periodNs = (long)task.period * 1000000;
 				enqueuePeriodicTask(task);
 			} else {
 				nofReadyTasks++;
@@ -274,7 +274,7 @@ public class Task implements Actionable, Iarm32 {
 						tasks[tasks.length - nofReadyTasks] = tasks[1];
 						dequeuePeriodicTask();
 					} else {
-						currentTask.nextTime += currentTask.periodUs;
+						currentTask.nextTime += currentTask.periodNs;
 						requeuePerTask();
 					}
 				}

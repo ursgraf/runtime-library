@@ -66,7 +66,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	/** 
 	 * Reads the system time.
 	 * 
-	 * @return System time in \u00b5s
+	 * @return System time in ns
 	 */
 	public static long time() {
 		int high1, high2, low;
@@ -76,8 +76,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 			high2 = US.GET4(GTCR_U); 
 		} while (high1 != high2);
 		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
-		
-		return time >> 7;
+		return time * 6;	// clock = 162.5 MHz
 	}
 	
 	/** 
