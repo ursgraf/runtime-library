@@ -12,13 +12,14 @@ cpu zynq7010 {
 	sysconst {
 		OCM_BaseAddr = 0;								# On-chip memory base address
 		OCM_Size = 0x30000;								# On-chip memory size (192k)
+#		OCM_Size = 0xc000;								# for test only
 		
 		excpCodeBase = OCM_BaseAddr;					# Base address for exception code
 		excpCodeSize = 0x1000;							# Exception code size
 		
 		sysTabBaseAddr = excpCodeBase + excpCodeSize;	# Place system table behind exception code
 		
-		stackSize = 0x1000;							# Default stack size
+		stackSize = 0x1000;								# Default stack size
 		heapSize = 0x8000;								# Default heap size
 
 		ioReg = 0xe0000000;								# I/O peripheral registers
@@ -40,23 +41,23 @@ cpu zynq7010 {
 			technology = ram;
 		}
 		
-		segment InternalRam.ExceptionCode {				# Exception code in dual mapped address space
+		segment InternalRam.ExceptionCode {
 			base = OCM_BaseAddr;
 			size = excpCodeSize;
 		}
 
-		segment InternalRam.SysTab {					# System table in dual mapped address space
-			base = sysTabBaseAddr;						# Place system table behind exception code
-			size = excpCodeSize;
+		segment InternalRam.SysTab {
+			base = sysTabBaseAddr;
+			attributes = read, write, systab;
 		}
 
-		segment InternalRam.Default {					# Default Segment for code, constants and class fields
-			base = sysTabBaseAddr + 0x100;							# Place it behind the dual mapped memory part
+		segment InternalRam.Default {								# Default Segment for code, constants and class fields
+#			base = sysTabBaseAddr + sysTabSize;
 			attributes = read, write, const, code, var;
 		}
 
-		segment InternalRam.Heap {						# Default Segment for the heap
-			base = OCM_BaseAddr + OCM_Size - stackSize - heapSize;	# Place it at the end of the device
+		segment InternalRam.Heap {
+			base = OCM_BaseAddr + OCM_Size - stackSize - heapSize;
 			size = heapSize;
 			attributes = read, write, heap;
 		}
