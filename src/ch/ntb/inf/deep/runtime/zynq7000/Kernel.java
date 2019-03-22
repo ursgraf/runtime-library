@@ -42,6 +42,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	private static void loop() {	// endless loop
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
 		US.PUT4(SLCR_MIO_PIN_07, 0x600);
+		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR0, 0x80);
 		while (true) {
 //			try {
@@ -87,6 +88,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	public static void blink(int nTimes) { 
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
 		US.PUT4(SLCR_MIO_PIN_07, 0x600);
+		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR0, 0x80);
 		int delay = 1000000;
 		for (int i = 0; i < nTimes; i++) {
@@ -149,10 +151,9 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
         US.ASM("orr r1, r1, #0x40000000");      // FPEXC_EN bit"
         US.ASM("vmsr FPEXC, r1");	//US.ASM("fmxr FPEXC, r1");
         
-        // fill the number 100 into d0
-        US.PUTGPR(5, 0x40590000);
-        US.PUTGPR(6, 0);
-        US.ASM("vmov d0, r6, r5");
+		US.PUT4(SLCR_UNLOCK, 0xdf0d);
+        US.PUT4(SLCR_OCM_CFG, 0x10);	// map all OCM blocks to lower address
+        US.PUT4(SLCR_LOCK, 0x767b);
 
 		// mark stack end with specific pattern
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);

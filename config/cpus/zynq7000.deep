@@ -11,7 +11,7 @@ cpu zynq7010 {
 	
 	sysconst {
 		OCM_BaseAddr = 0;								# On-chip memory base address
-		OCM_Size = 0x30000;								# On-chip memory size (192k)
+		OCM_Size = 0x40000;								# On-chip memory size (256k)
 #		OCM_Size = 0xc000;								# for test only
 		
 		excpCodeBase = OCM_BaseAddr;					# Base address for exception code
@@ -68,7 +68,7 @@ cpu zynq7010 {
 			attributes = read, write, stack;
 		}
 	}
-	
+
 	registermap {
 			
 		# I/O peripheral registers
@@ -235,4 +235,11 @@ cpu zynq7010 {
 		}
 		
 	}
+	
+	reginit {
+		SLCR_UNLOCK = 0xdf0d;							# unlock SLCR
+		SLCR_OCM_CFG = 0x10;							# map all OCM blocks to lower address
+		SLCR_LOCK = 0x767b;								# lock SLCR
+	}
+	
 }

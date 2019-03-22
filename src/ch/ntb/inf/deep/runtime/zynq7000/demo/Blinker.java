@@ -47,6 +47,7 @@ public class Blinker extends Task implements Izybo7000{
 		this.times = times;
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
 		US.PUT4(SLCR_MIO_PIN_07, 0x600);
+		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR0, 0x80);
 		this.period = period;	
 		Task.install(this);
