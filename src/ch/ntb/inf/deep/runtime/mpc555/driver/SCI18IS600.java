@@ -1,3 +1,4 @@
+package ch.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.unsafe.US;
@@ -20,7 +21,7 @@ public class SCI18IS600 {
 	/**
 	 * create new SCI18SI600
 	 * Note that <code>QSPI.init()</code> needs to be called beforehand
-	 * @param resetPinNum
+	 * @param resetPinNum MPIOSM_DIO pin number connected to SCI18SI600 reset pin
 	 */
 	public SCI18IS600( int resetPinNum)
 	{
@@ -202,7 +203,7 @@ public class SCI18IS600 {
 			if (QSPI.send())
 			{
 				i2cstate = I2CStates.IDLE;
-				QSPI.readRxRam(1, buffer);
+				QSPI.readRxRam(buffer, 1);
 				return true;
 			}
 			break;
@@ -292,7 +293,7 @@ public class SCI18IS600 {
 			QSPI.appendTXRam(0);
 		}
 		QSPI.sendBlocking();
-		QSPI.readRxRam(1, buffer);
+		QSPI.readRxRam(buffer, 1);
 	}
 	
 	/**

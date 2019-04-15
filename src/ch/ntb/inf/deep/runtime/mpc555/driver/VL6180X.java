@@ -1,3 +1,4 @@
+package ch.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.runtime.mpc555.driver.VL6180XAddr;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
@@ -134,7 +135,7 @@ public class VL6180X extends Task implements IntbMpc555HB, VL6180XAddr {
 	/**
 	 * start sensor in continuous mode
 	 * blocks while data transfer is ongoing
-	 * @param address
+	 * @param address VL6180X I2C address
 	 */
 	private void startContBlocking(int address)
 	{

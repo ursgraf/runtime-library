@@ -1,3 +1,4 @@
+package ch.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.unsafe.US;
 
@@ -53,7 +54,7 @@ public class QSPI implements IntbMpc555HB {
 	
 	/**
 	 * append a value to TX Ram
-	 * @param datum
+	 * @param datum datam to write to TX Ram
 	 */
 	public static void appendTXRam(int datum)
 	{
@@ -76,23 +77,11 @@ public class QSPI implements IntbMpc555HB {
 		return data;
 	}
 	
-	/**
-	 * read receive ram starting at offset (in half words)
-	 * @param numHalfWords number of 16bit integers to read
-	 * @return data as 16bit integer array
-	 */
-	public static void readRxRam(int offset, int[] buffer)
-	{
-		for (int i = 0; i < buffer.length; i++)
-		{
-			buffer[i] = US.GET2(RECRAM+2*(i+offset));
-		}
-	}
 	
 	/**
 	 * read receive ram starting at offset (in half words)
 	 * @param buffer buffer to read into, will read buffer.length halfWords
-	 * @return data as 16bit integer array
+	 * @param offset read offset (in half words)
 	 */
 	public static void readRxRam(int[] buffer, int offset)
 	{
@@ -106,7 +95,6 @@ public class QSPI implements IntbMpc555HB {
 	 * send data in transfer ram and receive into receive ram
 	 * blocks until transfer is done
 	 * SPI is full duplex meaning data is transmitted and received simultaneously.
-	 * @param numHalfWords number of 16bit integers to send
 	 */
 	public static void sendBlocking()
 	{
