@@ -1,4 +1,4 @@
-package ch.inf.deep.runtime.mpc555.driver;
+package ch.ntb.inf.deep.runtime.mpc555.driver;
 import ch.ntb.inf.deep.runtime.mpc555.IntbMpc555HB;
 import ch.ntb.inf.deep.runtime.mpc555.driver.VL6180XAddr;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
