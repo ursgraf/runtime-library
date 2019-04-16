@@ -1,7 +1,7 @@
 deep runtime library
 ====================
 
-The __deep runtime library__ comprises a simplified Java library, a simple non preemptive tasking system and board support packages for a few PPC based SOMs.
+The __deep runtime library__ comprises a simplified Java library, a simple non preemptive tasking system and board support packages for a few PPC and ARM based SOMs.
 
 
 Documentation
