@@ -18,7 +18,7 @@ public class UART1 implements Izynq7000 {
 	}
 
 	public static void write(byte b) { 	 
-		while((US.GET4(UART1_SR) & (1 << 3)) == 0);
+		while(!US.BIT(UART1_SR, 3));
 		US.PUT1(UART1_FIFO, b); 
 	}
 
