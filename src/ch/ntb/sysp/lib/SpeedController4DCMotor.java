@@ -88,7 +88,7 @@ public class SpeedController4DCMotor {
 	 */
 	public void run() {
 		// calculate exact time increment
-		time = Kernel.time();
+		time = Kernel.timeUs();
 		dt = (time - lastTime) * 1e-6f;
 		lastTime = time;
 		

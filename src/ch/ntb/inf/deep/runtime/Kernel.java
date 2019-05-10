@@ -24,7 +24,16 @@ public abstract class Kernel {
 	 * 
 	 * @return System time in \u00b5s
 	 */
-	public static long time() {
+	public static long timeUs() {
+		return -1;
+	}
+
+	/**
+	 * Reads the system time.
+	 * 
+	 * @return System time in ns
+	 */
+	public static long timeNs() {
 		return -1;
 	}
 

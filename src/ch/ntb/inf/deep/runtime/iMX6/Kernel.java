@@ -66,7 +66,23 @@ public class Kernel implements Iarm32, Icolibri_iMX6, IdeepCompilerConstants {
 	 * 
 	 * @return System time in \u00b5s
 	 */
-	public static long time() {
+	public static long timeUs() {
+//		int high1, high2, low;
+//		do {
+//			high1 = US.GETSPR(TBUread); 
+//			low = US.GETSPR(TBLread);
+//			high2 = US.GETSPR(TBUread); 
+//		} while (high1 != high2);
+//		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
+		return 0;
+	}
+	
+	/** 
+	 * Reads the system time.
+	 * 
+	 * @return System time in ns
+	 */
+	public static long timeNs() {
 //		int high1, high2, low;
 //		do {
 //			high1 = US.GETSPR(TBUread); 

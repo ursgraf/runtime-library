@@ -135,7 +135,7 @@ public class Robi2 extends Task {
 		short actualPos, deltaPos;
 
 		// calculate exact time increment
-		time = Kernel.time();
+		time = Kernel.timeUs();
 		dt = (time - lastTime) * 1e-6f;	// [s]
 		lastTime = time;
 

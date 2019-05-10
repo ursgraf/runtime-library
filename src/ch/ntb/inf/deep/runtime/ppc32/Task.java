@@ -110,7 +110,7 @@ public class Task implements Actionable, Ippc32 {
 	 * @return Current time in ms.
 	 */
 	public static int time() {
-		return (int)(Kernel.time() / 1000);
+		return (int)(Kernel.timeUs() / 1000);
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class Task implements Actionable, Ippc32 {
 		if ((task.time < 0) || (task.period < 0)) error(1);
 		if (nofPerTasks + nofReadyTasks >= maxNofTasks) error(2);
 		else {
-			long time = Kernel.time();
+			long time = Kernel.timeUs();
 			if (task.time > 0 || task.period > 0) {
 				task.nextTime = time + task.time*1000;
 				task.nofActivations = 0;
@@ -249,15 +249,15 @@ public class Task implements Actionable, Ippc32 {
 				if (mark) {Heap.mark(); mark = false;}
 				else {Heap.sweep(); mark = true; Heap.runGC = false;}
 			}
-			long time = Kernel.time();
+			long time = Kernel.timeUs();
 			currentTask = tasks[1];
 			if (currentTask.nextTime < time) {
 				currentTask.nofActivations++;
 				try {
-					long startTime = Kernel.time();
+					long startTime = Kernel.timeUs();
 					if (currentTask.actionable < 0)	currentTask.action();
 					else actionables[currentTask.actionable].action();
-					currentTask.diffTime = (int) (Kernel.time() - startTime);
+					currentTask.diffTime = (int) (Kernel.timeUs() - startTime) * 1000;
 				} catch (Exception e) {
 					Kernel.cmdAddr = -1;	// stop trying to run the same method
 					e.printStackTrace();
@@ -278,10 +278,10 @@ public class Task implements Actionable, Ippc32 {
 				if (curRdyTask >= tasks.length) curRdyTask = tasks.length - nofReadyTasks;
 				currentTask = tasks[curRdyTask];
 				currentTask.nofActivations++;
-				long startTime = Kernel.time();
+				long startTime = Kernel.timeUs();
 				if (currentTask.actionable < 0)	currentTask.action();
 				else actionables[currentTask.actionable].action();
-				currentTask.diffTime = (int) (Kernel.time() - startTime);
+				currentTask.diffTime = (int) (Kernel.timeUs() - startTime) * 1000;
 			}
 		}
 	}

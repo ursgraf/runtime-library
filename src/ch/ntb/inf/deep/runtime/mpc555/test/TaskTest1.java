@@ -48,7 +48,7 @@ public class TaskTest1 extends Task {
 		try {
 			sci.write((byte)'a');
 		} catch (IOException e) {}
-		time1 = Kernel.time();
+		time1 = Kernel.timeUs();
 		t1 = new TaskTest1();
 		t1.period = 1000; 
 		t1.action();

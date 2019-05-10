@@ -51,7 +51,7 @@ public class TaskTestMpc5200 implements Impc5200 {
 	@Test
 	public static void testTaskTime() {
 		US.PUT4(XLBACR, 0); 	// stop timer
-		long time = Kernel.time();
+		long time = Kernel.timeUs();
 		int timeMs = Task.time();	
 		Assert.assertEquals("Test1", timeMs, time / 1000);
 		US.PUT4(XLBACR, 0x00002006); 	// restart timer
