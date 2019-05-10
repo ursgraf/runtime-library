@@ -14,6 +14,8 @@ public class UART1 implements Izynq7000 {
 		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(UART1_CR, 0x14);	// enable tx, rx
 		US.PUT4(UART1_BAUDGEN, 11);	// CD = 11
+		US.PUT4(UART1_IER, 1);		// enable rx FIFO trigger interrupt
+		US.PUT4(UART1_RX_FIFO_LEVEL, 1);		// set rx FIFO trigger level to 1
 		US.PUT4(UART1_MR, 0x20);	// no parity
 	}
 

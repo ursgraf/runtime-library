@@ -2,12 +2,14 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2017-12-06 13:39:53)
+// Auto generated file (2019-05-08 15:35:11)
 
 public interface Izynq7000 extends Iarm32 {
 
 	// System constants of CPU zynq7000
+	public static final int interruptCtlrDistr = 0xf8f01000;
 	public static final int globalTimer = 0xf8f00200;
+	public static final int interruptCtlr = 0xf8f00100;
 	public static final int cpuPrivateReg = 0xf8900000;
 	public static final int slcrReg = 0xf8000000;
 	public static final int gpioController = 0xe000a000;
@@ -18,7 +20,7 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int sysTabBaseAddr = 0x1000;
 	public static final int excpCodeSize = 0x1000;
 	public static final int excpCodeBase = 0x0;
-	public static final int OCM_Size = 0x30000;
+	public static final int OCM_Size = 0x40000;
 	public static final int OCM_BaseAddr = 0x0;
 
 	// Specific registers of CPU zynq7000
@@ -38,14 +40,51 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int SLCR_MIO_PIN_48 = 0xf80007c0;
 	public static final int SLCR_MIO_PIN_49 = 0xf80007c4;
 	public static final int SLCR_OCM_CFG = 0xf8000910;
+	public static final int ICCICR = 0xf8f00100;
+	public static final int ICCPMR = 0xf8f00104;
+	public static final int ICCBPR = 0xf8f00108;
+	public static final int ICCIAR = 0xf8f0010c;
+	public static final int ICCEOIR = 0xf8f00110;
+	public static final int ICCIDR = 0xf8f001fc;
+	public static final int ICDDCR = 0xf8f01000;
+	public static final int ICDICTR = 0xf8f01004;
+	public static final int ICDISER0 = 0xf8f01100;
+	public static final int ICDISER1 = 0xf8f01104;
+	public static final int ICDISER2 = 0xf8f01108;
+	public static final int ICDIPTR0 = 0xf8f01800;
+	public static final int ICDIPTR1 = 0xf8f01804;
+	public static final int ICDIPTR2 = 0xf8f01808;
+	public static final int ICDIPTR20 = 0xf8f01850;
 	public static final int UART0_CR = 0xe0000000;
 	public static final int UART0_MR = 0xe0000004;
+	public static final int UART0_IER = 0xe0000008;
+	public static final int UART0_IDR = 0xe000000c;
+	public static final int UART0_IMR = 0xe0000010;
+	public static final int UART0_ISR = 0xe0000014;
 	public static final int UART0_BAUDGEN = 0xe0000018;
+	public static final int UART0_RXTOUT = 0xe000001c;
+	public static final int UART0_RX_FIFO_LEVEL = 0xe0000020;
+	public static final int UART0_MODEMCR = 0xe0000024;
+	public static final int UART0_MODEMSR = 0xe0000028;
 	public static final int UART0_SR = 0xe000002c;
 	public static final int UART0_FIFO = 0xe0000030;
+	public static final int UART0_BAUDDIV = 0xe0000034;
+	public static final int UART0_FLOWDELAY = 0xe0000038;
+	public static final int UART0_TX_FIFO_Level = 0xe0000044;
 	public static final int UART1_CR = 0xe0001000;
 	public static final int UART1_MR = 0xe0001004;
+	public static final int UART1_IER = 0xe0001008;
+	public static final int UART1_IDR = 0xe000100c;
+	public static final int UART1_IMR = 0xe0001010;
+	public static final int UART1_ISR = 0xe0001014;
 	public static final int UART1_BAUDGEN = 0xe0001018;
+	public static final int UART1_RXTOUT = 0xe000101c;
+	public static final int UART1_RX_FIFO_LEVEL = 0xe0001020;
+	public static final int UART1_MODEMCR = 0xe0001024;
+	public static final int UART1_MODEMSR = 0xe0001028;
 	public static final int UART1_SR = 0xe000102c;
 	public static final int UART1_FIFO = 0xe0001030;
+	public static final int UART1_BAUDDIV = 0xe0001034;
+	public static final int UART1_FLOWDELAY = 0xe0001038;
+	public static final int UART1_TX_FIFO_Level = 0xe0001044;
 }

@@ -19,7 +19,8 @@ cpu zynq7010 {
 		
 		sysTabBaseAddr = excpCodeBase + excpCodeSize;	# Place system table behind exception code
 		
-		stackSize = 0x1000;								# Default stack size
+		stackSizeSVC = 0x1000;							# stack size for SVC mode
+		stackSizeIRQ = 0x1000;							# stack size for IRQ mode
 		heapSize = 0x8000;								# Default heap size
 
 		ioReg = 0xe0000000;								# I/O peripheral registers
@@ -27,7 +28,9 @@ cpu zynq7010 {
 		gpioController = ioReg + 0xa000;				# GPIO controller
 		slcrReg = 0xf8000000;							# System level control registers
 		cpuPrivateReg = 0xf8900000;						# CPU private registers
+		interruptCtlr = cpuPrivateReg + 0x600100;		# Interrupt controller registers
 		globalTimer = cpuPrivateReg + 0x600200;			# Global Timer
+		interruptCtlrDistr = cpuPrivateReg + 0x601000;	# Interrupt controller distributor registers
 	}
 	
 	memorymap {
@@ -57,14 +60,20 @@ cpu zynq7010 {
 		}
 
 		segment InternalRam.Heap {
-			base = OCM_BaseAddr + OCM_Size - stackSize - heapSize;
+			base = OCM_BaseAddr + OCM_Size - stackSizeSVC - stackSizeIRQ - heapSize;
 			size = heapSize;
 			attributes = read, write, heap;
 		}
 		
-		segment InternalRam.Stack {
-			base = OCM_BaseAddr + OCM_Size - stackSize ;
-			size = stackSize;
+		segment InternalRam.StackSVC {
+			base = OCM_BaseAddr + OCM_Size - stackSizeSVC ;
+			size = stackSizeSVC;
+			attributes = read, write, stack;
+		}
+		
+		segment InternalRam.StackIRQ {
+			base = OCM_BaseAddr + OCM_Size - stackSizeSVC - stackSizeIRQ ;
+			size = stackSizeIRQ;
 			attributes = read, write, stack;
 		}
 	}
@@ -170,23 +179,165 @@ cpu zynq7010 {
 			 size = 4;
 		}
 		
+		# Interrupt controller registers
+		
+		register ICCICR {
+			 type = IOR;
+			 addr = interruptCtlr + 0x00;
+			 size = 4;
+		}
+
+		register ICCPMR {
+			 type = IOR;
+			 addr = interruptCtlr + 0x04;
+			 size = 4;
+		}
+
+		register ICCBPR {
+			 type = IOR;
+			 addr = interruptCtlr + 0x08;
+			 size = 4;
+		}
+
+		register ICCIAR {
+			 type = IOR;
+			 addr = interruptCtlr + 0x0c;
+			 size = 4;
+		}
+
+		register ICCEOIR {
+			 type = IOR;
+			 addr = interruptCtlr + 0x10;
+			 size = 4;
+		}
+
+		register ICCIDR {
+			 type = IOR;
+			 addr = interruptCtlr + 0xfc;
+			 size = 4;
+		}
+
+		# Interrupt controller registers
+		
+		register ICDDCR {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x00;
+			 size = 4;
+		}
+
+		register ICDICTR {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x04;
+			 size = 4;
+		}
+
+		register ICDISER0 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x100;
+			 size = 4;
+		}
+
+		register ICDISER1 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x104;
+			 size = 4;
+		}
+
+		register ICDISER2 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x108;
+			 size = 4;
+		}
+
+		register ICDIPTR0 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x800;
+			 size = 4;
+		}
+
+		register ICDIPTR1 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x804;
+			 size = 4;
+		}
+
+		register ICDIPTR2 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x808;
+			 size = 4;
+		}
+
+		register ICDIPTR20 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x850;
+			 size = 4;
+		}
+
 		# UART0 registers
 		
 		register UART0_CR {
 			 type = IOR;
-			 addr = uartController + 0;
+			 addr = uartController + 0x00;
 			 size = 4;
 		}
 		
 		register UART0_MR {
 			 type = IOR;
-			 addr = uartController + 4;
+			 addr = uartController + 0x04;
+			 size = 4;
+		}
+		
+		register UART0_IER {
+			 type = IOR;
+			 addr = uartController + 0x08;
+			 size = 4;
+		}
+		
+		register UART0_IDR {
+			 type = IOR;
+			 addr = uartController + 0x0c;
+			 size = 4;
+		}
+		
+		register UART0_IMR {
+			 type = IOR;
+			 addr = uartController + 0x10;
+			 size = 4;
+		}
+		
+		register UART0_ISR {
+			 type = IOR;
+			 addr = uartController + 0x14;
 			 size = 4;
 		}
 		
 		register UART0_BAUDGEN {
 			 type = IOR;
 			 addr = uartController + 0x18;
+			 size = 4;
+		}
+		
+		register UART0_RXTOUT {
+			 type = IOR;
+			 addr = uartController + 0x1c;
+			 size = 4;
+		}
+		
+		register UART0_RX_FIFO_LEVEL {
+			 type = IOR;
+			 addr = uartController + 0x20;
+			 size = 4;
+		}
+		
+		register UART0_MODEMCR {
+			 type = IOR;
+			 addr = uartController + 0x24;
+			 size = 4;
+		}
+		
+		register UART0_MODEMSR {
+			 type = IOR;
+			 addr = uartController + 0x28;
 			 size = 4;
 		}
 		
@@ -199,6 +350,24 @@ cpu zynq7010 {
 		register UART0_FIFO {
 			 type = IOR;
 			 addr = uartController + 0x30;
+			 size = 4;
+		}
+		
+		register UART0_BAUDDIV {
+			 type = IOR;
+			 addr = uartController + 0x34;
+			 size = 4;
+		}
+		
+		register UART0_FLOWDELAY {
+			 type = IOR;
+			 addr = uartController + 0x38;
+			 size = 4;
+		}
+		
+		register UART0_TX_FIFO_Level {
+			 type = IOR;
+			 addr = uartController + 0x44;
 			 size = 4;
 		}
 		
@@ -216,9 +385,57 @@ cpu zynq7010 {
 			 size = 4;
 		}
 		
+		register UART1_IER {
+			 type = IOR;
+			 addr = uartController + 0x1008;
+			 size = 4;
+		}
+		
+		register UART1_IDR {
+			 type = IOR;
+			 addr = uartController + 0x100c;
+			 size = 4;
+		}
+		
+		register UART1_IMR {
+			 type = IOR;
+			 addr = uartController + 0x1010;
+			 size = 4;
+		}
+		
+		register UART1_ISR {
+			 type = IOR;
+			 addr = uartController + 0x1014;
+			 size = 4;
+		}
+		
 		register UART1_BAUDGEN {
 			 type = IOR;
 			 addr = uartController + 0x1018;
+			 size = 4;
+		}
+		
+		register UART1_RXTOUT {
+			 type = IOR;
+			 addr = uartController + 0x101c;
+			 size = 4;
+		}
+		
+		register UART1_RX_FIFO_LEVEL {
+			 type = IOR;
+			 addr = uartController + 0x1020;
+			 size = 4;
+		}
+		
+		register UART1_MODEMCR {
+			 type = IOR;
+			 addr = uartController + 0x1024;
+			 size = 4;
+		}
+		
+		register UART1_MODEMSR {
+			 type = IOR;
+			 addr = uartController + 0x1028;
 			 size = 4;
 		}
 		
@@ -234,6 +451,23 @@ cpu zynq7010 {
 			 size = 4;
 		}
 		
+		register UART1_BAUDDIV {
+			 type = IOR;
+			 addr = uartController + 0x1034;
+			 size = 4;
+		}
+		
+		register UART1_FLOWDELAY {
+			 type = IOR;
+			 addr = uartController + 0x1038;
+			 size = 4;
+		}
+		
+		register UART1_TX_FIFO_Level {
+			 type = IOR;
+			 addr = uartController + 0x1044;
+			 size = 4;
+		}
 	}
 	
 	reginit {

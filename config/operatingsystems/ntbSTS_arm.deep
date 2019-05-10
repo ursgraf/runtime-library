@@ -214,6 +214,18 @@ operatingsystem ntbSTS_arm {
     	}
     }
     
+	exception {
+    	class = "ch/ntb/inf/deep/runtime/arm32/IrqInterrupt";
+    	condition = boardtype:zybo7000;
+    	method irqInterrupt {
+    		attributes = exchnd;
+			offset = 0x300;
+    	}
+    	method <init> {
+    		attributes = synthetic;
+    	}
+    }
+
 	kernel {
 		class = "ch/ntb/inf/deep/runtime/iMX6/Kernel";
 		condition = cputype:iMX6;

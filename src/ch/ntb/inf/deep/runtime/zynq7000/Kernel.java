@@ -213,10 +213,21 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 
 	static {
 //		try {
-//		US.ASM("b -8"); // stop here
+//			US.ASM("b -8"); // stop here
 			boot();
 			cmdAddr = -1;	// must be after class variables are zeroed by boot
 //			blink(1);
+			
+			// enable IRQ	
+			US.PUT4(ICDISER2, US.GET4(ICDISER2) | (1 << (82 % 32)));	// interrupt set enable for #82
+			US.PUT1(ICDIPTR20 + 2, 2);	// interrupts targets CPU1
+			US.PUT4(ICCPMR, 0xff);	// set mask
+			US.PUT4(ICCICR, 1);	// global interrupt enable
+			US.PUT4(ICDDCR, 1);	// enable distributor
+
+			US.ASM("cpsie i");	// enable IRQ
+
+			// load PC
 			US.PUTGPR(6, loopAddr);	// use scratch register
 			US.ASM("mov r14, r15");	// copy PC to LR 
 			US.ASM("mov r15, r6");	// jump 

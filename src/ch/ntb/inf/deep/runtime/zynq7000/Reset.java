@@ -41,7 +41,7 @@ class Reset extends ARMException implements Iarm32, Izybo7000, IdeepCompilerCons
 		US.ASM("b -8"); // stop here
 		US.ASM("b -8"); // stop here
 		US.ASM("b -8"); // stop here
-		US.ASM("b -8"); // stop here
+		US.ASM("movw R15 768"); // jump to IRQ interrupt
 		US.ASM("b -8"); // stop here
 	}
 	
@@ -49,7 +49,14 @@ class Reset extends ARMException implements Iarm32, Izybo7000, IdeepCompilerCons
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
 		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
 		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 8);
-		US.PUTGPR(SP, stackBase + stackSize - 4);	// set stack pointer
+		US.PUTGPR(SP, stackBase + stackSize - 4);	// set SVC stack pointer
+		
+		// set IRQ stack pointer
+		stackBase = US.GET4(sysTabBaseAddr + stackOffset + 12);
+		stackSize = US.GET4(sysTabBaseAddr + stackOffset + 16);		
+		US.ASM("cps #irq");	// change to IRQ mode  
+		US.PUTGPR(SP, stackBase + stackSize - 4);	// set SP for IRQ
+		US.ASM("cps #svc");	// change to supervisor mode
 
 		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
 		US.PUTGPR(PC, kernelClinitAddr);	// never come back
