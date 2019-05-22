@@ -564,6 +564,59 @@ arch arm32 {
 			addr = 15;
 			size = 4;
 		}
+		
+		# coprocessor registers
+		# address holds 4 bit values for coprocessor, CRn, opc1, CRm, opc2 
+		register MIDR {
+			type = CPR;
+			addr = 0xf0000;
+			size = 4;
+		}
+		register MPUIR {
+			type = CPR;
+			addr = 0xf0004;
+			size = 4;
+		}
+		register MPIDR {
+			type = CPR;
+			addr = 0xf0005;
+			size = 4;
+		}
+		register ID_ISAR0 {
+			type = CPR;
+			addr = 0xf0020;
+			size = 4;
+		}
+		register ID_ISAR1 {
+			type = CPR;
+			addr = 0xf0021;
+			size = 4;
+		}
+		register ID_ISAR2 {
+			type = CPR;
+			addr = 0xf0022;
+			size = 4;
+		}
+		register ID_ISAR3 {
+			type = CPR;
+			addr = 0xf0023;
+			size = 4;
+		}
+		register SCTLR {
+			type = CPR;
+			addr = 0xf1000;
+			size = 4;
+		}
+		register ACTLR {
+			type = CPR;
+			addr = 0xf1001;
+			size = 4;
+		}
+		register CPACR {
+			type = CPR;
+			addr = 0xf1002;
+			size = 4;
+		}
 		 
     }
 }

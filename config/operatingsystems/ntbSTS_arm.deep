@@ -92,7 +92,7 @@ operatingsystem ntbSTS_arm {
             attributes = unsafe, synthetic;
             id = 0x016;
         }
-        method PUTSPR {
+        method PUTCPR {
             attributes = unsafe, synthetic;
             id = 0x017;
         }                

@@ -148,24 +148,21 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 			addr++;
 		}
 		return crc;
-//		return 0;	// for test purposes
 	}
 	
 	private static void boot() {	// set to private later
 //		blink(2);
 //		US.ASM("b -8"); // stop here
 		
-        // _ init VFP (FPU
-        // _ _ enable coprocessor 10 and 11
-		US.ASM("mrc p15, 0, r1, c1, c0, 2");
-		US.ASM("orr r1, r1, #0xf00000");
-        US.ASM("mcr p15, 0, r1, c1, c0, 2");
-//		US.ASM("b -8");
+        // enable coprocessor 10 and 11
+		int val = US.GETCPR(15, 1, 0, 0, 2);
+		val |= 0xf00000;
+		US.PUTCPR(15, 1, 0, 0, 2, val);
 
-        // _ _ enable vfp
-		US.ASM("vmrs r1, FPEXC");	//US.ASM("fmrx r1, FPEXC");
-        US.ASM("orr r1, r1, #0x40000000");      // FPEXC_EN bit"
-        US.ASM("vmsr FPEXC, r1");	//US.ASM("fmxr FPEXC, r1");
+        // enable enable floating point extensions
+		US.ASM("vmrs r6, FPEXC");
+        US.ASM("orr r6, r6, #0x40000000");
+        US.ASM("vmsr FPEXC, r6");
         
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
         US.PUT4(SLCR_OCM_CFG, 0x10);	// map all OCM blocks to lower address
