@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.runtime.arm32;
 
-// Auto generated file (2019-05-08 15:35:11)
+// Auto generated file (2019-06-07 13:06:15)
 
 public interface Iarm32 {
 
@@ -112,4 +112,14 @@ public interface Iarm32 {
 	public static final int S29 = 0xe;
 	public static final int S30 = 0xf;
 	public static final int S31 = 0xf;
+	public static final int MIDR = 0xf0000;
+	public static final int MPUIR = 0xf0004;
+	public static final int MPIDR = 0xf0005;
+	public static final int ID_ISAR0 = 0xf0020;
+	public static final int ID_ISAR1 = 0xf0021;
+	public static final int ID_ISAR2 = 0xf0022;
+	public static final int ID_ISAR3 = 0xf0023;
+	public static final int SCTLR = 0xf1000;
+	public static final int ACTLR = 0xf1001;
+	public static final int CPACR = 0xf1002;
 }

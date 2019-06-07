@@ -131,49 +131,103 @@ cpu zynq7010 {
 			 size = 4;
 		}
 		
-		register SLCR_UART_CLK_CTRL {
+		register ARM_PLL_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x100;
+			 size = 4;
+		}
+		
+		register DDR_PLL_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x104;
+			 size = 4;
+		}
+		
+		register IO_PLL_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x108;
+			 size = 4;
+		}
+		
+		register PLL_STATUS {
+			 type = IOR;
+			 addr = slcrReg + 0x10c;
+			 size = 4;
+		}
+		
+		register ARM_PLL_CFG {
+			 type = IOR;
+			 addr = slcrReg + 0x110;
+			 size = 4;
+		}
+		
+		register DDR_PLL_CFG {
+			 type = IOR;
+			 addr = slcrReg + 0x114;
+			 size = 4;
+		}
+		
+		register IO_PLL_CFG {
+			 type = IOR;
+			 addr = slcrReg + 0x118;
+			 size = 4;
+		}
+		
+		register ARM_CLK_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x120;
+			 size = 4;
+		}
+		
+		register DDR_CLK_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x124;
+			 size = 4;
+		}
+		
+		register UART_CLK_CTRL {
 			 type = IOR;
 			 addr = slcrReg + 0x154;
 			 size = 4;
 		}
 		
-		register SLCR_MIO_PIN_00 {
+		register MIO_PIN_00 {
 			 type = IOR;
 			 addr = slcrReg + 0x700;
 			 size = 4;
 		}
 		
-		register SLCR_MIO_PIN_07 {
+		register MIO_PIN_07 {
 			 type = IOR;
 			 addr = slcrReg + 0x71c;
 			 size = 4;
 		}
 		
-		register SLCR_MIO_PIN_10 {
+		register MIO_PIN_10 {
 			 type = IOR;
 			 addr = slcrReg + 0x728;
 			 size = 4;
 		}
 		
-		register SLCR_MIO_PIN_11 {
+		register MIO_PIN_11 {
 			 type = IOR;
 			 addr = slcrReg + 0x72c;
 			 size = 4;
 		}
 		
-		register SLCR_MIO_PIN_48 {
+		register MIO_PIN_48 {
 			 type = IOR;
 			 addr = slcrReg + 0x7c0;
 			 size = 4;
 		}
 		
-		register SLCR_MIO_PIN_49 {
+		register MIO_PIN_49 {
 			 type = IOR;
 			 addr = slcrReg + 0x7c4;
 			 size = 4;
 		}
 		
-		register SLCR_OCM_CFG {
+		register OCM_CFG {
 			 type = IOR;
 			 addr = slcrReg + 0x910;
 			 size = 4;
@@ -471,9 +525,9 @@ cpu zynq7010 {
 	}
 	
 	reginit {
-		SLCR_UNLOCK = 0xdf0d;							# unlock SLCR
-		SLCR_OCM_CFG = 0x10;							# map all OCM blocks to lower address
-		SLCR_LOCK = 0x767b;								# lock SLCR
+		SLCR_UNLOCK = 0xdf0d;			# unlock SLCR
+		OCM_CFG = 0x10;					# map all OCM blocks to lower address
+		SLCR_LOCK = 0x767b;				# lock SLCR
 	}
 	
 }

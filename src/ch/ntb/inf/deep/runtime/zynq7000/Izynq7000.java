@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2019-05-08 15:35:11)
+// Auto generated file (2019-06-07 13:06:15)
 
 public interface Izynq7000 extends Iarm32 {
 
@@ -16,7 +16,8 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int uartController = 0xe0000000;
 	public static final int ioReg = 0xe0000000;
 	public static final int heapSize = 0x8000;
-	public static final int stackSize = 0x1000;
+	public static final int stackSizeIRQ = 0x1000;
+	public static final int stackSizeSVC = 0x1000;
 	public static final int sysTabBaseAddr = 0x1000;
 	public static final int excpCodeSize = 0x1000;
 	public static final int excpCodeBase = 0x0;
@@ -32,14 +33,23 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int SLCR_LOCK = 0xf8000004;
 	public static final int SLCR_UNLOCK = 0xf8000008;
 	public static final int SLCR_LOCKSTA = 0xf800000c;
-	public static final int SLCR_UART_CLK_CTRL = 0xf8000154;
-	public static final int SLCR_MIO_PIN_00 = 0xf8000700;
-	public static final int SLCR_MIO_PIN_07 = 0xf800071c;
-	public static final int SLCR_MIO_PIN_10 = 0xf8000728;
-	public static final int SLCR_MIO_PIN_11 = 0xf800072c;
-	public static final int SLCR_MIO_PIN_48 = 0xf80007c0;
-	public static final int SLCR_MIO_PIN_49 = 0xf80007c4;
-	public static final int SLCR_OCM_CFG = 0xf8000910;
+	public static final int ARM_PLL_CTRL = 0xf8000100;
+	public static final int DDR_PLL_CTRL = 0xf8000104;
+	public static final int IO_PLL_CTRL = 0xf8000108;
+	public static final int PLL_STATUS = 0xf800010c;
+	public static final int ARM_PLL_CFG = 0xf8000110;
+	public static final int DDR_PLL_CFG = 0xf8000114;
+	public static final int IO_PLL_CFG = 0xf8000118;
+	public static final int ARM_CLK_CTRL = 0xf8000120;
+	public static final int DDR_CLK_CTRL = 0xf8000124;
+	public static final int UART_CLK_CTRL = 0xf8000154;
+	public static final int MIO_PIN_00 = 0xf8000700;
+	public static final int MIO_PIN_07 = 0xf800071c;
+	public static final int MIO_PIN_10 = 0xf8000728;
+	public static final int MIO_PIN_11 = 0xf800072c;
+	public static final int MIO_PIN_48 = 0xf80007c0;
+	public static final int MIO_PIN_49 = 0xf80007c4;
+	public static final int OCM_CFG = 0xf8000910;
 	public static final int ICCICR = 0xf8f00100;
 	public static final int ICCPMR = 0xf8f00104;
 	public static final int ICCBPR = 0xf8f00108;

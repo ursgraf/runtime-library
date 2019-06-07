@@ -41,7 +41,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	@SuppressWarnings("unused")
 	private static void loop() {	// endless loop
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(SLCR_MIO_PIN_07, 0x600);
+		US.PUT4(MIO_PIN_07, 0x600);
 		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR0, 0x80);
 		while (true) {
@@ -77,7 +77,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 			high2 = US.GET4(GTCR_U); 
 		} while (high1 != high2);
 		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
-		return time / 162;	// clock = 162.5 MHz
+		return time / 25;	// clock = 25MHz
 	}
 	
 	/** 
@@ -93,7 +93,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 			high2 = US.GET4(GTCR_U); 
 		} while (high1 != high2);
 		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
-		return time * 6;	// clock = 162.5 MHz
+		return time * 40;	// clock = 25MHz
 	}
 	
 	/** 
@@ -103,7 +103,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	 */
 	public static void blink(int nTimes) { 
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(SLCR_MIO_PIN_07, 0x600);
+		US.PUT4(MIO_PIN_07, 0x600);
 		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR0, 0x80);
 		int delay = 1000000;
@@ -153,7 +153,34 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	private static void boot() {	// set to private later
 //		blink(2);
 //		US.ASM("b -8"); // stop here
+
+		US.PUT4(SLCR_UNLOCK, 0xdf0d);
 		
+		US.PUT4(ARM_PLL_CFG, 0x1772c0);	// configure ARM PLL for 1300MHZ with 50MHz quartz
+		US.PUT4(ARM_PLL_CTRL, 0x1a011);	// divider = 26, bypass, reset
+		US.PUT4(ARM_PLL_CTRL, US.GET4(ARM_PLL_CTRL) & ~1);	// deassert reset
+		while (!US.BIT(PLL_STATUS, 0));	// wait to lock
+		US.PUT4(ARM_PLL_CTRL, US.GET4(ARM_PLL_CTRL) & ~0x10);	// no bypass
+		US.PUT4(ARM_CLK_CTRL, 0x1f000200);	// use ARM PLL for CPU, divisor = 2 -> processor frequency = 650MHz
+		// CPU_6x4x = 650MHz, CPU_3x2x = 325MHz, CPU_2x = 216.67MHz, CPU_1x = 108.33MHz
+		
+		US.PUT4(DDR_PLL_CFG, 0x1db2c0);	// configure DDR PLL for 1050MHZ with 50MHz quarz
+		US.PUT4(DDR_PLL_CTRL, 0x15011);	// divider = 21, bypass, reset
+		US.PUT4(DDR_PLL_CTRL, US.GET4(DDR_PLL_CTRL) & ~1);	// deassert reset
+		while (!US.BIT(PLL_STATUS, 1));	// wait to lock
+		US.PUT4(DDR_PLL_CTRL, US.GET4(DDR_PLL_CTRL) & ~0x10);	// no bypass
+		US.PUT4(DDR_CLK_CTRL, 0xc200003);	// 2x-divisor = 3, 3x-divisor = 2
+		
+		US.PUT4(IO_PLL_CFG, 0x1f42c0);	// configure IO PLL for 1000MHZ with 50MHz quartz
+		US.PUT4(IO_PLL_CTRL, 0x14011);	// divider = 20, bypass, reset
+		US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~1);	// deassert reset
+		while (!US.BIT(PLL_STATUS, 2));	// wait to lock
+		US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~0x10);	// no bypass
+
+		US.PUT4(UART_CLK_CTRL, 0xa02);	// UART clock, divisor = 10 -> 100MHz, select IO PLL
+		
+		US.PUT4(SLCR_LOCK, 0x767b);
+
         // enable coprocessor 10 and 11
 		int val = US.GETCPR(15, 1, 0, 0, 2);
 		val |= 0xf00000;
@@ -165,8 +192,10 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
         US.ASM("vmsr FPEXC, r6");
         
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-        US.PUT4(SLCR_OCM_CFG, 0x10);	// map all OCM blocks to lower address
+        US.PUT4(OCM_CFG, 0x10);	// map all OCM blocks to lower address
         US.PUT4(SLCR_LOCK, 0x767b);
+        
+        US.PUT4(GTCR, 0xc01);	// enable global timer, prescaler = 12 -> 325MHz / 13 = 25MHz
 
 		// mark stack end with specific pattern
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
