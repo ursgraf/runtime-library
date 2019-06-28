@@ -54,7 +54,7 @@ cpu zynq7010 {
 			attributes = read, write, systab;
 		}
 
-		segment InternalRam.Default {								# Default Segment for code, constants and class fields
+		segment InternalRam.Default {								# Default segment for code, constants and class fields
 #			base = sysTabBaseAddr + sysTabSize;
 			attributes = read, write, const, code, var;
 		}
