@@ -63,7 +63,6 @@ public class Heap implements IdeepCompilerConstants {
 	public static int sysTabBaseAddr;
 	
 	// called by new	
-	@SuppressWarnings("unused")
 	private static int newObject(int ref) {	
 		int size = US.GET4(ref) + 8;
 		int blockAddr = getBlock(size);
@@ -106,68 +105,67 @@ public class Heap implements IdeepCompilerConstants {
 		return ref;
 	}
 	
-//	// called by multianewarray	
-//	@SuppressWarnings("unused")
-//	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3) {
-//		int addr;
-//		if (nofDim > 3 || nofDim < 2) US.HALT(20);
-//		if (nofDim == 2) {
-//			addr = newRefArray(dim0, ref);
-//			int arrayInfo = US.GET4(ref);
-//			if (arrayInfo < 0) {	// primitive type
-//				int elemSize = arrayInfo & 0xffff;	// mask array type bit and dimension
-//				int type;
-//				if (elemSize == 4) type = 6;
-//				else if (elemSize == 2) type = 5;
-//				else if (elemSize == 8) type = 7;
-//				else type = 4;
-//				int dim1Ref = US.GET4(ref + 12);
-//				for (int i = 0; i < dim0; i++) {
-//					int dim1Addr = newPrimTypeArray(dim1, type, dim1Ref);
-//					US.PUT4(addr + i * 4, dim1Addr);
-//				}
-//			} else {
-//				int dim1Ref = US.GET4(ref + 12);
-//				for (int i = 0; i < dim0; i++) {
-//					int dim1Addr = newRefArray(dim1, dim1Ref);
-//					US.PUT4(addr + i * 4, dim1Addr);
-//				}
-//			}
-//		} else {	// nofDim == 3
-//			addr = newRefArray(dim0, ref);
-//			int arrayInfo = US.GET4(ref);
-//			if (arrayInfo < 0) {	// primitive type
-//				int elemSize = arrayInfo & 0xffff;	// mask array type bit and dimension
-//				int type;
-//				if (elemSize == 4) type = 6;
-//				else if (elemSize == 2) type = 5;
-//				else if (elemSize == 8) type = 7;
-//				else type = 4;
-//				int dim1Ref = US.GET4(ref + 12);
-//				int dim2Ref = US.GET4(ref + 16);
-//				for (int i = 0; i < dim0; i++) {
-//					int dim1Addr = newRefArray(dim1, dim1Ref);
-//					US.PUT4(addr + i * 4, dim1Addr);
-//					for (int k = 0; k < dim1; k++) {
-//						int dim2Addr = newPrimTypeArray(dim2, type, dim2Ref);
-//						US.PUT4(dim1Addr + k * 4, dim2Addr);
-//					}
-//				}
-//			} else {
-//				int dim1Ref = US.GET4(ref + 12);
-//				int dim2Ref = US.GET4(ref + 16);
-//				for (int i = 0; i < dim0; i++) {
-//					int dim1Addr = newRefArray(dim1, dim1Ref);
-//					US.PUT4(addr + i * 4, dim1Addr);
-//					for (int k = 0; k < dim1; k++) {
-//						int dim2Addr = newRefArray(dim2, dim2Ref);
-//						US.PUT4(dim1Addr + k * 4, dim2Addr);
-//					}
-//				}
-//			}
-//		}
-//		return addr;
-//	}
+	// called by multianewarray	
+	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3) {
+		int addr;
+//		if (nofDim > 3 || nofDim < 2);	// US.HALT(20);	TODO
+		if (nofDim == 2) {
+			addr = newRefArray(dim0, ref);
+			int arrayInfo = US.GET4(ref);
+			if (arrayInfo < 0) {	// primitive type
+				int elemSize = arrayInfo & 0xffff;	// mask array type bit and dimension
+				int type;
+				if (elemSize == 4) type = 6;
+				else if (elemSize == 2) type = 5;
+				else if (elemSize == 8) type = 7;
+				else type = 4;
+				int dim1Ref = US.GET4(ref + 12);
+				for (int i = 0; i < dim0; i++) {
+					int dim1Addr = newPrimTypeArray(dim1, type, dim1Ref);
+					US.PUT4(addr + i * 4, dim1Addr);
+				}
+			} else {
+				int dim1Ref = US.GET4(ref + 12);
+				for (int i = 0; i < dim0; i++) {
+					int dim1Addr = newRefArray(dim1, dim1Ref);
+					US.PUT4(addr + i * 4, dim1Addr);
+				}
+			}
+		} else {	// nofDim == 3
+			addr = newRefArray(dim0, ref);
+			int arrayInfo = US.GET4(ref);
+			if (arrayInfo < 0) {	// primitive type
+				int elemSize = arrayInfo & 0xffff;	// mask array type bit and dimension
+				int type;
+				if (elemSize == 4) type = 6;
+				else if (elemSize == 2) type = 5;
+				else if (elemSize == 8) type = 7;
+				else type = 4;
+				int dim1Ref = US.GET4(ref + 12);
+				int dim2Ref = US.GET4(ref + 16);
+				for (int i = 0; i < dim0; i++) {
+					int dim1Addr = newRefArray(dim1, dim1Ref);
+					US.PUT4(addr + i * 4, dim1Addr);
+					for (int k = 0; k < dim1; k++) {
+						int dim2Addr = newPrimTypeArray(dim2, type, dim2Ref);
+						US.PUT4(dim1Addr + k * 4, dim2Addr);
+					}
+				}
+			} else {
+				int dim1Ref = US.GET4(ref + 12);
+				int dim2Ref = US.GET4(ref + 16);
+				for (int i = 0; i < dim0; i++) {
+					int dim1Addr = newRefArray(dim1, dim1Ref);
+					US.PUT4(addr + i * 4, dim1Addr);
+					for (int k = 0; k < dim1; k++) {
+						int dim2Addr = newRefArray(dim2, dim2Ref);
+						US.PUT4(dim1Addr + k * 4, dim2Addr);
+					}
+				}
+			}
+		}
+		return addr;
+	}
 	
 	// called by newstring in java/lang/String
 	@SuppressWarnings("unused")
