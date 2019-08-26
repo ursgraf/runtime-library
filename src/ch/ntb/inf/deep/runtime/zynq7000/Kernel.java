@@ -45,22 +45,19 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR0, 0x80);
 		while (true) {
-//			try {
+			try {
 				if (cmdAddr != -1) {
 					US.PUTGPR(6, cmdAddr);	// use scratch register
 					US.ASM("mov r14, r15");	// copy PC to LR 
 					US.ASM("mov r15, r6");	// jump 
 					cmdAddr = -1;
 				}
-//			} catch (Exception e) {
-//				cmdAddr = -1;	// stop trying to run the same method
-//				e.printStackTrace();
-//				Kernel.blink(2);
-//			}
-//				US.PUT4(GPIO_DATA0, US.GET4(GPIO_DATA0) ^ 0x80);
-//				t = time();
-//				US.ASM("b -8");
-//				for (int i = 2000000; i > 0; i--); 
+			} catch (Exception e) {
+				cmdAddr = -1;	// stop trying to run the same method
+				t = 0x1234;
+				e.printStackTrace();
+				Kernel.blink(2);
+			}
 		}
 	}
 	
@@ -254,8 +251,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	private static void empty() { }
 
 	static {
-//		try {
-//			US.ASM("b -8"); // stop here
+		try {
 			boot();
 			cmdAddr = -1;	// must be after class variables are zeroed by boot
 //			blink(1);
@@ -273,10 +269,10 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 			US.PUTGPR(6, loopAddr);	// use scratch register
 			US.ASM("mov r14, r15");	// copy PC to LR 
 			US.ASM("mov r15, r6");	// jump 
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			while (true) Kernel.blink(5);
-//		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			while (true) Kernel.blink(5);
+		}
 	}
 
 }

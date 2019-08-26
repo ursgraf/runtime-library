@@ -235,21 +235,19 @@ public class Task implements Actionable, Iarm32 {
 		int cmd;
 		Task currentTask;
 		while(true) {
-//			boolean run = true;
-//			while(run) Kernel.blink(2);
 			cmd = Kernel.cmdAddr;
-//			try {
+			try {
 				if (cmd != -1) {
 					US.PUTGPR(6, cmd);	// use scratch register
 					US.ASM("mov r14, r15");	// copy PC to LR 
 					US.ASM("mov r15, r6");	// jump 
 					Kernel.cmdAddr = -1;
 				}
-//			} catch (Exception e) {
-//				Kernel.cmdAddr = -1;	// stop trying to run the same method
-//				e.printStackTrace();
-//				Kernel.blink(1);
-//			}
+			} catch (Exception e) {
+				Kernel.cmdAddr = -1;	// stop trying to run the same method
+				e.printStackTrace();
+				Kernel.blink(1);
+			}
 //			if (Heap.runGC) {
 ////				if (mark) {Heap.mark(); mark = false;}
 ////				else {Heap.sweep(); mark = true; Heap.runGC = false;}
@@ -258,16 +256,16 @@ public class Task implements Actionable, Iarm32 {
 			currentTask = tasks[1];
 			if (currentTask.nextTime < time) {
 				currentTask.nofActivations++;
-//				try {
+				try {
 					long startTime = Kernel.timeNs();
 					if (currentTask.actionable < 0)	currentTask.action();
 					else actionables[currentTask.actionable].action();
 					currentTask.diffTime = (int) (Kernel.timeNs() - startTime);
-//				} catch (Exception e) {
-//					Kernel.cmdAddr = -1;	// stop trying to run the same method
-//					e.printStackTrace();
-//					Kernel.blink(3);
-//				}
+				} catch (Exception e) {
+					Kernel.cmdAddr = -1;	// stop trying to run the same method
+					e.printStackTrace();
+					Kernel.blink(3);
+				}
 				if (currentTask.installed) {
 					if (currentTask.period == 0) {
 						nofReadyTasks++;

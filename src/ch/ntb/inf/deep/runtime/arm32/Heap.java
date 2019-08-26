@@ -76,7 +76,7 @@ public class Heap implements IdeepCompilerConstants {
 
 	// called by newarray	
 	private static int newPrimTypeArray(int nofElements, int type, int ref) {
-//		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
+		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
 		int elementSize;
 		if (type == 7 || type == 11) elementSize = 8;
 		else if (type == 6 || type == 10) elementSize = 4;
@@ -94,7 +94,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	// called by anewarray	
 	private static int newRefArray(int nofElements, int ref)  {
-//		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
+		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
 		int size = nofElements * 4 + 8;
 		int blockAddr = getBlock(size);
 		US.PUT4(blockAddr, 0x80800000 | nofElements);	// set mark and array bit, write length
@@ -184,7 +184,7 @@ public class Heap implements IdeepCompilerConstants {
 //		US.ASM("b -8");
 		int addr;
 		int blockSize = ((size + minBlockSize - 1) >> 4) << 4;
-//		if (blockSize >= 0x10000) throw new RuntimeException("Exception: Array block too big");	// array length must fit into 16 bit
+		if (blockSize >= 0x10000) throw new RuntimeException("Exception: Array block too big");	// array length must fit into 16 bit
 		int i = blockSize / minBlockSize - 1;
 		if (i >= nofFreeLists) i = nofFreeLists - 1;
 		// search free block in free block list
@@ -218,13 +218,13 @@ public class Heap implements IdeepCompilerConstants {
 				}
 			} else {	// get block from list with block size >= 128 Bytes
 				addr = freeBlocks[nofFreeLists - 1];
-//				if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block in list 
+				if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block in list 
 				int freeBlockSize = US.GET4(addr) & 0xffffff;
 				int prev = addr;
 				while (blockSize > freeBlockSize) {	// search block which is big enough
 					prev = addr;
 					addr = US.GET4(addr + 4);
-//					if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block left 
+					if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block left 
 					freeBlockSize = US.GET4(addr) & 0xffffff;
 				}
 				// unlink block

@@ -219,7 +219,7 @@ operatingsystem ntbSTS_arm {
     	condition = boardtype:zybo7000;
     	method irqInterrupt {
     		attributes = exchnd;
-			offset = 0x300;
+			offset = 0x400;
     	}
     	method <init> {
     		attributes = synthetic;
