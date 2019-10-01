@@ -25,6 +25,7 @@ import ch.ntb.inf.deep.unsafe.arm.US;
 
 /* changes:
  * 6.10.2015	NTB/Urs Graf	creation
+ * 28.8.2019	NTB/Urs Graf 	add exception handling
  */
 
 /**
@@ -147,7 +148,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 		return crc;
 	}
 	
-	private static void boot() {	// set to private later
+	private static void boot() {
 //		blink(2);
 //		US.ASM("b -8"); // stop here
 
