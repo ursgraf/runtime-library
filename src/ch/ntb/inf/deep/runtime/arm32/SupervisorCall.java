@@ -18,7 +18,8 @@
 
 package ch.ntb.inf.deep.runtime.arm32;
 
-import ch.ntb.inf.deep.runtime.Kernel;
+import ch.ntb.inf.deep.runtime.arm32.Iarm32;
+import ch.ntb.inf.deep.unsafe.arm.US;
 
 /*changes:
  * 17.10.18	NTB/Urs Graf	creation
@@ -27,17 +28,34 @@ import ch.ntb.inf.deep.runtime.Kernel;
 /**
  * The class for the ARM supervisor call.
  */
-public class SupervisorCall extends ARMException {
+public class SupervisorCall extends ARMException implements Iarm32 {
 	/**
 	 * The number of times a supervisor call was executed
 	 */
 	public static int nofSvc;
 
-	static void superVisorCall() {
+	static void superVisorCall(Exception e) {
+		int addr = US.GETGPR(LR);
 		nofSvc++;
-		while (true) {
-			Kernel.blink(1); Kernel.blink(3);
+		int instr = US.GET4(addr - 4);
+		int type = instr & 0xff;	// get exception type
+		if (type == 1) {	// user defined exception
+		} else if (type == 10) {	// ArrayIndexOutOfBounds
+			e = new ArrayIndexOutOfBoundsException("ArrayIndexOutOfBoundsException");
+		} else if (type == 20) {	// NullPointer
+			e = new NullPointerException("NullPointerException");
+		} else if (type == 30) {	// Arithmetic
+			e = new ArithmeticException("ArithmeticException");
+		} else if (type == 40) {	// ClassCast
+			e = new ClassCastException("ClassCastException");
+		} else {	
+			e = new ClassCastException("UnknownException");
 		}
+		e.addr = addr;
+
+		US.PUTGPR(R0, US.REF(e));	// copy to volatile register
+		US.PUTGPR(R1, addr);	// copy to volatile register
+//		US.ASM("b -8");
 	}
 
 }

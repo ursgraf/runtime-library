@@ -51,7 +51,7 @@ public class TaskTestMpc555 implements IntbMpc555HB {
 	@Test
 	public static void testTaskTime() {
 		US.PUT2(TBSCR, 0); 	// stop timer
-		long time = Kernel.time();
+		long time = Kernel.timeUs();
 		int timeMs = Task.time();	
 		Assert.assertEquals("Test1", timeMs, time / 1000);
 		US.PUT2(TBSCR, 1); 	// restart timer

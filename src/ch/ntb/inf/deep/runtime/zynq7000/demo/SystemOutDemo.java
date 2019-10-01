@@ -50,7 +50,7 @@ public class SystemOutDemo extends Task {
 		
 		// Create and install the demo task
 		Task t = new SystemOutDemo();
-		t.period = 500;
+		t.period = 1000;
 		Task.install(t);
 	}
 }

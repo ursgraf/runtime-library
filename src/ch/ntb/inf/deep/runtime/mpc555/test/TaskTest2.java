@@ -38,9 +38,9 @@ public class TaskTest2 extends Task {
 		try {
 			sci.write((byte)'.');
 		} catch (IOException e) {};
-		if (Kernel.time() > startTime + 100000) {
+		if (Kernel.timeUs() > startTime + 100000) {
 			out.set(!out.get());
-			startTime = Kernel.time();
+			startTime = Kernel.timeUs();
 		}
 	}
 	
@@ -48,7 +48,7 @@ public class TaskTest2 extends Task {
 		try {
 			sci.write((byte)'a');
 		} catch (IOException e) {}
-		this.startTime = Kernel.time();
+		this.startTime = Kernel.timeUs();
 		out = new MPIOSM_DIO(pin, true);
 		period = 500;
 		time = 50;

@@ -63,7 +63,6 @@ public class Heap implements IdeepCompilerConstants {
 	public static int sysTabBaseAddr;
 	
 	// called by new	
-	@SuppressWarnings("unused")
 	private static int newObject(int ref) {	
 		int size = US.GET4(ref) + 8;
 		int blockAddr = getBlock(size);
@@ -77,7 +76,7 @@ public class Heap implements IdeepCompilerConstants {
 
 	// called by newarray	
 	private static int newPrimTypeArray(int nofElements, int type, int ref) {
-//		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
+		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
 		int elementSize;
 		if (type == 7 || type == 11) elementSize = 8;
 		else if (type == 6 || type == 10) elementSize = 4;
@@ -95,7 +94,7 @@ public class Heap implements IdeepCompilerConstants {
 	
 	// called by anewarray	
 	private static int newRefArray(int nofElements, int ref)  {
-//		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
+		if (nofElements < 0) throw new NegativeArraySizeException("NegativeArraySizeException");
 		int size = nofElements * 4 + 8;
 		int blockAddr = getBlock(size);
 		US.PUT4(blockAddr, 0x80800000 | nofElements);	// set mark and array bit, write length
@@ -106,68 +105,67 @@ public class Heap implements IdeepCompilerConstants {
 		return ref;
 	}
 	
-//	// called by multianewarray	
-//	@SuppressWarnings("unused")
-//	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3) {
-//		int addr;
-//		if (nofDim > 3 || nofDim < 2) US.HALT(20);
-//		if (nofDim == 2) {
-//			addr = newRefArray(dim0, ref);
-//			int arrayInfo = US.GET4(ref);
-//			if (arrayInfo < 0) {	// primitive type
-//				int elemSize = arrayInfo & 0xffff;	// mask array type bit and dimension
-//				int type;
-//				if (elemSize == 4) type = 6;
-//				else if (elemSize == 2) type = 5;
-//				else if (elemSize == 8) type = 7;
-//				else type = 4;
-//				int dim1Ref = US.GET4(ref + 12);
-//				for (int i = 0; i < dim0; i++) {
-//					int dim1Addr = newPrimTypeArray(dim1, type, dim1Ref);
-//					US.PUT4(addr + i * 4, dim1Addr);
-//				}
-//			} else {
-//				int dim1Ref = US.GET4(ref + 12);
-//				for (int i = 0; i < dim0; i++) {
-//					int dim1Addr = newRefArray(dim1, dim1Ref);
-//					US.PUT4(addr + i * 4, dim1Addr);
-//				}
-//			}
-//		} else {	// nofDim == 3
-//			addr = newRefArray(dim0, ref);
-//			int arrayInfo = US.GET4(ref);
-//			if (arrayInfo < 0) {	// primitive type
-//				int elemSize = arrayInfo & 0xffff;	// mask array type bit and dimension
-//				int type;
-//				if (elemSize == 4) type = 6;
-//				else if (elemSize == 2) type = 5;
-//				else if (elemSize == 8) type = 7;
-//				else type = 4;
-//				int dim1Ref = US.GET4(ref + 12);
-//				int dim2Ref = US.GET4(ref + 16);
-//				for (int i = 0; i < dim0; i++) {
-//					int dim1Addr = newRefArray(dim1, dim1Ref);
-//					US.PUT4(addr + i * 4, dim1Addr);
-//					for (int k = 0; k < dim1; k++) {
-//						int dim2Addr = newPrimTypeArray(dim2, type, dim2Ref);
-//						US.PUT4(dim1Addr + k * 4, dim2Addr);
-//					}
-//				}
-//			} else {
-//				int dim1Ref = US.GET4(ref + 12);
-//				int dim2Ref = US.GET4(ref + 16);
-//				for (int i = 0; i < dim0; i++) {
-//					int dim1Addr = newRefArray(dim1, dim1Ref);
-//					US.PUT4(addr + i * 4, dim1Addr);
-//					for (int k = 0; k < dim1; k++) {
-//						int dim2Addr = newRefArray(dim2, dim2Ref);
-//						US.PUT4(dim1Addr + k * 4, dim2Addr);
-//					}
-//				}
-//			}
-//		}
-//		return addr;
-//	}
+	// called by multianewarray	
+	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3) {
+		int addr;
+//		if (nofDim > 3 || nofDim < 2);	// US.HALT(20);	TODO
+		if (nofDim == 2) {
+			addr = newRefArray(dim0, ref);
+			int arrayInfo = US.GET4(ref);
+			if (arrayInfo < 0) {	// primitive type
+				int elemSize = arrayInfo & 0xffff;	// mask array type bit and dimension
+				int type;
+				if (elemSize == 4) type = 6;
+				else if (elemSize == 2) type = 5;
+				else if (elemSize == 8) type = 7;
+				else type = 4;
+				int dim1Ref = US.GET4(ref + 12);
+				for (int i = 0; i < dim0; i++) {
+					int dim1Addr = newPrimTypeArray(dim1, type, dim1Ref);
+					US.PUT4(addr + i * 4, dim1Addr);
+				}
+			} else {
+				int dim1Ref = US.GET4(ref + 12);
+				for (int i = 0; i < dim0; i++) {
+					int dim1Addr = newRefArray(dim1, dim1Ref);
+					US.PUT4(addr + i * 4, dim1Addr);
+				}
+			}
+		} else {	// nofDim == 3
+			addr = newRefArray(dim0, ref);
+			int arrayInfo = US.GET4(ref);
+			if (arrayInfo < 0) {	// primitive type
+				int elemSize = arrayInfo & 0xffff;	// mask array type bit and dimension
+				int type;
+				if (elemSize == 4) type = 6;
+				else if (elemSize == 2) type = 5;
+				else if (elemSize == 8) type = 7;
+				else type = 4;
+				int dim1Ref = US.GET4(ref + 12);
+				int dim2Ref = US.GET4(ref + 16);
+				for (int i = 0; i < dim0; i++) {
+					int dim1Addr = newRefArray(dim1, dim1Ref);
+					US.PUT4(addr + i * 4, dim1Addr);
+					for (int k = 0; k < dim1; k++) {
+						int dim2Addr = newPrimTypeArray(dim2, type, dim2Ref);
+						US.PUT4(dim1Addr + k * 4, dim2Addr);
+					}
+				}
+			} else {
+				int dim1Ref = US.GET4(ref + 12);
+				int dim2Ref = US.GET4(ref + 16);
+				for (int i = 0; i < dim0; i++) {
+					int dim1Addr = newRefArray(dim1, dim1Ref);
+					US.PUT4(addr + i * 4, dim1Addr);
+					for (int k = 0; k < dim1; k++) {
+						int dim2Addr = newRefArray(dim2, dim2Ref);
+						US.PUT4(dim1Addr + k * 4, dim2Addr);
+					}
+				}
+			}
+		}
+		return addr;
+	}
 	
 	// called by newstring in java/lang/String
 	@SuppressWarnings("unused")
@@ -186,7 +184,7 @@ public class Heap implements IdeepCompilerConstants {
 //		US.ASM("b -8");
 		int addr;
 		int blockSize = ((size + minBlockSize - 1) >> 4) << 4;
-//		if (blockSize >= 0x10000) throw new RuntimeException("Exception: Array block too big");	// array length must fit into 16 bit
+		if (blockSize >= 0x10000) throw new RuntimeException("Exception: Array block too big");	// array length must fit into 16 bit
 		int i = blockSize / minBlockSize - 1;
 		if (i >= nofFreeLists) i = nofFreeLists - 1;
 		// search free block in free block list
@@ -220,13 +218,13 @@ public class Heap implements IdeepCompilerConstants {
 				}
 			} else {	// get block from list with block size >= 128 Bytes
 				addr = freeBlocks[nofFreeLists - 1];
-//				if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block in list 
+				if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block in list 
 				int freeBlockSize = US.GET4(addr) & 0xffffff;
 				int prev = addr;
 				while (blockSize > freeBlockSize) {	// search block which is big enough
 					prev = addr;
 					addr = US.GET4(addr + 4);
-//					if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block left 
+					if (addr == 0) throw new RuntimeException("Exception: Allocation in heap failed");	// no block left 
 					freeBlockSize = US.GET4(addr) & 0xffffff;
 				}
 				// unlink block

@@ -112,7 +112,7 @@ public class Task implements Actionable, Iarm32 {
 	 * @return Current time in ms.
 	 */
 	public static int time() {
-		return (int)(Kernel.time() / 1000000);
+		return (int)(Kernel.timeNs() / 1000000);
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class Task implements Actionable, Iarm32 {
 		if ((task.time < 0) || (task.period < 0)) error(1);
 		if (nofPerTasks + nofReadyTasks >= maxNofTasks) error(2);
 		else {
-			long time = Kernel.time();
+			long time = Kernel.timeNs();
 			if (task.time > 0 || task.period > 0) {
 				task.nextTime = time + (long)task.time * 1000000;
 				task.nofActivations = 0;
@@ -235,39 +235,37 @@ public class Task implements Actionable, Iarm32 {
 		int cmd;
 		Task currentTask;
 		while(true) {
-//			boolean run = true;
-//			while(run) Kernel.blink(2);
 			cmd = Kernel.cmdAddr;
-//			try {
+			try {
 				if (cmd != -1) {
 					US.PUTGPR(6, cmd);	// use scratch register
 					US.ASM("mov r14, r15");	// copy PC to LR 
 					US.ASM("mov r15, r6");	// jump 
 					Kernel.cmdAddr = -1;
 				}
-//			} catch (Exception e) {
-//				Kernel.cmdAddr = -1;	// stop trying to run the same method
-//				e.printStackTrace();
-//				Kernel.blink(1);
-//			}
+			} catch (Exception e) {
+				Kernel.cmdAddr = -1;	// stop trying to run the same method
+				e.printStackTrace();
+				Kernel.blink(1);
+			}
 //			if (Heap.runGC) {
 ////				if (mark) {Heap.mark(); mark = false;}
 ////				else {Heap.sweep(); mark = true; Heap.runGC = false;}
 //			}
-			long time = Kernel.time();
+			long time = Kernel.timeNs();
 			currentTask = tasks[1];
 			if (currentTask.nextTime < time) {
 				currentTask.nofActivations++;
-//				try {
-					long startTime = Kernel.time();
+				try {
+					long startTime = Kernel.timeNs();
 					if (currentTask.actionable < 0)	currentTask.action();
 					else actionables[currentTask.actionable].action();
-					currentTask.diffTime = (int) (Kernel.time() - startTime);
-//				} catch (Exception e) {
-//					Kernel.cmdAddr = -1;	// stop trying to run the same method
-//					e.printStackTrace();
-//					Kernel.blink(3);
-//				}
+					currentTask.diffTime = (int) (Kernel.timeNs() - startTime);
+				} catch (Exception e) {
+					Kernel.cmdAddr = -1;	// stop trying to run the same method
+					e.printStackTrace();
+					Kernel.blink(3);
+				}
 				if (currentTask.installed) {
 					if (currentTask.period == 0) {
 						nofReadyTasks++;
@@ -283,10 +281,10 @@ public class Task implements Actionable, Iarm32 {
 				if (curRdyTask >= tasks.length) curRdyTask = tasks.length - nofReadyTasks;
 				currentTask = tasks[curRdyTask];
 				currentTask.nofActivations++;
-				long startTime = Kernel.time();
+				long startTime = Kernel.timeNs();
 				if (currentTask.actionable < 0)	currentTask.action();
 				else actionables[currentTask.actionable].action();
-				currentTask.diffTime = (int) (Kernel.time() - startTime);
+				currentTask.diffTime = (int) (Kernel.timeNs() - startTime);
 			}
 		}
 	}

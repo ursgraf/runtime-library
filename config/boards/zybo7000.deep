@@ -1,7 +1,7 @@
 #deep-1
 
 meta {
-	version = "2017-11-14";
+	version = "2019-06-28";
 	description = "Board description file for ZYBO Zynq-7000 board";
 }
 
@@ -10,16 +10,8 @@ board ZYBO7000 {
 	cputype = zynq7000;
 	
 	sysconst {
-		extRamSize   = 0x40000;							# 256k external RAM
-		extRamBase   = 0x1000000;								# starting at 0x0
-		
-#		excpCodeBase = extRamBase;						# Base address for exception code
-#		excpCodeSize = 0x1000;
-		
-#		sysTabBaseAddr = extRamBase + excpCodeSize;
-		
-#		heapSize = 0x10000;								# Default heap size
-#		SRR1init = 0x3802;								# Initial value of Machine Status Save/Restore Register 1
+		extRamSize   = 0x1000000;						# 16MB external RAM
+		extRamBase   = 0x100000;						# starting at 1MB
 	}
 	
 	memorymap {
@@ -32,11 +24,15 @@ board ZYBO7000 {
 			technology = ram;
 			attributes = read, write;
 		}
+		segment ExternalRam.Default {					# Default segment for code, constants and class fields
+	#			base = sysTabBaseAddr + sysTabSize;
+			attributes = read, write, const, code, var;
+		}
+		
 	}
-	
+
 	reginit {
-#		SYPCR = 0xFFFFFF83;								# Disable Watchdog, enable bus monitor
-#		SIUMCR = 0x40000;								# Set Freeze when LWP0 is active
+#		GPIO_DATA0 = 0x1000;
 	}
 
 	runconfiguration BootFromRam {
@@ -47,11 +43,13 @@ board ZYBO7000 {
 		modules {
 				kernel, heap: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default; 
 				exception: code@InternalRam.ExceptionCode, const@InternalRam.Default, var@InternalRam.Default;
-				default: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default;      
+#				default: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default;      
+				default: code@ExternalRam.Default, const@ExternalRam.Default, var@InternalRam.Default;      
 		}
 		reginit {
-#			DMBR = 0x3;									# Dual mapping enable, map from address 0, use CS1 (external RAM)
-#			DMOR = 0x7E000000;							# Map 32k -> 0x0...0x8000 is dual mapped
+#			SLCR_UNLOCK = 0xdf0d;							# unlock SLCR
+#			SLCR_OCM_CFG = 0x10;							# map all OCM blocks to lower address
+#			SLCR_LOCK = 0x767b;								# lock SLCR
 		}
 	}
 }

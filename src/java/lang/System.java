@@ -115,6 +115,6 @@ public final class System implements Modified {
 	}
 
 	public static long currentTimeMillis() {
-		return Kernel.time();
+		return Kernel.timeUs() / 1000;
 	}
 }

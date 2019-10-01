@@ -25,6 +25,7 @@ import ch.ntb.inf.deep.unsafe.arm.US;
 
 /* changes:
  * 6.10.2015	NTB/Urs Graf	creation
+ * 28.8.2019	NTB/Urs Graf 	add exception handling
  */
 
 /**
@@ -41,34 +42,32 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	@SuppressWarnings("unused")
 	private static void loop() {	// endless loop
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(SLCR_MIO_PIN_07, 0x600);
+		US.PUT4(MIO_PIN_07, 0x600);
+		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR0, 0x80);
 		while (true) {
-//			try {
+			try {
 				if (cmdAddr != -1) {
 					US.PUTGPR(6, cmdAddr);	// use scratch register
 					US.ASM("mov r14, r15");	// copy PC to LR 
 					US.ASM("mov r15, r6");	// jump 
 					cmdAddr = -1;
 				}
-//			} catch (Exception e) {
-//				cmdAddr = -1;	// stop trying to run the same method
-//				e.printStackTrace();
-//				Kernel.blink(2);
-//			}
-//				US.PUT4(GPIO_DATA0, US.GET4(GPIO_DATA0) ^ 0x80);
-//				t = time();
-//				US.ASM("b -8");
-//				for (int i = 2000000; i > 0; i--); 
+			} catch (Exception e) {
+				cmdAddr = -1;	// stop trying to run the same method
+				t = 0x1234;
+				e.printStackTrace();
+				Kernel.blink(2);
+			}
 		}
 	}
 	
 	/** 
 	 * Reads the system time.
 	 * 
-	 * @return System time in ns
+	 * @return System time in \u00b5s
 	 */
-	public static long time() {
+	public static long timeUs() {
 		int high1, high2, low;
 		do {
 			high1 = US.GET4(GTCR_U); 
@@ -76,7 +75,23 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 			high2 = US.GET4(GTCR_U); 
 		} while (high1 != high2);
 		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
-		return time * 6;	// clock = 162.5 MHz
+		return time / 25;	// clock = 25MHz
+	}
+	
+	/** 
+	 * Reads the system time.
+	 * 
+	 * @return System time in ns
+	 */
+	public static long timeNs() {
+		int high1, high2, low;
+		do {
+			high1 = US.GET4(GTCR_U); 
+			low = US.GET4(GTCR_L);
+			high2 = US.GET4(GTCR_U); 
+		} while (high1 != high2);
+		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
+		return time * 40;	// clock = 25MHz
 	}
 	
 	/** 
@@ -86,7 +101,8 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	 */
 	public static void blink(int nTimes) { 
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(SLCR_MIO_PIN_07, 0x600);
+		US.PUT4(MIO_PIN_07, 0x600);
+		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR0, 0x80);
 		int delay = 1000000;
 		for (int i = 0; i < nTimes; i++) {
@@ -130,29 +146,54 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 			addr++;
 		}
 		return crc;
-//		return 0;	// for test purposes
 	}
 	
-	private static void boot() {	// set to private later
+	private static void boot() {
 //		blink(2);
 //		US.ASM("b -8"); // stop here
-		
-        // _ init VFP (FPU
-        // _ _ enable coprocessor 10 and 11
-		US.ASM("mrc p15, 0, r1, c1, c0, 2");
-		US.ASM("orr r1, r1, #0xf00000");
-        US.ASM("mcr p15, 0, r1, c1, c0, 2");
-//		US.ASM("b -8");
 
-        // _ _ enable vfp
-		US.ASM("vmrs r1, FPEXC");	//US.ASM("fmrx r1, FPEXC");
-        US.ASM("orr r1, r1, #0x40000000");      // FPEXC_EN bit"
-        US.ASM("vmsr FPEXC, r1");	//US.ASM("fmxr FPEXC, r1");
+		US.PUT4(SLCR_UNLOCK, 0xdf0d);
+		
+		US.PUT4(ARM_PLL_CFG, 0x1772c0);	// configure ARM PLL for 1300MHZ with 50MHz quartz
+		US.PUT4(ARM_PLL_CTRL, 0x1a011);	// divider = 26, bypass, reset
+		US.PUT4(ARM_PLL_CTRL, US.GET4(ARM_PLL_CTRL) & ~1);	// deassert reset
+		while (!US.BIT(PLL_STATUS, 0));	// wait to lock
+		US.PUT4(ARM_PLL_CTRL, US.GET4(ARM_PLL_CTRL) & ~0x10);	// no bypass
+		US.PUT4(ARM_CLK_CTRL, 0x1f000200);	// use ARM PLL for CPU, divisor = 2 -> processor frequency = 650MHz
+		// CPU_6x4x = 650MHz, CPU_3x2x = 325MHz, CPU_2x = 216.67MHz, CPU_1x = 108.33MHz
+		
+		US.PUT4(DDR_PLL_CFG, 0x1db2c0);	// configure DDR PLL for 1050MHZ with 50MHz quarz
+		US.PUT4(DDR_PLL_CTRL, 0x15011);	// divider = 21, bypass, reset
+		US.PUT4(DDR_PLL_CTRL, US.GET4(DDR_PLL_CTRL) & ~1);	// deassert reset
+		while (!US.BIT(PLL_STATUS, 1));	// wait to lock
+		US.PUT4(DDR_PLL_CTRL, US.GET4(DDR_PLL_CTRL) & ~0x10);	// no bypass
+		US.PUT4(DDR_CLK_CTRL, 0xc200003);	// 2x-divisor = 3, 3x-divisor = 2
+		
+		US.PUT4(IO_PLL_CFG, 0x1f42c0);	// configure IO PLL for 1000MHZ with 50MHz quartz
+		US.PUT4(IO_PLL_CTRL, 0x14011);	// divider = 20, bypass, reset
+		US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~1);	// deassert reset
+		while (!US.BIT(PLL_STATUS, 2));	// wait to lock
+		US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~0x10);	// no bypass
+
+		US.PUT4(UART_CLK_CTRL, 0xa02);	// UART clock, divisor = 10 -> 100MHz, select IO PLL
+		
+		US.PUT4(SLCR_LOCK, 0x767b);
+
+        // enable coprocessor 10 and 11
+		int val = US.GETCPR(15, 1, 0, 0, 2);
+		val |= 0xf00000;
+		US.PUTCPR(15, 1, 0, 0, 2, val);
+
+        // enable enable floating point extensions
+		US.ASM("vmrs r6, FPEXC");
+        US.ASM("orr r6, r6, #0x40000000");
+        US.ASM("vmsr FPEXC, r6");
         
-        // fill the number 100 into d0
-        US.PUTGPR(5, 0x40590000);
-        US.PUTGPR(6, 0);
-        US.ASM("vmov d0, r6, r5");
+		US.PUT4(SLCR_UNLOCK, 0xdf0d);
+        US.PUT4(OCM_CFG, 0x10);	// map all OCM blocks to lower address
+        US.PUT4(SLCR_LOCK, 0x767b);
+        
+        US.PUT4(GTCR, 0xc01);	// enable global timer, prescaler = 12 -> 325MHz / 13 = 25MHz
 
 		// mark stack end with specific pattern
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
@@ -211,18 +252,28 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	private static void empty() { }
 
 	static {
-//		try {
-//		US.ASM("b -8"); // stop here
+		try {
 			boot();
 			cmdAddr = -1;	// must be after class variables are zeroed by boot
 //			blink(1);
+			
+			// enable IRQ	
+			US.PUT4(ICDISER2, US.GET4(ICDISER2) | (1 << (82 % 32)));	// interrupt set enable for #82
+			US.PUT1(ICDIPTR20 + 2, 2);	// interrupts targets CPU1
+			US.PUT4(ICCPMR, 0xff);	// set mask
+			US.PUT4(ICCICR, 1);	// global interrupt enable
+			US.PUT4(ICDDCR, 1);	// enable distributor
+
+			US.ASM("cpsie i");	// enable IRQ
+
+			// load PC
 			US.PUTGPR(6, loopAddr);	// use scratch register
 			US.ASM("mov r14, r15");	// copy PC to LR 
 			US.ASM("mov r15, r6");	// jump 
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			while (true) Kernel.blink(5);
-//		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			while (true) Kernel.blink(5);
+		}
 	}
 
 }

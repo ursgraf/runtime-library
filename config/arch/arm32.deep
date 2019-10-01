@@ -92,8 +92,24 @@ arch arm32 {
 			addr = 15;
 			size = 4;
 		}
+		register SP_USR {
+			type = GPR;
+			addr = 37;
+			size = 4;
+		}
+		register LR_USR {
+			type = GPR;
+			addr = 38;
+			size = 4;
+		}
+
+		register CPSR {
+			type = GPR;
+			addr = 31;
+			size = 4;
+		}
 		
-		# general purpose registers in state 'fast interrupt' (fiq)
+		# registers in state 'fast interrupt' (fiq)
 		register R8_FIQ {
 		        type = GPR;
 		        addr = 16;
@@ -130,19 +146,19 @@ arch arm32 {
 			size = 4;
 		}
 		
-		# general purpose registers in mode 'interrupt' (irq)
-		register SP_FIQ {
+		# registers in mode 'interrupt' (irq)
+		register SP_IRQ {
 			type = GPR;
 			addr = 23;
 			size = 4;
 		}
-		register LR_FIQ {
+		register LR_IRQ {
 			type = GPR;
 			addr = 24;
 			size = 4;
 		}
 		
-		# general purpose registers in mode 'supervisor' (svc)
+		# registers in mode 'supervisor' (svc)
 		register SP_SVC {
 			type = GPR;
 			addr = 25;
@@ -154,7 +170,7 @@ arch arm32 {
 			size = 4;
 		}
 		
-		# general purpose registers in mode 'abort' (abt)
+		# registers in mode 'abort' (abt)
 		register SP_ABT {
 			type = GPR;
 			addr = 27;
@@ -166,7 +182,7 @@ arch arm32 {
 			size = 4;
 		}
 		
-		# general purpose registers in mode 'undefined' (und)
+		# registers in mode 'undefined' (und)
 		register SP_UND {
 			type = GPR;
 			addr = 29;
@@ -178,7 +194,7 @@ arch arm32 {
 			size = 4;
 		}
 		
-		# general purpose registers in mode 'secure monitor' (mon)
+		# registers in mode 'secure monitor' (mon)
 		register SP_MON {
 			type = GPR;
 			addr = 39;
@@ -189,18 +205,8 @@ arch arm32 {
 			addr = 40;
 			size = 4;
 		}
-		register SPSR_MON {
-			type = GPR;
-			addr = 41;
-			size = 4;
-		}
 		
-		# process status registers (CPSR / SPSR)
-		register CPSR {
-			type = GPR;
-			addr = 31;
-			size = 4;
-		}
+		# process status registers (SPSR)
 		register SPSR_FIQ {
 			type = GPR;
 			addr = 32;
@@ -226,20 +232,12 @@ arch arm32 {
 			addr = 36;
 			size = 4;
 		}
+		register SPSR_MON {
+			type = GPR;
+			addr = 41;
+			size = 4;
+		}
 		
-		# remaining registers
-		# SP2 and LR2 are different registers than r13 and r14
-		register SP2 {
-			type = GPR;
-			addr = 37;
-			size = 4;
-		}
-		register LR2 {
-			type = GPR;
-			addr = 38;
-			size = 4;
-		}
-
 		# extension registers
 		register FPSCR {
 			type = FPSCR;
@@ -564,6 +562,59 @@ arch arm32 {
 		register S31 {
 			type = FPR;
 			addr = 15;
+			size = 4;
+		}
+		
+		# coprocessor registers
+		# address holds 4 bit values for coprocessor, CRn, opc1, CRm, opc2 
+		register MIDR {
+			type = CPR;
+			addr = 0xf0000;
+			size = 4;
+		}
+		register MPUIR {
+			type = CPR;
+			addr = 0xf0004;
+			size = 4;
+		}
+		register MPIDR {
+			type = CPR;
+			addr = 0xf0005;
+			size = 4;
+		}
+		register ID_ISAR0 {
+			type = CPR;
+			addr = 0xf0020;
+			size = 4;
+		}
+		register ID_ISAR1 {
+			type = CPR;
+			addr = 0xf0021;
+			size = 4;
+		}
+		register ID_ISAR2 {
+			type = CPR;
+			addr = 0xf0022;
+			size = 4;
+		}
+		register ID_ISAR3 {
+			type = CPR;
+			addr = 0xf0023;
+			size = 4;
+		}
+		register SCTLR {
+			type = CPR;
+			addr = 0xf1000;
+			size = 4;
+		}
+		register ACTLR {
+			type = CPR;
+			addr = 0xf1001;
+			size = 4;
+		}
+		register CPACR {
+			type = CPR;
+			addr = 0xf1002;
 			size = 4;
 		}
 		 

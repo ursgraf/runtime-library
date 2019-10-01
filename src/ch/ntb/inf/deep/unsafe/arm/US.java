@@ -96,7 +96,7 @@ public class US extends ch.ntb.inf.deep.unsafe.US {
 	 * @param reg Register number.
 	 * @param value Register content. 
 	 */
-	public static void PUTCP(int reg, int value) {
+	public static void PUTCPR(int coproc, int CRn, int opc1, int CRm, int opc2, int value) {
 	}
 
 	/** 
