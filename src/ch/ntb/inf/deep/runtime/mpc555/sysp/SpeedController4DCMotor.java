@@ -16,9 +16,9 @@
  * 
  */
 
-package ch.ntb.sysp.lib;
+package ch.ntb.inf.deep.runtime.mpc555.sysp;
 
-import ch.ntb.inf.deep.runtime.mpc555.Kernel;
+import ch.ntb.inf.deep.runtime.Kernel;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_FQD;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
 

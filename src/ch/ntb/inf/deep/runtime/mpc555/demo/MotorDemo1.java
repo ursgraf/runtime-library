@@ -16,13 +16,13 @@
  * 
  */
 
-package ch.ntb.sysp.demo;
+package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
+import ch.ntb.inf.deep.runtime.mpc555.sysp.SpeedController4DCMotor;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
-import ch.ntb.sysp.lib.SpeedController4DCMotor;
 
 /**
  * Demo application for motor controller. <br>

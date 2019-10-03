@@ -1,4 +1,4 @@
-package ch.ntb.sysp.demo;
+package ch.ntb.inf.deep.runtime.mpc555.demo;
 
 import java.io.PrintStream;
 
