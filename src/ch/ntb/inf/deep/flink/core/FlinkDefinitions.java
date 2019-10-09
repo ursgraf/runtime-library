@@ -20,7 +20,7 @@
 
 package ch.ntb.inf.deep.flink.core;
 
-public interface Definitions {
+public interface FlinkDefinitions {
 
 	public static final int REGISTER_WIDTH		=		4;		// byte
 	public static final int REGISTER_WIDTH_BIT	=		REGISTER_WIDTH*8;	

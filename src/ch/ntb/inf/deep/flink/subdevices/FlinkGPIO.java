@@ -1,58 +1,39 @@
 package ch.ntb.inf.deep.flink.subdevices;
 
-import ch.ntb.inf.deep.flink.core.Definitions;
-import ch.ntb.inf.deep.flink.core.SubDevice;
+import ch.ntb.inf.deep.flink.core.FlinkDefinitions;
+import ch.ntb.inf.deep.flink.core.FlinkSubDevice;
 
-public class FlinkGPIO implements Definitions{
-	private static int DIR_ADDRESS = 0;
+public class FlinkGPIO implements FlinkDefinitions {
+	
+	public FlinkSubDevice dev;
 	private int valAddress;
-	public SubDevice dev;
 	
-	public FlinkGPIO(SubDevice dev){
+	public FlinkGPIO(FlinkSubDevice dev) {
 		this.dev = dev;
-		if(dev.getNumberOfChannels() == 1){
-			this.valAddress = DIR_ADDRESS +REGISTER_WIDTH;
-		}else{
-			this.valAddress = DIR_ADDRESS + ((dev.getNumberOfChannels()-1)/REGISTER_WIDTH_BIT+1)*REGISTER_WIDTH;
-		}
+ 		this.valAddress = ((dev.nofChannels-1) / REGISTER_WIDTH_BIT + 1) * REGISTER_WIDTH;
 	}
 	
-	public void setDir(int channel, boolean input){
-		int dirReg = dev.read(DIR_ADDRESS + (channel/REGISTER_WIDTH_BIT)*REGISTER_WIDTH);
-		if(input){
-			dirReg = dirReg & ~(1<<(channel%REGISTER_WIDTH_BIT));
-		}else{
-			dirReg = dirReg | (1<<(channel%REGISTER_WIDTH_BIT));
-		}
-		dev.write(DIR_ADDRESS + (channel/REGISTER_WIDTH_BIT)*REGISTER_WIDTH, dirReg);
-	}
-	public boolean getDir(int channel){
-		int dirReg = dev.read(DIR_ADDRESS + (channel/REGISTER_WIDTH_BIT)*REGISTER_WIDTH);
-		if((dirReg & (1<<(channel%REGISTER_WIDTH_BIT)))>0){
-			return false;
-		}else{
-			return true;
-		}
+	public void setDir(int channel, boolean input) {
+		int val = dev.read((channel / REGISTER_WIDTH_BIT) * REGISTER_WIDTH);
+		if (input) val = val & ~(1 << (channel % REGISTER_WIDTH_BIT));
+		else val = val | (1 << (channel % REGISTER_WIDTH_BIT));
+		dev.write((channel / REGISTER_WIDTH_BIT) * REGISTER_WIDTH, val);
 	}
 	
-	public boolean getValue(int channel){
-		int valueReg = dev.read(valAddress + (channel/REGISTER_WIDTH_BIT)*REGISTER_WIDTH);
-		if((valueReg & (1<<(channel%REGISTER_WIDTH_BIT)))!=0){
-			return true;
-		}else{
-			return false;
-		}
+	public boolean getDir(int channel) {
+		int val = dev.read((channel / REGISTER_WIDTH_BIT) * REGISTER_WIDTH);
+		return (val & (1 << (channel % REGISTER_WIDTH_BIT))) != 0;
 	}
 	
-	public void setValue(int channel, boolean value){
-		int valueReg = dev.read(valAddress + (channel/REGISTER_WIDTH_BIT)*REGISTER_WIDTH);
-		if(value){
-			valueReg = valueReg | (1<<(channel%REGISTER_WIDTH_BIT));
-		}else{
-			valueReg = valueReg & ~(1<<(channel%REGISTER_WIDTH_BIT));
-		}
-		dev.write(valAddress+ (channel/REGISTER_WIDTH_BIT)*REGISTER_WIDTH, valueReg);
+	public boolean getValue(int channel) {
+		int val = dev.read(valAddress + (channel / REGISTER_WIDTH_BIT) * REGISTER_WIDTH);
+		return (val & (1 << (channel % REGISTER_WIDTH_BIT))) != 0;
 	}
 	
-
+	public void setValue(int channel, boolean value) {
+		int val = dev.read(valAddress + (channel / REGISTER_WIDTH_BIT) * REGISTER_WIDTH);
+		if (value) val |= 1 << (channel % REGISTER_WIDTH_BIT);
+		else val &= ~(1 << (channel % REGISTER_WIDTH_BIT));
+		dev.write(valAddress + (channel / REGISTER_WIDTH_BIT) * REGISTER_WIDTH, val);
+	}
 }

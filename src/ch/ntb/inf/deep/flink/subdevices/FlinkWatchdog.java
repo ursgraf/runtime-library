@@ -1,17 +1,17 @@
 package ch.ntb.inf.deep.flink.subdevices;
 
-import ch.ntb.inf.deep.flink.core.Definitions;
-import ch.ntb.inf.deep.flink.core.SubDevice;
+import ch.ntb.inf.deep.flink.core.FlinkDefinitions;
+import ch.ntb.inf.deep.flink.core.FlinkSubDevice;
 
-public class FlinkWatchdog implements Definitions{
+public class FlinkWatchdog implements FlinkDefinitions{
 	private static int BASE_CLOCK_ADDRESS = 0;
 	private static int STATUS_CONF_ADDRESS = BASE_CLOCK_ADDRESS + REGISTER_WIDTH;
 	private static int COUNTER_ADDRESS = STATUS_CONF_ADDRESS + REGISTER_WIDTH;
 	private static int STATUS_BIT_MASK = 0x1;
 	private static int REARM_BIT_MASK = 0x2;
-	public SubDevice dev;
+	public FlinkSubDevice dev;
 	
-	public FlinkWatchdog(SubDevice dev){
+	public FlinkWatchdog(FlinkSubDevice dev){
 		this.dev = dev;
 	}
 	

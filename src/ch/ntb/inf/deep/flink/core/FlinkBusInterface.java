@@ -1,6 +1,6 @@
 package ch.ntb.inf.deep.flink.core;
 
-public interface BusInterface {
+public interface FlinkBusInterface {
 	
 	/**
 	 * 

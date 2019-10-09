@@ -8,122 +8,73 @@ import ch.ntb.inf.deep.flink.subdevices.*;
 import ch.ntb.inf.deep.runtime.arm32.Task;
 import ch.ntb.inf.deep.runtime.zynq7000.driver.UART1;
 
-public class FlinkDemo extends Task{
+public class FlinkDemo extends Task implements FlinkDefinitions {
 	
-	public static boolean led1 = false;
 	public static int outputPeriod = 0;
 	public static int outputHighTime = 0;
 	
-	static Device fDevice;
-	
-	FlinkInfo info;
-	FlinkGPIO gpios;
-	FlinkPWM pwm;
-	FlinkPPWA ppwa;
-	FlinkWatchdog wd;
+	static FlinkDevice fDev;
+	static FlinkInfo info;
+	static FlinkGPIO gpio;
+	static FlinkPWM pwm;
+	static FlinkPPWA ppwa;
+	static FlinkWatchdog wd;
 	
 	public void action() {
-		/*System.out.print("ppwa 1 period: ");
-		outputPeriod = ppwa.getPeriodTime(1);
-		System.out.println(outputPeriod);
-		System.out.print("ppwa 1 hightime: ");
-		outputHighTime = ppwa.getHighTime(1);
-		System.out.println(outputHighTime);
-		System.out.println("------------------------------------------------");*/
-		
-		/*for(int i = 3; i < 7; i++) {
-			if(gpios.getValue(i)) {
-				System.out.print("1\t|\t");
-			}else {
-				System.out.print("0\t|\t");
-			}
+		for (int i = 0; i < 3; i++) {
+			gpio.setValue(i, !gpio.getValue(i));
 		}
-		
-		if(led1) {
-			System.out.print("led 1-3 on");
-		}else {
-			System.out.print("led 1-3 off");
+	}
+
+	private static void lsflink(FlinkSubDevice[] list) {
+		System.out.println("Subdevices of flink device 0:");
+		for(FlinkSubDevice s : list) {
+			System.out.print("\t");
+			System.out.print(s.id);
+			System.out.println(":");
+			System.out.print("\t\tAddress range: ");
+			System.out.printHex(s.baseAddress);
+			System.out.print(" - ");
+			System.out.printHexln(s.baseAddress + s.memSize);
+			System.out.print("\t\tMemory Size: ");
+			System.out.printHexln(s.memSize);
+			System.out.print("\t\tFunction: ");
+			System.out.println(FlinkDevice.idToCharArray(s.function));
+			System.out.print("\t\tSubfunction: ");
+			System.out.println(s.subFunction);
+			System.out.print("\t\tFunction version: ");
+			System.out.println(s.version);
+			System.out.print("\t\tNof channels: ");
+			System.out.println(s.nofChannels);
+			System.out.print("\t\tUnique id: ");
+			System.out.println(s.uniqueID);
 		}
-		for(int i = 0; i < 3; i++) {
-			gpios.setValue(i, led1);
-		}
-		led1 = !led1;
-		System.out.println();*/
-		
 	}
 
 	static {
-		// Initialize UART (115200 8N1)
 		UART1.start(115200, (short)0, (short)8);
-
-		// Use the UART for stdout and stderr
 		System.out = new PrintStream(UART1.out);
 		System.err = System.out;
+		System.out.println("\nflink demo");
 		
-		// Print a string to the stdout
-		System.out.println("flink demo");
+		fDev = new FlinkDevice(new AXIInterface());
+		FlinkSubDevice[] list = fDev.getDeviceList();
 		
-		fDevice = new Device(new AXIInterface());
-		System.out.println("before get device list");
-		SubDevice[] list = fDevice.getDeviceList();
-		System.out.println("done");
-		
-		/*for(FLinkSubDevice f : list) {
-			System.out.println(f.uniqueID);
-		}
-		
-		
-		
-		info = new FlinkInfo(list[0]);
+		lsflink(list);
+	
+		info = new FlinkInfo(fDev.getSubdeviceByType(INFO_DEVICE_ID));
 		System.out.println("got info device");
-		gpios = new FLinkGPIO(list[1]);
-		System.out.println("got gpio device");
-		pwm = new FLinkPWM(list[2]);
-		System.out.println("got pwm device");
-		ppwa = new FLinkPPWA(list[3]);
-		System.out.println("got ppwa device");
-		wd = new FLinkWatchdog(list[4]);
-		System.out.println("got wd device");
-		//subDev = fDevice.getSubdeviceByNr(1);
-		//subDev.getSubtype();
+		System.out.println(info.getDescription());
+		gpio = new FlinkGPIO(fDev.getSubdeviceByType(GPIO_INTERFACE_ID));
+		pwm = new FlinkPWM(fDev.getSubdeviceByType(PWM_INTERFACE_ID));
+		ppwa = new FlinkPPWA(fDev.getSubdeviceByType(PPWA_INTERFACE_ID));
 		
-		//gpio = new FLinkGPIO(subDev);
-		System.out.print("gpio channels: ");
-		System.out.println(list[1].getNumberOfChannels());
-		gpios.setDir(0, false);
-		gpios.setDir(1, false);
-		gpios.setDir(2, false);
-		gpios.setDir(3, true);
-		gpios.setDir(4, true);
-		gpios.setDir(5, true);
-		gpios.setDir(6, true);
-		
-		System.out.print("baseclk: ");
-		System.out.println(pwm.getBaseClock());
-		
-		int period1 = 100000/pwm.TIMEBASE; // 100 us = 100.000 ns
-		int period2 = 100000000/pwm.TIMEBASE; // 100 ms = 100.000.000 ns*/
-		
-		/*int period1 = 20/pwm.TIMEBASE;		// 20 ns
-		int period2 = pwm.getBaseClock();*/
-		
-		/*pwm.setPeriodTime(0, period1);
-		pwm.setPeriodTime(1, period2);
-		
-		pwm.setHighTime(0, period1/2);
-		pwm.setHighTime(1, period2/2);
-		
-		
-		for(int i = 0; i < 3; i++) {
-			gpios.setValue(i, false);
-		}
-		
-		System.out.print("pwm timebase: ");
-		System.out.println(pwm.TIMEBASE);
-		//gpio.setDir(0, false);
-		//gpio.setValue(0, false);
-		period = 500;
-		Task.install(this);*/
+		for(int i = 0; i < 3; i++) gpio.setDir(i, false);
+		for(int i = 3; i < 7; i++) gpio.setDir(3, true);
+		for(int i = 0; i < 3; i++) gpio.setValue(i, i % 2 == 0);		
+		Task t = new FlinkDemo();
+		t.period = 500;
+		Task.install(t);
 	}
 
 }

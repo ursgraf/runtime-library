@@ -2,9 +2,9 @@ package ch.ntb.inf.deep.flink.interfaces.mpc5200;
 
 import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
 import ch.ntb.inf.deep.unsafe.US;
-import ch.ntb.inf.deep.flink.core.BusInterface;
+import ch.ntb.inf.deep.flink.core.FlinkBusInterface;
 
-public class localPlusBusInterface implements IphyCoreMpc5200tiny, BusInterface{
+public class localPlusBusInterface implements IphyCoreMpc5200tiny, FlinkBusInterface{
 	private static final int CS3START = 0xf000001C;
 	private static final int CS3STOP =  0xf0000020;
 	private static final int CS3STARTADDRESS = 0xe0000000;

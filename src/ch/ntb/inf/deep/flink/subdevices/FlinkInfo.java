@@ -1,32 +1,30 @@
 package ch.ntb.inf.deep.flink.subdevices;
 
-import ch.ntb.inf.deep.flink.core.Definitions;
-import ch.ntb.inf.deep.flink.core.SubDevice;
+import ch.ntb.inf.deep.flink.core.FlinkDefinitions;
+import ch.ntb.inf.deep.flink.core.FlinkSubDevice;
 
-public class FlinkInfo implements Definitions{
-	private static int DEV_SIZE_ADDRESS = 0;
-	private static int NAME_0_ADDRESS = DEV_SIZE_ADDRESS + REGISTER_WIDTH;
-	private static int NUBER_OF_NAME_REG = 7;
-	public SubDevice dev;
+public class FlinkInfo implements FlinkDefinitions {
+
+	public FlinkSubDevice dev;
 	
-	public FlinkInfo(SubDevice list){
-		this.dev = list;
+	public FlinkInfo(FlinkSubDevice dev) {
+		this.dev = dev;
 	}
 	
-	public int getDeviceSize(){
-		return dev.read(DEV_SIZE_ADDRESS);
+	public int getMemLength() {
+		return dev.read(0);
 	}
 	
-	public byte[] getDescription(){
-		byte result[] = new byte[NUBER_OF_NAME_REG*4];
-		for(int i = 0; i<NUBER_OF_NAME_REG;i++){
-			int reg = dev.read(NAME_0_ADDRESS+i*REGISTER_WIDTH);
-			System.out.printHexln(reg);
-			result[result.length-(i*4)-1] = (byte) (reg);
-			result[result.length-(i*4)-2] = (byte) (reg>>8);
-			result[result.length-(i*4)-3] = (byte) (reg>>16);
-			result[result.length-(i*4)-4] = (byte) (reg>>24);
+	public char[] getDescription() {
+		int len = 28;
+		char res[] = new char[len];
+		for (int i = 0; i < len; i += 4) {
+			int reg = dev.read(4 + i);
+			res[i] = (char) (reg & 0xff);
+			res[i + 1] = (char) ((reg>>8) & 0xff);
+			res[i + 2] = (char) ((reg>>16) & 0xff);
+			res[i + 3] = (char) ((reg>>24) & 0xff);
 		}
-		return result;
+		return res;
 	}
 }

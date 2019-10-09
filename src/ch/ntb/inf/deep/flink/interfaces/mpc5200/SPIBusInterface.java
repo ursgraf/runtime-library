@@ -1,12 +1,12 @@
 package ch.ntb.inf.deep.flink.interfaces.mpc5200;
 
-import ch.ntb.inf.deep.flink.core.BusInterface;
+import ch.ntb.inf.deep.flink.core.FlinkBusInterface;
 import ch.ntb.inf.deep.runtime.mpc5200.IphyCoreMpc5200tiny;
 import ch.ntb.inf.deep.unsafe.US;
 
 //Altera spi to avalon bridge example c code is used for this interface. 
 
-public class SPIBusInterface implements IphyCoreMpc5200tiny, BusInterface{
+public class SPIBusInterface implements IphyCoreMpc5200tiny, FlinkBusInterface{
 
 	private int memLength ;
 	private boolean infoDevice;
@@ -17,6 +17,7 @@ public class SPIBusInterface implements IphyCoreMpc5200tiny, BusInterface{
 	private static final int SPIBDRATE = MBAR + 0x0F04;
 	private static final int SPIST = MBAR + 0x0F05;
 	private static final int SPIDATA = MBAR + 0x0F09;
+	@SuppressWarnings("unused")
 	private static final int SPIPORT = MBAR + 0x0F0D;
 	private static final int SPIDATADIR = MBAR + 0x0F10;	
 	
