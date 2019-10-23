@@ -16,31 +16,28 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.mpc555.driver;
+package ch.ntb.inf.deep.runtime.zynq7000.driver;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-/* Changes:
- * 3.6.2014		Urs Graf		initial version
- */
 
 /**
- *
- * Input Stream to read bytes from a SCI interface.
- * Don't forget to initialize the SCI before using this class.
- * 
- */
-public class SCIInputStream extends InputStream{
+*
+* Input Stream to read bytes from a SCI interface.
+* Don't forget to initialize the SCI before using this class.
+* 
+*/
+public class UARTInputStream extends InputStream {
 	
-	private SCI port;
+	private UART port;
 	
-    /**
-     * Creates an input stream on a given SCI interface.
-     * @param sci SCI number.
-     */
-    public SCIInputStream(SCI sci) {
-		port = sci;
+   /**
+    * Creates an input stream on a given UART interface.
+    * @param uart UART number.
+    */
+   public UARTInputStream(UART uart) {
+		port = uart;
 	}
 
 	/**

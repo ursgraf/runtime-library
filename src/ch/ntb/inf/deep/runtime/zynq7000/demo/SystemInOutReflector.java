@@ -18,40 +18,38 @@
 
 package ch.ntb.inf.deep.runtime.zynq7000.demo;
 
-import java.io.PrintStream;
-import ch.ntb.inf.deep.runtime.zynq7000.driver.UART;
 import ch.ntb.inf.deep.runtime.arm32.Task;
+import ch.ntb.inf.deep.runtime.zynq7000.driver.UART;
+import ch.ntb.inf.deep.runtime.zynq7000.driver.UARTInputStream;
+import ch.ntb.inf.deep.runtime.zynq7000.driver.UARTOutputStream;
 
 
 /**
- * Demo for System.out using UART1.
- * This application simply outputs the character '.' once per second over the UART1.
+ * Demo for InputStream and OutputStream using SCI2.<br>
+ * Received characters will be sent back immediately.
+ * 
+ * @author Urs Graf
  */
-public class SystemOutDemo extends Task {
+public class SystemInOutReflector extends Task {
+	static UARTOutputStream out;
+	static UARTInputStream in;
 	
-	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.arm32.Task#action()
+	/**
+	 * Reflect input on in stream to out stream.
 	 */
 	public void action() {
-		// Write a single character to the stdout
-		System.out.print('.');
+		if (in.available() > 0)	out.write(in.read());
 	}
 
 	static {
-		// Initialize UART (115200 8N1)
 		UART uart = UART.getInstance(UART.pUART1);
-		uart.start(115200, (short)0, (short)8);
+		uart.start(9600, (short) 0, (short)8);
+		out = uart.out;
+		in = uart.in;
+		out.write((byte)'x');
 		
-		// Use the UART for stdout and stderr
-		System.out = new PrintStream(uart.out);
-		System.err = System.out;
-		
-		// Print a string to the stdout
-		System.out.print("System.out demo (UART)");
-		
-		// Create and install the demo task
-		Task t = new SystemOutDemo();
-		t.period = 1000;
+		Task t = new SystemInOutReflector();
+		t.period = 0;
 		Task.install(t);
 	}
 }

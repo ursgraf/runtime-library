@@ -6,7 +6,7 @@ import ch.ntb.inf.deep.flink.core.*;
 import ch.ntb.inf.deep.flink.interfaces.zynq.AXIInterface;
 import ch.ntb.inf.deep.flink.subdevices.*;
 import ch.ntb.inf.deep.runtime.arm32.Task;
-import ch.ntb.inf.deep.runtime.zynq7000.driver.UART1;
+import ch.ntb.inf.deep.runtime.zynq7000.driver.UART;
 
 public class FlinkDemo extends Task implements FlinkDefinitions {
 	
@@ -52,8 +52,9 @@ public class FlinkDemo extends Task implements FlinkDefinitions {
 	}
 
 	static {
-		UART1.start(115200, (short)0, (short)8);
-		System.out = new PrintStream(UART1.out);
+		UART uart = UART.getInstance(UART.pUART1);
+		uart.start(115200, (short)0, (short)8);
+		System.out = new PrintStream(uart.out);
 		System.err = System.out;
 		System.out.println("\nflink demo");
 		

@@ -41,7 +41,7 @@ class Reset extends ARMException implements Iarm32, Izybo7000, IdeepCompilerCons
 		US.ASM("b -8"); // stop here
 		US.ASM("b -8"); // stop here
 		US.ASM("b -8"); // stop here
-		US.ASM("movw R15 768"); // jump to IRQ interrupt
+		US.ASM("movw R15 1024"); // jump to IRQ interrupt
 		US.ASM("b -8"); // stop here
 	}
 	

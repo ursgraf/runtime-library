@@ -200,6 +200,11 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
 		US.PUT4(stackBase, stackEndPattern);
 
+		// setup generic interrupt controller	
+		US.PUT4(ICCPMR, 0xff);	// set mask, the last 3 bits are read as 0
+		US.PUT4(ICCICR, 1);	// global interrupt enable
+		US.PUT4(ICDDCR, 1);	// enable distributor
+
 		int classConstOffset = US.GET4(sysTabBaseAddr);
 //		int state = 0;
 		while (true) {
@@ -255,15 +260,6 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 		try {
 			boot();
 			cmdAddr = -1;	// must be after class variables are zeroed by boot
-//			blink(1);
-			
-			// enable IRQ	
-			US.PUT4(ICDISER2, US.GET4(ICDISER2) | (1 << (82 % 32)));	// interrupt set enable for #82
-			US.PUT1(ICDIPTR20 + 2, 2);	// interrupts targets CPU1
-			US.PUT4(ICCPMR, 0xff);	// set mask
-			US.PUT4(ICCICR, 1);	// global interrupt enable
-			US.PUT4(ICDDCR, 1);	// enable distributor
-
 			US.ASM("cpsie i");	// enable IRQ
 
 			// load PC

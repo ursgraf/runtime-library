@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2019-06-07 13:06:15)
+// Auto generated file (2019-10-23 09:44:44)
 
 public interface Izynq7000 extends Iarm32 {
 
@@ -15,7 +15,7 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int gpioController = 0xe000a000;
 	public static final int uartController = 0xe0000000;
 	public static final int ioReg = 0xe0000000;
-	public static final int heapSize = 0x8000;
+	public static final int heapSize = 0x10000;
 	public static final int stackSizeIRQ = 0x1000;
 	public static final int stackSizeSVC = 0x1000;
 	public static final int sysTabBaseAddr = 0x1000;
@@ -58,13 +58,26 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int ICCIDR = 0xf8f001fc;
 	public static final int ICDDCR = 0xf8f01000;
 	public static final int ICDICTR = 0xf8f01004;
+	public static final int ICDIIDR = 0xf8f01008;
 	public static final int ICDISER0 = 0xf8f01100;
 	public static final int ICDISER1 = 0xf8f01104;
 	public static final int ICDISER2 = 0xf8f01108;
+	public static final int ICDICER0 = 0xf8f01180;
+	public static final int ICDICER1 = 0xf8f01184;
+	public static final int ICDICER2 = 0xf8f01188;
+	public static final int ICDIPR0 = 0xf8f01400;
+	public static final int ICDIPR1 = 0xf8f01404;
+	public static final int ICDIPR20 = 0xf8f01450;
 	public static final int ICDIPTR0 = 0xf8f01800;
 	public static final int ICDIPTR1 = 0xf8f01804;
 	public static final int ICDIPTR2 = 0xf8f01808;
 	public static final int ICDIPTR20 = 0xf8f01850;
+	public static final int ICDICFR0 = 0xf8f01c00;
+	public static final int ICDICFR1 = 0xf8f01c04;
+	public static final int ICDICFR2 = 0xf8f01c08;
+	public static final int ICDICFR3 = 0xf8f01c0c;
+	public static final int ICDICFR4 = 0xf8f01c10;
+	public static final int ICDICFR5 = 0xf8f01c14;
 	public static final int UART0_CR = 0xe0000000;
 	public static final int UART0_MR = 0xe0000004;
 	public static final int UART0_IER = 0xe0000008;

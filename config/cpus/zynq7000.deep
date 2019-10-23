@@ -233,7 +233,7 @@ cpu zynq7010 {
 			 size = 4;
 		}
 		
-		# Interrupt controller registers
+		# GIC interface registers
 		
 		register ICCICR {
 			 type = IOR;
@@ -271,7 +271,7 @@ cpu zynq7010 {
 			 size = 4;
 		}
 
-		# Interrupt controller registers
+		# GIC distributor registers
 		
 		register ICDDCR {
 			 type = IOR;
@@ -282,6 +282,12 @@ cpu zynq7010 {
 		register ICDICTR {
 			 type = IOR;
 			 addr = interruptCtlrDistr + 0x04;
+			 size = 4;
+		}
+
+		register ICDIIDR {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x08;
 			 size = 4;
 		}
 
@@ -300,6 +306,42 @@ cpu zynq7010 {
 		register ICDISER2 {
 			 type = IOR;
 			 addr = interruptCtlrDistr + 0x108;
+			 size = 4;
+		}
+
+		register ICDICER0 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x180;
+			 size = 4;
+		}
+
+		register ICDICER1 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x184;
+			 size = 4;
+		}
+
+		register ICDICER2 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x188;
+			 size = 4;
+		}
+
+		register ICDIPR0 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x400;
+			 size = 4;
+		}
+
+		register ICDIPR1 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x404;
+			 size = 4;
+		}
+		
+		register ICDIPR20 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0x450;
 			 size = 4;
 		}
 
@@ -324,6 +366,42 @@ cpu zynq7010 {
 		register ICDIPTR20 {
 			 type = IOR;
 			 addr = interruptCtlrDistr + 0x850;
+			 size = 4;
+		}
+
+		register ICDICFR0 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0xC00;
+			 size = 4;
+		}
+
+		register ICDICFR1 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0xC04;
+			 size = 4;
+		}
+
+		register ICDICFR2 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0xC08;
+			 size = 4;
+		}
+
+		register ICDICFR3 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0xC0C;
+			 size = 4;
+		}
+
+		register ICDICFR4 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0xC10;
+			 size = 4;
+		}
+
+		register ICDICFR5 {
+			 type = IOR;
+			 addr = interruptCtlrDistr + 0xC14;
 			 size = 4;
 		}
 

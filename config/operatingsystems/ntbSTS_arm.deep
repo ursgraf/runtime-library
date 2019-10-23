@@ -221,9 +221,6 @@ operatingsystem ntbSTS_arm {
     		attributes = exchnd;
 			offset = 0x400;
     	}
-    	method <init> {
-    		attributes = synthetic;
-    	}
     }
 
 	kernel {
