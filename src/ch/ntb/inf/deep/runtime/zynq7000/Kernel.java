@@ -35,6 +35,8 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
 	/** Clock frequency of the processor. */
 	public static final int clockFrequency = 400000000; // Hz
+	/** Clock frequency of the processor. */
+	public static final int UART_CLK = 100000000; // Hz
 	static int loopAddr;
 	static int cmdAddr;
 	static long t = 0x1122;
@@ -243,6 +245,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 					US.ASM("mov r15, r0");
 				} else {	// kernel
 					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/zynq7000/Kernel/loop");
+					US.ASM("cpsie i");	// enable IRQ
 				}
 			}
 
@@ -260,8 +263,6 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 		try {
 			boot();
 			cmdAddr = -1;	// must be after class variables are zeroed by boot
-			US.ASM("cpsie i");	// enable IRQ
-
 			// load PC
 			US.PUTGPR(6, loopAddr);	// use scratch register
 			US.ASM("mov r14, r15");	// copy PC to LR 

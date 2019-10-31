@@ -25,7 +25,7 @@ import ch.ntb.inf.deep.runtime.zynq7000.driver.UARTOutputStream;
 
 
 /**
- * Demo for InputStream and OutputStream using SCI2.<br>
+ * Demo for InputStream and OutputStream using UART1.<br>
  * Received characters will be sent back immediately.
  * 
  * @author Urs Graf
@@ -43,7 +43,7 @@ public class SystemInOutReflector extends Task {
 
 	static {
 		UART uart = UART.getInstance(UART.pUART1);
-		uart.start(9600, (short) 0, (short)8);
+		uart.start(115200, (short) 0, (short)8);
 		out = uart.out;
 		in = uart.in;
 		out.write((byte)'x');
@@ -52,4 +52,5 @@ public class SystemInOutReflector extends Task {
 		t.period = 0;
 		Task.install(t);
 	}
+	
 }

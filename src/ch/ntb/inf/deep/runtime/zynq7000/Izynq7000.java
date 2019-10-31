@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2019-10-23 09:44:44)
+// Auto generated file (2019-10-30 11:15:57)
 
 public interface Izynq7000 extends Iarm32 {
 
@@ -93,7 +93,7 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int UART0_FIFO = 0xe0000030;
 	public static final int UART0_BAUDDIV = 0xe0000034;
 	public static final int UART0_FLOWDELAY = 0xe0000038;
-	public static final int UART0_TX_FIFO_Level = 0xe0000044;
+	public static final int UART0_TX_FIFO_LEVEL = 0xe0000044;
 	public static final int UART1_CR = 0xe0001000;
 	public static final int UART1_MR = 0xe0001004;
 	public static final int UART1_IER = 0xe0001008;
@@ -109,5 +109,5 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int UART1_FIFO = 0xe0001030;
 	public static final int UART1_BAUDDIV = 0xe0001034;
 	public static final int UART1_FLOWDELAY = 0xe0001038;
-	public static final int UART1_TX_FIFO_Level = 0xe0001044;
+	public static final int UART1_TX_FIFO_LEVEL = 0xe0001044;
 }

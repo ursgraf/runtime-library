@@ -497,7 +497,7 @@ cpu zynq7010 {
 			 size = 4;
 		}
 		
-		register UART0_TX_FIFO_Level {
+		register UART0_TX_FIFO_LEVEL {
 			 type = IOR;
 			 addr = uartController + 0x44;
 			 size = 4;
@@ -595,7 +595,7 @@ cpu zynq7010 {
 			 size = 4;
 		}
 		
-		register UART1_TX_FIFO_Level {
+		register UART1_TX_FIFO_LEVEL {
 			 type = IOR;
 			 addr = uartController + 0x1044;
 			 size = 4;
