@@ -41,7 +41,7 @@ public class IrqInterrupt extends ARMException implements Izynq7000 {
 	 * The number of times a irq interrupt was executed
 	 */
 	public static int nofIRQ;
-	
+
 	static IrqInterrupt[] intTable = new IrqInterrupt[92]; 	// private and shared peripheral interrupts  
 
 	/**
@@ -58,7 +58,7 @@ public class IrqInterrupt extends ARMException implements Izynq7000 {
 		intTable[id].action();
 		US.PUT4(ICCEOIR, id);	// clear interrupt
 	}
-	
+
 	/**
 	 * Used to install user defined interrupt handlers.
 	 * @param interrupt Instance of user defined interrupt handler
@@ -70,8 +70,8 @@ public class IrqInterrupt extends ARMException implements Izynq7000 {
 		US.PUT4(addr, US.GET4(addr) | (1 << (id % 32)));	// interrupt set enable register
 		addr = ICDIPTR0 + id / 4 * 4 + id % 4;
 		US.PUT1(addr, 2);	// interrupts target register, targets CPU1
-//		addr = ICDICFR0 + id / 16 * 4;
-//		US.PUT4(addr, US.GET4(addr) | (2 << (id % 16) * 2));	// edge sensitive, might be necessary for certain types
+		//		addr = ICDICFR0 + id / 16 * 4;
+		//		US.PUT4(addr, US.GET4(addr) | (2 << (id % 16) * 2));	// edge sensitive, might be necessary for certain types
 	}
 
 	static {

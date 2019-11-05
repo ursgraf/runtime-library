@@ -2,12 +2,13 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2019-10-30 11:15:57)
+// Auto generated file (2019-10-31 16:54:27)
 
 public interface Izynq7000 extends Iarm32 {
 
 	// System constants of CPU zynq7000
 	public static final int interruptCtlrDistr = 0xf8f01000;
+	public static final int privateTimer = 0xf8f00600;
 	public static final int globalTimer = 0xf8f00200;
 	public static final int interruptCtlr = 0xf8f00100;
 	public static final int cpuPrivateReg = 0xf8900000;
@@ -30,6 +31,10 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int GTCR_L = 0xf8f00200;
 	public static final int GTCR_U = 0xf8f00204;
 	public static final int GTCR = 0xf8f00208;
+	public static final int PTLR = 0xf8f00600;
+	public static final int PTCOUNT = 0xf8f00604;
+	public static final int PTCR = 0xf8f00608;
+	public static final int PTISR = 0xf8f0060c;
 	public static final int SLCR_LOCK = 0xf8000004;
 	public static final int SLCR_UNLOCK = 0xf8000008;
 	public static final int SLCR_LOCKSTA = 0xf800000c;

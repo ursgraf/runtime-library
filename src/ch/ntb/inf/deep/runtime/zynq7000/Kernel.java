@@ -197,14 +197,14 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
         
         US.PUT4(GTCR, 0xc01);	// enable global timer, prescaler = 12 -> 325MHz / 13 = 25MHz
 
-		// mark stack end with specific pattern
+ 		// mark stack end with specific pattern
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
 		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
 		US.PUT4(stackBase, stackEndPattern);
 
 		// setup generic interrupt controller	
 		US.PUT4(ICCPMR, 0xff);	// set mask, the last 3 bits are read as 0
-		US.PUT4(ICCICR, 1);	// global interrupt enable
+		US.PUT4(ICCICR, 1);	// use irq, global interrupt enable
 		US.PUT4(ICDDCR, 1);	// enable distributor
 
 		int classConstOffset = US.GET4(sysTabBaseAddr);
