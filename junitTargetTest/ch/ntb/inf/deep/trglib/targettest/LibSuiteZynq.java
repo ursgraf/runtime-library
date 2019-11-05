@@ -21,9 +21,9 @@ package ch.ntb.inf.deep.trglib.targettest;
 import ch.ntb.inf.junitTarget.MaxErrors;
 import ch.ntb.inf.junitTarget.Suite;
 
-@Suite({ MathTest.class, GenericsTest.class, TaskTestMpc5200.class, SystemTest.class, HeapTestPPC.class, UtilTest.class, BaseClassTest.class })
+@Suite({ MathTest.class, GenericsTest.class, TaskTestZynq.class, SystemTest.class, HeapTestARM.class, UtilTest.class, BaseClassTest.class })
 
 @MaxErrors(500)
-public class LibSuiteMpc5200 {
+public class LibSuiteZynq {
 
 }

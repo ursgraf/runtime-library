@@ -55,7 +55,7 @@ public final class System implements Modified {
 	 */
 	public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length) {
 		int tag = US.GET4(US.REF(src) - 4);
-		int compSize = US.GET2(tag + 2);
+		int compSize = US.GET4(tag) & 0xff;
 		switch (compSize) {
 		case 0:	// type boolean
 			int srcStart = US.REF(src) + srcPos;
@@ -97,13 +97,13 @@ public final class System implements Modified {
 		}
 	}
 
-	public static void setErr(PrintStream err){
+	public static void setErr(PrintStream err) {
 		System.err = err;
 	}
-	public static void setIn(InputStream in){
+	public static void setIn(InputStream in) {
 		System.in = in;
 	}
-	public static void setOut(PrintStream out){
+	public static void setOut(PrintStream out) {
 		System.out = out;
 	}
 	

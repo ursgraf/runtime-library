@@ -30,7 +30,7 @@ import ch.ntb.inf.junitTarget.Test;
  */
 @MaxErrors(100)
 	@SuppressWarnings("unused")
-public class HeapTest {
+public class HeapTestPPC {
 	
 //	@Ignore
 	@Test

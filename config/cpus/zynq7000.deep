@@ -30,6 +30,7 @@ cpu zynq7010 {
 		cpuPrivateReg = 0xf8900000;						# CPU private registers
 		interruptCtlr = cpuPrivateReg + 0x600100;		# Interrupt controller registers
 		globalTimer = cpuPrivateReg + 0x600200;			# Global Timer
+		privateTimer = cpuPrivateReg + 0x600600;		# Private Timer
 		interruptCtlrDistr = cpuPrivateReg + 0x601000;	# Interrupt controller distributor registers
 	}
 	
@@ -108,6 +109,27 @@ cpu zynq7010 {
 		register GTCR {
 			 type = IOR;
 			 addr = globalTimer + 8;
+			 size = 4;
+		}
+		
+		register PTLR {
+			 type = IOR;
+			 addr = privateTimer;
+			 size = 4;
+		}
+		register PTCOUNT {
+			 type = IOR;
+			 addr = privateTimer + 4;
+			 size = 4;
+		}
+		register PTCR {
+			 type = IOR;
+			 addr = privateTimer + 8;
+			 size = 4;
+		}
+		register PTISR {
+			 type = IOR;
+			 addr = privateTimer + 0xc;
 			 size = 4;
 		}
 		
