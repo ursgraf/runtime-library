@@ -215,7 +215,6 @@ public final class Math implements Modified {
 	 * @param a First value.
 	 * @param b Second value.
 	 * @return Maximum of the two input values.
-	 * @return b if b &gt; a, else a
 	 */
 	public static double max(double a, double b) {
 		if (b > a)
@@ -251,7 +250,6 @@ public final class Math implements Modified {
 	 * @param a First value.
 	 * @param b Second value.
 	 * @return Minimum of the two input values.
-	 * @return b if b &lt; a, else a
 	 */
 	public static double min(double a, double b) {
 		if (b < a)

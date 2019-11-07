@@ -79,7 +79,7 @@ public final class Double extends Number implements Comparable<Double>, Modified
 	public static final double MIN_VALUE_NORM = MIN_VALUE * (double) (1L << 52);
 
 	/**
-	 * The number of bits used to represent a <tt>double</tt> value.
+	 * The number of bits used to represent a {@code Double} value.
 	 */
 	public static final int SIZE = 64;
 

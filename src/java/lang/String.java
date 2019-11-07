@@ -25,7 +25,7 @@ import ch.ntb.inf.deep.marker.Modified;
  * {@code String} is represented by array of UTF-16 values.
  * This class is highly optimized version compared to the standard String class.
  *
- * <h3><a name="backing_array">Backing Arrays</a></h3>
+ * <h3><a>Backing Arrays</a></h3>
  * This class is implemented using a char[]. The length of the array may exceed
  * the length of the string. For example, the string "Hello" may be backed by
  * the array {@code ['H', 'e', 'l', 'l', 'o', 'W'. 'o', 'r', 'l', 'd']} with
@@ -91,7 +91,7 @@ public class String extends BString implements Serializable, Comparable<String>,
 	}
 
 	/**
-	 * Encodes this <tt>String</tt> into a sequence of bytes using the
+	 * Encodes this {@code String} into a sequence of bytes using the
 	 * platform's default charset, storing the result into a new byte array.
 	 * 
 	 * @return The resultant byte array

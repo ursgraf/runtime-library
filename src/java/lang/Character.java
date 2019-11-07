@@ -48,7 +48,7 @@ import ch.ntb.inf.deep.marker.Modified;
  * point or a UTF-16 unit that's part of a surrogate pair. The {@code int} type
  * is used to represent all Unicode code points.
  *
- * <h3><a name="unicode_categories">Unicode categories</a></h3>
+ * <h3><a>Unicode categories</a></h3>
  * <p>Here's a list of the Unicode character categories and the corresponding Java constant,
  * grouped semantically to provide a convenient overview. This table is also useful in
  * conjunction with {@code \p} and {@code \P} in {@link java.util.regex.Pattern regular expressions}.</p>

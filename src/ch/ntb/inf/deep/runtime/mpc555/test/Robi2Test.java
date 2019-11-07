@@ -29,6 +29,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 /**
  * This Class is used to test the Robi2 hardware.<br>
  * The different test cases can chosen by the hex-switch.<br>
+ * <ul>
  * <li>Position 0 does nothing</li>
  * <li>Position 1 tests distance sensors</li>
  * <li>Position 2 tests drives</li>
@@ -45,6 +46,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
  * <li>Position D</li>
  * <li>Position E</li>
  * <li>Position F</li>
+ * </ul>
  * 
  * @author Roger Millischer
  *

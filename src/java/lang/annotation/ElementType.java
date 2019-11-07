@@ -42,8 +42,6 @@ package java.lang.annotation;
  *
  * @author  Joshua Bloch
  * @since 1.5
- * @jls 9.6.4.1 @Target
- * @jls 4.1 The Kinds of Types and Values
  */
 public enum ElementType {
     /** Class, interface (including annotation type), or enum declaration */

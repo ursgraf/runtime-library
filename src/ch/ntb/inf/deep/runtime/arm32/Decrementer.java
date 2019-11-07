@@ -43,7 +43,7 @@ public class Decrementer extends IrqInterrupt {
 
 	/**
 	 * Used to install user defined handler for decrementer exceptions.
-	 * @param decrementer Instance of user defined decrementer handler
+	 * @param dec Instance of user defined decrementer handler
 	 * @param period Period in ns, time between subsequent interrupts
 	 */
 	public static void install(Decrementer dec, int period) {

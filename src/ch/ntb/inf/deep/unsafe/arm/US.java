@@ -60,7 +60,11 @@ public class US extends ch.ntb.inf.deep.unsafe.US {
 
 	/** 
 	 * Read content of coprocessor register 
-	 * @param reg Register number.
+	 * @param coproc Coprocessor number.
+	 * @param CRn CRn field. 
+	 * @param opc1 opc1 field. 
+	 * @param CRm CRm field. 
+	 * @param opc2 opc2 field. 
 	 * @return Register content. 
 	 */
 	public static int GETCPR(int coproc, int CRn, int opc1, int CRm, int opc2) {
@@ -93,7 +97,11 @@ public class US extends ch.ntb.inf.deep.unsafe.US {
 
 	/** 
 	 * Write to special purpose register 
-	 * @param reg Register number.
+	 * @param coproc Coprocessor number.
+	 * @param CRn CRn field. 
+	 * @param opc1 opc1 field. 
+	 * @param CRm CRm field. 
+	 * @param opc2 opc2 field. 
 	 * @param value Register content. 
 	 */
 	public static void PUTCPR(int coproc, int CRn, int opc1, int CRm, int opc2, int value) {

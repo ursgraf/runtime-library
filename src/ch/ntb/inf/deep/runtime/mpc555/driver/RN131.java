@@ -52,8 +52,6 @@ public class RN131 extends Task {
 	 * 			SCI Outputstream
 	 * @param reset
 	 * 			Resetpin
-	 * @param config 
-	 * 
 	 * @throws NullPointerException
 	 * 			Wrong configuration.
 	 * @throws IOException
