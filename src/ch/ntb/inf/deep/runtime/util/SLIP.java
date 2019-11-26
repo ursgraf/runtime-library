@@ -108,10 +108,12 @@ public class SLIP {
 			if (escaping) {
 				switch (b) {
 					case ESC_END:
+					i--;
 						packet[offset + i] = END;
 						break;
 						
 					case ESC_ESC:
+					i--;
 						packet[offset + i] = ESC;
 						break;
 						
