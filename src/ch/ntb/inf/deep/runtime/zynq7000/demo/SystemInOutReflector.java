@@ -19,9 +19,7 @@
 package ch.ntb.inf.deep.runtime.zynq7000.demo;
 
 import ch.ntb.inf.deep.runtime.arm32.Task;
-import ch.ntb.inf.deep.runtime.zynq7000.driver.UART;
-import ch.ntb.inf.deep.runtime.zynq7000.driver.UARTInputStream;
-import ch.ntb.inf.deep.runtime.zynq7000.driver.UARTOutputStream;
+import ch.ntb.inf.deep.runtime.zynq7000.driver.*;
 
 
 /**

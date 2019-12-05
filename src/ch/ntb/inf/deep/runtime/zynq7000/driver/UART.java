@@ -19,10 +19,11 @@
 package ch.ntb.inf.deep.runtime.zynq7000.driver;
 
 import java.io.IOException;
-import ch.ntb.inf.deep.runtime.arm32.IrqInterrupt;
+
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
+import ch.ntb.inf.deep.runtime.zynq7000.IrqInterrupt;
 import ch.ntb.inf.deep.runtime.zynq7000.Izynq7000;
-import ch.ntb.inf.deep.runtime.zynq7000.Kernel;
+import ch.ntb.inf.deep.runtime.zynq7000.zybo.Kernel;
 import ch.ntb.inf.deep.unsafe.arm.US;
 
 /**
@@ -72,6 +73,7 @@ public class UART extends IrqInterrupt implements Izynq7000 {
 	private int diff; // used to access register interface for UART0 or UART1
 	private static UART uart0, uart1;
 	static private boolean toQueue, fromQueue;
+	static int count;
 
 	/**
 	 * Returns an instance of <i>UART Interface</i> 
@@ -164,6 +166,7 @@ static int status;
 	 *            if an error occurs while writing to this stream.
 	 */
 	public void write(byte b) throws IOException { 	 
+		count++;
 		if (toQueue) txQueue.enqueue(b);
 		else US.PUT1(UART1_FIFO, b); 
 	}

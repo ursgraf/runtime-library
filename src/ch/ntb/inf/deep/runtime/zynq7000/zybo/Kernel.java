@@ -16,11 +16,10 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.zynq7000;
+package ch.ntb.inf.deep.runtime.zynq7000.zybo;
 
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
-import ch.ntb.inf.deep.runtime.arm32.Heap;
-import ch.ntb.inf.deep.runtime.arm32.Iarm32;
+import ch.ntb.inf.deep.runtime.arm32.*;
 import ch.ntb.inf.deep.unsafe.arm.US;
 
 /* changes:
@@ -31,7 +30,7 @@ import ch.ntb.inf.deep.unsafe.arm.US;
 /**
  *  This is the kernel class. It provides basic functionalities and does the booting-up. 
  */
-public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
+public class Kernel implements Izybo, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
 	/** Clock frequency of the processor. */
 	public static final int clockFrequency = 400000000; // Hz
@@ -108,9 +107,9 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 		US.PUT4(GPIO_DIR0, 0x80);
 		int delay = 1000000;
 		for (int i = 0; i < nTimes; i++) {
-			US.PUT4(GPIO_DATA0, US.GET4(GPIO_DATA0) | 0x80);
+			US.PUT4(GPIO_OUT0, US.GET4(GPIO_OUT0) | 0x80);
 			for (int k = 0; k < delay; k++);
-			US.PUT4(GPIO_DATA0, US.GET4(GPIO_DATA0) ^ 0x80);
+			US.PUT4(GPIO_OUT0, US.GET4(GPIO_OUT0) ^ 0x80);
 			for (int k = 0; k < delay; k++);
 		}
 		for (int k = 0; k < (10 * delay + nTimes * 2 * delay); k++);
@@ -244,7 +243,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 					US.ASM("mov r14, r15");	// copy PC to LR 
 					US.ASM("mov r15, r0");
 				} else {	// kernel
-					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/zynq7000/Kernel/loop");
+					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/zynq7000/zybo/Kernel/loop");
 					US.ASM("cpsie i");	// enable IRQ
 				}
 			}

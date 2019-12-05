@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2019-10-31 16:54:27)
+// Auto generated file (2019-12-05 15:32:46)
 
 public interface Izynq7000 extends Iarm32 {
 
@@ -26,8 +26,14 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int OCM_BaseAddr = 0x0;
 
 	// Specific registers of CPU zynq7000
-	public static final int GPIO_DATA0 = 0xe000a040;
+	public static final int GPIO_OUT0 = 0xe000a040;
+	public static final int GPIO_OUT1 = 0xe000a044;
+	public static final int GPIO_IN0 = 0xe000a060;
+	public static final int GPIO_IN1 = 0xe000a064;
 	public static final int GPIO_DIR0 = 0xe000a204;
+	public static final int GPIO_OUT_EN0 = 0xe000a208;
+	public static final int GPIO_DIR1 = 0xe000a244;
+	public static final int GPIO_OUT_EN1 = 0xe000a248;
 	public static final int GTCR_L = 0xf8f00200;
 	public static final int GTCR_U = 0xf8f00204;
 	public static final int GTCR = 0xf8f00208;
@@ -52,8 +58,10 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int MIO_PIN_07 = 0xf800071c;
 	public static final int MIO_PIN_10 = 0xf8000728;
 	public static final int MIO_PIN_11 = 0xf800072c;
+	public static final int MIO_PIN_47 = 0xf80007bc;
 	public static final int MIO_PIN_48 = 0xf80007c0;
 	public static final int MIO_PIN_49 = 0xf80007c4;
+	public static final int MIO_PIN_51 = 0xf80007cc;
 	public static final int OCM_CFG = 0xf8000910;
 	public static final int ICCICR = 0xf8f00100;
 	public static final int ICCPMR = 0xf8f00104;

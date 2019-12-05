@@ -1,12 +1,12 @@
 #deep-1
 
 meta {
-	version = "2019-06-28";
-	description = "Board description file for ZYBO Zynq-7000 board";
+	version = "2019-12-05";
+	description = "Board description file for MicroZed Zynq-7000 board";
 }
 
-board ZYBO7000 {
-	description = "ZYBO Zynq-7000 digilent evm";
+board Zybo {
+	description = "MicroZed Zynq-7000 avnet board";
 	cputype = zynq7000;
 	
 	sysconst {
@@ -43,8 +43,8 @@ board ZYBO7000 {
 		modules {
 				kernel, heap: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default; 
 				exception: code@InternalRam.ExceptionCode, const@InternalRam.Default, var@InternalRam.Default;
-#				default: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default;      
-				default: code@ExternalRam.Default, const@ExternalRam.Default, var@InternalRam.Default;      
+				default: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default;      
+#				default: code@ExternalRam.Default, const@ExternalRam.Default, var@InternalRam.Default;      
 		}
 		reginit {
 #			SLCR_UNLOCK = 0xdf0d;							# unlock SLCR

@@ -17,6 +17,7 @@
  */
 
 package ch.ntb.inf.deep.runtime.zynq7000;
+
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 import ch.ntb.inf.deep.runtime.arm32.ARMException;
@@ -32,7 +33,7 @@ import ch.ntb.inf.deep.unsafe.arm.US;
  * 
  * @author Urs Graf
  */
-class Reset extends ARMException implements Iarm32, Izybo7000, IdeepCompilerConstants {
+class Reset extends ARMException implements Izynq7000, IdeepCompilerConstants {
 	
 	static void vectorTable() {
 		US.ASM("movw R15 256"); // jump to reset method

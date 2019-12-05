@@ -19,7 +19,8 @@
 package ch.ntb.inf.deep.runtime.zynq7000.demo;
 
 import java.io.PrintStream;
-import ch.ntb.inf.deep.runtime.arm32.Decrementer;
+
+import ch.ntb.inf.deep.runtime.zynq7000.Decrementer;
 import ch.ntb.inf.deep.runtime.zynq7000.driver.UART;
 
 /* changes:

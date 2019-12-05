@@ -28,12 +28,14 @@ import ch.ntb.inf.deep.runtime.arm32.Task;
  * This application simply outputs the character '.' once per second over the UART1.
  */
 public class SystemOutDemo extends Task {
+	static int count;
 	
 	/* (non-Javadoc)
 	 * @see ch.ntb.inf.deep.runtime.arm32.Task#action()
 	 */
 	public void action() {
 		// Write a single character to the stdout
+		count++;
 		System.out.print('.');
 	}
 

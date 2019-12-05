@@ -83,14 +83,51 @@ cpu zynq7010 {
 			
 		# I/O peripheral registers
 
-		 register GPIO_DATA0 {
+		register GPIO_OUT0 {
 			 type = IOR;
 			 addr = gpioController + 0x40;
 			 size = 4;
 		}
-		 register GPIO_DIR0 {
+		
+		register GPIO_OUT1 {
+			 type = IOR;
+			 addr = gpioController + 0x44;
+			 size = 4;
+		}
+		
+		register GPIO_IN0 {
+			 type = IOR;
+			 addr = gpioController + 0x60;
+			 size = 4;
+		}
+		
+		register GPIO_IN1 {
+			 type = IOR;
+			 addr = gpioController + 0x64;
+			 size = 4;
+		}
+		
+		register GPIO_DIR0 {
 			 type = IOR;
 			 addr = gpioController + 0x204;
+			 size = 4;
+		}
+
+		register GPIO_OUT_EN0 {
+			 type = IOR;
+			 addr = gpioController + 0x208;
+			 size = 4;
+		}
+
+		register GPIO_DIR1 {
+			 type = IOR;
+			 addr = gpioController + 0x244;
+			 size = 4;
+		}
+
+		register GPIO_OUT_EN1 {
+			 type = IOR;
+			 addr = gpioController + 0x248;
 			 size = 4;
 		}
 
@@ -237,6 +274,12 @@ cpu zynq7010 {
 			 size = 4;
 		}
 		
+		register MIO_PIN_47 {
+			 type = IOR;
+			 addr = slcrReg + 0x7bc;
+			 size = 4;
+		}
+		
 		register MIO_PIN_48 {
 			 type = IOR;
 			 addr = slcrReg + 0x7c0;
@@ -246,6 +289,12 @@ cpu zynq7010 {
 		register MIO_PIN_49 {
 			 type = IOR;
 			 addr = slcrReg + 0x7c4;
+			 size = 4;
+		}
+
+		register MIO_PIN_51 {
+			 type = IOR;
+			 addr = slcrReg + 0x7cc;
 			 size = 4;
 		}
 		

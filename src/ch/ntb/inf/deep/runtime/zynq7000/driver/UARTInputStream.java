@@ -24,8 +24,8 @@ import java.io.InputStream;
 
 /**
 *
-* Input Stream to read bytes from a SCI interface.
-* Don't forget to initialize the SCI before using this class.
+* Input Stream to read bytes from a UART interface.
+* Don't forget to initialize the UART before using this class.
 * 
 */
 public class UARTInputStream extends InputStream {
@@ -50,7 +50,7 @@ public class UARTInputStream extends InputStream {
 	}
 
 	/**
-	 * Reads one byte from the SCI. A call of
+	 * Reads one byte from the UART. A call of
 	 * this method is not blocking!
 	 * 
 	 * @return byte read
@@ -62,7 +62,7 @@ public class UARTInputStream extends InputStream {
 	}
 
 	/**
-	 * Reads the given number of bytes from the SCI. A call of
+	 * Reads the given number of bytes from the UART. A call of
 	 * this method is not blocking!
 	 * 
 	 * @param buffer
@@ -76,7 +76,7 @@ public class UARTInputStream extends InputStream {
 	}
 
 	/**
-	 * Reads the given number of bytes from the SCI. A call of
+	 * Reads the given number of bytes from the UART. A call of
 	 * this method is not blocking!
 	 * 
 	 * @param buffer

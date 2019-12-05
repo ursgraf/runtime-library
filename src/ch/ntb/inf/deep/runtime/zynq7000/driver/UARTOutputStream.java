@@ -61,6 +61,18 @@ public class UARTOutputStream extends OutputStream {
 		} catch (IOException e) {e.printStackTrace();}
 	}
 	
+	/**
+	 * Writes {@code count} bytes from the byte array {@code buffer} starting at
+	 * position {@code offset} to this stream.
+	 *
+	 * @param buffer
+	 *            the buffer to be written.
+	 * @param off
+	 *            the start position in {@code buffer} from where to get bytes.
+	 * @param count
+	 *            the number of bytes from {@code buffer} to write to this
+	 *            stream.
+	 */
 	public void write(byte buffer[], int off, int count) {
 		try {
 			port.write(buffer, off, count);

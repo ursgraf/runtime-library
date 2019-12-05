@@ -16,7 +16,7 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.arm32;
+package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.unsafe.arm.US;
 
