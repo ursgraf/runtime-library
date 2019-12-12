@@ -21,7 +21,7 @@ public class FlinkDemo extends Task implements FlinkDefinitions {
 	static FlinkWatchdog wd;
 	
 	public void action() {
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i <= 3; i++) {
 			gpio.setValue(i, !gpio.getValue(i));
 		}
 	}
@@ -56,23 +56,27 @@ public class FlinkDemo extends Task implements FlinkDefinitions {
 		uart.start(115200, (short)0, (short)8);
 		System.out = new PrintStream(uart.out);
 		System.err = System.out;
-		System.out.println("\nflink demo");
+		System.out.println("\n\rflink demo");
 		
 		fDev = new FlinkDevice(new AXIInterface());
 		FlinkSubDevice[] list = fDev.getDeviceList();
 		
 		lsflink(list);
 	
-		info = new FlinkInfo(fDev.getSubdeviceByType(INFO_DEVICE_ID));
-		System.out.println("got info device");
+		FlinkSubDevice d = fDev.getSubdeviceByType(INFO_DEVICE_ID);
+		if (d != null) info = new FlinkInfo(d);
+		System.out.print("info description: ");
 		System.out.println(info.getDescription());
-		gpio = new FlinkGPIO(fDev.getSubdeviceByType(GPIO_INTERFACE_ID));
-		pwm = new FlinkPWM(fDev.getSubdeviceByType(PWM_INTERFACE_ID));
-		ppwa = new FlinkPPWA(fDev.getSubdeviceByType(PPWA_INTERFACE_ID));
+		d = fDev.getSubdeviceByType(GPIO_INTERFACE_ID);
+		if (d != null) gpio = new FlinkGPIO(d);
+		d = fDev.getSubdeviceByType(PWM_INTERFACE_ID);
+		if (d != null) pwm = new FlinkPWM(d);
+		d = fDev.getSubdeviceByType(PPWA_INTERFACE_ID);
+		if (d != null) ppwa = new FlinkPPWA(d);
 		
-		for(int i = 0; i < 3; i++) gpio.setDir(i, false);
-		for(int i = 3; i < 7; i++) gpio.setDir(3, true);
-		for(int i = 0; i < 3; i++) gpio.setValue(i, i % 2 == 0);		
+		for(int i = 0; i <= 3; i++) gpio.setDir(i, true);
+		for(int i = 4; i <= 7; i++) gpio.setDir(i, false);
+		for(int i = 0; i <= 3; i++) gpio.setValue(i, i % 2 == 0);		
 		Task t = new FlinkDemo();
 		t.period = 500;
 		Task.install(t);

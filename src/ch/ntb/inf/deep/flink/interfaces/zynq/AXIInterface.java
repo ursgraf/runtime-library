@@ -26,7 +26,7 @@ public class AXIInterface implements FlinkBusInterface, FlinkDefinitions {
 	@Override
 	public boolean hasInfoDev() {
 		int function = US.GET4(base);	// info device must be at memory location 0
-		return function >> 16 == 0;	// no info device
+		return function >> 16 == 0;	
 	}	
 
 }

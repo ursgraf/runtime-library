@@ -52,14 +52,10 @@ public class FlinkDevice implements FlinkDefinitions {
 		int deviceLength = 0;
 		FlinkSubDevice firstDevice = new FlinkSubDevice();
 		FlinkSubDevice actualDevice = firstDevice;
-		if (busInterface.hasInfoDev()) {
-			deviceLength = busInterface.getMemoryLength();
-		} else {
-			System.out.println("no info device");
-			deviceLength = busInterface.getMemoryLength();
-		}
+		deviceLength = busInterface.getMemoryLength();
+		if (!busInterface.hasInfoDev()) System.out.println("no info device");
 			
-		while (memptr < deviceLength){
+		while (memptr < deviceLength) {
 			actualDevice.baseAddress = memptr;
 			actualDevice.busInterface = busInterface;
 			
