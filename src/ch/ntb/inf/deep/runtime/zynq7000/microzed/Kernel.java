@@ -42,10 +42,6 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 	
 	@SuppressWarnings("unused")
 	private static void loop() {	// endless loop
-		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(MIO_PIN_07, 0x600);
-		US.PUT4(SLCR_LOCK, 0x767b);
-		US.PUT4(GPIO_DIR0, 0x80);
 		while (true) {
 			try {
 				if (cmdAddr != -1) {
@@ -76,7 +72,7 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 			high2 = US.GET4(GTCR_U); 
 		} while (high1 != high2);
 		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
-		return time / 25;	// clock = 25MHz
+		return time / 333;	// clock = 333MHz
 	}
 	
 	/** 
@@ -92,7 +88,7 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 			high2 = US.GET4(GTCR_U); 
 		} while (high1 != high2);
 		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
-		return time * 40;	// clock = 25MHz
+		return time * 3;	// clock = 333MHz
 	}
 	
 	/** 
@@ -101,15 +97,13 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 	 * @param nTimes Number of times the led blinks.
 	 */
 	public static void blink(int nTimes) { 
-		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(MIO_PIN_07, 0x600);
-		US.PUT4(SLCR_LOCK, 0x767b);
-		US.PUT4(GPIO_DIR0, 0x80);
+		US.PUT4(GPIO_DIR1, US.GET4(GPIO_DIR1) | 0x8000);
+		US.PUT4(GPIO_OUT_EN1, US.GET4(GPIO_OUT_EN1) | 0x8000);
 		int delay = 1000000;
 		for (int i = 0; i < nTimes; i++) {
-			US.PUT4(GPIO_OUT0, US.GET4(GPIO_OUT0) | 0x80);
+			US.PUT4(GPIO_OUT1, US.GET4(GPIO_OUT1) | 0x8000);
 			for (int k = 0; k < delay; k++);
-			US.PUT4(GPIO_OUT0, US.GET4(GPIO_OUT0) ^ 0x80);
+			US.PUT4(GPIO_OUT1, US.GET4(GPIO_OUT1) ^ 0x8000);
 			for (int k = 0; k < delay; k++);
 		}
 		for (int k = 0; k < (10 * delay + nTimes * 2 * delay); k++);
@@ -155,31 +149,37 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
 		
-		US.PUT4(ARM_PLL_CFG, 0x1772c0);	// configure ARM PLL for 1300MHZ with 50MHz quartz
-//		US.PUT4(ARM_PLL_CTRL, 0x1a011);	// divider = 26, bypass, reset
-		US.PUT4(ARM_PLL_CTRL, 0x28011);	// divider = 40, bypass, reset	1333
+		US.PUT4(ARM_PLL_CFG, 0x0fa220);	// configure ARM PLL for 1333MHZ with 33.33MHz quartz
+		US.PUT4(ARM_PLL_CTRL, 0x28011);	// divider = 40, bypass, reset
 		US.PUT4(ARM_PLL_CTRL, US.GET4(ARM_PLL_CTRL) & ~1);	// deassert reset
 		while (!US.BIT(PLL_STATUS, 0));	// wait to lock
 		US.PUT4(ARM_PLL_CTRL, US.GET4(ARM_PLL_CTRL) & ~0x10);	// no bypass
-		US.PUT4(ARM_CLK_CTRL, 0x1f000200);	// use ARM PLL for CPU, divisor = 2 -> processor frequency = 650MHz
-		// CPU_6x4x = 650MHz, CPU_3x2x = 325MHz, CPU_2x = 216.67MHz, CPU_1x = 108.33MHz
+		US.PUT4(ARM_CLK_CTRL, 0x1f000200);	// use ARM PLL for CPU, divisor = 2 -> processor frequency = 667MHz
+		// CPU_6x4x = 667MHz, CPU_3x2x = 333MHz, CPU_2x = 222MHz, CPU_1x = 111MHz
 		
-		US.PUT4(DDR_PLL_CFG, 0x1db2c0);	// configure DDR PLL for 1050MHZ with 50MHz quarz
-		US.PUT4(DDR_PLL_CTRL, 0x15011);	// divider = 21, bypass, reset
+		US.PUT4(DDR_PLL_CFG, 0x12c220);	// configure DDR PLL for 1067MHZ with 33.33MHz quartz
+		US.PUT4(DDR_PLL_CTRL, 0x20011);	// divider = 32, bypass, reset
 		US.PUT4(DDR_PLL_CTRL, US.GET4(DDR_PLL_CTRL) & ~1);	// deassert reset
 		while (!US.BIT(PLL_STATUS, 1));	// wait to lock
 		US.PUT4(DDR_PLL_CTRL, US.GET4(DDR_PLL_CTRL) & ~0x10);	// no bypass
 		US.PUT4(DDR_CLK_CTRL, 0xc200003);	// 2x-divisor = 3, 3x-divisor = 2
 		
-		US.PUT4(IO_PLL_CFG, 0x1f42c0);	// configure IO PLL for 1000MHZ with 50MHz quartz
-//		US.PUT4(IO_PLL_CTRL, 0x14011);	// divider = 20, bypass, reset
+		US.PUT4(IO_PLL_CFG, 0x1f42c0);	// configure IO PLL for 1000MHZ with 33.33MHz quartz
 		US.PUT4(IO_PLL_CTRL, 0x1e011);	// divider = 30, bypass, reset
 		US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~1);	// deassert reset
 		while (!US.BIT(PLL_STATUS, 2));	// wait to lock
 		US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~0x10);	// no bypass
 
-		US.PUT4(UART_CLK_CTRL, 0xa02);	// UART clock, divisor = 10 -> 100MHz, select IO PLL
+		US.PUT4(UART_CLK_CTRL, 0xa03);	// UART clock, divisor = 10 -> 100MHz, select IO PLL, clock enable for UART0/1
+		US.PUT4(APER_CLK_CTRL, 0x01ffcccd);	// enable clocks to access register of all peripherials
+        US.PUT4(GTCR, 0x1);	// enable global timer, prescaler = 1 -> 333MHz
 		
+		US.PUT4(MIO_PIN_47, 0x300);		// led
+		US.PUT4(MIO_PIN_48, 0x12e0);	// UART1 tx
+		US.PUT4(MIO_PIN_49, 0x12e1);	// UART1 rx
+
+        US.PUT4(OCM_CFG, 0x10);	// map all OCM blocks to lower address
+
 		US.PUT4(SLCR_LOCK, 0x767b);
 
         // enable coprocessor 10 and 11
@@ -192,12 +192,6 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
         US.ASM("orr r6, r6, #0x40000000");
         US.ASM("vmsr FPEXC, r6");
         
-		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-        US.PUT4(OCM_CFG, 0x10);	// map all OCM blocks to lower address
-        US.PUT4(SLCR_LOCK, 0x767b);
-        
-        US.PUT4(GTCR, 0xc01);	// enable global timer, prescaler = 12 -> 325MHz / 13 = 25MHz
-
  		// mark stack end with specific pattern
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
 		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);

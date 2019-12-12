@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2019-12-05 15:32:46)
+// Auto generated file (2019-12-09 09:06:01)
 
 public interface Izynq7000 extends Iarm32 {
 
@@ -53,6 +53,7 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int IO_PLL_CFG = 0xf8000118;
 	public static final int ARM_CLK_CTRL = 0xf8000120;
 	public static final int DDR_CLK_CTRL = 0xf8000124;
+	public static final int APER_CLK_CTRL = 0xf800012c;
 	public static final int UART_CLK_CTRL = 0xf8000154;
 	public static final int MIO_PIN_00 = 0xf8000700;
 	public static final int MIO_PIN_07 = 0xf800071c;
