@@ -30,7 +30,7 @@ import ch.ntb.inf.deep.runtime.zynq7000.driver.UART;
 /**
  * Simple demo application how to use the <code>Decrementer</code>.
  * This application simply outputs the character 'x' once
- * per second over the SCI2.
+ * per second over the UART1.
  */
 public class DecrementerDemo extends Decrementer {
 	static DecrementerDemo decTest; 
@@ -47,7 +47,7 @@ public class DecrementerDemo extends Decrementer {
 		uart.start(115200, (short)0, (short)8);
 		System.out = new PrintStream(uart.out);
 		System.err = System.out;
-		System.out.print("System.out demo (UART)");
+		System.out.print("Decrementer demo (UART1)");
 		
 		// Create and install the Decrementer demo
 		decTest = new DecrementerDemo(); 

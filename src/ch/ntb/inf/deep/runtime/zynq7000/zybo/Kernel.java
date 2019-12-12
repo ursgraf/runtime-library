@@ -32,10 +32,7 @@ import ch.ntb.inf.deep.unsafe.arm.US;
  */
 public class Kernel implements Izybo, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
-	/** Clock frequency of the processor. */
-	public static final int clockFrequency = 400000000; // Hz
-	/** Clock frequency of the processor. */
-	public static final int UART_CLK = 100000000; // Hz
+
 	static int loopAddr;
 	static int cmdAddr;
 	static long t = 0x1122;

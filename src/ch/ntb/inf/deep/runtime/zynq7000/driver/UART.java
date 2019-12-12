@@ -23,7 +23,6 @@ import java.io.IOException;
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
 import ch.ntb.inf.deep.runtime.zynq7000.IrqInterrupt;
 import ch.ntb.inf.deep.runtime.zynq7000.Izynq7000;
-import ch.ntb.inf.deep.runtime.zynq7000.zybo.Kernel;
 import ch.ntb.inf.deep.unsafe.arm.US;
 
 /**
@@ -43,6 +42,7 @@ public class UART extends IrqInterrupt implements Izynq7000 {
 			FRAME_ERR = 1, PARITY_ERR = 0, LENGTH_NEG_ERR = -1,
 			OFFSET_NEG_ERR = -2, NULL_POINTER_ERR = -3;
 	public static final int QUEUE_LEN = 2047, HW_QUEUE_LEN = 63;
+	public static final int UART_CLK = 100000000; // Hz
 	
 	/**
 	 * Output stream to write to this <i>UART</i>.
@@ -130,7 +130,7 @@ public class UART extends IrqInterrupt implements Izynq7000 {
 
 	public void start(int baudRate, short parity, short data) {
 		final int BDIV = 15;
-		US.PUT4(UART0_BAUDGEN + diff, Kernel.UART_CLK / (baudRate * (BDIV + 1)));	// CD
+		US.PUT4(UART0_BAUDGEN + diff, UART_CLK / (baudRate * (BDIV + 1)));	// CD
 		US.PUT4(UART0_BAUDDIV + diff, BDIV);
 		int val = 0;
 		if (parity == NO_PARITY) val |= 0x20;
