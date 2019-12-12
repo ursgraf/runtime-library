@@ -68,7 +68,7 @@ public class UART extends IrqInterrupt implements Izynq7000 {
 	
 	private int diff; // used to access register interface for UART0 or UART1
 	private static UART uart0, uart1;
-	static private boolean toQueue, fromQueue;
+	private boolean toQueue, fromQueue;
 
 	/**
 	 * Returns an instance of <i>UART Interface</i> 
@@ -104,17 +104,18 @@ public class UART extends IrqInterrupt implements Izynq7000 {
 		UART uart;
 		if (diff == 0) uart = uart0; else uart = uart1;
 		int status = US.GET4(UART0_ISR + diff);
-		if ((status & (1 << IXR_RXOVR)) != 0) {
+		if ((status & (1 << IXR_RXOVR)) != 0) {	// rx fifo full
 			while ((US.GET4(UART0_SR + diff) & (1 << SR_RXEMPTY)) == 0) {
 				rxQueue.enqueue((byte)US.GET4(UART0_FIFO + diff));
 			}
 			fromQueue = true;
 			US.PUT4(UART0_ISR + diff, (1 << IXR_RXOVR));	// clear interrupt status bit
-		} else if ((status & (1 << IXR_TXFULL)) != 0) {
+		} else if ((status & (1 << IXR_TXFULL)) != 0) {	// tx fifo full
 			toQueue = true;
 			US.PUT4(UART0_IER + diff, (1 << IXR_TXEMPTY));	// enable tx FIFO empty
 			US.PUT4(UART0_ISR + diff, (1 << IXR_TXFULL));	// clear interrupt status bit
-		} else {	// must be IXR_TXEMPTY
+			US.PUT4(UART0_ISR + diff, (1 << IXR_TXEMPTY));	// clear interrupt status bit, might be set at startup
+		} else {	// must be IXR_TXEMPTY, tx fifo empty
 			ByteFifo queue = uart.txQueue;
 			for (int i = 0; i < queue.availToRead() && i < HW_QUEUE_LEN; i++)
 				try {
