@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2019-12-09 09:06:01)
+// Auto generated file (2019-12-18 16:26:36)
 
 public interface Izynq7000 extends Iarm32 {
 
@@ -53,8 +53,24 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int IO_PLL_CFG = 0xf8000118;
 	public static final int ARM_CLK_CTRL = 0xf8000120;
 	public static final int DDR_CLK_CTRL = 0xf8000124;
+	public static final int DCI_CLK_CTRL = 0xf8000128;
 	public static final int APER_CLK_CTRL = 0xf800012c;
+	public static final int LQSPI_CLK_CTRL = 0xf800014c;
 	public static final int UART_CLK_CTRL = 0xf8000154;
+	public static final int SPI_CLK_CTRL = 0xf8000158;
+	public static final int DBG_CLK_CTRL = 0xf8000164;
+	public static final int PCAP_CLK_CTRL = 0xf8000168;
+	public static final int TOPSW_CLK_CTRL = 0xf8000168;
+	public static final int FPGA0_CLK_CTRL = 0xf8000170;
+	public static final int FPGA1_CLK_CTRL = 0xf8000180;
+	public static final int FPGA2_CLK_CTRL = 0xf8000190;
+	public static final int FPGA3_CLK_CTRL = 0xf80001a0;
+	public static final int CLK_621_TRUE = 0xf80001c4;
+	public static final int PSS_RST_CTRL = 0xf8000200;
+	public static final int DDR_RST_CTRL = 0xf8000204;
+	public static final int FPGA_RST_CTRL = 0xf8000240;
+	public static final int REBOOT_STATUS = 0xf8000258;
+	public static final int BOOT_MODE = 0xf800025c;
 	public static final int MIO_PIN_00 = 0xf8000700;
 	public static final int MIO_PIN_07 = 0xf800071c;
 	public static final int MIO_PIN_10 = 0xf8000728;
@@ -63,7 +79,23 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int MIO_PIN_48 = 0xf80007c0;
 	public static final int MIO_PIN_49 = 0xf80007c4;
 	public static final int MIO_PIN_51 = 0xf80007cc;
+	public static final int LVL_SHFTR_EN = 0xf8000900;
 	public static final int OCM_CFG = 0xf8000910;
+	public static final int GPIOB_CTRL = 0xf8000b00;
+	public static final int DDRIOB_ADDR0 = 0xf8000b40;
+	public static final int DDRIOB_ADDR1 = 0xf8000b44;
+	public static final int DDRIOB_DATA0 = 0xf8000b48;
+	public static final int DDRIOB_DATA1 = 0xf8000b4c;
+	public static final int DDRIOB_DIFF0 = 0xf8000b50;
+	public static final int DDRIOB_DIFF1 = 0xf8000b54;
+	public static final int DDRIOB_CLOCK = 0xf8000b58;
+	public static final int DDRIOB_DRIVE_SLEW_ADDR = 0xf8000b5c;
+	public static final int DDRIOB_DRIVE_SLEW_DATA = 0xf8000b60;
+	public static final int DDRIOB_DRIVE_SLEW_DIFF = 0xf8000b64;
+	public static final int DDRIOB_DRIVE_SLEW_CLOCK = 0xf8000b68;
+	public static final int DDRIOB_DDR_CTRL = 0xf8000b6c;
+	public static final int DDRIOB_DCI_CTRL = 0xf8000b70;
+	public static final int DDRIOB_DCI_STATUS = 0xf8000b74;
 	public static final int ICCICR = 0xf8f00100;
 	public static final int ICCPMR = 0xf8f00104;
 	public static final int ICCBPR = 0xf8f00108;

@@ -244,9 +244,21 @@ cpu zynq7010 {
 			 size = 4;
 		}
 		
+		register DCI_CLK_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x128;
+			 size = 4;
+		}
+		
 		register APER_CLK_CTRL {
 			 type = IOR;
 			 addr = slcrReg + 0x12c;
+			 size = 4;
+		}
+		
+		register LQSPI_CLK_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x14c;
 			 size = 4;
 		}
 		
@@ -256,6 +268,90 @@ cpu zynq7010 {
 			 size = 4;
 		}
 		
+		register SPI_CLK_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x158;
+			 size = 4;
+		}
+		
+		register DBG_CLK_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x164;
+			 size = 4;
+		}
+		
+		register PCAP_CLK_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x168;
+			 size = 4;
+		}
+		
+		register TOPSW_CLK_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x168;
+			 size = 4;
+		}
+
+		register FPGA0_CLK_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x170;
+			 size = 4;
+		}
+
+		register FPGA1_CLK_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x180;
+			 size = 4;
+		}
+
+		register FPGA2_CLK_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x190;
+			 size = 4;
+		}
+
+		register FPGA3_CLK_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x1a0;
+			 size = 4;
+		}
+
+		register CLK_621_TRUE {
+			 type = IOR;
+			 addr = slcrReg + 0x1c4;
+			 size = 4;
+		}
+
+		register PSS_RST_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x200;
+			 size = 4;
+		}
+
+		register DDR_RST_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x204;
+			 size = 4;
+		}
+
+		register FPGA_RST_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x240;
+			 size = 4;
+		}
+
+		register REBOOT_STATUS {
+			 type = IOR;
+			 addr = slcrReg + 0x258;
+			 size = 4;
+		}
+
+		register BOOT_MODE {
+			 type = IOR;
+			 addr = slcrReg + 0x25c;
+			 size = 4;
+		}
+
 		register MIO_PIN_00 {
 			 type = IOR;
 			 addr = slcrReg + 0x700;
@@ -304,12 +400,108 @@ cpu zynq7010 {
 			 size = 4;
 		}
 		
+		register LVL_SHFTR_EN {
+			 type = IOR;
+			 addr = slcrReg + 0x900;
+			 size = 4;
+		}
+		
 		register OCM_CFG {
 			 type = IOR;
 			 addr = slcrReg + 0x910;
 			 size = 4;
 		}
 		
+		register GPIOB_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0xb00;
+			 size = 4;
+		}
+
+		register DDRIOB_ADDR0 {
+			 type = IOR;
+			 addr = slcrReg + 0xb40;
+			 size = 4;
+		}
+
+		register DDRIOB_ADDR1 {
+			 type = IOR;
+			 addr = slcrReg + 0xb44;
+			 size = 4;
+		}
+
+		register DDRIOB_DATA0 {
+			 type = IOR;
+			 addr = slcrReg + 0xb48;
+			 size = 4;
+		}
+
+		register DDRIOB_DATA1 {
+			 type = IOR;
+			 addr = slcrReg + 0xb4c;
+			 size = 4;
+		}
+
+		register DDRIOB_DIFF0 {
+			 type = IOR;
+			 addr = slcrReg + 0xb50;
+			 size = 4;
+		}
+
+		register DDRIOB_DIFF1 {
+			 type = IOR;
+			 addr = slcrReg + 0xb54;
+			 size = 4;
+		}
+
+		register DDRIOB_CLOCK {
+			 type = IOR;
+			 addr = slcrReg + 0xb58;
+			 size = 4;
+		}
+
+		register DDRIOB_DRIVE_SLEW_ADDR {
+			 type = IOR;
+			 addr = slcrReg + 0xb5c;
+			 size = 4;
+		}
+
+		register DDRIOB_DRIVE_SLEW_DATA {
+			 type = IOR;
+			 addr = slcrReg + 0xb60;
+			 size = 4;
+		}
+
+		register DDRIOB_DRIVE_SLEW_DIFF {
+			 type = IOR;
+			 addr = slcrReg + 0xb64;
+			 size = 4;
+		}
+
+		register DDRIOB_DRIVE_SLEW_CLOCK {
+			 type = IOR;
+			 addr = slcrReg + 0xb68;
+			 size = 4;
+		}
+
+		register DDRIOB_DDR_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0xb6c;
+			 size = 4;
+		}
+
+		register DDRIOB_DCI_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0xb70;
+			 size = 4;
+		}
+
+		register DDRIOB_DCI_STATUS {
+			 type = IOR;
+			 addr = slcrReg + 0xb74;
+			 size = 4;
+		}
+
 		# GIC interface registers
 		
 		register ICCICR {
