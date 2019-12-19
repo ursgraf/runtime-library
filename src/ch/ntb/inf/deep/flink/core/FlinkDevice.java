@@ -109,4 +109,30 @@ public class FlinkDevice implements FlinkDefinitions {
 			return Integer.toString(id);
 		}	
 	}
+	
+	public void lsflink() {
+		FlinkSubDevice[] list = getDeviceList();
+		System.out.println("Subdevices of flink device 0:");
+		for(FlinkSubDevice s : list) {
+			System.out.print("\t");
+			System.out.print(s.id);
+			System.out.println(":");
+			System.out.print("\t\tAddress range: ");
+			System.out.printHex(s.baseAddress);
+			System.out.print(" - ");
+			System.out.printHexln(s.baseAddress + s.memSize);
+			System.out.print("\t\tMemory Size: ");
+			System.out.printHexln(s.memSize);
+			System.out.print("\t\tFunction: ");
+			System.out.println(FlinkDevice.idToCharArray(s.function));
+			System.out.print("\t\tSubfunction: ");
+			System.out.println(s.subFunction);
+			System.out.print("\t\tFunction version: ");
+			System.out.println(s.version);
+			System.out.print("\t\tNof channels: ");
+			System.out.println(s.nofChannels);
+			System.out.print("\t\tUnique id: ");
+			System.out.println(s.uniqueID);
+		}
+	}
 }

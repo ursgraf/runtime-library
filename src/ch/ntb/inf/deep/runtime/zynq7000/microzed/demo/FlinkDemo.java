@@ -1,4 +1,4 @@
-package ch.ntb.inf.deep.runtime.zynq7000.demo;
+package ch.ntb.inf.deep.runtime.zynq7000.microzed.demo;
 
 import java.io.PrintStream;
 
@@ -24,31 +24,10 @@ public class FlinkDemo extends Task implements FlinkDefinitions {
 		for (int i = 0; i <= 3; i++) {
 			gpio.setValue(i, !gpio.getValue(i));
 		}
-	}
-
-	private static void lsflink(FlinkSubDevice[] list) {
-		System.out.println("Subdevices of flink device 0:");
-		for(FlinkSubDevice s : list) {
-			System.out.print("\t");
-			System.out.print(s.id);
-			System.out.println(":");
-			System.out.print("\t\tAddress range: ");
-			System.out.printHex(s.baseAddress);
-			System.out.print(" - ");
-			System.out.printHexln(s.baseAddress + s.memSize);
-			System.out.print("\t\tMemory Size: ");
-			System.out.printHexln(s.memSize);
-			System.out.print("\t\tFunction: ");
-			System.out.println(FlinkDevice.idToCharArray(s.function));
-			System.out.print("\t\tSubfunction: ");
-			System.out.println(s.subFunction);
-			System.out.print("\t\tFunction version: ");
-			System.out.println(s.version);
-			System.out.print("\t\tNof channels: ");
-			System.out.println(s.nofChannels);
-			System.out.print("\t\tUnique id: ");
-			System.out.println(s.uniqueID);
-		}
+//		gpio.setValue(4, true);
+//		gpio.setValue(5, false);
+//		System.out.print(gpio.getValue(6)); System.out.print("\t");
+//		System.out.print(gpio.getValue(7)); System.out.println();
 	}
 
 	static {
@@ -59,9 +38,7 @@ public class FlinkDemo extends Task implements FlinkDefinitions {
 		System.out.println("\n\rflink demo");
 		
 		fDev = new FlinkDevice(new AXIInterface());
-		FlinkSubDevice[] list = fDev.getDeviceList();
-		
-		lsflink(list);
+		fDev.lsflink();
 	
 		FlinkSubDevice d = fDev.getSubdeviceByType(INFO_DEVICE_ID);
 		if (d != null) info = new FlinkInfo(d);
@@ -74,9 +51,17 @@ public class FlinkDemo extends Task implements FlinkDefinitions {
 		d = fDev.getSubdeviceByType(PPWA_INTERFACE_ID);
 		if (d != null) ppwa = new FlinkPPWA(d);
 		
+//		for(int i = 0; i <= 5; i++) gpio.setDir(i, true);
+//		for(int i = 6; i <= 7; i++) gpio.setDir(i, false);
+//		for(int i = 0; i <= 3; i++) gpio.setValue(i, i % 2 == 0);	
 		for(int i = 0; i <= 3; i++) gpio.setDir(i, true);
-		for(int i = 4; i <= 7; i++) gpio.setDir(i, false);
-		for(int i = 0; i <= 3; i++) gpio.setValue(i, i % 2 == 0);		
+		for(int i = 6; i <= 7; i++) gpio.setDir(i, false);
+		for(int i = 0; i <= 3; i++) gpio.setValue(i, i % 2 == 0);	
+		
+		final int period = 1000; // 1kHz
+		pwm.setPeriod(0, pwm.getBaseClock() / period);
+		pwm.setHighTime(0, (int) (pwm.getBaseClock() / period * 0.2)); 
+		
 		Task t = new FlinkDemo();
 		t.period = 500;
 		Task.install(t);
