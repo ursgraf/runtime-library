@@ -35,7 +35,6 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 
 	static int loopAddr;
 	static int cmdAddr;
-	static long t = 0x1122;
 	
 	@SuppressWarnings("unused")
 	private static void loop() {	// endless loop
@@ -49,7 +48,6 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 				}
 			} catch (Exception e) {
 				cmdAddr = -1;	// stop trying to run the same method
-				t = 0x1234;
 				e.printStackTrace();
 				Kernel.blink(2);
 			}
@@ -94,6 +92,9 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 	 * @param nTimes Number of times the led blinks.
 	 */
 	public static void blink(int nTimes) { 
+		US.PUT4(SLCR_UNLOCK, 0xdf0d);
+		US.PUT4(MIO_PIN_47, 0x300);		// led, LVCMOS18, fast, GPIO 7, tristate disable
+		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR1, US.GET4(GPIO_DIR1) | 0x8000);
 		US.PUT4(GPIO_OUT_EN1, US.GET4(GPIO_OUT_EN1) | 0x8000);
 		int delay = 1000000;
@@ -141,7 +142,6 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 	}
 	
 	private static void boot() {
-//		blink(2);
 //		US.ASM("b -8"); // stop here
 
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
@@ -169,14 +169,16 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 
 		US.PUT4(UART_CLK_CTRL, 0xa03);	// UART clock, divisor = 10 -> 100MHz, select IO PLL, clock enable for UART0/1
 		US.PUT4(APER_CLK_CTRL, 0x01ffcccd);	// enable clocks to access register of all peripherials
+		US.PUT4(FPGA0_CLK_CTRL, 0x00200500); // PL clock 0, divisor1 = 2, divisor0 = 5, select IO PLL -> 100MHz
         US.PUT4(GTCR, 0x1);	// enable global timer, prescaler = 1 -> 333MHz
 		
-		US.PUT4(MIO_PIN_47, 0x300);		// led
+		US.PUT4(MIO_PIN_47, 0x300);		// led, LVCMOS18, fast, GPIO 7, tristate disable
 		US.PUT4(MIO_PIN_48, 0x12e0);	// UART1 tx
 		US.PUT4(MIO_PIN_49, 0x12e1);	// UART1 rx
 
         US.PUT4(OCM_CFG, 0x10);	// map all OCM blocks to lower address
-
+		US.PUT4(LVL_SHFTR_EN, 0xf);	// enable all level shifters between PS and PL
+		US.PUT4(FPGA_RST_CTRL, 0);	// deassert FPGA reset
 		US.PUT4(SLCR_LOCK, 0x767b);
 
         // enable coprocessor 10 and 11
@@ -198,7 +200,7 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 		US.PUT4(ICCPMR, 0xff);	// set mask, the last 3 bits are read as 0
 		US.PUT4(ICCICR, 1);	// use irq, global interrupt enable
 		US.PUT4(ICDDCR, 1);	// enable distributor
-
+		
 		int classConstOffset = US.GET4(sysTabBaseAddr);
 //		int state = 0;
 		while (true) {

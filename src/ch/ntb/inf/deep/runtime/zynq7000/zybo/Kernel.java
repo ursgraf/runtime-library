@@ -35,14 +35,9 @@ public class Kernel implements Izybo, IdeepCompilerConstants {
 
 	static int loopAddr;
 	static int cmdAddr;
-	static long t = 0x1122;
 	
 	@SuppressWarnings("unused")
 	private static void loop() {	// endless loop
-		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(MIO_PIN_07, 0x600);
-		US.PUT4(SLCR_LOCK, 0x767b);
-		US.PUT4(GPIO_DIR0, 0x80);
 		while (true) {
 			try {
 				if (cmdAddr != -1) {
@@ -53,7 +48,6 @@ public class Kernel implements Izybo, IdeepCompilerConstants {
 				}
 			} catch (Exception e) {
 				cmdAddr = -1;	// stop trying to run the same method
-				t = 0x1234;
 				e.printStackTrace();
 				Kernel.blink(2);
 			}
@@ -99,7 +93,7 @@ public class Kernel implements Izybo, IdeepCompilerConstants {
 	 */
 	public static void blink(int nTimes) { 
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(MIO_PIN_07, 0x600);
+		US.PUT4(MIO_PIN_07, 0x600);	// LVCMOS33, slow, GPIO 7, tristate disable
 		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR0, 0x80);
 		int delay = 1000000;
@@ -147,7 +141,6 @@ public class Kernel implements Izybo, IdeepCompilerConstants {
 	}
 	
 	private static void boot() {
-//		blink(2);
 //		US.ASM("b -8"); // stop here
 
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
