@@ -15,6 +15,10 @@ public class FlinkPWM implements FlinkDefinitions {
 		this.highTime0Address = PERIOD_0_ADDRESS + dev.nofChannels * REGISTER_WIDTH;
 	}
 	
+	/**
+	 * Returns the base clock of the underlying hardware counter.
+	 * @return	the base clock in Hz.
+	 */
 	public int getBaseClock() {
 		return dev.read(BASE_CLOCK_ADDRESS);
 	}

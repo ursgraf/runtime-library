@@ -3,7 +3,6 @@ package ch.ntb.inf.deep.runtime.zynq7000.zybo.demo;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.flink.core.*;
-import ch.ntb.inf.deep.flink.interfaces.zynq.AXIInterface;
 import ch.ntb.inf.deep.flink.subdevices.*;
 import ch.ntb.inf.deep.runtime.arm32.Task;
 import ch.ntb.inf.deep.runtime.zynq7000.driver.UART;
@@ -37,15 +36,10 @@ public class FlinkDemo extends Task implements FlinkDefinitions {
 		System.err = System.out;
 		System.out.println("\n\rflink demo");
 		
-		fDev = new FlinkDevice(new AXIInterface());
-		fDev.lsflink();
-	
-		FlinkSubDevice d = fDev.getSubdeviceByType(INFO_DEVICE_ID);
-		if (d != null) info = new FlinkInfo(d);
+		info = FlinkDevice.getInfo();
 		System.out.print("info description: ");
 		System.out.println(info.getDescription());
-		d = fDev.getSubdeviceByType(GPIO_INTERFACE_ID);
-		if (d != null) gpio = new FlinkGPIO(d);
+		gpio = FlinkDevice.getGPIO();
 		
 		for(int i = 0; i <= 3; i++) gpio.setDir(i, true);
 //		for(int i = 6; i <= 7; i++) gpio.setDir(i, false);

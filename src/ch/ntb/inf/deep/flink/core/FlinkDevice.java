@@ -1,13 +1,33 @@
 package ch.ntb.inf.deep.flink.core;
 
+import ch.ntb.inf.deep.flink.interfaces.zynq.AXIInterface;
+import ch.ntb.inf.deep.flink.subdevices.FlinkCounter;
+import ch.ntb.inf.deep.flink.subdevices.FlinkGPIO;
+import ch.ntb.inf.deep.flink.subdevices.FlinkInfo;
+import ch.ntb.inf.deep.flink.subdevices.FlinkPPWA;
+import ch.ntb.inf.deep.flink.subdevices.FlinkPWM;
+
 public class FlinkDevice implements FlinkDefinitions {
 	
 	private FlinkBusInterface busInterface;
 	private FlinkSubDevice list[];
+	private static FlinkDevice instance;
 
-	public FlinkDevice(FlinkBusInterface busInterface) {		
+	private FlinkDevice(FlinkBusInterface busInterface) {		
 		this.busInterface = busInterface;
 		findSubdevices();
+	}
+	
+	/** 
+	 * Returns an flink device. The processor reads over a AXI bus interface the content of 
+	 * a flink device implemented in the FPGA hardware. Depending on the configuration of the FPGA
+	 * various flink subdevices are available.
+	 * 
+	 * @return flink device
+	 */
+	public static FlinkDevice getInstance() {
+		if (instance == null) instance = new FlinkDevice(new AXIInterface());
+		return instance;
 	}
 	
 	public int getNumberOfSubDevices(){
@@ -59,7 +79,7 @@ public class FlinkDevice implements FlinkDefinitions {
 			actualDevice.baseAddress = memptr;
 			actualDevice.busInterface = busInterface;
 			
-			//id register
+			// id register
 			int reg = busInterface.read(memptr + TYPE_OFFSET);
 			actualDevice.function = reg >> 16;
 			actualDevice.subFunction = (reg >> 8) & 0xFF;
@@ -70,18 +90,18 @@ public class FlinkDevice implements FlinkDefinitions {
 			actualDevice.id = nofSubdevices;
 			memptr = memptr + actualDevice.memSize;
 			
-			//create new device
-			if(memptr < deviceLength) {
+			// create new device
+			if (memptr < deviceLength) {
 				FlinkSubDevice nextDevice = new FlinkSubDevice();
 				actualDevice.next = nextDevice;
 				actualDevice = nextDevice;
 			}
 			nofSubdevices++;
 		}
-		//create array for easier access
+		// create array for easier access
 		this.list = new FlinkSubDevice[nofSubdevices];
 		actualDevice = firstDevice;
-		for(int i = 0 ; i < nofSubdevices;i++){
+		for (int i = 0 ; i < nofSubdevices;i++) {
 			this.list[i] = actualDevice;
 			actualDevice = actualDevice.next;
 		}
@@ -134,5 +154,35 @@ public class FlinkDevice implements FlinkDefinitions {
 			System.out.print("\t\tUnique id: ");
 			System.out.println(s.uniqueID);
 		}
+	}
+
+	public static FlinkPWM getPWM() {
+		FlinkSubDevice d = getInstance().getSubdeviceByType(PWM_INTERFACE_ID);
+		if (d != null) return new FlinkPWM(d);
+		return null;
+	}
+
+	public static FlinkCounter getCounter() {
+		FlinkSubDevice d = getInstance().getSubdeviceByType(COUNTER_INTERFACE_ID);
+		if (d != null) return new FlinkCounter(d);
+		return null;
+	}
+
+	public static FlinkInfo getInfo() {
+		FlinkSubDevice d = getInstance().getSubdeviceByType(INFO_DEVICE_ID);
+		if (d != null) return new FlinkInfo(d);
+		return null;
+	}
+
+	public static FlinkGPIO getGPIO() {
+		FlinkSubDevice d = getInstance().getSubdeviceByType(GPIO_INTERFACE_ID);
+		if (d != null) return new FlinkGPIO(d);
+		return null;
+	}
+
+	public static FlinkPPWA getPPWA() {
+		FlinkSubDevice d = getInstance().getSubdeviceByType(PPWA_INTERFACE_ID);
+		if (d != null) return new FlinkPPWA(d);
+		return null;
 	}
 }

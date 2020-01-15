@@ -3,7 +3,6 @@ package ch.ntb.inf.deep.runtime.zynq7000.microzed.demo;
 import java.io.PrintStream;
 
 import ch.ntb.inf.deep.flink.core.*;
-import ch.ntb.inf.deep.flink.interfaces.zynq.AXIInterface;
 import ch.ntb.inf.deep.flink.subdevices.*;
 import ch.ntb.inf.deep.runtime.arm32.Task;
 import ch.ntb.inf.deep.runtime.zynq7000.driver.UART;
@@ -17,6 +16,7 @@ public class FlinkDemo extends Task implements FlinkDefinitions {
 	static FlinkInfo info;
 	static FlinkGPIO gpio;
 	static FlinkPWM pwm;
+	static FlinkCounter fqd;
 	static FlinkPPWA ppwa;
 	static FlinkWatchdog wd;
 	
@@ -27,7 +27,8 @@ public class FlinkDemo extends Task implements FlinkDefinitions {
 //		gpio.setValue(4, true);
 //		gpio.setValue(5, false);
 //		System.out.print(gpio.getValue(6)); System.out.print("\t");
-//		System.out.print(gpio.getValue(7)); System.out.println();
+//		System.out.print(fqd.getValue(7)); System.out.println();
+		System.out.println(fqd.getCount(0));
 	}
 
 	static {
@@ -37,19 +38,16 @@ public class FlinkDemo extends Task implements FlinkDefinitions {
 		System.err = System.out;
 		System.out.println("\n\rflink demo");
 		
-		fDev = new FlinkDevice(new AXIInterface());
+		fDev = FlinkDevice.getInstance();
 		fDev.lsflink();
 	
-		FlinkSubDevice d = fDev.getSubdeviceByType(INFO_DEVICE_ID);
-		if (d != null) info = new FlinkInfo(d);
+		info = FlinkDevice.getInfo();
 		System.out.print("info description: ");
 		System.out.println(info.getDescription());
-		d = fDev.getSubdeviceByType(GPIO_INTERFACE_ID);
-		if (d != null) gpio = new FlinkGPIO(d);
-		d = fDev.getSubdeviceByType(PWM_INTERFACE_ID);
-		if (d != null) pwm = new FlinkPWM(d);
-		d = fDev.getSubdeviceByType(PPWA_INTERFACE_ID);
-		if (d != null) ppwa = new FlinkPPWA(d);
+		gpio = FlinkDevice.getGPIO();
+		pwm = FlinkDevice.getPWM();
+		ppwa = FlinkDevice.getPPWA();
+		fqd = FlinkDevice.getCounter();
 		
 //		for(int i = 0; i <= 5; i++) gpio.setDir(i, true);
 //		for(int i = 6; i <= 7; i++) gpio.setDir(i, false);
