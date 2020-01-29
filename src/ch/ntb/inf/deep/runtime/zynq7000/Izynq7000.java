@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2019-12-18 16:26:36)
+// Auto generated file (2020-01-28 12:55:05)
 
 public interface Izynq7000 extends Iarm32 {
 
@@ -72,9 +72,15 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int REBOOT_STATUS = 0xf8000258;
 	public static final int BOOT_MODE = 0xf800025c;
 	public static final int MIO_PIN_00 = 0xf8000700;
+	public static final int MIO_PIN_01 = 0xf8000704;
 	public static final int MIO_PIN_07 = 0xf800071c;
+	public static final int MIO_PIN_09 = 0xf8000724;
 	public static final int MIO_PIN_10 = 0xf8000728;
 	public static final int MIO_PIN_11 = 0xf800072c;
+	public static final int MIO_PIN_12 = 0xf8000730;
+	public static final int MIO_PIN_13 = 0xf8000734;
+	public static final int MIO_PIN_14 = 0xf8000738;
+	public static final int MIO_PIN_15 = 0xf800073c;
 	public static final int MIO_PIN_47 = 0xf80007bc;
 	public static final int MIO_PIN_48 = 0xf80007c0;
 	public static final int MIO_PIN_49 = 0xf80007c4;

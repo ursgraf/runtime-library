@@ -173,6 +173,8 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
         US.PUT4(GTCR, 0x1);	// enable global timer, prescaler = 1 -> 333MHz
 		
 		US.PUT4(MIO_PIN_47, 0x300);		// led, LVCMOS18, fast, GPIO 7, tristate disable
+		US.PUT4(MIO_PIN_14, 0x12e1);	// UART0 rx
+		US.PUT4(MIO_PIN_15, 0x12e0);	// UART0 tx
 		US.PUT4(MIO_PIN_48, 0x12e0);	// UART1 tx
 		US.PUT4(MIO_PIN_49, 0x12e1);	// UART1 rx
 

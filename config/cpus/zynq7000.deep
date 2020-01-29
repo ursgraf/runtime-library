@@ -358,9 +358,21 @@ cpu zynq7010 {
 			 size = 4;
 		}
 		
+		register MIO_PIN_01 {
+			 type = IOR;
+			 addr = slcrReg + 0x704;
+			 size = 4;
+		}
+		
 		register MIO_PIN_07 {
 			 type = IOR;
 			 addr = slcrReg + 0x71c;
+			 size = 4;
+		}
+		
+		register MIO_PIN_09 {
+			 type = IOR;
+			 addr = slcrReg + 0x724;
 			 size = 4;
 		}
 		
@@ -373,6 +385,30 @@ cpu zynq7010 {
 		register MIO_PIN_11 {
 			 type = IOR;
 			 addr = slcrReg + 0x72c;
+			 size = 4;
+		}
+		
+		register MIO_PIN_12 {
+			 type = IOR;
+			 addr = slcrReg + 0x730;
+			 size = 4;
+		}
+		
+		register MIO_PIN_13 {
+			 type = IOR;
+			 addr = slcrReg + 0x734;
+			 size = 4;
+		}
+		
+		register MIO_PIN_14 {
+			 type = IOR;
+			 addr = slcrReg + 0x738;
+			 size = 4;
+		}
+		
+		register MIO_PIN_15 {
+			 type = IOR;
+			 addr = slcrReg + 0x73c;
 			 size = 4;
 		}
 		
