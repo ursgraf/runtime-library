@@ -3,7 +3,7 @@ package ch.ntb.inf.deep.flink.core;
 public class FlinkSubDevice implements FlinkDefinitions {
 	public FlinkSubDevice next;
 	public int function;
-	public int subFunction; 
+	public int subType; 
 	public int version; 
 	public int memSize;
 	public int nofChannels;

@@ -1,6 +1,7 @@
 package ch.ntb.inf.deep.flink.core;
 
 import ch.ntb.inf.deep.flink.interfaces.zynq.AXIInterface;
+import ch.ntb.inf.deep.flink.subdevices.FlinkADC;
 import ch.ntb.inf.deep.flink.subdevices.FlinkCounter;
 import ch.ntb.inf.deep.flink.subdevices.FlinkGPIO;
 import ch.ntb.inf.deep.flink.subdevices.FlinkInfo;
@@ -42,28 +43,22 @@ public class FlinkDevice implements FlinkDefinitions {
 		if (nr < list.length) return list[nr]; else return null;
 	}
 	
-	public FlinkSubDevice getSubdeviceByType(int type, int nr) {
-		int subDevNr = 0;
+	public FlinkSubDevice getSubdeviceByType(int type, int subType) {
 		for (int i = 0; i < list.length; i++) {
-			if (list[i].function == type) {
-				if (subDevNr == nr) return list[i];
-				subDevNr++;
-			}
-		}
-		return null;
-	}
-	
-	public FlinkSubDevice getSubdeviceByUniqueID(int id) {
-		for (int i = 0; i < list.length; i++) {
-			if (list[i].uniqueID == id){
-				return list[i];
-			}
+			if (list[i].function == type && list[i].subType == subType) return list[i];
 		}
 		return null;
 	}
 	
 	public FlinkSubDevice getSubdeviceByType(int type) {
 		return getSubdeviceByType(type, 0);
+	}
+	
+	public FlinkSubDevice getSubdeviceByUniqueID(int id) {
+		for (int i = 0; i < list.length; i++) {
+			if (list[i].uniqueID == id)	return list[i];
+		}
+		return null;
 	}
 	
 	private void findSubdevices(){
@@ -82,7 +77,7 @@ public class FlinkDevice implements FlinkDefinitions {
 			// id register
 			int reg = busInterface.read(memptr + TYPE_OFFSET);
 			actualDevice.function = reg >> 16;
-			actualDevice.subFunction = (reg >> 8) & 0xFF;
+			actualDevice.subType = (reg >> 8) & 0xFF;
 			actualDevice.version = reg & 0xFF;
 			actualDevice.memSize = busInterface.read(memptr + SIZE_OFFSET);
 			actualDevice.nofChannels = busInterface.read(memptr + CHANNEL_OFFSET);
@@ -145,8 +140,8 @@ public class FlinkDevice implements FlinkDefinitions {
 			System.out.printHexln(s.memSize);
 			System.out.print("\t\tFunction: ");
 			System.out.println(FlinkDevice.idToCharArray(s.function));
-			System.out.print("\t\tSubfunction: ");
-			System.out.println(s.subFunction);
+			System.out.print("\t\tSubtype: ");
+			System.out.println(s.subType);
 			System.out.print("\t\tFunction version: ");
 			System.out.println(s.version);
 			System.out.print("\t\tNof channels: ");
@@ -183,6 +178,24 @@ public class FlinkDevice implements FlinkDefinitions {
 	public static FlinkPPWA getPPWA() {
 		FlinkSubDevice d = getInstance().getSubdeviceByType(PPWA_INTERFACE_ID);
 		if (d != null) return new FlinkPPWA(d);
+		return null;
+	}
+
+	public static FlinkADC getADC128S102() {
+		FlinkSubDevice d = getInstance().getSubdeviceByType(ANALOG_INPUT_INTERFACE_ID, 1);
+		if (d != null) return new FlinkADC(d);
+		return null;
+	}
+	
+	public static FlinkADC getAD7606() {
+		FlinkSubDevice d = getInstance().getSubdeviceByType(ANALOG_INPUT_INTERFACE_ID, 2);
+		if (d != null) return new FlinkADC(d);
+		return null;
+	}
+	
+	public static FlinkADC getAD7476() {
+		FlinkSubDevice d = getInstance().getSubdeviceByType(ANALOG_INPUT_INTERFACE_ID, 3);
+		if (d != null) return new FlinkADC(d);
 		return null;
 	}
 }
