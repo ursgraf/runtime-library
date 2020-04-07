@@ -19,6 +19,9 @@
 package ch.ntb.inf.deep.runtime.zynq7000.demo;
 
 import java.io.PrintStream;
+
+import ch.ntb.inf.deep.flink.core.FlinkDevice;
+import ch.ntb.inf.deep.flink.subdevices.FlinkInfo;
 import ch.ntb.inf.deep.runtime.arm32.Task;
 import ch.ntb.inf.deep.runtime.zynq7000.driver.UART;
 import ch.ntb.inf.deep.runtime.zynq7000.sysp.SpeedController4DCMotor;
@@ -139,6 +142,10 @@ public class MotorDemo extends Task {
 		System.out = new PrintStream(uart.out);
 		System.err = System.out;
 		System.out.println("DC Motor Demo");
+		FlinkDevice.getInstance().lsflink();
+		FlinkInfo info = FlinkDevice.getInfo();
+		System.out.print("info description: ");
+		System.out.println(info.getDescription());
 				
 		ctrl = new SpeedController4DCMotor(ts, 0, 1, 0, 64, umax, i, kp, tn);
 		Task t = new MotorDemo();

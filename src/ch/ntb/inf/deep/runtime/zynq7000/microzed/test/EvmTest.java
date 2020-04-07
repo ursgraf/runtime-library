@@ -85,7 +85,7 @@ public class EvmTest extends Task implements FlinkDefinitions, Imicrozed {
 				System.out.print(adc1.getValue(i));
 				System.out.print('\t');
 			}
-			System.out.println();
+			System.out.print("//\t");
 			System.out.println(adc2.getValue(0));
 		}
 	}

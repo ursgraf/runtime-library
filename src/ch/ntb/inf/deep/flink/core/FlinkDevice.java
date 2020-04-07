@@ -135,7 +135,7 @@ public class FlinkDevice implements FlinkDefinitions {
 			System.out.print("\t\tAddress range: ");
 			System.out.printHex(s.baseAddress);
 			System.out.print(" - ");
-			System.out.printHexln(s.baseAddress + s.memSize);
+			System.out.printHexln(s.baseAddress + s.memSize - 1);
 			System.out.print("\t\tMemory Size: ");
 			System.out.printHexln(s.memSize);
 			System.out.print("\t\tFunction: ");
@@ -147,7 +147,7 @@ public class FlinkDevice implements FlinkDefinitions {
 			System.out.print("\t\tNof channels: ");
 			System.out.println(s.nofChannels);
 			System.out.print("\t\tUnique id: ");
-			System.out.println(s.uniqueID);
+			System.out.printHexln(s.uniqueID);
 		}
 	}
 
