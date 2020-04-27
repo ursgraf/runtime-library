@@ -57,15 +57,7 @@ public class RN131 extends Task {
 	 * @throws IOException
 	 * 			Wrong configuration.
 	 */
-	public RN131(SCIInputStream in, SCIOutputStream out, MPIOSM_DIO reset) throws Exception {
-		if (in == null)
-			throw new NullPointerException("SCIInputStream in");
-		
-		if (out == null)
-			throw new NullPointerException("SCIOutputStream out");
-		
-		if (reset == null)
-			throw new NullPointerException("MPIOSM_DIO reset");
+	public RN131(SCIInputStream in, SCIOutputStream out, MPIOSM_DIO reset) {
 
 		this.in = in;
 		this.out = out;
