@@ -9,7 +9,15 @@ import ch.ntb.inf.deep.runtime.zynq7000.driver.UART;
 import ch.ntb.inf.deep.runtime.zynq7000.microzed.Imicrozed;
 import ch.ntb.inf.deep.unsafe.arm.US;
 
-public class EvmTest extends Task implements FlinkDefinitions, Imicrozed {
+/**
+ * Test application for the NTB evaluation module. <br>
+ * <ul>
+ *   <li>Connect all digital IOs as follows: IO0 with IO1, IO2 with IO3, etc. up to IO85 with IO86</li>
+ *   <li>Connect the 8 channels of the ADC128S102 with an input voltage of 0 - 3.3V</li>
+ *   <li>Connect the input of the ADC7476 with an input voltage of 0 - 3.3V</li>
+ * </ul>
+ *
+ */public class EvmTest extends Task implements FlinkDefinitions, Imicrozed {
 	
 	public static int outputPeriod = 0;
 	public static int outputHighTime = 0;
