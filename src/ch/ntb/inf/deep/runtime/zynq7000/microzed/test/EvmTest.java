@@ -6,7 +6,7 @@ import ch.ntb.inf.deep.flink.core.*;
 import ch.ntb.inf.deep.flink.subdevices.*;
 import ch.ntb.inf.deep.runtime.arm32.Task;
 import ch.ntb.inf.deep.runtime.zynq7000.driver.UART;
-import ch.ntb.inf.deep.runtime.zynq7000.microzed.Imicrozed;
+import ch.ntb.inf.deep.runtime.zynq7000.microzed.IMicroZed;
 import ch.ntb.inf.deep.unsafe.arm.US;
 
 /**
@@ -17,7 +17,7 @@ import ch.ntb.inf.deep.unsafe.arm.US;
  *   <li>Connect the input of the ADC7476 with an input voltage of 0 - 3.3V</li>
  * </ul>
  *
- */public class EvmTest extends Task implements FlinkDefinitions, Imicrozed {
+ */public class EvmTest extends Task implements FlinkDefinitions, IMicroZed {
 	
 	public static int outputPeriod = 0;
 	public static int outputHighTime = 0;
@@ -120,12 +120,12 @@ import ch.ntb.inf.deep.unsafe.arm.US;
 		adc2 = FlinkDevice.getAD7476();
 		
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(MIO_PIN_00, 0x300);		// led, LVCMOS18, fast, GPIO 7, tristate disable
-		US.PUT4(MIO_PIN_09, 0x300);		// led, LVCMOS18, fast, GPIO 7, tristate disable
-		US.PUT4(MIO_PIN_10, 0x300);		// led, LVCMOS18, fast, GPIO 7, tristate disable
-		US.PUT4(MIO_PIN_11, 0x300);		// led, LVCMOS18, fast, GPIO 7, tristate disable
-		US.PUT4(MIO_PIN_12, 0x300);		// led, LVCMOS18, fast, GPIO 7, tristate disable
-		US.PUT4(MIO_PIN_13, 0x300);		// led, LVCMOS18, fast, GPIO 7, tristate disable
+		US.PUT4(MIO_PIN_00, 0x300);		// led, LVCMOS18, fast, GPIO 0, tristate disable
+		US.PUT4(MIO_PIN_09, 0x300);		// led, LVCMOS18, fast, GPIO 9, tristate disable
+		US.PUT4(MIO_PIN_10, 0x300);		// led, LVCMOS18, fast, GPIO 10, tristate disable
+		US.PUT4(MIO_PIN_11, 0x300);		// led, LVCMOS18, fast, GPIO 11, tristate disable
+		US.PUT4(MIO_PIN_12, 0x300);		// led, LVCMOS18, fast, GPIO 12, tristate disable
+		US.PUT4(MIO_PIN_13, 0x300);		// led, LVCMOS18, fast, GPIO 13, tristate disable
 		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR0, US.GET4(GPIO_DIR0) | 0x3e01);
 		US.PUT4(GPIO_OUT_EN0, US.GET4(GPIO_OUT_EN0) | 0x3e01);

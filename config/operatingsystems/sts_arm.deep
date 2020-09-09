@@ -1,12 +1,12 @@
 #deep-1
 
 meta {
-	version = "2012-11-26";
-	description = "Description file for the NTB deep simple tasking system for ARM architecture";
+	version = "2019-11-1";
+	description = "Description file for the deep simple tasking system for ARM architecture";
 }
 
-operatingsystem ntbSTS_arm {
-	description = "NTB Simple Tasking System for ARM";
+operatingsystem sts_arm {
+	description = "Simple Tasking System for ARM";
 		
 	us {
         class = "ch/ntb/inf/deep/unsafe/US";
@@ -215,6 +215,42 @@ operatingsystem ntbSTS_arm {
     }
     
 	exception {
+    	class = "ch/ntb/inf/deep/runtime/arm32/UndefinedInstruction";
+    	condition = cputype:zynq7000;
+    	method undefInstr {
+    		attributes = exchnd;
+			offset = 0x800;
+    	}
+    	method <init> {
+    		attributes = synthetic;
+    	}
+    }
+
+	exception {
+    	class = "ch/ntb/inf/deep/runtime/arm32/PrefetchAbort";
+    	condition = cputype:zynq7000;
+    	method preAbort {
+    		attributes = exchnd;
+			offset = 0x900;
+    	}
+    	method <init> {
+    		attributes = synthetic;
+    	}
+    }
+
+	exception {
+    	class = "ch/ntb/inf/deep/runtime/arm32/DataAbort";
+    	condition = cputype:zynq7000;
+    	method dataAbort {
+    		attributes = exchnd;
+			offset = 0xa00;
+    	}
+    	method <init> {
+    		attributes = synthetic;
+    	}
+    }
+
+	exception {
     	class = "ch/ntb/inf/deep/runtime/zynq7000/IrqInterrupt";
     	condition = cputype:zynq7000;
     	method irqInterrupt {
@@ -230,12 +266,12 @@ operatingsystem ntbSTS_arm {
 
 	kernel {
 		class = "ch/ntb/inf/deep/runtime/zynq7000/zybo/Kernel";
-		condition = boardtype:zybo;
+		condition = boardtype:Zybo;
 	}
 
 	kernel {
 		class = "ch/ntb/inf/deep/runtime/zynq7000/microzed/Kernel";
-		condition = boardtype:microzed;
+		condition = boardtype:MicroZed;
 	}
 
 }

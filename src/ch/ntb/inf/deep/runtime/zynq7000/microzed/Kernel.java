@@ -30,7 +30,7 @@ import ch.ntb.inf.deep.unsafe.arm.US;
 /**
  *  This is the kernel class. It provides basic functionalities and does the booting-up. 
  */
-public class Kernel implements Imicrozed, IdeepCompilerConstants {
+public class Kernel implements IMicroZed, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
 
 	static int loopAddr;
@@ -93,7 +93,7 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 	 */
 	public static void blink(int nTimes) { 
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(MIO_PIN_47, 0x300);		// led, LVCMOS18, fast, GPIO 7, tristate disable
+		US.PUT4(MIO_PIN_47, 0x300);		// led, LVCMOS18, fast, GPIO 47, tristate disable
 		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR1, US.GET4(GPIO_DIR1) | 0x8000);
 		US.PUT4(GPIO_OUT_EN1, US.GET4(GPIO_OUT_EN1) | 0x8000);
@@ -115,7 +115,7 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 	}
 
 	/** 
-	 * Blinks LED on MPIOSM pin 15 if stack end was overwritten
+	 * Blinks LED on GPIO pin 47 if stack end was overwritten
 	 */
 	public static void checkStack() { 
 		boot();
@@ -172,7 +172,13 @@ public class Kernel implements Imicrozed, IdeepCompilerConstants {
 		US.PUT4(FPGA0_CLK_CTRL, 0x00200500); // PL clock 0, divisor1 = 2, divisor0 = 5, select IO PLL -> 100MHz
         US.PUT4(GTCR, 0x1);	// enable global timer, prescaler = 1 -> 333MHz
 		
-		US.PUT4(MIO_PIN_47, 0x300);		// led, LVCMOS18, fast, GPIO 7, tristate disable
+		US.PUT4(MIO_PIN_47, 0x300);		// led, LVCMOS18, fast, GPIO 47, tristate disable
+		US.PUT4(MIO_PIN_00, 0x300);		// led, LVCMOS18, fast, GPIO 0, tristate disable
+		US.PUT4(MIO_PIN_09, 0x300);		// led, LVCMOS18, fast, GPIO 9, tristate disable
+		US.PUT4(MIO_PIN_10, 0x300);		// led, LVCMOS18, fast, GPIO 10, tristate disable
+		US.PUT4(MIO_PIN_11, 0x300);		// led, LVCMOS18, fast, GPIO 11, tristate disable
+		US.PUT4(MIO_PIN_12, 0x300);		// led, LVCMOS18, fast, GPIO 12, tristate disable
+		US.PUT4(MIO_PIN_13, 0x300);		// led, LVCMOS18, fast, GPIO 13, tristate disable
 		US.PUT4(MIO_PIN_14, 0x12e1);	// UART0 rx
 		US.PUT4(MIO_PIN_15, 0x12e0);	// UART0 tx
 		US.PUT4(MIO_PIN_48, 0x12e0);	// UART1 tx

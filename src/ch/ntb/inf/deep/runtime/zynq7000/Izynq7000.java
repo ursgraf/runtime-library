@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2020-01-28 12:55:05)
+// Auto generated file (2020-09-04 11:36:26)
 
 public interface Izynq7000 extends Iarm32 {
 
@@ -26,6 +26,10 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int OCM_BaseAddr = 0x0;
 
 	// Specific registers of CPU zynq7000
+	public static final int GPIO_MASK_LSW0 = 0xe000a000;
+	public static final int GPIO_MASK_MSW0 = 0xe000a004;
+	public static final int GPIO_MASK_LSW1 = 0xe000a008;
+	public static final int GPIO_MASK_MSW1 = 0xe000a00c;
 	public static final int GPIO_OUT0 = 0xe000a040;
 	public static final int GPIO_OUT1 = 0xe000a044;
 	public static final int GPIO_IN0 = 0xe000a060;

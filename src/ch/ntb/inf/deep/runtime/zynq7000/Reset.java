@@ -36,10 +36,10 @@ class Reset extends ARMException implements Izynq7000, IdeepCompilerConstants {
 	
 	static void vectorTable() {
 		US.ASM("movw R15 256"); // jump to reset method
-		US.ASM("b -8"); // undefined instruction, stop here
+		US.ASM("movw R15 2048"); // undefined instruction
 		US.ASM("movw R15 512"); // jump to supervisor call
-		US.ASM("b -8"); // prefetch abort, stop here
-		US.ASM("b -8"); // data abort, stop here
+		US.ASM("movw R15 2304"); // prefetch abort, stop here
+		US.ASM("movw R15 2560"); // data abort, stop here
 		US.ASM("b -8"); // not used, stop here
 		US.ASM("movw R15 1024"); // jump to IRQ interrupt
 		US.ASM("b -8"); // FIQ, stop here
