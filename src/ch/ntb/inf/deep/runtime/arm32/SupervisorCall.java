@@ -18,7 +18,6 @@
 
 package ch.ntb.inf.deep.runtime.arm32;
 
-import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 import ch.ntb.inf.deep.unsafe.arm.US;
 
 /*changes:

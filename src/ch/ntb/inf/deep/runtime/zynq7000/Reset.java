@@ -17,8 +17,8 @@
  */
 
 package ch.ntb.inf.deep.runtime.zynq7000;
+
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
-import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 import ch.ntb.inf.deep.runtime.arm32.ARMException;
 import ch.ntb.inf.deep.unsafe.arm.US;
 
@@ -32,17 +32,17 @@ import ch.ntb.inf.deep.unsafe.arm.US;
  * 
  * @author Urs Graf
  */
-class Reset extends ARMException implements Iarm32, Izybo7000, IdeepCompilerConstants {
+class Reset extends ARMException implements Izynq7000, IdeepCompilerConstants {
 	
 	static void vectorTable() {
 		US.ASM("movw R15 256"); // jump to reset method
-		US.ASM("b -8"); // stop here
+		US.ASM("movw R15 2048"); // undefined instruction
 		US.ASM("movw R15 512"); // jump to supervisor call
-		US.ASM("b -8"); // stop here
-		US.ASM("b -8"); // stop here
-		US.ASM("b -8"); // stop here
+		US.ASM("movw R15 2304"); // prefetch abort, stop here
+		US.ASM("movw R15 2560"); // data abort, stop here
+		US.ASM("b -8"); // not used, stop here
 		US.ASM("movw R15 1024"); // jump to IRQ interrupt
-		US.ASM("b -8"); // stop here
+		US.ASM("b -8"); // FIQ, stop here
 	}
 	
 	static void reset() {

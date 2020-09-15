@@ -16,7 +16,7 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.arm32;
+package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.unsafe.arm.US;
 
@@ -49,7 +49,7 @@ public class Decrementer extends IrqInterrupt {
 	public static void install(Decrementer dec, int period) {
 		US.PUT4(PTLR, period / 40);	
 		US.PUT4(PTCOUNT, period / 40);
-		US.PUT4(PTCR, (12 << 8) | 7);	// enable private timer, prescaler = 12 -> 325MHz / 13 = 25MHz
+		US.PUT4(PTCR, (12 << 8) | 7);	// enable private timer, prescaler = 12 -> 325MHz / 13 = 25MHz (333MHz / 13 = 25.6MHz on microzed board)
 		IrqInterrupt.install(dec, 29);
 	}
 

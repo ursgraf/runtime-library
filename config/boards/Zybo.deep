@@ -1,0 +1,55 @@
+#deep-1
+
+meta {
+	version = "2019-06-28";
+	description = "Board description file for Zybo Zynq-7000 board";
+}
+
+board Zybo {
+	description = "Zybo Zynq-7000 digilent evm";
+	cputype = zynq7000;
+	
+	sysconst {
+		extRamSize   = 0x1000000;						# 16MB external RAM
+		extRamBase   = 0x100000;						# starting at 1MB
+	}
+	
+	memorymap {
+
+		# ===== External RAM =====
+		device ExternalRam {							# External RAM device configuration
+			base = extRamBase;
+			size = extRamSize;
+			width = 4;
+			technology = ram;
+			attributes = read, write;
+		}
+		segment ExternalRam.Default {					# Default segment for code, constants and class fields
+	#			base = sysTabBaseAddr + sysTabSize;
+			attributes = read, write, const, code, var;
+		}
+		
+	}
+
+	reginit {
+#		GPIO_DATA0 = 0x1000;
+	}
+
+	runconfiguration BootFromRam {
+		description = "load program to external ram";
+		system {
+			systemtable: systab@InternalRam.SysTab;
+		}
+		modules {
+				kernel, heap: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default; 
+				exception: code@InternalRam.ExceptionCode, const@InternalRam.Default, var@InternalRam.Default;
+#				default: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default;      
+				default: code@ExternalRam.Default, const@ExternalRam.Default, var@InternalRam.Default;      
+		}
+		reginit {
+#			SLCR_UNLOCK = 0xdf0d;							# unlock SLCR
+#			SLCR_OCM_CFG = 0x10;							# map all OCM blocks to lower address
+#			SLCR_LOCK = 0x767b;								# lock SLCR
+		}
+	}
+}

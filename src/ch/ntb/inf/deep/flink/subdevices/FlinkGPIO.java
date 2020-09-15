@@ -13,10 +13,10 @@ public class FlinkGPIO implements FlinkDefinitions {
  		this.valAddress = ((dev.nofChannels-1) / REGISTER_WIDTH_BIT + 1) * REGISTER_WIDTH;
 	}
 	
-	public void setDir(int channel, boolean input) {
+	public void setDir(int channel, boolean output) {
 		int val = dev.read((channel / REGISTER_WIDTH_BIT) * REGISTER_WIDTH);
-		if (input) val = val & ~(1 << (channel % REGISTER_WIDTH_BIT));
-		else val = val | (1 << (channel % REGISTER_WIDTH_BIT));
+		if (output) val = val | (1 << (channel % REGISTER_WIDTH_BIT));
+		else val = val & ~(1 << (channel % REGISTER_WIDTH_BIT));
 		dev.write((channel / REGISTER_WIDTH_BIT) * REGISTER_WIDTH, val);
 	}
 	

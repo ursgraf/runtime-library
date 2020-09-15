@@ -16,34 +16,30 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.zynq7000.demo;
+package ch.ntb.inf.deep.runtime.zynq7000.zybo.demo;
 
 import ch.ntb.inf.deep.runtime.arm32.Task;
-import ch.ntb.inf.deep.runtime.zynq7000.Izybo7000;
+import ch.ntb.inf.deep.runtime.zynq7000.Izynq7000;
 import ch.ntb.inf.deep.unsafe.arm.US;
 
 /* changes:
  * 19.10.18	NTB/Urs Graf	creation
  */
 
-public class Blinker extends Task implements Izybo7000{
-	static int count;	// class variable
-	int times;	// instance variable
-
-	public static int getNofBlinkers () { 	// class method
-		return count;
-	}
+public class Blinker extends Task implements Izynq7000 {
+	static Blinker blinker;
+	int times;
 
 	public void changePeriod (int period) {	// instance method 
 		this.period = period;
 	}
 
 	public void action () {	// instance method, overwritten
-		US.PUT4(GPIO_DATA0, US.GET4(GPIO_DATA0) ^ 0x80);
+		US.PUT4(GPIO_OUT0, US.GET4(GPIO_OUT0) ^ 0x80);
 		if (this.nofActivations == this.times) Task.remove(this);
 	}
 	
-	public Blinker (int pin, int period, int times) {	// base constructor
+	public Blinker (int period, int times) {	// base constructor
 		this.times = times;
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
 		US.PUT4(MIO_PIN_07, 0x600);
@@ -51,14 +47,24 @@ public class Blinker extends Task implements Izybo7000{
 		US.PUT4(GPIO_DIR0, 0x80);
 		this.period = period;	
 		Task.install(this);
-		count++;
 	}
 	
-	public Blinker (int pin, int period) {	// second constructor
-		this(pin, period, 0);	// call to base constructor
+	public Blinker (int period) {	// second constructor
+		this(period, 0);	// call to base constructor
+	}
+
+	static void changePeriod1to100 () {
+		Task.remove(blinker);
+		blinker.period = 100;
+		Task.install(blinker);
+	}
+	static void changePeriod1to1000 () {
+		Task.remove(blinker);
+		blinker.period = 1000;
+		Task.install(blinker);
 	}
 
 	static {	// class constructor
-		count = 0;
+		blinker = new Blinker(1000);
 	}
 }

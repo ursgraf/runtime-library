@@ -6,7 +6,7 @@ meta {
 }
 
 board colibri_iMX6 {
-	description = "ARM header board";
+	description = "Colibri iMX6 header board";
 	cputype = iMX6;
 	
 	sysconst {

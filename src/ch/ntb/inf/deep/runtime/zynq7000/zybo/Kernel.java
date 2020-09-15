@@ -16,11 +16,10 @@
  * 
  */
 
-package ch.ntb.inf.deep.runtime.zynq7000;
+package ch.ntb.inf.deep.runtime.zynq7000.zybo;
 
 import ch.ntb.inf.deep.runtime.IdeepCompilerConstants;
-import ch.ntb.inf.deep.runtime.arm32.Heap;
-import ch.ntb.inf.deep.runtime.arm32.Iarm32;
+import ch.ntb.inf.deep.runtime.arm32.*;
 import ch.ntb.inf.deep.unsafe.arm.US;
 
 /* changes:
@@ -31,22 +30,14 @@ import ch.ntb.inf.deep.unsafe.arm.US;
 /**
  *  This is the kernel class. It provides basic functionalities and does the booting-up. 
  */
-public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
+public class Kernel implements Izybo, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
-	/** Clock frequency of the processor. */
-	public static final int clockFrequency = 400000000; // Hz
-	/** Clock frequency of the processor. */
-	public static final int UART_CLK = 100000000; // Hz
+
 	static int loopAddr;
 	static int cmdAddr;
-	static long t = 0x1122;
 	
 	@SuppressWarnings("unused")
 	private static void loop() {	// endless loop
-		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(MIO_PIN_07, 0x600);
-		US.PUT4(SLCR_LOCK, 0x767b);
-		US.PUT4(GPIO_DIR0, 0x80);
 		while (true) {
 			try {
 				if (cmdAddr != -1) {
@@ -57,7 +48,6 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 				}
 			} catch (Exception e) {
 				cmdAddr = -1;	// stop trying to run the same method
-				t = 0x1234;
 				e.printStackTrace();
 				Kernel.blink(2);
 			}
@@ -103,14 +93,14 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	 */
 	public static void blink(int nTimes) { 
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(MIO_PIN_07, 0x600);
+		US.PUT4(MIO_PIN_07, 0x600);	// LVCMOS33, slow, GPIO 7, tristate disable
 		US.PUT4(SLCR_LOCK, 0x767b);
 		US.PUT4(GPIO_DIR0, 0x80);
 		int delay = 1000000;
 		for (int i = 0; i < nTimes; i++) {
-			US.PUT4(GPIO_DATA0, US.GET4(GPIO_DATA0) | 0x80);
+			US.PUT4(GPIO_OUT0, US.GET4(GPIO_OUT0) | 0x80);
 			for (int k = 0; k < delay; k++);
-			US.PUT4(GPIO_DATA0, US.GET4(GPIO_DATA0) ^ 0x80);
+			US.PUT4(GPIO_OUT0, US.GET4(GPIO_OUT0) ^ 0x80);
 			for (int k = 0; k < delay; k++);
 		}
 		for (int k = 0; k < (10 * delay + nTimes * 2 * delay); k++);
@@ -151,7 +141,6 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	}
 	
 	private static void boot() {
-//		blink(2);
 //		US.ASM("b -8"); // stop here
 
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
@@ -177,8 +166,15 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 		while (!US.BIT(PLL_STATUS, 2));	// wait to lock
 		US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~0x10);	// no bypass
 
-		US.PUT4(UART_CLK_CTRL, 0xa02);	// UART clock, divisor = 10 -> 100MHz, select IO PLL
+		US.PUT4(UART_CLK_CTRL, 0xa03);	// UART clock, divisor = 10 -> 100MHz, select IO PLL, clock enable for UART0/1
+		US.PUT4(APER_CLK_CTRL, 0x01ffcccd);	// enable clocks to access register of all peripherials
+        US.PUT4(GTCR, 0xc01);	// enable global timer, prescaler = 12 -> 325MHz / 13 = 25MHz
 		
+		US.PUT4(MIO_PIN_48, 0x12e0);	// UART1 tx
+		US.PUT4(MIO_PIN_49, 0x12e1);	// UART1 rx
+
+        US.PUT4(OCM_CFG, 0x10);	// map all OCM blocks to lower address
+
 		US.PUT4(SLCR_LOCK, 0x767b);
 
         // enable coprocessor 10 and 11
@@ -191,12 +187,6 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
         US.ASM("orr r6, r6, #0x40000000");
         US.ASM("vmsr FPEXC, r6");
         
-		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-        US.PUT4(OCM_CFG, 0x10);	// map all OCM blocks to lower address
-        US.PUT4(SLCR_LOCK, 0x767b);
-        
-        US.PUT4(GTCR, 0xc01);	// enable global timer, prescaler = 12 -> 325MHz / 13 = 25MHz
-
  		// mark stack end with specific pattern
 		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
 		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
@@ -244,7 +234,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 					US.ASM("mov r14, r15");	// copy PC to LR 
 					US.ASM("mov r15, r0");
 				} else {	// kernel
-					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/zynq7000/Kernel/loop");
+					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/zynq7000/zybo/Kernel/loop");
 					US.ASM("cpsie i");	// enable IRQ
 				}
 			}
@@ -262,6 +252,7 @@ public class Kernel implements Iarm32, Izybo7000, IdeepCompilerConstants {
 	static {
 		try {
 			boot();
+
 			cmdAddr = -1;	// must be after class variables are zeroed by boot
 			// load PC
 			US.PUTGPR(6, loopAddr);	// use scratch register

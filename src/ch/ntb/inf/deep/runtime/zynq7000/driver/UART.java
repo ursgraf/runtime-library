@@ -19,22 +19,18 @@
 package ch.ntb.inf.deep.runtime.zynq7000.driver;
 
 import java.io.IOException;
-import ch.ntb.inf.deep.runtime.arm32.IrqInterrupt;
+
 import ch.ntb.inf.deep.runtime.util.ByteFifo;
+import ch.ntb.inf.deep.runtime.zynq7000.IrqInterrupt;
 import ch.ntb.inf.deep.runtime.zynq7000.Izynq7000;
-import ch.ntb.inf.deep.runtime.zynq7000.Kernel;
 import ch.ntb.inf.deep.unsafe.arm.US;
 
 /**
- * <p>Interrupt controlled driver for the <i>Serial Communication Interface 1</i> or
- * the <i>Serial Communication Interface 2</i> of the Freescale MPC555.</p>
+ * <p>Interrupt controlled driver for the <i>UART0</i> or
+ * the <i>UART1</i> of the Zynq7000.</p>
  * <p><b>Remember:</b><br>
  * Depending on the baudrate configured, the effective baudrate can be different.
- * This may cause miss interpretation of the bytes sent at the receiver! For more
- * details, please consider table 14-29 in chapter 14.8.7.3 in the <a href=
- * "http://www.ntb.ch/infoportal/_media/embedded_systems:mpc555:mpc555_usermanual.pdf"
- * >MPC555 User's manual</a>.
- * </p>
+ * This may cause miss interpretation of the bytes sent!</p>
  */
 public class UART extends IrqInterrupt implements Izynq7000 {
 
@@ -46,6 +42,7 @@ public class UART extends IrqInterrupt implements Izynq7000 {
 			FRAME_ERR = 1, PARITY_ERR = 0, LENGTH_NEG_ERR = -1,
 			OFFSET_NEG_ERR = -2, NULL_POINTER_ERR = -3;
 	public static final int QUEUE_LEN = 2047, HW_QUEUE_LEN = 63;
+	public static final int UART_CLK = 100000000; // Hz
 	
 	/**
 	 * Output stream to write to this <i>UART</i>.
@@ -71,7 +68,7 @@ public class UART extends IrqInterrupt implements Izynq7000 {
 	
 	private int diff; // used to access register interface for UART0 or UART1
 	private static UART uart0, uart1;
-	static private boolean toQueue, fromQueue;
+	private boolean toQueue, fromQueue;
 
 	/**
 	 * Returns an instance of <i>UART Interface</i> 
@@ -98,7 +95,7 @@ public class UART extends IrqInterrupt implements Izynq7000 {
 		if (regDiff > 0) IrqInterrupt.install(this, 82);		
 		else IrqInterrupt.install(this, 59);
 	}
-static int status;
+
 	/* (non-Javadoc)
 	 * @see ch.ntb.inf.deep.runtime.arm.IrqInterrupt#action()
 	 */
@@ -106,49 +103,46 @@ static int status;
 	public void action() {
 		UART uart;
 		if (diff == 0) uart = uart0; else uart = uart1;
-		status = US.GET4(UART1_ISR);
-		if ((status & (1 << IXR_RXOVR)) != 0) {
-			while ((US.GET4(UART1_SR) & (1 << SR_RXEMPTY)) == 0) {
-				rxQueue.enqueue((byte)US.GET4(UART1_FIFO));
+		int status = US.GET4(UART0_ISR + diff);
+		if ((status & (1 << IXR_RXOVR)) != 0) {	// rx fifo full
+			while ((US.GET4(UART0_SR + diff) & (1 << SR_RXEMPTY)) == 0) {
+				rxQueue.enqueue((byte)US.GET4(UART0_FIFO + diff));
 			}
 			fromQueue = true;
-			US.PUT4(UART1_ISR, (1 << IXR_RXOVR));	// clear interrupt status bit
-		} else if ((status & (1 << IXR_TXFULL)) != 0) {
+			US.PUT4(UART0_ISR + diff, (1 << IXR_RXOVR));	// clear interrupt status bit
+		} else if ((status & (1 << IXR_TXFULL)) != 0) {	// tx fifo full
 			toQueue = true;
-			US.PUT4(UART1_IER, (1 << IXR_TXEMPTY));	// enable tx FIFO empty
-			US.PUT4(UART1_ISR, (1 << IXR_TXFULL));	// clear interrupt status bit
-		} else {	// must be IXR_TXEMPTY
+			US.PUT4(UART0_IER + diff, (1 << IXR_TXEMPTY));	// enable tx FIFO empty
+			US.PUT4(UART0_ISR + diff, (1 << IXR_TXFULL));	// clear interrupt status bit
+			US.PUT4(UART0_ISR + diff, (1 << IXR_TXEMPTY));	// clear interrupt status bit, might be set at startup
+		} else {	// must be IXR_TXEMPTY, tx fifo empty
 			ByteFifo queue = uart.txQueue;
 			for (int i = 0; i < queue.availToRead() && i < HW_QUEUE_LEN; i++)
 				try {
-					US.PUT1(UART1_FIFO, queue.dequeue());
+					US.PUT1(UART0_FIFO + diff, queue.dequeue());
 				} catch (IOException e) {}
 			if (queue.availToRead() == 0) {
 				toQueue = false;
-				US.PUT4(UART1_IDR, (1 << IXR_TXEMPTY));	// disable tx FIFO empty
+				US.PUT4(UART0_IDR + diff, (1 << IXR_TXEMPTY));	// disable tx FIFO empty
 			}
-			US.PUT4(UART1_ISR, (1 << IXR_TXEMPTY));	// clear interrupt status bit
+			US.PUT4(UART0_ISR + diff, (1 << IXR_TXEMPTY));	// clear interrupt status bit
 		}
 	}
 
 	public void start(int baudRate, short parity, short data) {
-		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(MIO_PIN_48, 0x12e0);	// tx
-		US.PUT4(MIO_PIN_49, 0x12e1);	// rx
-		US.PUT4(SLCR_LOCK, 0x767b);
 		final int BDIV = 15;
-		US.PUT4(UART1_BAUDGEN, Kernel.UART_CLK / (baudRate * (BDIV + 1)));	// CD
-		US.PUT4(UART1_BAUDDIV, BDIV);
+		US.PUT4(UART0_BAUDGEN + diff, UART_CLK / (baudRate * (BDIV + 1)));	// CD
+		US.PUT4(UART0_BAUDDIV + diff, BDIV);
 		int val = 0;
 		if (parity == NO_PARITY) val |= 0x20;
 		else if (parity == ODD_PARITY) val |= 8;
 		if (data == 6) val |= 6;
 		else if (data == 7) val |= 4;
-		US.PUT4(UART1_MR, val);	
-		US.PUT4(UART1_IER, (1 << IXR_TXFULL) + (1 << IXR_RXOVR));		// enable tx FIFO full interrupt and rx FIFO trigger interrupt
-		US.PUT4(UART1_TX_FIFO_LEVEL, HW_QUEUE_LEN);		// set tx FIFO trigger level to maximum
-		US.PUT4(UART1_RX_FIFO_LEVEL, HW_QUEUE_LEN);		// set rx FIFO trigger level to maximum		
-		US.PUT4(UART1_CR, 0x14);	// enable tx, rx
+		US.PUT4(UART0_MR + diff, val);	
+		US.PUT4(UART0_IER + diff, (1 << IXR_TXFULL) + (1 << IXR_RXOVR));		// enable tx FIFO full interrupt and rx FIFO trigger interrupt
+		US.PUT4(UART0_TX_FIFO_LEVEL + diff, HW_QUEUE_LEN);		// set tx FIFO trigger level to maximum
+		US.PUT4(UART0_RX_FIFO_LEVEL + diff, HW_QUEUE_LEN);		// set rx FIFO trigger level to maximum		
+		US.PUT4(UART0_CR + diff, 0x14);	// enable tx, rx
 	}
 
 	/**
@@ -165,7 +159,7 @@ static int status;
 	 */
 	public void write(byte b) throws IOException { 	 
 		if (toQueue) txQueue.enqueue(b);
-		else US.PUT1(UART1_FIFO, b); 
+		else US.PUT1(UART0_FIFO + diff, b); 
 	}
 
 	/**
@@ -218,8 +212,8 @@ static int status;
 	 * @return number of bytes in the receive buffer.
 	 */
 	public int availToRead() {
-		while ((US.GET4(UART1_SR) & (1 << SR_RXEMPTY)) == 0) {
-			rxQueue.enqueue((byte)US.GET4(UART1_FIFO));
+		while ((US.GET4(UART0_SR + diff) & (1 << SR_RXEMPTY)) == 0) {
+			rxQueue.enqueue((byte)US.GET4(UART0_FIFO + diff));
 		}
 		int count = rxQueue.availToRead();
 		fromQueue = count > 0;
@@ -239,7 +233,7 @@ static int status;
 			int ch = rxQueue.dequeue();
 			fromQueue = rxQueue.availToRead() > 0;
 			return ch;
-		} else return US.GET4(UART1_FIFO);
+		} else return US.GET4(UART0_FIFO + diff);
 	}
 
 	/**
@@ -285,7 +279,7 @@ static int status;
 			if (fromQueue) {
 				buffer[off + i] = rxQueue.dequeue();
 				fromQueue = rxQueue.availToRead() > 0;
-			} else buffer[off + i] = (byte) US.GET4(UART1_FIFO);
+			} else buffer[off + i] = (byte) US.GET4(UART0_FIFO + diff);
 		}
 		return len;
 	}

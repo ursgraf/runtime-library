@@ -1,12 +1,12 @@
 #deep-1
 
 meta {
-	version = "2019-06-28";
-	description = "Board description file for ZYBO Zynq-7000 board";
+	version = "2019-12-05";
+	description = "Board description file for MicroZed Zynq-7000 board";
 }
 
-board ZYBO7000 {
-	description = "ZYBO Zynq-7000 digilent evm";
+board MicroZed {
+	description = "MicroZed Zynq-7000 avnet board";
 	cputype = zynq7000;
 	
 	sysconst {
