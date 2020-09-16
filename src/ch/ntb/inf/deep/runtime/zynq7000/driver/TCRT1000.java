@@ -128,12 +128,12 @@ public class TCRT1000 extends Task implements Izynq7000, FlinkDefinitions {
 	/**
 	 * Initialize sensors.
 	 * 
-	 * @param numberOfSensors	Number of connected sensors: 0 &lt; numberOfSensors &lt;= 16
-	 * @param addr3Pin			Highest order address pin
-	 * @param addr2Pin			Address pin
-	 * @param addr1Pin			Address pin
-	 * @param addr0Pin			Lowest order address pin
-	 * @param addr0Pin			Trigger pin
+	 * @param nofSensors	Number of connected sensors: 0 &lt; numberOfSensors &lt;= 16
+	 * @param addr3Pin		Highest order address pin
+	 * @param addr2Pin		Address pin
+	 * @param addr1Pin		Address pin
+	 * @param addr0Pin		Lowest order address pin
+	 * @param trigPin		Trigger pin
 	 */
 	public void init(int nofSensors, int addr3Pin, int addr2Pin, int addr1Pin, int addr0Pin, int trigPin) {
 		gpio = FlinkDevice.getGPIO();

@@ -56,8 +56,8 @@ public class SpeedController4DCMotor implements FlinkDefinitions {
 	/**
 	 * Create a new speed controller for a DC motor.
 	 * @param ts task period in seconds [s]
-	 * @param pwmChannel0 channel for the first PWM signal.
-	 * @param pwmChannel1 channel for the second PWM signal.
+	 * @param pwmChannel1 channel for the first PWM signal.
+	 * @param pwmChannel2 channel for the second PWM signal.
 	 * @param encChannel channel for the encoder signal. Connect both A and B to the associated pins.
 	 * @param encTPR impulse/ticks per rotation of the encoder.
 	 * @param umax maximum output voltage of set value.

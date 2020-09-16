@@ -52,10 +52,6 @@ public class RN131 extends Task {
 	 * 			SCI Outputstream
 	 * @param reset
 	 * 			Resetpin
-	 * @throws NullPointerException
-	 * 			Wrong configuration.
-	 * @throws IOException
-	 * 			Wrong configuration.
 	 */
 	public RN131(SCIInputStream in, SCIOutputStream out, MPIOSM_DIO reset) {
 
