@@ -104,7 +104,8 @@ cpu mpc555 {
 			
 		# special purpose register
 
-# commented register cannot be read (debugger will try to read if not commented out)
+# commented register cannot be read (debugger will try to read them for register view if not commented out)
+# however, these register must be used when creating interface files
 #		 register SPR80 {
 #			 type = SPR;
 #			 addr = 80;

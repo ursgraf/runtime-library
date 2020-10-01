@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.zynq7000.microzed;
 
 import ch.ntb.inf.deep.runtime.zynq7000.Izynq7000;
 
-// Auto generated file (2020-09-04 11:36:26)
+// Auto generated file (2020-10-01 13:39:15)
 
 public interface IMicroZed extends Izynq7000 {
 

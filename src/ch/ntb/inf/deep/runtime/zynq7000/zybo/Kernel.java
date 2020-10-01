@@ -30,7 +30,7 @@ import ch.ntb.inf.deep.unsafe.arm.US;
 /**
  *  This is the kernel class. It provides basic functionalities and does the booting-up. 
  */
-public class Kernel implements Izybo, IdeepCompilerConstants {
+public class Kernel implements IZybo, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
 
 	static int loopAddr;

@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.iMX6;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2016-06-07 16:06:01)
+// Auto generated file (2020-10-01 13:39:15)
 
 public interface IiMX6 extends Iarm32 {
 
@@ -16,8 +16,6 @@ public interface IiMX6 extends Iarm32 {
 	public static final int IMB = 0x0;
 
 	// Specific registers of CPU iMX6
-	public static final int SPR80 = 0x50;
-	public static final int EIE = 0x50;
 	public static final int GTCR_L = 0xa00200;
 	public static final int GTCR_U = 0xa00204;
 	public static final int GTCR = 0xa00208;

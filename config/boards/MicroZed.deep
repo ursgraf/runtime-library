@@ -36,7 +36,7 @@ board MicroZed {
 	}
 
 	runconfiguration BootFromRam {
-		description = "load program to external ram";
+		description = "load program to on-chip ram";
 		system {
 			systemtable: systab@InternalRam.SysTab;
 		}

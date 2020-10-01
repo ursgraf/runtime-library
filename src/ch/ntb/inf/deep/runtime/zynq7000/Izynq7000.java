@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2020-09-04 11:36:26)
+// Auto generated file (2020-10-01 13:39:16)
 
 public interface Izynq7000 extends Iarm32 {
 
