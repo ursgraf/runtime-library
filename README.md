@@ -6,6 +6,6 @@ The __deep runtime library__ comprises a simplified Java library, a simple non p
 
 Documentation
 -------------
- - [Getting started](http://deepjava.org/getting_started)
- - [User manual](http://deepjava.org/user_manual/start)
- - [API](http://api.deepjava.org)
+ - [Wiki](https://deepjava.org/)
+ - [First Example](https://deepjava.org/first_example)
+ - [API](https://api.deepjava.org/runtime-library/)
