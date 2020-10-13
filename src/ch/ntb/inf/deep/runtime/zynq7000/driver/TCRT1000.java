@@ -38,8 +38,6 @@ import ch.ntb.inf.deep.runtime.zynq7000.Izynq7000;
  * one is the trigger signal. The analog input is used to read the sensor
  * values.<br>
  * All the sensors are repetitively sampled within 16ms, regardless of the number of sensors.<br>  
- * Its possible to use this driver together with.
- * 
  */
 public class TCRT1000 extends Task implements Izynq7000, FlinkDefinitions {
 
@@ -99,7 +97,7 @@ public class TCRT1000 extends Task implements Izynq7000, FlinkDefinitions {
 			break;
 		case Sample:
 			if (Kernel.timeUs() - time > 100) {
-				resultVal[sensAdr] = (short)(4091 - adc.getValue(0));	// get result, dark - bright
+				resultVal[sensAdr] = (short) adc.getValue(0);
 				state = State.Wait;
 			}
 			break;

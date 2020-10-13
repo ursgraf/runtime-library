@@ -49,16 +49,16 @@ public class TCRT1000Demo extends Task {
 	}
 	
 	static {
-		// Initialize TCRT1000 driver for 4 sensors and start reading values
-		sense = TCRT1000.getInstance();
-		sense.init(4, 4, 3, 2, 1, 0); // initialize 4 sensors
-		sense.start();
-		
 		UART uart = UART.getInstance(UART.pUART1);
 		uart.start(115200, (short)0, (short)8);
 		System.out = new PrintStream(uart.out);
 		System.err = System.out;
-		System.out.print("TCRT1000 demo");
+		System.out.println("TCRT1000 demo");
+		
+		// Initialize TCRT1000 driver for 4 sensors and start reading values
+		sense = TCRT1000.getInstance();
+		sense.init(4, 4, 3, 2, 1, 0); // initialize 4 sensors
+		sense.start();
 		
 		// Create and install demo task
 		Task demoTask = new TCRT1000Demo();
