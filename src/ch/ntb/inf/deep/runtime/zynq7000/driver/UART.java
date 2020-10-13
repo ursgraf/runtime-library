@@ -139,6 +139,7 @@ public class UART extends IrqInterrupt implements Izynq7000 {
 		if (data == 6) val |= 6;
 		else if (data == 7) val |= 4;
 		US.PUT4(UART0_MR + diff, val);	
+		US.PUT4(UART0_IDR + diff, 0x1fff);		// disable all interrupts, necessary if boot loader enabled any of them
 		US.PUT4(UART0_IER + diff, (1 << IXR_TXFULL) + (1 << IXR_RXOVR));		// enable tx FIFO full interrupt and rx FIFO trigger interrupt
 		US.PUT4(UART0_TX_FIFO_LEVEL + diff, HW_QUEUE_LEN);		// set tx FIFO trigger level to maximum
 		US.PUT4(UART0_RX_FIFO_LEVEL + diff, HW_QUEUE_LEN);		// set rx FIFO trigger level to maximum		

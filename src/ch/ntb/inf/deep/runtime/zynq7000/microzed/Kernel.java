@@ -187,6 +187,8 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
         US.PUT4(OCM_CFG, 0x10);	// map all OCM blocks to lower address
 		US.PUT4(LVL_SHFTR_EN, 0xf);	// enable all level shifters between PS and PL
 		US.PUT4(FPGA_RST_CTRL, 0);	// deassert FPGA reset
+		US.PUT4(UART_RST_CTRL, 0xa);	// assert UART1 reset, must be reset when already having been setup by FSBL
+		US.PUT4(UART_RST_CTRL, 0);	// deassert UART1 reset
 		US.PUT4(SLCR_LOCK, 0x767b);
 
         // enable coprocessor 10 and 11
