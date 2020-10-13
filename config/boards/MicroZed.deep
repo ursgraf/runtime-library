@@ -10,7 +10,7 @@ board MicroZed {
 	cputype = zynq7000;
 	
 	sysconst {
-		extRamSize   = 0x1000000;						# 16MB external RAM
+		extRamSize   = 0x3fefffff;						# 1023MB (1GB-1MB) external RAM
 		extRamBase   = 0x100000;						# starting at 1MB
 	}
 	
@@ -35,8 +35,8 @@ board MicroZed {
 #		GPIO_DATA0 = 0x1000;
 	}
 
-	runconfiguration BootFromRam {
-		description = "load program to on-chip ram";
+	runconfiguration BootFromJTAG {
+		description = "load program to on-chip and external ram";
 		system {
 			systemtable: systab@InternalRam.SysTab;
 		}
@@ -47,9 +47,131 @@ board MicroZed {
 				default: code@ExternalRam.Default, const@ExternalRam.Default, var@InternalRam.Default;      
 		}
 		reginit {
-#			SLCR_UNLOCK = 0xdf0d;							# unlock SLCR
+			SLCR_UNLOCK = 0xdf0d;							# unlock SLCR
 #			SLCR_OCM_CFG = 0x10;							# map all OCM blocks to lower address
-#			SLCR_LOCK = 0x767b;								# lock SLCR
+
+			# pin configurations for DDR pins
+			GPIOB_CTRL = 0x1;								# PS IO Buffer Control, enable internal VREF
+			DDRIOB_ADDR0 = 0x600;							# no pullup, obuf
+			DDRIOB_ADDR1 = 0x600;							# no pullup, obuf
+			DDRIOB_DATA0 = 0x672;							# no pullup, obuf, DCI termination, Vref based differential receiver
+			DDRIOB_DATA1 = 0x672;							# no pullup, obuf, DCI termination, Vref based differential receiver
+			DDRIOB_DIFF0 = 0x674;							# no pullup, obuf, DCI termination, differential input receiver 
+			DDRIOB_DIFF1 = 0x674;							# no pullup, obuf, DCI termination, differential input receiver
+			DDRIOB_CLOCK = 0x600;							# no pullup, obuf
+			DDRIOB_DRIVE_SLEW_ADDR = 0x0018C61C;			# see FSBL
+			DDRIOB_DRIVE_SLEW_DATA = 0x00F9861C;			# see FSBL
+			DDRIOB_DRIVE_SLEW_DIFF = 0x00F9861C;			# see FSBL
+			DDRIOB_DRIVE_SLEW_CLOCK = 0x00F9861C;			# see FSBL
+			DDRIOB_DDR_CTRL = 0x260;						# use VRP/VRN, enable Vref for all bits
+			DDRIOB_DCI_CTRL = 0x1;							# reset DCI
+			DDRIOB_DCI_CTRL = 0x2;							# enable DCI
+			DDRIOB_DCI_CTRL = 0x823;						# enable DCI, DCI calibration
+			
+			# PLL configuration
+			DDR_PLL_CFG = 0x0012C220;						# set PLL for 1067MHZ with 33.33MHz quartz
+			DDR_PLL_CTRL = 0x00020000;						# divider = 32
+			DDR_PLL_CTRL = 0x00020011;						# bypass and reset
+			DDR_PLL_CTRL = 0x00020010;						# deassert reset
+			POLL PLL_STATUS = 0x2;							# wait for DDR PLL to lock
+			DDR_PLL_CTRL = 0x00020000;						# no bypass
+			DDR_CLK_CTRL = 0x0C200003;						# 2x-divisor = 3, 3x-divisor = 2
+			# clock configuration
+			DCI_CLK_CTRL = 0x00700F01;						# (used for DDR), divisor1 = 7, divisor0 = 15, clock enable
+			PCAP_CLK_CTRL = 0x00700F01;						# (processor configuration access port), divisor = 8, select IO PLL, clock enable
+			CLK_621_TRUE = 0x1;								# use 6:2:1
+			
+			# DDR initialisation
+			DDRC_CTRL = 0x80;								# reg_ddrc_rdwr_idle_gap = 1, reset
+			TWO_RANK_CFG = 0x00001081;						# tREFI = 0x81
+			HPR = 0x03C0780F;								#
+			LPR = 0x02001001;								#
+			WR = 0x00014001;								#
+			DRAM_PARAM0 = 0x0004281A;						#
+			DRAM_PARAM1 = 0x44E458D2;						#
+			DRAM_PARAM2 = 0x720238E5;						#
+			DRAM_PARAM3 = 0x270872D0;						#
+			DRAM_PARAM4 = 0x00000000;						#
+			DRAM_INIT_PARAM = 0x00002007;					#
+			DRAM_EMR = 0x00000008;							#
+			DRAM_EMR_MR = 0x00040930;						#
+			DRAM_BURST8_RDRW = 0x000116D4;					#
+			DRAM_DISABLE_DQ = 0x00000000;					#
+			DRAM_ADR_MAP_BANK = 0x00000777;					#
+			DRAM_ADR_MAP_COL = 0xFFF00000;					#
+			DRAM_ADR_MAP_ROW = 0x0F666666;					#
+			DRAM_ODT = 0x0003C008;							#
+			PHY_CMD_TIMEOUT = 0x77010800;					#
+			DLL_CALIB = 0x00000000;							#
+			ODT_DELAY_HOLD = 0x00005003;					#
+			CTRL_REG1 = 0x0000003E;							#
+			CTRL_REG2 = 0x00020000;							#
+			CTRL_REG3 = 0x00284141;							#
+			CTRL_REG4 = 0x00001610;							#
+			CTRL_REG5 = 0x00466111;							#
+			CTRL_REG6 = 0x00032222;							#
+			CHE_T_ZQ = 0x10200802;							#
+			CHE_T_ZQ_SHORT = 0x0690CB73;					#
+			DEEP_PWRDWN = 0x000001FE;						#
+			REG_2C = 0x1CFFFFFF;							#
+			REG_2D = 0x00000200;							#
+			DFI_TIMING = 0x00200066;						#
+			CHE_ECC_CONTROL = 0x00000000;					#
+			CHE_CORR_ECC_LOG = 0x00000000;					#
+			CHE_UNCORR_ECC_LOG = 0x00000000;				#
+			CHE_ECC_STATS = 0x00000000;						#
+			ECC_SCRUB = 0x00000008;							#
+			PHY_RCVR_ENABLE = 0x00000000;					#
+			PHY_CONFIG0 = 0x40000001;						#
+			PHY_CONFIG1 = 0x40000001;						#
+			PHY_CONFIG2 = 0x40000001;						#
+			PHY_CONFIG3 = 0x40000001;						#
+			PHY_INIT_RATIO0 = 0x0002C000;					#
+			PHY_INIT_RATIO1 = 0x0002C400;					#
+			PHY_INIT_RATIO2 = 0x0002F003;					#
+			PHY_INIT_RATIO3 = 0x0002EC03;					#
+			PHY_RD_DQS_CFG0 = 0x00000035;					#
+			PHY_RD_DQS_CFG1 = 0x00000035;					#
+			PHY_RD_DQS_CFG2 = 0x00000035;					#
+			PHY_RD_DQS_CFG3 = 0x00000035;					#
+			PHY_WR_DQS_CFG0 = 0x00000077;					#
+			PHY_WR_DQS_CFG1 = 0x00000077;					#
+			PHY_WR_DQS_CFG2 = 0x00000083;					#
+			PHY_WR_DQS_CFG3 = 0x00000083;					#
+			PHY_WE_CFG0 = 0x00000105;						#
+			PHY_WE_CFG1 = 0x00000106;						#
+			PHY_WE_CFG2 = 0x00000111;						#
+			PHY_WE_CFG3 = 0x00000110;						#
+			WR_DATA_SLV0 = 0x000000B7;						#
+			WR_DATA_SLV1 = 0x000000B7;						#
+			WR_DATA_SLV2 = 0x000000C3;						#
+			WR_DATA_SLV3 = 0x000000C3;						#
+			REG_64 = 0x00040080;							#
+			REG_65 = 0x0001FC82;							#
+			PAGE_MASK = 0x00000000;							#
+			AXI_PRIO_WR_PORT0 = 0x000003FF;					#
+			AXI_PRIO_WR_PORT1 = 0x000003FF;					#
+			AXI_PRIO_WR_PORT2 = 0x000003FF;					#
+			AXI_PRIO_WR_PORT3 = 0x000003FF;					#
+			AXI_PRIO_RD_PORT0 = 0x000003FF;					#
+			AXI_PRIO_RD_PORT1 = 0x000003FF;					#
+			AXI_PRIO_RD_PORT2 = 0x000003FF;					#
+			AXI_PRIO_RD_PORT3 = 0x000003FF;					#
+			LPDDR_CTRL0 = 0x00000000;						#
+			LPDDR_CTRL1 = 0x00000000;						#
+			LPDDR_CTRL2 = 0x00005125;						#
+			LPDDR_CTRL3 = 0x000012A8;						#
+			POLL DDRIOB_DCI_STATUS = 0x2000;				# DDR IO Buffer DCI Status, wait for DCI done
+			DDRC_CTRL = 0x00000081;							# reg_ddrc_rdwr_idle_gap = 1, deassert reset
+			POLL MODE_STS = 0x00000007;						# Controller operation mode status, wait init done
+
+			# init peripherals
+			DDRIOB_DATA0 = 0x0000067a;						# DCI update enable
+			DDRIOB_DATA1 = 0x0000067a;						# DCI update enable
+			DDRIOB_DIFF0 = 0x0000067c;						# DCI update enable
+			DDRIOB_DIFF1 = 0x0000067c;						# DCI update enable
+
+			SLCR_LOCK = 0x767b;								# lock SLCR
 		}
 	}
 }

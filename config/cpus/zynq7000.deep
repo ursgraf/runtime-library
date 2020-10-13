@@ -27,6 +27,7 @@ cpu zynq7010 {
 		uartController = ioReg + 0;						# UART controller
 		gpioController = ioReg + 0xa000;				# GPIO controller
 		slcrReg = 0xf8000000;							# System level control registers
+		ddrReg = 0xf8006000;							# DDR memory control registers
 		cpuPrivateReg = 0xf8900000;						# CPU private registers
 		interruptCtlr = cpuPrivateReg + 0x600100;		# Interrupt controller registers
 		globalTimer = cpuPrivateReg + 0x600200;			# Global Timer
@@ -358,6 +359,36 @@ cpu zynq7010 {
 			 size = 4;
 		}
 
+		register CAN_RST_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x220;
+			 size = 4;
+		}
+
+		register I2C_RST_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x224;
+			 size = 4;
+		}
+
+		register UART_RST_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x228;
+			 size = 4;
+		}
+
+		register GPIO_RST_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x22c;
+			 size = 4;
+		}
+
+		register OCM_RST_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x238;
+			 size = 4;
+		}
+
 		register FPGA_RST_CTRL {
 			 type = IOR;
 			 addr = slcrReg + 0x240;
@@ -559,6 +590,500 @@ cpu zynq7010 {
 		register DDRIOB_DCI_STATUS {
 			 type = IOR;
 			 addr = slcrReg + 0xb74;
+			 size = 4;
+		}
+
+		# DDR memory control registers
+		
+		register DDRC_CTRL {
+			 type = IOR;
+			 addr = ddrReg + 0x00;
+			 size = 4;
+		}
+
+		register TWO_RANK_CFG {
+			 type = IOR;
+			 addr = ddrReg + 0x04;
+			 size = 4;
+		}
+
+		register HPR {
+			 type = IOR;
+			 addr = ddrReg + 0x08;
+			 size = 4;
+		}
+
+		register LPR {
+			 type = IOR;
+			 addr = ddrReg + 0x0c;
+			 size = 4;
+		}
+
+		register WR {
+			 type = IOR;
+			 addr = ddrReg + 0x10;
+			 size = 4;
+		}
+
+		register DRAM_PARAM0 {
+			 type = IOR;
+			 addr = ddrReg + 0x14;
+			 size = 4;
+		}
+
+		register DRAM_PARAM1 {
+			 type = IOR;
+			 addr = ddrReg + 0x18;
+			 size = 4;
+		}
+
+		register DRAM_PARAM2 {
+			 type = IOR;
+			 addr = ddrReg + 0x1c;
+			 size = 4;
+		}
+
+		register DRAM_PARAM3 {
+			 type = IOR;
+			 addr = ddrReg + 0x20;
+			 size = 4;
+		}
+
+		register DRAM_PARAM4 {
+			 type = IOR;
+			 addr = ddrReg + 0x24;
+			 size = 4;
+		}
+
+		register DRAM_INIT_PARAM {
+			 type = IOR;
+			 addr = ddrReg + 0x28;
+			 size = 4;
+		}
+
+		register DRAM_EMR {
+			 type = IOR;
+			 addr = ddrReg + 0x2c;
+			 size = 4;
+		}
+
+		register DRAM_EMR_MR {
+			 type = IOR;
+			 addr = ddrReg + 0x30;
+			 size = 4;
+		}
+
+		register DRAM_BURST8_RDRW {
+			 type = IOR;
+			 addr = ddrReg + 0x34;
+			 size = 4;
+		}
+
+		register DRAM_DISABLE_DQ {
+			 type = IOR;
+			 addr = ddrReg + 0x38;
+			 size = 4;
+		}
+
+		register DRAM_ADR_MAP_BANK {
+			 type = IOR;
+			 addr = ddrReg + 0x3c;
+			 size = 4;
+		}
+
+		register DRAM_ADR_MAP_COL {
+			 type = IOR;
+			 addr = ddrReg + 0x40;
+			 size = 4;
+		}
+
+		register DRAM_ADR_MAP_ROW {
+			 type = IOR;
+			 addr = ddrReg + 0x44;
+			 size = 4;
+		}
+
+		register DRAM_ODT {
+			 type = IOR;
+			 addr = ddrReg + 0x48;
+			 size = 4;
+		}
+
+		register PHY_DBG {
+			 type = IOR;
+			 addr = ddrReg + 0x4c;
+			 size = 4;
+		}
+
+		register PHY_CMD_TIMEOUT {
+			 type = IOR;
+			 addr = ddrReg + 0x50;
+			 size = 4;
+		}
+
+		register MODE_STS {
+			 type = IOR;
+			 addr = ddrReg + 0x54;
+			 size = 4;
+		}
+
+		register DLL_CALIB {
+			 type = IOR;
+			 addr = ddrReg + 0x58;
+			 size = 4;
+		}
+
+		register ODT_DELAY_HOLD {
+			 type = IOR;
+			 addr = ddrReg + 0x5c;
+			 size = 4;
+		}
+
+		register CTRL_REG1 {
+			 type = IOR;
+			 addr = ddrReg + 0x60;
+			 size = 4;
+		}
+
+		register CTRL_REG2 {
+			 type = IOR;
+			 addr = ddrReg + 0x64;
+			 size = 4;
+		}
+
+		register CTRL_REG3 {
+			 type = IOR;
+			 addr = ddrReg + 0x68;
+			 size = 4;
+		}
+
+		register CTRL_REG4 {
+			 type = IOR;
+			 addr = ddrReg + 0x6c;
+			 size = 4;
+		}
+
+		register CTRL_REG5 {
+			 type = IOR;
+			 addr = ddrReg + 0x78;
+			 size = 4;
+		}
+
+		register CTRL_REG6 {
+			 type = IOR;
+			 addr = ddrReg + 0x7c;
+			 size = 4;
+		}
+
+		register CHE_REFRESH_TIMER01 {
+			 type = IOR;
+			 addr = ddrReg + 0xa0;
+			 size = 4;
+		}
+
+		register CHE_T_ZQ {
+			 type = IOR;
+			 addr = ddrReg + 0xa4;
+			 size = 4;
+		}
+
+		register CHE_T_ZQ_SHORT {
+			 type = IOR;
+			 addr = ddrReg + 0xa8;
+			 size = 4;
+		}
+
+		register DEEP_PWRDWN {
+			 type = IOR;
+			 addr = ddrReg + 0xac;
+			 size = 4;
+		}
+
+		register REG_2C {
+			 type = IOR;
+			 addr = ddrReg + 0xb0;
+			 size = 4;
+		}
+
+		register REG_2D {
+			 type = IOR;
+			 addr = ddrReg + 0xb4;
+			 size = 4;
+		}
+
+		register DFI_TIMING {
+			 type = IOR;
+			 addr = ddrReg + 0xb8;
+			 size = 4;
+		}
+
+		register CHE_ECC_CONTROL {
+			 type = IOR;
+			 addr = ddrReg + 0xc4;
+			 size = 4;
+		}
+
+		register CHE_CORR_ECC_LOG {
+			 type = IOR;
+			 addr = ddrReg + 0xc8;
+			 size = 4;
+		}
+
+		register CHE_UNCORR_ECC_LOG {
+			 type = IOR;
+			 addr = ddrReg + 0xdc;
+			 size = 4;
+		}
+
+		register CHE_ECC_STATS {
+			 type = IOR;
+			 addr = ddrReg + 0xf0;
+			 size = 4;
+		}
+
+		register ECC_SCRUB {
+			 type = IOR;
+			 addr = ddrReg + 0xf4;
+			 size = 4;
+		}
+
+		register PHY_RCVR_ENABLE {
+			 type = IOR;
+			 addr = ddrReg + 0x114;
+			 size = 4;
+		}
+
+		register PHY_CONFIG0 {
+			 type = IOR;
+			 addr = ddrReg + 0x118;
+			 size = 4;
+		}
+
+		register PHY_CONFIG1 {
+			 type = IOR;
+			 addr = ddrReg + 0x11c;
+			 size = 4;
+		}
+
+		register PHY_CONFIG2 {
+			 type = IOR;
+			 addr = ddrReg + 0x120;
+			 size = 4;
+		}
+
+		register PHY_CONFIG3 {
+			 type = IOR;
+			 addr = ddrReg + 0x124;
+			 size = 4;
+		}
+
+		register PHY_INIT_RATIO0 {
+			 type = IOR;
+			 addr = ddrReg + 0x12c;
+			 size = 4;
+		}
+
+		register PHY_INIT_RATIO1 {
+			 type = IOR;
+			 addr = ddrReg + 0x130;
+			 size = 4;
+		}
+
+		register PHY_INIT_RATIO2 {
+			 type = IOR;
+			 addr = ddrReg + 0x134;
+			 size = 4;
+		}
+
+		register PHY_INIT_RATIO3 {
+			 type = IOR;
+			 addr = ddrReg + 0x138;
+			 size = 4;
+		}
+
+		register PHY_RD_DQS_CFG0 {
+			 type = IOR;
+			 addr = ddrReg + 0x140;
+			 size = 4;
+		}
+
+		register PHY_RD_DQS_CFG1 {
+			 type = IOR;
+			 addr = ddrReg + 0x144;
+			 size = 4;
+		}
+
+		register PHY_RD_DQS_CFG2 {
+			 type = IOR;
+			 addr = ddrReg + 0x148;
+			 size = 4;
+		}
+
+		register PHY_RD_DQS_CFG3 {
+			 type = IOR;
+			 addr = ddrReg + 0x14c;
+			 size = 4;
+		}
+
+		register PHY_WR_DQS_CFG0 {
+			 type = IOR;
+			 addr = ddrReg + 0x154;
+			 size = 4;
+		}
+
+		register PHY_WR_DQS_CFG1 {
+			 type = IOR;
+			 addr = ddrReg + 0x158;
+			 size = 4;
+		}
+
+		register PHY_WR_DQS_CFG2 {
+			 type = IOR;
+			 addr = ddrReg + 0x15c;
+			 size = 4;
+		}
+
+		register PHY_WR_DQS_CFG3 {
+			 type = IOR;
+			 addr = ddrReg + 0x160;
+			 size = 4;
+		}
+
+		register PHY_WE_CFG0 {
+			 type = IOR;
+			 addr = ddrReg + 0x168;
+			 size = 4;
+		}
+
+		register PHY_WE_CFG1 {
+			 type = IOR;
+			 addr = ddrReg + 0x16c;
+			 size = 4;
+		}
+
+		register PHY_WE_CFG2 {
+			 type = IOR;
+			 addr = ddrReg + 0x170;
+			 size = 4;
+		}
+
+		register PHY_WE_CFG3 {
+			 type = IOR;
+			 addr = ddrReg + 0x174;
+			 size = 4;
+		}
+
+		register WR_DATA_SLV0 {
+			 type = IOR;
+			 addr = ddrReg + 0x17c;
+			 size = 4;
+		}
+
+		register WR_DATA_SLV1 {
+			 type = IOR;
+			 addr = ddrReg + 0x180;
+			 size = 4;
+		}
+
+		register WR_DATA_SLV2 {
+			 type = IOR;
+			 addr = ddrReg + 0x184;
+			 size = 4;
+		}
+
+		register WR_DATA_SLV3 {
+			 type = IOR;
+			 addr = ddrReg + 0x188;
+			 size = 4;
+		}
+
+		register REG_64 {
+			 type = IOR;
+			 addr = ddrReg + 0x190;
+			 size = 4;
+		}
+
+		register REG_65 {
+			 type = IOR;
+			 addr = ddrReg + 0x194;
+			 size = 4;
+		}
+
+		register PAGE_MASK {
+			 type = IOR;
+			 addr = ddrReg + 0x204;
+			 size = 4;
+		}
+
+		register AXI_PRIO_WR_PORT0 {
+			 type = IOR;
+			 addr = ddrReg + 0x208;
+			 size = 4;
+		}
+
+		register AXI_PRIO_WR_PORT1 {
+			 type = IOR;
+			 addr = ddrReg + 0x20c;
+			 size = 4;
+		}
+
+		register AXI_PRIO_WR_PORT2 {
+			 type = IOR;
+			 addr = ddrReg + 0x210;
+			 size = 4;
+		}
+
+		register AXI_PRIO_WR_PORT3 {
+			 type = IOR;
+			 addr = ddrReg + 0x214;
+			 size = 4;
+		}
+
+		register AXI_PRIO_RD_PORT0 {
+			 type = IOR;
+			 addr = ddrReg + 0x218;
+			 size = 4;
+		}
+
+		register AXI_PRIO_RD_PORT1 {
+			 type = IOR;
+			 addr = ddrReg + 0x21c;
+			 size = 4;
+		}
+
+		register AXI_PRIO_RD_PORT2 {
+			 type = IOR;
+			 addr = ddrReg + 0x220;
+			 size = 4;
+		}
+
+		register AXI_PRIO_RD_PORT3 {
+			 type = IOR;
+			 addr = ddrReg + 0x224;
+			 size = 4;
+		}
+
+		register LPDDR_CTRL0 {
+			 type = IOR;
+			 addr = ddrReg + 0x2a8;
+			 size = 4;
+		}
+
+		register LPDDR_CTRL1 {
+			 type = IOR;
+			 addr = ddrReg + 0x2ac;
+			 size = 4;
+		}
+
+		register LPDDR_CTRL2 {
+			 type = IOR;
+			 addr = ddrReg + 0x2b0;
+			 size = 4;
+		}
+
+		register LPDDR_CTRL3 {
+			 type = IOR;
+			 addr = ddrReg + 0x2b4;
 			 size = 4;
 		}
 
