@@ -26,6 +26,7 @@ cpu zynq7010 {
 		ioReg = 0xe0000000;								# I/O peripheral registers
 		uartController = ioReg + 0;						# UART controller
 		gpioController = ioReg + 0xa000;				# GPIO controller
+		spiController = ioReg + 0;						# SPI Controller
 		slcrReg = 0xf8000000;							# System level control registers
 		ddrReg = 0xf8006000;							# DDR memory control registers
 		cpuPrivateReg = 0xf8900000;						# CPU private registers
@@ -392,6 +393,12 @@ cpu zynq7010 {
 		register FPGA_RST_CTRL {
 			 type = IOR;
 			 addr = slcrReg + 0x240;
+			 size = 4;
+		}
+		
+		register SPI_RST_CTRL {
+			 type = IOR;
+			 addr = slcrReg + 0x21c;
 			 size = 4;
 		}
 
@@ -1454,6 +1461,51 @@ cpu zynq7010 {
 			 addr = uartController + 0x1044;
 			 size = 4;
 		}
+
+		# SPI1 registers
+
+		register SPI1_CR {	
+			 type = IOR;
+			 addr = spiController + 0x7000;
+			 size = 4;
+		}
+
+		register SPI1_ER {	
+			 type = IOR;
+			 addr = spiController + 0x7014;
+			 size = 4;
+		}
+
+		register SPI1_SR {	
+			 type = IOR;
+			 addr = spiController + 0x7004;
+			 size = 4;
+		}
+
+		register SPI1_TXD {	
+			 type = IOR;
+			 addr = spiController + 0x701c;
+			 size = 4;
+		}
+
+		register SPI1_RXD {	
+			 type = IOR;
+			 addr = spiController + 0x7020;
+			 size = 4;
+		}
+
+		register SPI1_IER {	
+			 type = IOR;
+			 addr = spiController + 0x7008;
+			 size = 4;
+		}
+
+		register SPI1_IDR {	
+			 type = IOR;
+			 addr = spiController + 0x700c;
+			 size = 4;
+		}
+
 	}
 	
 	reginit {
