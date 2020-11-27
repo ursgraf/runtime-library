@@ -2,7 +2,7 @@ package ch.ntb.inf.deep.runtime.zynq7000;
 
 import ch.ntb.inf.deep.runtime.arm32.Iarm32;
 
-// Auto generated file (2020-10-13 16:38:03)
+// Auto generated file (2020-11-11 11:45:24)
 
 public interface Izynq7000 extends Iarm32 {
 
@@ -14,6 +14,7 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int cpuPrivateReg = 0xf8900000;
 	public static final int ddrReg = 0xf8006000;
 	public static final int slcrReg = 0xf8000000;
+	public static final int spiController = 0xe0000000;
 	public static final int gpioController = 0xe000a000;
 	public static final int uartController = 0xe0000000;
 	public static final int ioReg = 0xe0000000;
@@ -79,6 +80,7 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int GPIO_RST_CTRL = 0xf800022c;
 	public static final int OCM_RST_CTRL = 0xf8000238;
 	public static final int FPGA_RST_CTRL = 0xf8000240;
+	public static final int SPI_RST_CTRL = 0xf800021c;
 	public static final int REBOOT_STATUS = 0xf8000258;
 	public static final int BOOT_MODE = 0xf800025c;
 	public static final int MIO_PIN_00 = 0xf8000700;
@@ -254,4 +256,11 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int UART1_BAUDDIV = 0xe0001034;
 	public static final int UART1_FLOWDELAY = 0xe0001038;
 	public static final int UART1_TX_FIFO_LEVEL = 0xe0001044;
+	public static final int SPI1_CR = 0xe0007000;
+	public static final int SPI1_ER = 0xe0007014;
+	public static final int SPI1_SR = 0xe0007004;
+	public static final int SPI1_TXD = 0xe000701c;
+	public static final int SPI1_RXD = 0xe0007020;
+	public static final int SPI1_IER = 0xe0007008;
+	public static final int SPI1_IDR = 0xe000700c;
 }
