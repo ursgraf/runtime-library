@@ -18,10 +18,11 @@
 
 package ch.ntb.inf.deep.trglib.targettest;
 
-import ch.ntb.inf.deep.runtime.mpc555.*;
-import ch.ntb.inf.deep.runtime.ppc32.Task;
-import ch.ntb.inf.deep.runtime.util.Actionable;
-import ch.ntb.inf.deep.unsafe.US;
+import org.deepjava.runtime.mpc555.*;
+import org.deepjava.runtime.ppc32.Task;
+import org.deepjava.runtime.util.Actionable;
+import org.deepjava.unsafe.US;
+
 import ch.ntb.inf.junitTarget.*;
 
 public class TaskTestMpc555 implements IntbMpc555HB {

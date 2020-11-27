@@ -17,7 +17,7 @@
 
 package java.lang;
 
-import ch.ntb.inf.deep.marker.Modified;
+import org.deepjava.marker.Modified;
 
 /**
  * The wrapper for the primitive type {@code byte}.

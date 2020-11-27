@@ -20,11 +20,11 @@ package java.lang;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-import ch.ntb.inf.deep.marker.Modified;
-import ch.ntb.inf.deep.runtime.Kernel;
-import ch.ntb.inf.deep.runtime.util.DummyInputStream;
-import ch.ntb.inf.deep.runtime.util.DummyOutputStream;
-import ch.ntb.inf.deep.unsafe.US;
+import org.deepjava.marker.Modified;
+import org.deepjava.runtime.Kernel;
+import org.deepjava.runtime.util.DummyInputStream;
+import org.deepjava.runtime.util.DummyOutputStream;
+import org.deepjava.unsafe.US;
 
 /**
  * Provides access to system-related information and resources including

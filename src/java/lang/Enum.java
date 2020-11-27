@@ -17,7 +17,8 @@
 package java.lang;
 
 import java.io.Serializable;
-import ch.ntb.inf.deep.marker.Modified;
+
+import org.deepjava.marker.Modified;
 
 /**
  * The superclass of all enumerated types. Actual enumeration types inherit from

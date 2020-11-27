@@ -18,10 +18,11 @@
 
 package ch.ntb.inf.deep.trglib.targettest;
 
-import ch.ntb.inf.deep.runtime.zynq7000.*;
-import ch.ntb.inf.deep.runtime.Kernel;
-import ch.ntb.inf.deep.runtime.arm32.Task;
-import ch.ntb.inf.deep.runtime.util.Actionable;
+import org.deepjava.runtime.Kernel;
+import org.deepjava.runtime.arm32.Task;
+import org.deepjava.runtime.util.Actionable;
+import org.deepjava.runtime.zynq7000.*;
+
 import ch.ntb.inf.junitTarget.*;
 
 public class TaskTestZynq implements Izynq7000 {

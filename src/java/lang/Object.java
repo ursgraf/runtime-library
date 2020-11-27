@@ -17,7 +17,7 @@
 
 package java.lang;
 
-import ch.ntb.inf.deep.unsafe.US;
+import org.deepjava.unsafe.US;
 
 /**
  * The root class of the Java class hierarchy. All non-primitive types

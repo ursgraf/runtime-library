@@ -18,10 +18,11 @@
 
 package ch.ntb.inf.deep.trglib.targettest;
 
-import ch.ntb.inf.deep.runtime.mpc5200.*;
-import ch.ntb.inf.deep.runtime.ppc32.Task;
-import ch.ntb.inf.deep.runtime.util.Actionable;
-import ch.ntb.inf.deep.unsafe.US;
+import org.deepjava.runtime.mpc5200.*;
+import org.deepjava.runtime.ppc32.Task;
+import org.deepjava.runtime.util.Actionable;
+import org.deepjava.unsafe.US;
+
 import ch.ntb.inf.junitTarget.*;
 
 public class TaskTestMpc5200 implements Impc5200 {

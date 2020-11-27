@@ -18,7 +18,8 @@
 package java.lang;
 
 import java.io.*;
-import ch.ntb.inf.deep.marker.Modified;
+
+import org.deepjava.marker.Modified;
 
 /**
  * The superclass of all classes which can be thrown by the VM. The

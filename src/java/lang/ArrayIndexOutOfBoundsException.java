@@ -17,7 +17,7 @@
 
 package java.lang;
 
-import ch.ntb.inf.deep.marker.Modified;
+import org.deepjava.marker.Modified;
 
 /**
  * Thrown when the an array is indexed with a value less than zero, or greater

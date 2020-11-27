@@ -34,7 +34,7 @@ package java.lang;
 
 import java.io.Serializable;
 
-import ch.ntb.inf.deep.marker.Modified;
+import org.deepjava.marker.Modified;
 
 /**
  * The in-memory representation of a Java class. 

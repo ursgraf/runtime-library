@@ -18,10 +18,11 @@
 
 package ch.ntb.inf.deep.trglib.targettest;
 
-import ch.ntb.inf.deep.runtime.util.Matrix;
-import ch.ntb.inf.deep.runtime.util.Vector;
-import ch.ntb.inf.deep.runtime.util.Vector3;
-import ch.ntb.inf.deep.runtime.util.Vector4;
+import org.deepjava.runtime.util.Matrix;
+import org.deepjava.runtime.util.Vector;
+import org.deepjava.runtime.util.Vector3;
+import org.deepjava.runtime.util.Vector4;
+
 import ch.ntb.inf.junitTarget.Assert;
 import ch.ntb.inf.junitTarget.CmdTransmitter;
 import ch.ntb.inf.junitTarget.MaxErrors;

@@ -18,7 +18,8 @@
 package java.util;
 
 import java.io.Serializable;
-import ch.ntb.inf.deep.marker.Modified;
+
+import org.deepjava.marker.Modified;
 
 /**
  * This class provides methods that return pseudo-random values.

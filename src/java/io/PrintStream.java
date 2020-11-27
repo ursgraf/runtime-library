@@ -17,7 +17,7 @@
 
 package java.io;
 
-import ch.ntb.inf.deep.marker.Modified;
+import org.deepjava.marker.Modified;
 
 /**
  * Wraps an existing {@link OutputStream} and provides convenience methods for

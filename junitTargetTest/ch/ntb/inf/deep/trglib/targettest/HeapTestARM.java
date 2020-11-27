@@ -18,7 +18,8 @@
 
 package ch.ntb.inf.deep.trglib.targettest;
 
-import ch.ntb.inf.deep.runtime.arm32.Heap;
+import org.deepjava.runtime.arm32.Heap;
+
 import ch.ntb.inf.junitTarget.Assert;
 import ch.ntb.inf.junitTarget.CmdTransmitter;
 import ch.ntb.inf.junitTarget.MaxErrors;

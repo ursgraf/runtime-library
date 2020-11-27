@@ -17,7 +17,7 @@
 
 package java.io;
 
-import ch.ntb.inf.deep.marker.Modified;
+import org.deepjava.marker.Modified;
 
 /**
  * A writable sink for bytes.
