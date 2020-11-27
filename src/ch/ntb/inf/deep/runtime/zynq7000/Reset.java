@@ -35,30 +35,33 @@ import ch.ntb.inf.deep.unsafe.arm.US;
 class Reset extends ARMException implements Izynq7000, IdeepCompilerConstants {
 	
 	static void vectorTable() {
-		US.ASM("movw R15 256"); // jump to reset method
-		US.ASM("movw R15 2048"); // undefined instruction
-		US.ASM("movw R15 512"); // jump to supervisor call
-		US.ASM("movw R15 2304"); // prefetch abort, stop here
-		US.ASM("movw R15 2560"); // data abort, stop here
+		US.ASM("b 248"); // jump to reset method (256 - 8)
+		US.ASM("b 2036"); // undefined instruction (2048 - 8 - 4)
+		US.ASM("b 496"); // jump to supervisor call (512 - 8 - 8)
+		US.ASM("b 2284"); // prefetch abort, stop here (2304 - 8 - 12)
+		US.ASM("b 2536"); // data abort, stop here (2560 - 8 - 16)
 		US.ASM("b -8"); // not used, stop here
-		US.ASM("movw R15 1024"); // jump to IRQ interrupt
+		US.ASM("b 992"); // jump to IRQ interrupt (1024 - 8 - 24)
 		US.ASM("b -8"); // FIQ, stop here
 	}
 	
 	static void reset() {
-		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
-		int stackSize = US.GET4(sysTabBaseAddr + stackOffset + 8);
-		US.PUTGPR(SP, stackBase + stackSize - 4);	// set SVC stack pointer
-		
+		int addr = sysTabBaseAddr;
+		// sysTab is in flash when running out of flash
+		if (US.BIT(REBOOT_STATUS, 22)) addr += 0x100000;
+		// set SVC stack pointer
+		int stackOffset = US.GET4(addr + stStackOffset);
+		int stackBase = US.GET4(addr + stackOffset + 4);
+		int stackSize = US.GET4(addr + stackOffset + 8);
+		US.PUTGPR(SP, stackBase + stackSize - 4);
 		// set IRQ stack pointer
-		stackBase = US.GET4(sysTabBaseAddr + stackOffset + 12);
-		stackSize = US.GET4(sysTabBaseAddr + stackOffset + 16);		
+		stackBase = US.GET4(addr + stackOffset + 12);
+		stackSize = US.GET4(addr + stackOffset + 16);		
 		US.ASM("cps #irq");	// change to IRQ mode  
 		US.PUTGPR(SP, stackBase + stackSize - 4);	// set SP for IRQ
 		US.ASM("cps #svc");	// change to supervisor mode
 
-		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr);
+		int kernelClinitAddr = US.GET4(addr + stKernelClinitAddr);
 		US.PUTGPR(PC, kernelClinitAddr);	// never come back
 	}
 	

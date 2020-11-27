@@ -154,18 +154,21 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 		US.PUT4(ARM_CLK_CTRL, 0x1f000200);	// use ARM PLL for CPU, divisor = 2 -> processor frequency = 667MHz
 		// CPU_6x4x = 667MHz, CPU_3x2x = 333MHz, CPU_2x = 222MHz, CPU_1x = 111MHz
 		
-		US.PUT4(DDR_PLL_CFG, 0x12c220);	// configure DDR PLL for 1067MHZ with 33.33MHz quartz
-		US.PUT4(DDR_PLL_CTRL, 0x20011);	// divider = 32, bypass, reset
-		US.PUT4(DDR_PLL_CTRL, US.GET4(DDR_PLL_CTRL) & ~1);	// deassert reset
-		while (!US.BIT(PLL_STATUS, 1));	// wait to lock
-		US.PUT4(DDR_PLL_CTRL, US.GET4(DDR_PLL_CTRL) & ~0x10);	// no bypass
-		US.PUT4(DDR_CLK_CTRL, 0xc200003);	// 2x-divisor = 3, 3x-divisor = 2
+		// configure PLL if loading from JTAG, in case of POR, the PLL will be setup by FSBL
+		if (!US.BIT(REBOOT_STATUS, 22)) {	
+			US.PUT4(DDR_PLL_CFG, 0x12c220);	// configure DDR PLL for 1067MHZ with 33.33MHz quartz
+			US.PUT4(DDR_PLL_CTRL, 0x20011);	// divider = 32, bypass, reset
+			US.PUT4(DDR_PLL_CTRL, US.GET4(DDR_PLL_CTRL) & ~1);	// deassert reset
+			while (!US.BIT(PLL_STATUS, 1));	// wait to lock
+			US.PUT4(DDR_PLL_CTRL, US.GET4(DDR_PLL_CTRL) & ~0x10);	// no bypass
+			US.PUT4(DDR_CLK_CTRL, 0xc200003);	// 2x-divisor = 3, 3x-divisor = 2
 		
-		US.PUT4(IO_PLL_CFG, 0x1f42c0);	// configure IO PLL for 1000MHZ with 33.33MHz quartz
-		US.PUT4(IO_PLL_CTRL, 0x1e011);	// divider = 30, bypass, reset
-		US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~1);	// deassert reset
-		while (!US.BIT(PLL_STATUS, 2));	// wait to lock
-		US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~0x10);	// no bypass
+			US.PUT4(IO_PLL_CFG, 0x1f42c0);	// configure IO PLL for 1000MHZ with 33.33MHz quartz
+			US.PUT4(IO_PLL_CTRL, 0x1e011);	// divider = 30, bypass, reset
+			US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~1);	// deassert reset
+			while (!US.BIT(PLL_STATUS, 2));	// wait to lock
+			US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~0x10);	// no bypass
+		}
 
 		US.PUT4(UART_CLK_CTRL, 0xa03);	// UART clock, divisor = 10 -> 100MHz, select IO PLL, clock enable for UART0/1
 		US.PUT4(APER_CLK_CTRL, 0x01ffcccd);	// enable clocks to access register of all peripherials
@@ -184,7 +187,6 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 		US.PUT4(MIO_PIN_48, 0x12e0);	// UART1 tx
 		US.PUT4(MIO_PIN_49, 0x12e1);	// UART1 rx
 
-        US.PUT4(OCM_CFG, 0x10);	// map all OCM blocks to lower address
 		US.PUT4(LVL_SHFTR_EN, 0xf);	// enable all level shifters between PS and PL
 		US.PUT4(FPGA_RST_CTRL, 0);	// deassert FPGA reset
 		US.PUT4(UART_RST_CTRL, 0xa);	// assert UART1 reset, must be reset when already having been setup by FSBL
@@ -201,9 +203,13 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
         US.ASM("orr r6, r6, #0x40000000");
         US.ASM("vmsr FPEXC, r6");
         
+        int addr = sysTabBaseAddr;
+		// sysTab is in flash when running out of flash
+		if (US.BIT(REBOOT_STATUS, 22)) addr += 0x100000;
+		
  		// mark stack end with specific pattern
-		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
+		int stackOffset = US.GET4(addr + stStackOffset);
+		int stackBase = US.GET4(addr + stackOffset + 4);
 		US.PUT4(stackBase, stackEndPattern);
 
 		// setup generic interrupt controller	
@@ -211,11 +217,11 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 		US.PUT4(ICCICR, 1);	// use irq, global interrupt enable
 		US.PUT4(ICDDCR, 1);	// enable distributor
 		
-		int classConstOffset = US.GET4(sysTabBaseAddr);
+		int classConstOffset = US.GET4(addr);
 //		int state = 0;
 		while (true) {
 			// get addresses of classes from system table
-			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);
+			int constBlkBase = US.GET4(addr + classConstOffset);
 			if (constBlkBase == 0) break;
 
 			// check integrity of constant block for each class
@@ -232,12 +238,12 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 //			state++; 
 			classConstOffset += 4;
 		}
-		classConstOffset = US.GET4(sysTabBaseAddr);
-		Heap.sysTabBaseAddr = sysTabBaseAddr;
-		int kernelClinitAddr = US.GET4(sysTabBaseAddr + stKernelClinitAddr); 
+		classConstOffset = US.GET4(addr);
+		Heap.sysTabBaseAddr = addr;
+		int kernelClinitAddr = US.GET4(addr + stKernelClinitAddr); 
 		while (true) {
 			// get addresses of classes from system table
-			int constBlkBase = US.GET4(sysTabBaseAddr + classConstOffset);
+			int constBlkBase = US.GET4(addr + classConstOffset);
 			if (constBlkBase == 0) break;
 
 			// initialize classes

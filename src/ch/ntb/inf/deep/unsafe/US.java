@@ -73,7 +73,7 @@ public class US {
 	/** 
 	 * Read a bit at hardware address: return BIT(mem[address](byte), bitNr) 
 	 * @param address Memory address.
-	 * @param bitNr Bit number (0 .. 7). 
+	 * @param bitNr Bit number (0 .. 31). 
 	 * @return {@code true} if bit set. 
 	 */
 	public static boolean BIT(int address, int bitNr) {

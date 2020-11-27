@@ -12,6 +12,8 @@ board MicroZed {
 	sysconst {
 		extRamSize   = 0x3fefffff;						# 1023MB (1GB-1MB) external RAM
 		extRamBase   = 0x100000;						# starting at 1MB
+		extFlashSize = 0x800000;						# 8M external flash, QSPI has 16M, but needs space for FSBL and PL
+#		extFlashBase = 0x100000;						# will be copied by FSBL to DDR, hence, must be linked for DDR
 	}
 	
 	memorymap {
@@ -24,19 +26,50 @@ board MicroZed {
 			technology = ram;
 			attributes = read, write;
 		}
+		
 		segment ExternalRam.Default {					# Default segment for code, constants and class fields
-	#			base = sysTabBaseAddr + sysTabSize;
 			attributes = read, write, const, code, var;
 		}
 		
+		# ===== External QSPI Flash =====
+		device ExternalFlash {							# External flash device configuration
+			base = extRamBase;							# will be copied by FSBL to DDR
+			size = extFlashSize;
+			width = 4;
+			technology = flash;
+			memorytype = "spansion";
+			attributes = read;
+			
+			memorysectorarray DS {
+				base = extRamBase;
+				sectorsize = 0x20000;					# 128k
+				nofsectors = 20;						
+			}
+		}
+		
+		segment ExternalFlash.ExceptionCode {			# Exception code in dual mapped address space
+			base = extRamBase;
+			size = excpCodeSize;
+			attributes = read, code;
+		}
+		  
+		segment ExternalFlash.SysTab {					# Default Segment for code, constants and class fields
+			base = extRamBase + excpCodeSize;			# Place system table behind exception code
+			attributes = read, systab;
+		}
+
+		segment ExternalFlash.Default {					# Default Segment for code, constants and class fields
+			attributes = read, const, code;
+		}
+
 	}
 
 	reginit {
 #		GPIO_DATA0 = 0x1000;
 	}
 
-	runconfiguration BootFromJTAG {
-		description = "load program to on-chip and external ram";
+	runconfiguration BootFromRam {
+		description = "load program to ram";
 		system {
 			systemtable: systab@InternalRam.SysTab;
 		}
@@ -172,6 +205,30 @@ board MicroZed {
 			DDRIOB_DIFF1 = 0x0000067c;						# DCI update enable
 
 			SLCR_LOCK = 0x767b;								# lock SLCR
+		}
+	}
+
+	runconfiguration BootFromQSPIthenJTAG {
+		description = "boot from QSPI flash and load program to ram";
+		system {
+			systemtable: systab@InternalRam.SysTab;
+		}
+		modules {
+				kernel, heap: code@InternalRam.Default, const@InternalRam.Default, var@InternalRam.Default; 
+				exception: code@InternalRam.ExceptionCode, const@InternalRam.Default, var@InternalRam.Default;
+				default: code@ExternalRam.Default, const@ExternalRam.Default, var@InternalRam.Default;      
+		}
+	}
+
+	runconfiguration BootFromQSPI {
+		description = "boot from QSPI flash";
+		system {
+			systemtable: systab@ExternalFlash.SysTab;
+		}
+		modules {
+				kernel, heap: code@ExternalFlash.Default, const@ExternalFlash.Default, var@InternalRam.Default; 
+				exception: code@ExternalFlash.ExceptionCode, const@ExternalFlash.Default, var@InternalRam.Default;
+				default: code@ExternalFlash.Default, const@ExternalFlash.Default, var@InternalRam.Default;      
 		}
 	}
 }

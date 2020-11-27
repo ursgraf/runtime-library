@@ -11,8 +11,7 @@ cpu zynq7010 {
 	
 	sysconst {
 		OCM_BaseAddr = 0;								# On-chip memory base address
-		OCM_Size = 0x40000;								# On-chip memory size (256k)
-#		OCM_Size = 0xc000;								# for test only
+		OCM_Size = 0x30000;								# On-chip memory size (196k), 64k are mapped high
 		
 		excpCodeBase = OCM_BaseAddr;					# Base address for exception code
 		excpCodeSize = 0x1000;							# Exception code size
@@ -21,7 +20,7 @@ cpu zynq7010 {
 		
 		stackSizeSVC = 0x1000;							# stack size for SVC mode
 		stackSizeIRQ = 0x1000;							# stack size for IRQ mode
-		heapSize = 0x10000;								# Default heap size
+		heapSize = 0x20000;								# Default heap size (128k)
 
 		ioReg = 0xe0000000;								# I/O peripheral registers
 		uartController = ioReg + 0;						# UART controller
@@ -57,7 +56,6 @@ cpu zynq7010 {
 		}
 
 		segment InternalRam.Default {								# Default segment for code, constants and class fields
-#			base = sysTabBaseAddr + sysTabSize;
 			attributes = read, write, const, code, var;
 		}
 
@@ -67,15 +65,15 @@ cpu zynq7010 {
 			attributes = read, write, heap;
 		}
 		
-		segment InternalRam.StackSVC {
-			base = OCM_BaseAddr + OCM_Size - stackSizeSVC ;
-			size = stackSizeSVC;
+		segment InternalRam.StackIRQ {								# IRQ mode stack
+			base = OCM_BaseAddr + OCM_Size - stackSizeSVC - stackSizeIRQ ;
+			size = stackSizeIRQ;
 			attributes = read, write, stack;
 		}
 		
-		segment InternalRam.StackIRQ {
-			base = OCM_BaseAddr + OCM_Size - stackSizeSVC - stackSizeIRQ ;
-			size = stackSizeIRQ;
+		segment InternalRam.StackSVC {								# Supervisor mode stack
+			base = OCM_BaseAddr + OCM_Size - stackSizeSVC ;
+			size = stackSizeSVC;
 			attributes = read, write, stack;
 		}
 	}
@@ -1458,7 +1456,7 @@ cpu zynq7010 {
 	
 	reginit {
 		SLCR_UNLOCK = 0xdf0d;			# unlock SLCR
-		OCM_CFG = 0x10;					# map all OCM blocks to lower address
+		REBOOT_STATUS = 0;				# clear all bits set by on-chip ROM
 		SLCR_LOCK = 0x767b;				# lock SLCR
 	}
 	
