@@ -191,7 +191,7 @@ public class Kernel implements Iarm32, Icolibri_iMX6, IdeepCompilerConstants {
 					US.ASM("mov r14, r15");	// copy PC to LR 
 					US.ASM("mov r15, r0");
 				} else {	// kernel
-					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/iMX6/Kernel/loop");
+					loopAddr = US.ADR_OF_METHOD("org/deepjava/runtime/iMX6/Kernel/loop");
 				}
 			}
 

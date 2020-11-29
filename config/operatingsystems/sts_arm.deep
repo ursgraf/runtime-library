@@ -9,7 +9,7 @@ operatingsystem sts_arm {
 	description = "Simple Tasking System for ARM";
 		
 	us {
-        class = "ch/ntb/inf/deep/unsafe/US";
+        class = "org/deepjava/unsafe/US";
         attributes = synthetic;
         method PUT1 {
             attributes = unsafe, synthetic;
@@ -62,7 +62,7 @@ operatingsystem sts_arm {
     }
 
 	us {
-        class = "ch/ntb/inf/deep/unsafe/arm/US";
+        class = "org/deepjava/unsafe/arm/US";
         attributes = synthetic;
         method GETGPR {
             attributes = unsafe, synthetic;
@@ -107,7 +107,7 @@ operatingsystem sts_arm {
     }
     
     lowlevel {
-            class = "ch/ntb/inf/deep/lowLevel/LL";
+            class = "org/deepjava/lowLevel/LL";
             attributes = synthetic;
             method mostSign1BitNr {
                 attributes = synthetic;
@@ -148,7 +148,7 @@ operatingsystem sts_arm {
     }
 	
     heapclass {
-        class = "ch/ntb/inf/deep/runtime/arm32/Heap";
+        class = "org/deepjava/runtime/arm32/Heap";
         method newMultiDimArray  {
                 attributes = new;
                 id = 0x204;
@@ -171,11 +171,11 @@ operatingsystem sts_arm {
     }
 	        
     exceptionbaseclass {
-    	class = "ch/ntb/inf/deep/runtime/arm32/ARMException";
+    	class = "org/deepjava/runtime/arm32/ARMException";
     }
     
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/iMX6/Reset";
+    	class = "org/deepjava/runtime/iMX6/Reset";
     	condition = boardtype:colibri_iMX6;
     	method reset {
     		attributes = exchnd;
@@ -187,7 +187,7 @@ operatingsystem sts_arm {
     }
 
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/zynq7000/Reset";
+    	class = "org/deepjava/runtime/zynq7000/Reset";
     	condition = cputype:zynq7000;
     	method vectorTable {
     		attributes = exchnd;
@@ -203,7 +203,7 @@ operatingsystem sts_arm {
     }
 
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/arm32/SupervisorCall";
+    	class = "org/deepjava/runtime/arm32/SupervisorCall";
     	condition = cputype:zynq7000;
     	method superVisorCall {
     		attributes = exchnd;
@@ -215,7 +215,7 @@ operatingsystem sts_arm {
     }
     
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/arm32/UndefinedInstruction";
+    	class = "org/deepjava/runtime/arm32/UndefinedInstruction";
     	condition = cputype:zynq7000;
     	method undefInstr {
     		attributes = exchnd;
@@ -227,7 +227,7 @@ operatingsystem sts_arm {
     }
 
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/arm32/PrefetchAbort";
+    	class = "org/deepjava/runtime/arm32/PrefetchAbort";
     	condition = cputype:zynq7000;
     	method preAbort {
     		attributes = exchnd;
@@ -239,7 +239,7 @@ operatingsystem sts_arm {
     }
 
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/arm32/DataAbort";
+    	class = "org/deepjava/runtime/arm32/DataAbort";
     	condition = cputype:zynq7000;
     	method dataAbort {
     		attributes = exchnd;
@@ -251,7 +251,7 @@ operatingsystem sts_arm {
     }
 
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/zynq7000/IrqInterrupt";
+    	class = "org/deepjava/runtime/zynq7000/IrqInterrupt";
     	condition = cputype:zynq7000;
     	method irqInterrupt {
     		attributes = exchnd;
@@ -260,17 +260,17 @@ operatingsystem sts_arm {
     }
 
 	kernel {
-		class = "ch/ntb/inf/deep/runtime/iMX6/Kernel";
+		class = "org/deepjava/runtime/iMX6/Kernel";
 		condition = cputype:iMX6;
 	}
 
 	kernel {
-		class = "ch/ntb/inf/deep/runtime/zynq7000/zybo/Kernel";
+		class = "org/deepjava/runtime/zynq7000/zybo/Kernel";
 		condition = boardtype:Zybo;
 	}
 
 	kernel {
-		class = "ch/ntb/inf/deep/runtime/zynq7000/microzed/Kernel";
+		class = "org/deepjava/runtime/zynq7000/microzed/Kernel";
 		condition = boardtype:MicroZed;
 	}
 

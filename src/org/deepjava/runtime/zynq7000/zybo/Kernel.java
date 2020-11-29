@@ -234,7 +234,7 @@ public class Kernel implements IZybo, IdeepCompilerConstants {
 					US.ASM("mov r14, r15");	// copy PC to LR 
 					US.ASM("mov r15, r0");
 				} else {	// kernel
-					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/zynq7000/zybo/Kernel/loop");
+					loopAddr = US.ADR_OF_METHOD("org/deepjava/runtime/zynq7000/zybo/Kernel/loop");
 					US.ASM("cpsie i");	// enable IRQ
 				}
 			}

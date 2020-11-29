@@ -9,7 +9,7 @@ operatingsystem sts_ppc {
 	description = "Simple Tasking System for PPC";
 		
 	us {
-        class = "ch/ntb/inf/deep/unsafe/US";
+        class = "org/deepjava/unsafe/US";
         attributes = synthetic;
         method PUT1 {
             attributes = unsafe, synthetic;
@@ -62,7 +62,7 @@ operatingsystem sts_ppc {
     }
 
 	us {
-        class = "ch/ntb/inf/deep/unsafe/ppc/US";
+        class = "org/deepjava/unsafe/ppc/US";
         attributes = synthetic;
         method GETGPR {
             attributes = unsafe, synthetic;
@@ -99,7 +99,7 @@ operatingsystem sts_ppc {
     }
     
     lowlevel {
-            class = "ch/ntb/inf/deep/lowLevel/LL";
+            class = "org/deepjava/lowLevel/LL";
             attributes = synthetic;
             method mostSign1BitNr {
                 attributes = synthetic;
@@ -140,7 +140,7 @@ operatingsystem sts_ppc {
     }
 	
     heapclass {
-        class = "ch/ntb/inf/deep/runtime/ppc32/Heap";
+        class = "org/deepjava/runtime/ppc32/Heap";
         method newMultiDimArray  {
                 attributes = new;
                 id = 0x204;
@@ -163,12 +163,12 @@ operatingsystem sts_ppc {
     }
 	        
     exceptionbaseclass {
-    	class = "ch/ntb/inf/deep/runtime/ppc32/PPCException";
+    	class = "org/deepjava/runtime/ppc32/PPCException";
     	condition = cpuarch:ppc32;
     }
     
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc555/Reset";
+    	class = "org/deepjava/runtime/mpc555/Reset";
     	condition = boardtype:ntbMpc555HB;
     	method reset {
     		attributes = exchnd;
@@ -180,7 +180,7 @@ operatingsystem sts_ppc {
     }
     
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/ResetPCMtiny";
+    	class = "org/deepjava/runtime/mpc5200/ResetPCMtiny";
     	condition = boardtype:phyCoreMpc5200tiny;
     	method reset {
     		attributes = exchnd;
@@ -192,7 +192,7 @@ operatingsystem sts_ppc {
     }
     
     exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/ResetPCMio";
+    	class = "org/deepjava/runtime/mpc5200/ResetPCMio";
     	condition = boardtype:phyCoreMpc5200io;
     	method reset {
     		attributes = exchnd;
@@ -204,7 +204,7 @@ operatingsystem sts_ppc {
     }
     
     exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/ResetPCMuBoot";
+    	class = "org/deepjava/runtime/mpc5200/ResetPCMuBoot";
     	condition = boardtype:phyCoreMpc5200uBoot;
     	method reset {
     		attributes = exchnd;
@@ -216,7 +216,7 @@ operatingsystem sts_ppc {
     }
     
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/ppc32/MachineCheck";
+    	class = "org/deepjava/runtime/ppc32/MachineCheck";
   		method machineCheck {
     		attributes = exchnd;
     		offset = 0x200;
@@ -227,7 +227,7 @@ operatingsystem sts_ppc {
 	}
 	
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc555/Interrupt";
+    	class = "org/deepjava/runtime/mpc555/Interrupt";
     	condition = cputype:mpc555;
     	method interrupt {
     		attributes = exchnd;
@@ -236,7 +236,7 @@ operatingsystem sts_ppc {
     }
     
     exception {
-    	class = "ch/ntb/inf/deep/runtime/mpc5200/Interrupt";
+    	class = "org/deepjava/runtime/mpc5200/Interrupt";
     	condition = cputype:mpc5200;
     	method interrupt {
     		attributes = exchnd;
@@ -245,7 +245,7 @@ operatingsystem sts_ppc {
     }
     
     exception {
-    	class = "ch/ntb/inf/deep/runtime/ppc32/ProgramExc";
+    	class = "org/deepjava/runtime/ppc32/ProgramExc";
  		method programExc {
     		attributes = exchnd;
     		offset = 0x700;
@@ -256,7 +256,7 @@ operatingsystem sts_ppc {
 	}
 	
 	exception {
-    	class = "ch/ntb/inf/deep/runtime/ppc32/FloatingPointUnavailable";
+    	class = "org/deepjava/runtime/ppc32/FloatingPointUnavailable";
 		method floatingPointUnavailable {
     		attributes = exchnd;
     		offset = 0x800;
@@ -267,7 +267,7 @@ operatingsystem sts_ppc {
 	}
 	
 	exception {
-		class = "ch/ntb/inf/deep/runtime/ppc32/Decrementer";
+		class = "org/deepjava/runtime/ppc32/Decrementer";
 		method decrementer {
 			attributes = exchnd;
 			offset = 0x900;
@@ -275,7 +275,7 @@ operatingsystem sts_ppc {
 	}
 	
     exception {
-    	class = "ch/ntb/inf/deep/runtime/ppc32/SystemCall";
+    	class = "org/deepjava/runtime/ppc32/SystemCall";
  		method systemCall {
     		attributes = exchnd;
     		offset = 0xc00;
@@ -286,12 +286,12 @@ operatingsystem sts_ppc {
 	}
 	
 	kernel {
-		class = "ch/ntb/inf/deep/runtime/mpc555/Kernel";
+		class = "org/deepjava/runtime/mpc555/Kernel";
 		condition = cputype:mpc555;
 	}
 	
 	kernel {
-		class = "ch/ntb/inf/deep/runtime/mpc5200/Kernel";
+		class = "org/deepjava/runtime/mpc5200/Kernel";
 		condition = cputype:mpc5200;
 	}
 

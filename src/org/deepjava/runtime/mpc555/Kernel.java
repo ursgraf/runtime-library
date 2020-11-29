@@ -211,7 +211,7 @@ public class Kernel implements Ippc32, IntbMpc555HB, IdeepCompilerConstants {
 					US.PUTSPR(LR, clinitAddr);
 					US.ASM("bclrl always, 0");
 				} else {	// kernel
-					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/mpc555/Kernel/loop");
+					loopAddr = US.ADR_OF_METHOD("org/deepjava/runtime/mpc555/Kernel/loop");
 				}
 			}
 

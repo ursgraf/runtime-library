@@ -7,6 +7,6 @@ meta {
 
 programmer openOCD {
 	description = "OpenOCD";
-	pluginid = "ch.ntb.inf.openOCDInterface";
-	classname = "ch.ntb.inf.openOCDInterface.OpenOCD";
+	pluginid = "org.deepjava.openOCDInterface";
+	classname = "org.deepjava.openOCDInterface.OpenOCD";
 }

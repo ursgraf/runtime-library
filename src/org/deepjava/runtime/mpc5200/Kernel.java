@@ -181,7 +181,7 @@ public class Kernel implements Ippc32, Impc5200, IdeepCompilerConstants {
 					US.PUTSPR(LR, clinitAddr);
 					US.ASM("bclrl always, 0");
 				} else {	// kernel
-					loopAddr = US.ADR_OF_METHOD("ch/ntb/inf/deep/runtime/mpc5200/Kernel/loop");
+					loopAddr = US.ADR_OF_METHOD("org/deepjava/runtime/mpc5200/Kernel/loop");
 				}
 			}
 			// the direct call to clinitAddr destroys volatile registers, hence make sure
