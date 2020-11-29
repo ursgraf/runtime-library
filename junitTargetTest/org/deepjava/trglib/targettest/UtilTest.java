@@ -16,7 +16,7 @@
  * 
  */
 
-package ch.ntb.inf.deep.trglib.targettest;
+package org.deepjava.trglib.targettest;
 
 import org.deepjava.runtime.util.Matrix;
 import org.deepjava.runtime.util.Vector;

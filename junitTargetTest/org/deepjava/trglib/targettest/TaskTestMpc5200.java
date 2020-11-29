@@ -16,7 +16,7 @@
  * 
  */
 
-package ch.ntb.inf.deep.trglib.targettest;
+package org.deepjava.trglib.targettest;
 
 import org.deepjava.runtime.mpc5200.*;
 import org.deepjava.runtime.ppc32.Task;

@@ -16,7 +16,7 @@
  * 
  */
 
-package ch.ntb.inf.deep.trglib.targettest;
+package org.deepjava.trglib.targettest;
 
 import ch.ntb.inf.junitTarget.MaxErrors;
 import ch.ntb.inf.junitTarget.Suite;

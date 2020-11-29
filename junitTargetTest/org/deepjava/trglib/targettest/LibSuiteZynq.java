@@ -16,14 +16,14 @@
  * 
  */
 
-package ch.ntb.inf.deep.trglib.targettest;
+package org.deepjava.trglib.targettest;
 
 import ch.ntb.inf.junitTarget.MaxErrors;
 import ch.ntb.inf.junitTarget.Suite;
 
-@Suite({ MathTest.class, GenericsTest.class, TaskTestMpc555.class, SystemTest.class, HeapTestPPC.class, UtilTest.class, BaseClassTest.class })
+@Suite({ MathTest.class, GenericsTest.class, TaskTestZynq.class, SystemTest.class, HeapTestARM.class, UtilTest.class, BaseClassTest.class })
 
 @MaxErrors(500)
-public class LibSuiteMpc555 {
+public class LibSuiteZynq {
 
 }

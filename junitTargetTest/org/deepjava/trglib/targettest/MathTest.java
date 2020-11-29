@@ -16,7 +16,7 @@
  * 
  */
 
-package ch.ntb.inf.deep.trglib.targettest;
+package org.deepjava.trglib.targettest;
 
 import ch.ntb.inf.junitTarget.Assert;
 import ch.ntb.inf.junitTarget.CmdTransmitter;
