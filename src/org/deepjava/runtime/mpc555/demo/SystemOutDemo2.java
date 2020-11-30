@@ -31,7 +31,7 @@ import org.deepjava.runtime.ppc32.Task;
 public class SystemOutDemo2 extends Task {
 	
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
+	 * @see org.deepjava.runtime.mpc555.Task#action()
 	 */
 	public void action() {
 		// Write a single character to the stdout

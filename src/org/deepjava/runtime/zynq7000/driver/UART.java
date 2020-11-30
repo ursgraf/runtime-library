@@ -97,7 +97,7 @@ public class UART extends IrqInterrupt implements Izynq7000 {
 	}
 
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.arm.IrqInterrupt#action()
+	 * @see org.deepjava.runtime.arm.IrqInterrupt#action()
 	 */
 	@Override
 	public void action() {

@@ -52,7 +52,7 @@ public class MotorDemo extends Task {
 	private MotorDemo() {}
 	
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.arm32.Task#action()
+	 * @see org.deepjava.runtime.arm32.Task#action()
 	 */
 	public void action() {
 		if (nofActivations % (int)(1/ts) == 0) {

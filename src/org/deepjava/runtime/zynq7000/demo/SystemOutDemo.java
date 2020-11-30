@@ -31,7 +31,7 @@ import org.deepjava.runtime.zynq7000.driver.UART;
 public class SystemOutDemo extends Task {
 	
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.arm32.Task#action()
+	 * @see org.deepjava.runtime.arm32.Task#action()
 	 */
 	public void action() {
 		// Write a single character to the stdout

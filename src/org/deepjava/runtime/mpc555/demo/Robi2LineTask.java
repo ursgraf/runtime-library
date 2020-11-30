@@ -64,7 +64,7 @@ public class Robi2LineTask extends Task {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
+	 * @see org.deepjava.runtime.mpc555.Task#action()
 	 */
 	public void action() {
 		if (sensors()) {

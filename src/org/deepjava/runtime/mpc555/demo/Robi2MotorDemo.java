@@ -115,7 +115,7 @@ public class Robi2MotorDemo extends Task {
 	}
 	
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
+	 * @see org.deepjava.runtime.mpc555.Task#action()
 	 */
 	public void action() {	
 		switch (state) { // the state machine

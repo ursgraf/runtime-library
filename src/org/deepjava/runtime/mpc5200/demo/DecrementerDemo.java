@@ -38,7 +38,7 @@ public class DecrementerDemo extends Decrementer {
 	static DecrementerDemo decTest; 
 	
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc5200.Decrementer#action()
+	 * @see org.deepjava.runtime.mpc5200.Decrementer#action()
 	 */
 	public void action () {
 		System.out.print('x');

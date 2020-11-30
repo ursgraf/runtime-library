@@ -44,7 +44,7 @@ public class HLC1395Demo extends Task {
 	static HLC1395Pulsed sense;
 	
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
+	 * @see org.deepjava.runtime.mpc555.Task#action()
 	 */
 	public void action() {
 		for(int i = 0; i < 4; i++) {

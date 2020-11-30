@@ -157,7 +157,7 @@ public class SCI extends Interrupt {
 	}
 	
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc555.Interrupt#action()
+	 * @see org.deepjava.runtime.mpc555.Interrupt#action()
 	 */
 	public void action() {
 		SCI sci;

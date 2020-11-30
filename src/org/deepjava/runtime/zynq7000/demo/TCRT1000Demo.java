@@ -38,7 +38,7 @@ public class TCRT1000Demo extends Task {
 	static TCRT1000 sense;
 	
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.arm32.Task#action()
+	 * @see org.deepjava.runtime.arm32.Task#action()
 	 */
 	public void action() {
 		for(int i = 0; i < 4; i++) {

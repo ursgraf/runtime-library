@@ -59,7 +59,7 @@ public class MotorDemo1 extends Task {
 	private MotorDemo1() {}
 	
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
+	 * @see org.deepjava.runtime.mpc555.Task#action()
 	 */
 	public void action() {
 		if(counter > 2000) {

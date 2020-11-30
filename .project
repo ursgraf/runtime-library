@@ -12,7 +12,7 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>ch.ntb.inf.deep.nature.DeepNature</nature>
+		<nature>org.deepjava.nature.DeepNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 </projectDescription>

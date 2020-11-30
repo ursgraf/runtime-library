@@ -65,7 +65,7 @@ public class MPIOSM_DIO implements IntbMpc555HB, DigitalOutput {
 	}
 
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc555.driver.DigitalInput#get()
+	 * @see org.deepjava.runtime.mpc555.driver.DigitalInput#get()
 	 */
 	@Override
 	public boolean get() {
@@ -73,7 +73,7 @@ public class MPIOSM_DIO implements IntbMpc555HB, DigitalOutput {
 	}
 
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc555.driver.DigitalOutput#set(boolean)
+	 * @see org.deepjava.runtime.mpc555.driver.DigitalOutput#set(boolean)
 	 */
 	@Override
 	public void set(boolean val) {

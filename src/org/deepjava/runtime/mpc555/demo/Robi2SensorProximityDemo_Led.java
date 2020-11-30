@@ -30,7 +30,7 @@ public class Robi2SensorProximityDemo_Led extends Task {
 	static final short Limit = 100;
 
 	/* (non-Javadoc)
-	 * @see ch.ntb.inf.deep.runtime.mpc555.Task#action()
+	 * @see org.deepjava.runtime.mpc555.Task#action()
 	 */
 	public void action( ) {
 		boolean barrier;
