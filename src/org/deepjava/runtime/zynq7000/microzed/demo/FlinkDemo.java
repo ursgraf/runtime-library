@@ -56,9 +56,9 @@ public class FlinkDemo extends Task implements FlinkDefinitions {
 		for(int i = 6; i <= 7; i++) gpio.setDir(i, false);
 		for(int i = 0; i <= 3; i++) gpio.setValue(i, i % 2 == 0);	
 		
-		final int period = 1000; // 1kHz
-		pwm.setPeriod(0, pwm.getBaseClock() / period);
-		pwm.setHighTime(0, (int) (pwm.getBaseClock() / period * 0.2)); 
+		final int freq = 1000; // 1kHz
+		pwm.setPeriod(0, pwm.getBaseClock() / freq);
+		pwm.setHighTime(0, (int) (pwm.getBaseClock() / freq * 0.2)); 
 		
 		Task t = new FlinkDemo();
 		t.period = 500;
