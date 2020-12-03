@@ -124,7 +124,7 @@ public class TCRT1000 extends Task implements Izynq7000, FlinkDefinitions {
 	}
 
 	/**
-	 * Initialize sensors.
+	 * Initialize sensors. Unused address inputs must be initialized with -1
 	 * 
 	 * @param nofSensors	Number of connected sensors: 0 &lt; numberOfSensors &lt;= 16
 	 * @param addr3Pin		Highest order address pin
@@ -134,21 +134,21 @@ public class TCRT1000 extends Task implements Izynq7000, FlinkDefinitions {
 	 * @param trigPin		Trigger pin
 	 */
 	public void init(int nofSensors, int addr3Pin, int addr2Pin, int addr1Pin, int addr0Pin, int trigPin) {
+		this.trigPin = trigPin;
+		this.addrPin3 = addr3Pin;
+		this.addrPin2 = addr2Pin;
+		this.addrPin1 = addr1Pin;
+		this.addrPin0 = addr0Pin;
 		gpio = FlinkDevice.getGPIO();
 		adc = FlinkDevice.getAD7476();
 		if (nofSensors > maxNofSensors) this.nofSensors = maxNofSensors;
 		else if (nofSensors < 1) this.nofSensors = 1;
 		else this.nofSensors = nofSensors;
 		gpio.setDir(trigPin, true);
-		gpio.setDir(addr3Pin, true);
-		gpio.setDir(addr2Pin, true);
-		gpio.setDir(addr1Pin, true);
-		gpio.setDir(addr0Pin, true);
-		this.trigPin = trigPin;
-		this.addrPin3 = addr3Pin;
-		this.addrPin2 = addr2Pin;
-		this.addrPin1 = addr1Pin;
-		this.addrPin0 = addr0Pin;
+		if (addr0Pin >= 0) gpio.setDir(addr0Pin, true);
+		if (addr1Pin >= 0) gpio.setDir(addr1Pin, true);
+		if (addr2Pin >= 0) gpio.setDir(addr2Pin, true);
+		if (addr3Pin >= 0) gpio.setDir(addr3Pin, true);
 	}
 
 	/**
