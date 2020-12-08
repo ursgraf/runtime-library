@@ -3,8 +3,15 @@ package org.deepjava.flink.subdevices;
 import org.deepjava.flink.core.FlinkDefinitions;
 import org.deepjava.flink.core.FlinkSubDevice;
 
+/**
+ * The flink counter subdevice realizes counter function within a flink device.
+ * Notably, it can be used for quadrature decoding. It offers several channels.
+ * 
+ * @author Urs Graf 
+ */
 public class FlinkCounter implements FlinkDefinitions {
 
+	/** Handle to the subdevice within our flink device */
 	public FlinkSubDevice dev;
 	private static final int COUNT_0_ADRESS = 0;
 	
@@ -25,8 +32,8 @@ public class FlinkCounter implements FlinkDefinitions {
 	}
 	
 	/**
-	 * Resets the counter subdevice with all channels. After resetting the counter 
-	 * resumes its operation.
+	 * Resets the counter subdevice with all channels. After resetting the 
+	 * counter it resumes its operation.
 	 */
 	public void reset() {
 		int val = dev.getConfigReg();
