@@ -248,10 +248,10 @@ public class Task implements Actionable, Iarm32 {
 				e.printStackTrace();
 				Kernel.blink(1);
 			}
-//			if (Heap.runGC) {
-////				if (mark) {Heap.mark(); mark = false;}
-////				else {Heap.sweep(); mark = true; Heap.runGC = false;}
-//			}
+			if (Heap.runGC) {
+				if (mark) {Heap.mark(); mark = false;}
+				else {Heap.sweep(); mark = true; Heap.runGC = false;}
+			}
 			long time = Kernel.timeNs();
 			currentTask = tasks[1];
 			if (currentTask.nextTime < time) {

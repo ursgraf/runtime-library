@@ -19,7 +19,7 @@
 package org.deepjava.runtime.arm32;
 
 import org.deepjava.runtime.IdeepCompilerConstants;
-import org.deepjava.unsafe.US;
+import org.deepjava.unsafe.arm.US;
 
 /* changes:
  * 6.10.2015	NTB/Urs Graf	creation
@@ -108,7 +108,7 @@ public class Heap implements IdeepCompilerConstants {
 	// called by multianewarray	
 	private static int newMultiDimArray(int ref, int nofDim, int dim0, int dim1, int dim2, int dim3) {
 		int addr;
-//		if (nofDim > 3 || nofDim < 2);	// US.HALT(20);	TODO
+		if (nofDim > 3 || nofDim < 2) US.HALT(20);
 		if (nofDim == 2) {
 			addr = newRefArray(dim0, ref);
 			int arrayInfo = US.GET4(ref);
@@ -193,11 +193,9 @@ public class Heap implements IdeepCompilerConstants {
 			heapPtr += blockSize;
 			freeHeap -= blockSize;
 		} else {
-//			if (freeHeap < threshold) {
-//				runGC = true;
-////				if (mark) mark(); else sweep();
-////				mark = !mark;
-//			}
+			if (freeHeap < threshold) {
+				runGC = true;
+			}
 			while (freeBlocks[i] == 0 && i < nofFreeLists - 1) i++;
 			if (i < nofFreeLists - 1) {	
 				addr = freeBlocks[i];	// unlink block from list
@@ -250,123 +248,123 @@ public class Heap implements IdeepCompilerConstants {
 		return addr;
 	}
 
-//	/**
-//	 * Starts mark phase of garbage collection.
-//	 * This method should be solely used for test purposes. Never use it in application code! A garbage collection is automatically done
-//	 * when available heap space is low.
-//	 */
-//	public static void mark() {
-////		System.out.println("mark");
-//		if (dbg) {nofMarkedObjs = 0; nofMarkedRegObjs = 0; nofMarkedRefArrays = 0; nofMarkedPrimArrays = 0;}
-//		for (int i = 0; i < nofRoots; i++) {
-//			int obj = US.GET4(roots[i]);
-//			if (obj != 0) traverse(obj);
-//		}
-//	}
-//	
-//	private static void traverse(int obj) {
-//		int heapInfo = US.GET4(obj - 8);	
-//		if (heapInfo >= 0) {	// if not marked
-//			if (dbg) nofMarkedObjs++;
-//			US.PUT4(obj - 8, heapInfo | (1 << 31));	// mark
-//			if (heapInfo << 8 >= 0) {	// no array
-//				if (dbg) nofMarkedRegObjs++;
-//				// follow references in the object
-//				int tag = US.GET4(obj - 4);
-//				int refsAddr = tag + US.GET4(tag + 8);
-//				int nofRefs = US.GET4(refsAddr);
-//				refsAddr += 4;
-//				for (int i = 0; i < nofRefs; i++) {
-//					int offset = US.GET4(refsAddr + i * 4);
-//					int ref = US.GET4(obj + offset);
-//					if (ref != 0) traverse(ref);
-//				}
-//			} else {	// array
-//				if (heapInfo << 15 >= 0) {	// array of references
-//					if (dbg) nofMarkedRefArrays++;
-//					int len = heapInfo & 0xffff;
-//					for (int i = 0; i < len; i++) {
-//						int ref = US.GET4(obj + i * 4);
-//						if (ref != 0) traverse(ref);
-//					}
-//				} else {	// array of primitives, don't follow
-//					if (dbg) nofMarkedPrimArrays++;
-//				}
-//			}
-//		}
-//	}
-//
-//	/**
-//	 * Starts sweep phase of garbage collection.
-//	 * This method should be solely used for test purposes. Never use it in application code! A garbage collection is automatically done
-//	 * when available heap space is low.
-//	 */
-//	public static void sweep() {	// call to sweep only after marking
-////		System.out.print("start sweep, free heap size = "); System.out.printHexln(Heap.getFreeHeap());
-//		int blockSize, collBlockAddr = 0, collBlockSize = 0;
-//		if (dbg) {nofSweepFreeBlock = 0; nofSweepMarkedBlock = 0; nofSweepCollBlock = 0;}
-//		currBlock = heapBase;
-//		while (currBlock < heapEnd) {
-////			System.out.printHex(currBlock);
-//			int heapInfo = US.GET4(currBlock);
-//			if (heapInfo << 1 < 0) {	// block is free
-////				System.out.println(" block is free");
-//				if (collBlockSize > 0) {	// close collected block till now and add to free list
-//					US.PUT4(collBlockAddr, (1 << 30) | collBlockSize); // set free bit
-//					int i = collBlockSize / minBlockSize - 1;
-//					if (i >= nofFreeLists) i = nofFreeLists - 1;
-//					US.PUT4(collBlockAddr + 4, freeBlocks[i]);
-//					freeBlocks[i] = collBlockAddr;
-//					nofFreeBlocks[i]++;
-//					freeHeap += collBlockSize;
-//					collBlockSize = 0;
-//					}
-//				blockSize = heapInfo & 0xffffff;
-//				currBlock += blockSize;
-//				if (dbg) nofSweepFreeBlock++;
-//			} else {	// block is marked as used or block to be collected
-//				if (heapInfo < 0) {	// object is marked
-////					System.out.print(" block is marked ");
-//					if (collBlockSize > 0) {	// close collected block till now and add to free list
-//						US.PUT4(collBlockAddr, (1 << 30) | collBlockSize); // set free bit
-//						int i = collBlockSize / minBlockSize - 1;
-//						if (i >= nofFreeLists) i = nofFreeLists - 1;
-//						US.PUT4(collBlockAddr + 4, freeBlocks[i]);
-//						freeBlocks[i] = collBlockAddr;
-//						nofFreeBlocks[i]++;
-//						freeHeap += collBlockSize;
-//						collBlockSize = 0;
-// 					}
-//					US.PUT4(currBlock, heapInfo & ~(1 << 31));	// unmark
-//					if (dbg) nofSweepMarkedBlock++;
-//				}
-//				// find block size
-//				if (heapInfo << 8 >= 0) {	// no array
-//					int size = heapInfo & 0xffff;
-//					blockSize = ((size + minBlockSize - 1) >> 4) << 4; 
-//				} else {	// is array
-//					if (heapInfo << 15 >= 0) {	// array of references
-//						int nofElems = heapInfo & 0xffff;
-//						blockSize = ((nofElems * 4 + 8 + minBlockSize - 1) >> 4) << 4; 
-//					} else {	// array of primitives
-//						int tag = US.GET4(currBlock + 4);
-//						int arrayDesc = US.GET4(tag);
-//						int compSize = arrayDesc & 0xffff;
-//						int nofElems = heapInfo & 0xffff;
-//						blockSize = ((nofElems * compSize + 8 + minBlockSize - 1) >> 4) << 4; 
-//					}
-//				}
-////				System.out.print(" size="); System.out.printHexln(blockSize);
-//				if (heapInfo >= 0) {	// add to collected block
-//					if (collBlockSize == 0) collBlockAddr = currBlock;
-//					collBlockSize += blockSize;
-//					if (dbg) nofSweepCollBlock++;
-//				}
-//				currBlock += blockSize;
-//			} // end of block is marked or block to be collected
-//		}
-////		System.out.print("end sweep, free heap size = "); System.out.printHexln(Heap.getFreeHeap());
-//	}
+	/**
+	 * Starts mark phase of garbage collection.
+	 * This method should be solely used for test purposes. Never use it in application code! A garbage collection is automatically done
+	 * when available heap space is low.
+	 */
+	public static void mark() {
+//		System.out.println("mark");
+		if (dbg) {nofMarkedObjs = 0; nofMarkedRegObjs = 0; nofMarkedRefArrays = 0; nofMarkedPrimArrays = 0;}
+		for (int i = 0; i < nofRoots; i++) {
+			int obj = US.GET4(roots[i]);
+			if (obj != 0) traverse(obj);
+		}
+	}
+	
+	private static void traverse(int obj) {
+		int heapInfo = US.GET4(obj - 8);	
+		if (heapInfo >= 0) {	// if not marked
+			if (dbg) nofMarkedObjs++;
+			US.PUT4(obj - 8, heapInfo | (1 << 31));	// mark
+			if (heapInfo << 8 >= 0) {	// no array
+				if (dbg) nofMarkedRegObjs++;
+				// follow references in the object
+				int tag = US.GET4(obj - 4);
+				int refsAddr = tag + US.GET4(tag + 8);
+				int nofRefs = US.GET4(refsAddr);
+				refsAddr += 4;
+				for (int i = 0; i < nofRefs; i++) {
+					int offset = US.GET4(refsAddr + i * 4);
+					int ref = US.GET4(obj + offset);
+					if (ref != 0) traverse(ref);
+				}
+			} else {	// array
+				if (heapInfo << 15 >= 0) {	// array of references
+					if (dbg) nofMarkedRefArrays++;
+					int len = heapInfo & 0xffff;
+					for (int i = 0; i < len; i++) {
+						int ref = US.GET4(obj + i * 4);
+						if (ref != 0) traverse(ref);
+					}
+				} else {	// array of primitives, don't follow
+					if (dbg) nofMarkedPrimArrays++;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Starts sweep phase of garbage collection.
+	 * This method should be solely used for test purposes. Never use it in application code! A garbage collection is automatically done
+	 * when available heap space is low.
+	 */
+	public static void sweep() {	// call to sweep only after marking
+//		System.out.print("start sweep, free heap size = "); System.out.printHexln(Heap.getFreeHeap());
+		int blockSize, collBlockAddr = 0, collBlockSize = 0;
+		if (dbg) {nofSweepFreeBlock = 0; nofSweepMarkedBlock = 0; nofSweepCollBlock = 0;}
+		currBlock = heapBase;
+		while (currBlock < heapEnd) {
+//			System.out.printHex(currBlock);
+			int heapInfo = US.GET4(currBlock);
+			if (heapInfo << 1 < 0) {	// block is free
+//				System.out.println(" block is free");
+				if (collBlockSize > 0) {	// close collected block till now and add to free list
+					US.PUT4(collBlockAddr, (1 << 30) | collBlockSize); // set free bit
+					int i = collBlockSize / minBlockSize - 1;
+					if (i >= nofFreeLists) i = nofFreeLists - 1;
+					US.PUT4(collBlockAddr + 4, freeBlocks[i]);
+					freeBlocks[i] = collBlockAddr;
+					nofFreeBlocks[i]++;
+					freeHeap += collBlockSize;
+					collBlockSize = 0;
+					}
+				blockSize = heapInfo & 0xffffff;
+				currBlock += blockSize;
+				if (dbg) nofSweepFreeBlock++;
+			} else {	// block is marked as used or block to be collected
+				if (heapInfo < 0) {	// object is marked
+//					System.out.print(" block is marked ");
+					if (collBlockSize > 0) {	// close collected block till now and add to free list
+						US.PUT4(collBlockAddr, (1 << 30) | collBlockSize); // set free bit
+						int i = collBlockSize / minBlockSize - 1;
+						if (i >= nofFreeLists) i = nofFreeLists - 1;
+						US.PUT4(collBlockAddr + 4, freeBlocks[i]);
+						freeBlocks[i] = collBlockAddr;
+						nofFreeBlocks[i]++;
+						freeHeap += collBlockSize;
+						collBlockSize = 0;
+ 					}
+					US.PUT4(currBlock, heapInfo & ~(1 << 31));	// unmark
+					if (dbg) nofSweepMarkedBlock++;
+				}
+				// find block size
+				if (heapInfo << 8 >= 0) {	// no array
+					int size = heapInfo & 0xffff;
+					blockSize = ((size + minBlockSize - 1) >> 4) << 4; 
+				} else {	// is array
+					if (heapInfo << 15 >= 0) {	// array of references
+						int nofElems = heapInfo & 0xffff;
+						blockSize = ((nofElems * 4 + 8 + minBlockSize - 1) >> 4) << 4; 
+					} else {	// array of primitives
+						int tag = US.GET4(currBlock + 4);
+						int arrayDesc = US.GET4(tag);
+						int compSize = arrayDesc & 0xffff;
+						int nofElems = heapInfo & 0xffff;
+						blockSize = ((nofElems * compSize + 8 + minBlockSize - 1) >> 4) << 4; 
+					}
+				}
+//				System.out.print(" size="); System.out.printHexln(blockSize);
+				if (heapInfo >= 0) {	// add to collected block
+					if (collBlockSize == 0) collBlockAddr = currBlock;
+					collBlockSize += blockSize;
+					if (dbg) nofSweepCollBlock++;
+				}
+				currBlock += blockSize;
+			} // end of block is marked or block to be collected
+		}
+//		System.out.print("end sweep, free heap size = "); System.out.printHexln(Heap.getFreeHeap());
+	}
 	
 	static {
 		int heapOffset = US.GET4(sysTabBaseAddr + stHeapOffset);
@@ -404,8 +402,8 @@ public class Heap implements IdeepCompilerConstants {
 		US.PUT4(heapPtr, (1 << 30) | freeHeap);	// set free bit
 		US.PUT4(heapPtr + 4, 0);	// next field is null
 		int i = heapPtr + 8; while (i < heapEnd) {US.PUT4(i, 0); i += 4;} // initialize heap, nice for debugging
-//		threshold = heapSize / 3;
-//		mark = true;
+		threshold = heapSize / 3;
+		mark = true;
 		freeBlocks[nofFreeLists - 1] = heapPtr;
 		nofFreeBlocks[nofFreeLists - 1] = 1;	
 	}

@@ -87,7 +87,7 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 	}
 	
 	/** 
-	 * Blinks LED on MIO7 pin, nTimes with approx. 100us high time and 100us low time, blocks for 1s
+	 * Blinks LED on MIO47 pin, nTimes with approx. 100us high time and 100us low time, blocks for 1s
 	 * 
 	 * @param nTimes Number of times the led blinks.
 	 */
@@ -112,16 +112,19 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 	 * Individual interrupts for peripheral components must be enabled locally.
 	 */
 	public static void enableInterrupts() {
+		US.ASM("cpsie i");	// enable IRQ
 	}
 
 	/** 
 	 * Blinks LED on GPIO pin 47 if stack end was overwritten
 	 */
 	public static void checkStack() { 
-		boot();
-//		int stackOffset = US.GET4(sysTabBaseAddr + stStackOffset);
-//		int stackBase = US.GET4(sysTabBaseAddr + stackOffset + 4);
-//		if (US.GET4(stackBase) != stackEndPattern) while (true) blink(3);
+		int addr = sysTabBaseAddr;
+		// sysTab is in flash when running out of flash
+		if (US.BIT(REBOOT_STATUS, 22)) addr += 0x100000;
+		int stackOffset = US.GET4(addr + stStackOffset);
+		int stackBase = US.GET4(addr + stackOffset + 4);
+		if (US.GET4(stackBase) != stackEndPattern) while (true) blink(3);
 	}
 
 	private static int FCS(int begin, int end) {

@@ -100,7 +100,5 @@ public class HeapTestPPC {
 		Assert.assertEquals("test8", free, Heap.getFreeHeap());
 		CmdTransmitter.sendDone();
 	}	
-//static {
-//	test3();
-//}
+
 }
