@@ -193,6 +193,10 @@ operatingsystem sts_arm {
     		attributes = exchnd;
 			offset = 0;
     	}
+    	method vectorTableCopy {
+    		attributes = exchnd;
+			offset = 0x50;
+    	}
     	method reset {
     		attributes = exchnd;
 			offset = 0x100;

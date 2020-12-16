@@ -34,14 +34,34 @@ import org.deepjava.unsafe.arm.US;
  */
 class Reset extends ARMException implements Izynq7000, IdeepCompilerConstants {
 	
+	/** 
+	 * Regular vector table, linker will place it to address 0.
+	 * When booting from flash, the table will be loaded at start of DDR
+	 * and will not be used there. 
+	 */
 	static void vectorTable() {
-		US.ASM("b 248"); // jump to reset method (256 - 8)
-		US.ASM("b 2036"); // undefined instruction (2048 - 8 - 4)
-		US.ASM("b 496"); // jump to supervisor call (512 - 8 - 8)
-		US.ASM("b 2284"); // prefetch abort, stop here (2304 - 8 - 12)
-		US.ASM("b 2536"); // data abort, stop here (2560 - 8 - 16)
+		US.ASM("b 0xf8"); // jump to reset method (0x100 - 8 - 0)
+		US.ASM("b 0x7f4"); // undefined instruction (0x800 - 8 - 4)
+		US.ASM("b 0x1f0"); // jump to supervisor call (0x200 - 8 - 8)
+		US.ASM("b 0x8ec"); // prefetch abort, stop here (0x900 - 8 - 0xc)
+		US.ASM("b 0x9e8"); // data abort, stop here (0xa00 - 8 - 0x10)
 		US.ASM("b -8"); // not used, stop here
-		US.ASM("b 992"); // jump to IRQ interrupt (1024 - 8 - 24)
+		US.ASM("b 0x3e0"); // jump to IRQ interrupt (0x400 - 8 - 0x18)
+		US.ASM("b -8"); // FIQ, stop here
+	}
+	
+	/** 
+	 * Vector table used when booting from flash, linker will place it at address 0x50.
+	 * The kernel will copy it to address 0
+	 */
+	static void vectorTableCopy() {
+		US.ASM("b 0x1000f8"); // jump to reset method (0x100000 + 0x100 - 8 - 0)
+		US.ASM("b 0x1007f4"); // undefined instruction (0x100000 + 0x800 - 8 - 4)
+		US.ASM("b 0x1001f0"); // jump to supervisor call (0x100000 + 0x200 - 8 - 8)
+		US.ASM("b 0x1008ec"); // prefetch abort, stop here (0x100000 + 0x900 - 8 - 0xc)
+		US.ASM("b 0x1009e8"); // data abort, stop here (0x100000 + 0xa00 - 8 - 0x10)
+		US.ASM("b -8"); // not used, stop here
+		US.ASM("b 0x1003e0"); // jump to IRQ interrupt (0x100000 + 0x400 - 8 - 0x18)
 		US.ASM("b -8"); // FIQ, stop here
 	}
 	
