@@ -27,7 +27,11 @@ import org.deepjava.unsafe.arm.US;
 /**
  * The class for the ARM private timer. This timer is used to count backwards. 
  * As soon as zero is reached the counter is reloaded with its initial value and an interrupt is generated.
- * The private timer is clocked with half of the CPU frequency (CPU_3x2x)
+ * The private timer is clocked with half of the CPU frequency (CPU_3x2x).
+ * You can extend this class to define your own timer class, e.g. to run a control loop. 
+ * Keep in mind, that the action method is called from the interrupt handler. If you use 
+ * the floating point unit, you have to make sure that the floating point registers get saved 
+ * upon entering the action method, see \ref US.ENABLE_FLOATS.
  */
 public class Decrementer extends IrqInterrupt {
 	
@@ -44,13 +48,13 @@ public class Decrementer extends IrqInterrupt {
 	/**
 	 * Used to install user defined handler for decrementer exceptions.
 	 * @param dec Instance of user defined decrementer handler
-	 * @param period Period in ns, time between subsequent interrupts
+	 * @param period Period in us, time between subsequent interrupts
 	 */
-	public static void install(Decrementer dec, int period) {
-		US.PUT4(PTLR, period / 40);	
-		US.PUT4(PTCOUNT, period / 40);
-		US.PUT4(PTCR, (12 << 8) | 7);	// enable private timer, prescaler = 12 -> 325MHz / 13 = 25MHz (333MHz / 13 = 25.6MHz on microzed board)
-		IrqInterrupt.install(dec, 29);
+	public Decrementer (int period) {
+		US.PUT4(PTLR, period * 3);	
+		US.PUT4(PTCOUNT, period * 3);
+		US.PUT4(PTCR, (110 << 8) | 7);	// prescaler = 111, auto reload, enable interrupts
+		IrqInterrupt.install(this, 29);
 	}
 
 }

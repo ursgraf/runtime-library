@@ -35,6 +35,10 @@ import org.deepjava.runtime.zynq7000.driver.UART;
 public class DecrementerDemo extends Decrementer {
 	static DecrementerDemo decTest; 
 	
+	DecrementerDemo() {
+		super(1000000);
+	}
+	
 	/**
 	 * Outputs 'x' once a second.
 	 */
@@ -51,6 +55,5 @@ public class DecrementerDemo extends Decrementer {
 		
 		// Create and install the Decrementer demo
 		decTest = new DecrementerDemo(); 
-		Decrementer.install(decTest, (int)1e9);
 	}
 }
