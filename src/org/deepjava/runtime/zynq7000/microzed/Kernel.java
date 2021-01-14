@@ -146,7 +146,6 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 	
 	private static void boot() {
 //		US.ASM("b -8"); // stop here
-
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
 		
 		US.PUT4(ARM_PLL_CFG, 0x0fa220);	// configure ARM PLL for 1333MHZ with 33.33MHz quartz
@@ -173,12 +172,15 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 			US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~0x10);	// no bypass
 		}
 
+		US.PUT4(CPU_RST_CTRL, 0x100);	// assert peripheral reset, resets the GIC and timers
+		US.PUT4(CPU_RST_CTRL, 0);	// deassert peripheral reset
 		US.PUT4(UART_CLK_CTRL, 0xa03);	// UART clock, divisor = 10 -> 100MHz, select IO PLL, clock enable for UART0/1
 		US.PUT4(APER_CLK_CTRL, 0x01ffcccd);	// enable clocks to access register of all peripherials
 		US.PUT4(FPGA0_CLK_CTRL, 0x00200500); // PL clock 0, divisor1 = 2, divisor0 = 5, select IO PLL -> 100MHz
         US.PUT4(GTCR, 0x1);	// enable global timer, prescaler = 1 -> 333MHz
 		
 		US.PUT4(MIO_PIN_47, 0x300);		// led, LVCMOS18, fast, GPIO 47, tristate disable
+		US.PUT4(MIO_PIN_51, 0x300);		// led, LVCMOS18, fast, GPIO 51, tristate disable
 		US.PUT4(MIO_PIN_00, 0x300);		// led, LVCMOS18, fast, GPIO 0, tristate disable
 		US.PUT4(MIO_PIN_09, 0x300);		// led, LVCMOS18, fast, GPIO 9, tristate disable
 		US.PUT4(MIO_PIN_10, 0x300);		// led, LVCMOS18, fast, GPIO 10, tristate disable
@@ -223,7 +225,7 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 		US.PUT4(ICCPMR, 0xff);	// set mask, the last 3 bits are read as 0
 		US.PUT4(ICCICR, 1);	// use irq, global interrupt enable
 		US.PUT4(ICDDCR, 1);	// enable distributor
-		
+
 		int classConstOffset = US.GET4(addr);
 //		int state = 0;
 		while (true) {

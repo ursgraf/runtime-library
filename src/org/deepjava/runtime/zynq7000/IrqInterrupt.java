@@ -69,7 +69,7 @@ public class IrqInterrupt extends ARMException implements Izynq7000 {
 		int addr = ICDISER0 + id / 32 * 4;
 		US.PUT4(addr, US.GET4(addr) | (1 << (id % 32)));	// interrupt set enable register
 		addr = ICDIPTR0 + id / 4 * 4 + id % 4;
-		US.PUT1(addr, 2);	// interrupts target register, targets CPU1
+		US.PUT1(addr, 1);	// interrupts target register, targets CPU0
 		//		addr = ICDICFR0 + id / 16 * 4;
 		//		US.PUT4(addr, US.GET4(addr) | (2 << (id % 16) * 2));	// edge sensitive, might be necessary for certain types
 	}
