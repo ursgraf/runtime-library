@@ -2,7 +2,7 @@ package org.deepjava.runtime.zynq7000;
 
 import org.deepjava.runtime.arm32.Iarm32;
 
-// Auto generated file (2020-11-11 11:45:24)
+// Auto generated file (2021-01-08 12:07:30)
 
 public interface Izynq7000 extends Iarm32 {
 
@@ -18,13 +18,13 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int gpioController = 0xe000a000;
 	public static final int uartController = 0xe0000000;
 	public static final int ioReg = 0xe0000000;
-	public static final int heapSize = 0x10000;
+	public static final int heapSize = 0x20000;
 	public static final int stackSizeIRQ = 0x1000;
 	public static final int stackSizeSVC = 0x1000;
 	public static final int sysTabBaseAddr = 0x1000;
 	public static final int excpCodeSize = 0x1000;
 	public static final int excpCodeBase = 0x0;
-	public static final int OCM_Size = 0x40000;
+	public static final int OCM_Size = 0x30000;
 	public static final int OCM_BaseAddr = 0x0;
 
 	// Specific registers of CPU zynq7000
@@ -74,13 +74,18 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int CLK_621_TRUE = 0xf80001c4;
 	public static final int PSS_RST_CTRL = 0xf8000200;
 	public static final int DDR_RST_CTRL = 0xf8000204;
+	public static final int SDIO_RST_CTRL = 0xf8000218;
+	public static final int SPI_RST_CTRL = 0xf800021c;
 	public static final int CAN_RST_CTRL = 0xf8000220;
 	public static final int I2C_RST_CTRL = 0xf8000224;
 	public static final int UART_RST_CTRL = 0xf8000228;
 	public static final int GPIO_RST_CTRL = 0xf800022c;
+	public static final int LQSPI_RST_CTRL = 0xf8000230;
+	public static final int SMC_RST_CTRL = 0xf8000234;
 	public static final int OCM_RST_CTRL = 0xf8000238;
 	public static final int FPGA_RST_CTRL = 0xf8000240;
-	public static final int SPI_RST_CTRL = 0xf800021c;
+	public static final int CPU_RST_CTRL = 0xf8000244;
+	public static final int RS_AWDT_CTRL = 0xf800024c;
 	public static final int REBOOT_STATUS = 0xf8000258;
 	public static final int BOOT_MODE = 0xf800025c;
 	public static final int MIO_PIN_00 = 0xf8000700;
