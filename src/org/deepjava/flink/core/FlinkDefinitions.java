@@ -44,6 +44,7 @@ public interface FlinkDefinitions {
 	public static final int COUNTER_INTERFACE_ID =		0x06;
 	public static final int PWM_INTERFACE_ID =			0x0C;
 	public static final int PPWA_INTERFACE_ID =			0x0D;
+	public static final int UART_INTERFACE_ID =			0x0F;
 	public static final int WD_INTERFACE_ID =			0x10;
  
  	public static final int INTERFACE_TYPE_MASK = 		0xFFFF;

@@ -129,6 +129,20 @@ public class UART extends IrqInterrupt implements Izynq7000 {
 		}
 	}
 
+	/**
+	 * <p>Initialize and start the <i>Universal Asynchronous Receiver Transmitter</i>.</p>
+	 * <p>This method have to be called before using the UART! The number of
+	 * stop bits can't be set. There is always one stop bit!<p>
+	 * 
+	 * @param baudRate
+	 *            The baud rate. Allowed Range: 64 to 1'000'000 bits/s.
+	 * @param parity
+	 *            Parity bits configuration. Possible values: {@link #NO_PARITY},
+	 *            {@link #ODD_PARITY} or {@link #EVEN_PARITY}.
+	 * @param data
+	 *            Number of data bits. Allowed values are 7 to 9 bits. If you
+	 *            choose 9 data bits, no parity bit is available!
+	 */
 	public void start(int baudRate, short parity, short data) {
 		final int BDIV = 15;
 		US.PUT4(UART0_BAUDGEN + diff, UART_CLK / (baudRate * (BDIV + 1)));	// CD

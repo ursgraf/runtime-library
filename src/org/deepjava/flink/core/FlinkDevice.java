@@ -7,6 +7,8 @@ import org.deepjava.flink.subdevices.FlinkGPIO;
 import org.deepjava.flink.subdevices.FlinkInfo;
 import org.deepjava.flink.subdevices.FlinkPPWA;
 import org.deepjava.flink.subdevices.FlinkPWM;
+import org.deepjava.flink.subdevices.FlinkUART;
+import org.deepjava.flink.subdevices.FlinkWatchdog;
 
 /**
  * A flink device is a hardware configuration in a FPGA device, 
@@ -161,6 +163,8 @@ public class FlinkDevice implements FlinkDefinitions {
 			return "FQD";
 		case WD_INTERFACE_ID:
 			return "WATCHDOG";
+		case UART_INTERFACE_ID:
+			return "UART";
 		case PPWA_INTERFACE_ID:
 			return "PPWA";
 		case ANALOG_INPUT_INTERFACE_ID:
@@ -286,4 +290,26 @@ public class FlinkDevice implements FlinkDefinitions {
 		if (d != null) return new FlinkADC(d);
 		return null;
 	}
+
+	/**
+	 * Returns a {@link org.deepjava.flink.subdevices.FlinkWatchdog} subdevice if present in this flink device.
+	 * @return watchdog subdevice, null if not available
+	 */
+	public static FlinkWatchdog getWatchdog() {
+		FlinkSubDevice d = getInstance().getSubdeviceByType(WD_INTERFACE_ID);
+		if (d != null) return new FlinkWatchdog(d);
+		return null;
+	}
+
+	/**
+	 * Returns an instance of {@link org.deepjava.flink.subdevices.FlinkUART} subdevice if present in this flink device.
+	 * @param uartNr uart number such as 0, 1, ..
+	 * @return uart subdevice, null if not available
+	 */
+	public static FlinkUART getUART(int uartNr) {
+		FlinkSubDevice d = getInstance().getSubdeviceByType(UART_INTERFACE_ID);
+		if (d != null) return FlinkUART.getInstance(d, uartNr);
+		return null;
+	}
+
 }
