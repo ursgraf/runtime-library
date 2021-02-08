@@ -32,7 +32,9 @@ import org.deepjava.unsafe.arm.US;
  */
 public class Kernel implements IMicroZed, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
-
+	/** Clock frequency of the processor. */
+	public static final int clockFrequency = 667000000; // Hz
+	
 	static int loopAddr;
 	static int cmdAddr;
 	
