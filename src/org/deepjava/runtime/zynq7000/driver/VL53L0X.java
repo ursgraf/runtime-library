@@ -48,8 +48,7 @@ public class VL53L0X extends IrqInterrupt implements Izynq7000{
 	 * Initialize up to 4 VL53L0X time of flight sensors
 	 * @param sensors number of sensors (1..4)
 	 */
-	public VL53L0X(int sensors)
-	{
+	public VL53L0X(int sensors) {
 		numSensors = sensors;
 		// check if the number of sensors is sensible
 		if (numSensors > MAX_SENSORS) {
@@ -83,8 +82,7 @@ public class VL53L0X extends IrqInterrupt implements Izynq7000{
 	 * Task function handling the general state and operations of this driver
 	 * Not to be called manually!
 	 */
-	public void action()
-	{
+	public void action() {
 		// Clear Interrupts
 		US.PUT4(SPI1_SR, US.GET4(SPI1_SR));
 		// Disable Interrupts
@@ -106,10 +104,9 @@ public class VL53L0X extends IrqInterrupt implements Izynq7000{
 	/**
 	 * Write data into the TX Buffer.
 	 * Data gets automatically sent by the SPI Controller
-	 * @param data Data
+	 * @param data data
 	 */
-	private void write(byte[] data)
-	{
+	private void write(byte[] data) {
 		// Loop over all Data
 		for (int i = 0; i < data.length; i++) {
 			// Write Data to TX FIFO
@@ -122,10 +119,9 @@ public class VL53L0X extends IrqInterrupt implements Izynq7000{
 	
 	/**
 	 * Read last measurement data
-	 * @return Distances in mm, the returned array has as many elements as sensors were requested in the constructor
+	 * @return distances in mm, the returned array has as many elements as sensors were requested in the constructor
 	 */
-	public int[] read()
-	{	
+	public int[] read() {	
 		for (int i = 0; i < numSensors; i++)
 		{
 			sensorValues[i] = ((readBuffer[i*2] & 0xff) << 8) | (readBuffer[i*2+1] & 0xff);
@@ -141,8 +137,7 @@ public class VL53L0X extends IrqInterrupt implements Izynq7000{
 	 * Initiate the SPI Clock and the SPI Controller. 
 	 * Configure the pins as SPI pins.
 	 */
-	private static void initSPI()
-	{
+	private static void initSPI() {
 		// Unlock System Level Control Registers
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
 		// Reset SPI

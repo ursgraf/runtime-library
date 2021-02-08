@@ -27,7 +27,7 @@ public class FlinkGPIO implements FlinkDefinitions {
 	/**
 	 * Sets the direction of a single channel within a GPIO subdevice. 
 	 * Each channel can work as either digital input or output. Channel number
-	 * must be 0 <= channel < nof available channels.
+	 * must be 0 &lt;= channel &lt; nof available channels.
 	 * @param channel channel number
 	 * @param output false = input, true = output
 	 */
@@ -41,7 +41,7 @@ public class FlinkGPIO implements FlinkDefinitions {
 	/**
 	 * Reads the direction of a single channel within a GPIO subdevice. 
 	 * Each channel can work as either digital input or output. Channel number
-	 * must be 0 <= channel < nof available channels
+	 * must be 0 &lt;= channel &lt; nof available channels
 	 * @param channel channel number
 	 * @return false = input, true = output
 	 */
@@ -52,7 +52,7 @@ public class FlinkGPIO implements FlinkDefinitions {
 	
 	/**
 	 * Reads the value of a single channel within a GPIO subdevice. 
-	 * Channel number must be 0 <= channel < nof available channels
+	 * Channel number must be 0 &lt;= channel &lt; nof available channels
 	 * @param channel channel number
 	 * @return false = low, true = high
 	 */
@@ -63,7 +63,7 @@ public class FlinkGPIO implements FlinkDefinitions {
 	
 	/**
 	 * Sets the logical level of a single channel within a GPIO subdevice. 
-	 * Channel number must be 0 <= channel < nof available channels
+	 * Channel number must be 0 &lt;= channel &lt; nof available channels
 	 * @param channel channel number
 	 * @param value false = low, true = high
 	 */

@@ -37,7 +37,7 @@ public class FlinkPPWA implements FlinkDefinitions {
 	
 	/**
 	 * Reads the period of a single channel. Channel number
-	 * must be 0 <= channel < nof available channels. Period setting is
+	 * must be 0 &lt;= channel &lt; nof available channels. Period setting is
 	 * in multiple of the base clock, @see getBaseClock().
 	 * @param channel channel number
 	 * @return multiple of base clock
@@ -52,7 +52,7 @@ public class FlinkPPWA implements FlinkDefinitions {
 	
 	/**
 	 * Reads the hightime of a single channel. Channel number
-	 * must be 0 <= channel < nof available channels. Hightime setting is
+	 * must be 0 &lt;= channel &lt; nof available channels. Hightime setting is
 	 * in multiple of the base clock, @see getBaseClock().
 	 * @param channel channel number
 	 * @return multiple of base clock

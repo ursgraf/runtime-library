@@ -25,7 +25,7 @@ public class FlinkInfo implements FlinkDefinitions {
 	/**
 	 * Returns the total amount of memory mapped onto the AXI bus.
 	 * This memory covers the memory blocks of all subdevices within a flink device.
-	 * @return
+	 * @return total memory size in bytes
 	 */
 	public int getMemLength() {
 		return dev.read(0);

@@ -50,6 +50,7 @@ public class FlinkUART implements FlinkDefinitions {
 	/**
 	 * Returns an instance of <i>FlinkUART Interface</i> 
 	 * operating one of the UARTS in the flink UART subdevice.
+	 * @param dev handle to the subdevice
 	 * @param uartNr 0 selects UART0, 1 selects UART1, ..
 	 * @return instance of UART
 	 */
@@ -66,6 +67,7 @@ public class FlinkUART implements FlinkDefinitions {
 	/**
 	 * Creates an UART subdevice.
 	 * @param dev handle to the subdevice
+	 * @param uartNr channel number of this UART instance
 	 */
 	private FlinkUART(FlinkSubDevice dev, int uartNr) {
 		this.dev = dev;

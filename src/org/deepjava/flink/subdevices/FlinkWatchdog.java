@@ -11,10 +11,7 @@ import org.deepjava.flink.core.FlinkSubDevice;
  */
 public class FlinkWatchdog implements FlinkDefinitions{
 	private static int BASE_CLOCK_ADDRESS = 0;
-	private static int STATUS_CONF_ADDRESS = BASE_CLOCK_ADDRESS + REGISTER_WIDTH;
-	private static int COUNTER_ADDRESS = STATUS_CONF_ADDRESS + REGISTER_WIDTH;
-	private static int STATUS_BIT_MASK = 0x1;
-	private static int REARM_BIT_MASK = 0x2;
+	private static int COUNTER_ADDRESS = BASE_CLOCK_ADDRESS + REGISTER_WIDTH;
 	
 	/** Handle to the subdevice within our flink device */
 	public FlinkSubDevice dev;
@@ -29,7 +26,7 @@ public class FlinkWatchdog implements FlinkDefinitions{
 	
 	/**
 	 * Returns the base clock of the underlying hardware counter.
-	 * @returnthe base clock in Hz
+	 * @return the base clock in Hz
 	 */
 	public int getBaseClock(){
 		return dev.read(BASE_CLOCK_ADDRESS);
@@ -53,25 +50,19 @@ public class FlinkWatchdog implements FlinkDefinitions{
 	
 	/**
 	 * Arms the watchdog. If it has timed out, you have to arm again 
-	 * before it can time out again.
+	 * before it can run again.
 	 */
 	public void rearm() {
-			int regValue = dev.read(STATUS_CONF_ADDRESS);
-			regValue = regValue | REARM_BIT_MASK;
-			dev.write(STATUS_CONF_ADDRESS,regValue);
+		dev.setConfigReg(1);
 	}
 	
 	/**
 	 * Reads the status register and returns the state of the status bit within.
-	 * @return true, if status bit set
+	 * @return true, if watchdog still running, false, if watchdog has timed out
 	 */
 	public boolean getStatus(){
-		int regValue = dev.read(STATUS_CONF_ADDRESS);
-		if ((regValue & STATUS_BIT_MASK) == STATUS_BIT_MASK){
-			return true;
-		} else {
-			return false;
-		}
+		int regValue = dev.getStatusReg();
+		return ((regValue & 1) != 0);
 	}
 	
 }
