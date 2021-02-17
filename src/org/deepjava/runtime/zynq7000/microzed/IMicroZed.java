@@ -2,7 +2,7 @@ package org.deepjava.runtime.zynq7000.microzed;
 
 import org.deepjava.runtime.zynq7000.Izynq7000;
 
-// Auto generated file (2021-01-08 12:07:30)
+// Auto generated file (2021-02-17 13:57:50)
 
 public interface IMicroZed extends Izynq7000 {
 

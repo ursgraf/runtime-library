@@ -1,6 +1,6 @@
 package org.deepjava.runtime;
 
-// Auto generated file (2020-10-01 13:39:15)
+// Auto generated file (2021-02-17 13:57:50)
 
 public interface IdeepCompilerConstants {
 
