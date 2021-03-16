@@ -23,6 +23,12 @@ public interface Impc555 extends Ippc32 {
 	public static final int IMB = 0x0;
 
 	// Specific registers of CPU mpc555
+	public static final int SPR80 = 0x50;
+	public static final int EIE = 0x50;
+	public static final int SPR81 = 0x51;
+	public static final int EID = 0x51;
+	public static final int SPR82 = 0x52;
+	public static final int NRI = 0x52;
 	public static final int SPR144 = 0x90;
 	public static final int CMPA = 0x90;
 	public static final int SPR145 = 0x91;
