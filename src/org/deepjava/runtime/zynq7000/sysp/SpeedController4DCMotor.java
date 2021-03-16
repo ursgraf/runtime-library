@@ -26,7 +26,8 @@ import org.deepjava.runtime.Kernel;
 
 /**
  * Speed controller (PI control) for DC motor. <br>
- * This controller uses two pwm channels and operates in sign-magnitude mode. <br>
+ * This controller can work with two pwm channels operating in sign-magnitude mode or
+ * it can work with one pwm channel operating in locked-antiphase mode. <br>
  * 
  *  <strong>IMPORTANT:</strong> The motor and the encoder have to be connected carefully. A positive speed control must lead to a positive speed reading.
  *  If this is not the case you have to change either the connections to the motor or the signals of the encoder (but not both!). 
