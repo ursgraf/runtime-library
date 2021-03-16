@@ -2,7 +2,7 @@ package org.deepjava.runtime.zynq7000.zybo;
 
 import org.deepjava.runtime.zynq7000.Izynq7000;
 
-// Auto generated file (2020-10-01 13:39:16)
+// Auto generated file (2021-02-17 13:57:50)
 
 public interface IZybo extends Izynq7000 {
 

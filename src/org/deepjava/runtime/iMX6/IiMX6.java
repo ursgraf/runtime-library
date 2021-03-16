@@ -2,7 +2,7 @@ package org.deepjava.runtime.iMX6;
 
 import org.deepjava.runtime.arm32.Iarm32;
 
-// Auto generated file (2020-10-01 13:39:15)
+// Auto generated file (2021-02-17 13:57:50)
 
 public interface IiMX6 extends Iarm32 {
 

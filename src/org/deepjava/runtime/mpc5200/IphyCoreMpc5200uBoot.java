@@ -2,9 +2,9 @@ package org.deepjava.runtime.mpc5200;
 
 // Auto generated file (2021-02-17 13:57:50)
 
-public interface IphyCoreMpc5200io extends Impc5200 {
+public interface IphyCoreMpc5200uBoot extends Impc5200 {
 
-	// System constants of board phyCoreMpc5200io
+	// System constants of board phyCoreMpc5200uBoot
 	public static final int heapSize = 0x40000;
 	public static final int stackSize = 0x2000;
 	public static final int sysTabBaseAddr = 0x4000;

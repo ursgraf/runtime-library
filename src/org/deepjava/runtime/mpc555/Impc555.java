@@ -2,7 +2,7 @@ package org.deepjava.runtime.mpc555;
 
 import org.deepjava.runtime.ppc32.Ippc32;
 
-// Auto generated file (2016-04-15 16:09:23)
+// Auto generated file (2021-02-17 13:57:50)
 
 public interface Impc555 extends Ippc32 {
 
@@ -23,12 +23,6 @@ public interface Impc555 extends Ippc32 {
 	public static final int IMB = 0x0;
 
 	// Specific registers of CPU mpc555
-	public static final int SPR80 = 0x50;
-	public static final int EIE = 0x50;
-	public static final int SPR81 = 0x51;
-	public static final int EID = 0x51;
-	public static final int SPR82 = 0x52;
-	public static final int NRI = 0x52;
 	public static final int SPR144 = 0x90;
 	public static final int CMPA = 0x90;
 	public static final int SPR145 = 0x91;
@@ -70,8 +64,6 @@ public interface Impc555 extends Ippc32 {
 	public static final int BBCMCR = 0x230;
 	public static final int SPR568 = 0x238;
 	public static final int L2U_MCR = 0x238;
-	public static final int SPR630 = 0x276;
-	public static final int DPDR = 0x276;
 	public static final int SPR638 = 0x27e;
 	public static final int IMMR = 0x27e;
 	public static final int SPR784 = 0x310;

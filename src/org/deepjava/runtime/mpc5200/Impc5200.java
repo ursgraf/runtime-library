@@ -1,8 +1,10 @@
 package org.deepjava.runtime.mpc5200;
 
-// Auto generated file (2015-08-14 11:57:01)
+import org.deepjava.runtime.ppc32.Ippc32;
 
-public interface Impc5200 {
+// Auto generated file (2021-02-17 13:57:50)
+
+public interface Impc5200 extends Ippc32 {
 
 	// System constants of CPU mpc5200
 	public static final int SRR1init = 0x3802;
