@@ -52,9 +52,11 @@ public class SpeedController4DCMotor implements FlinkDefinitions {
 	private float speed = 0;					// [1/s]
 	private float e_1 = 0;						// [1/s]
 	private int period;							// period in pwm setting
+	private boolean lock;						// locked-antiphase mode
 	
 	/**
-	 * Create a new speed controller for a DC motor.
+	 * Create a new speed controller for a DC motor. The controller works in sign-magnitude mode using two PWM signals. 
+	 * 
 	 * @param ts task period in seconds [s]
 	 * @param pwmChannel1 channel for the first PWM signal.
 	 * @param pwmChannel2 channel for the second PWM signal.
@@ -83,6 +85,39 @@ public class SpeedController4DCMotor implements FlinkDefinitions {
 		pwm.setPeriod(pwmChannel2, period);
 		pwm.setHighTime(pwmChannel1, 0);
 		pwm.setHighTime(pwmChannel2, 0);
+		
+		// initialize FQD channels
+		enc.reset();
+	}
+
+	/**
+	 * Create a new speed controller for a DC motor. The controller works in locked-antiphase mode using a single PWM signal. 
+	 * 
+	 * @param ts task period in seconds [s]
+	 * @param pwmChannel channel for the PWM signal.
+	 * @param encChannel channel for the encoder signal. Connect both A and B to the associated pins.
+	 * @param encTPR impulse/ticks per rotation of the encoder.
+	 * @param umax maximum output voltage of set value.
+	 * @param i gear transmission ratio.
+	 * @param kp controller gain factor. For experimental evaluating the controller parameters, begin with kp = 1.
+	 * @param tn time constant of the controller. For experimental evaluating the controller parameters, set tn to the mechanical time constant of your axis. If the motor has a gear it's assumed that the torque of inertia of the rotor is dominant. That means you can set tn equals to the mechanical time constant of your motor. 
+	 */
+	public SpeedController4DCMotor(float ts, int pwmChannel, int encChannel, int encTPR, float umax, float i, float kp, float tn) {
+		this.scale = (float)((2 * Math.PI) / (encTPR * fqd * i));
+		this.b0 = kp * (1f + ts / (2f * tn));
+		this.b1 = kp * (ts / (2f * tn) - 1f);
+		this.umax = umax;
+		this.pwmChannel0 = pwmChannel;
+		this.encChannel = encChannel;
+		lock = true;
+		
+		pwm = FlinkDevice.getPWM();
+		enc = FlinkDevice.getCounter();
+
+		// initialize PWM channels
+		period = pwm.getBaseClock() / pwmFreq;
+		pwm.setPeriod(pwmChannel, period);
+		pwm.setHighTime(pwmChannel, 0);
 		
 		// initialize FQD channels
 		enc.reset();
@@ -123,14 +158,16 @@ public class SpeedController4DCMotor implements FlinkDefinitions {
 	}
 	
 	
-	/** Returns the current speed.
+	/** 
+	 * Returns the current speed.
 	 * @return current speed in radian per second [1/s]
 	 */
 	public float getSpeed() {
 		return speed;
 	}
 	
-	/** Returns the current absolute position.
+	/** 
+	 * Returns the current absolute position.
 	 * @return absolute position in radian
 	 */
 	public float getPosition() {
@@ -138,13 +175,17 @@ public class SpeedController4DCMotor implements FlinkDefinitions {
 	}
 	
 	private void setPWM(float dutyCycle) {
-		if (dutyCycle >= 0) { // forward
-			pwm.setHighTime(pwmChannel0, 0); // direction, set to 0
-		} else { // backward
-			pwm.setHighTime(pwmChannel0, period); // direction, set to 1
-			dutyCycle = dutyCycle + 1;
+		if (lock) {
+			pwm.setHighTime(pwmChannel0, (int)((dutyCycle + 1) / 2 * period)); // speed
+		} else {
+			if (dutyCycle >= 0) { // forward
+				pwm.setHighTime(pwmChannel0, 0); // direction, set to 0
+			} else { // backward
+				pwm.setHighTime(pwmChannel0, period); // direction, set to 1
+				dutyCycle = dutyCycle + 1;
+			}
+			pwm.setHighTime(pwmChannel1, (int)(dutyCycle * period)); // speed
 		}
-		pwm.setHighTime(pwmChannel1, (int)(dutyCycle * period)); // speed
 	}
 	
 }
