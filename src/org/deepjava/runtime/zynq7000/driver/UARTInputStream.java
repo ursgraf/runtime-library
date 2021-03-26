@@ -21,7 +21,6 @@ package org.deepjava.runtime.zynq7000.driver;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 /**
 *
 * Input Stream to read bytes from a UART interface.

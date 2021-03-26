@@ -19,8 +19,6 @@
 package org.deepjava.runtime.zynq7000.driver;
 
 import java.io.IOException;
-import java.io.OutputStream;
-
 import org.deepjava.flink.subdevices.FlinkUART;
 
 /**
@@ -29,7 +27,7 @@ import org.deepjava.flink.subdevices.FlinkUART;
  * Don't forget to initialize the interface before using this stream.
  * 
  */
-public class FlinkUARTOutputStream extends OutputStream {
+public class FlinkUARTOutputStream extends UARTOutputStream {
 	
 	private FlinkUART port;
 
@@ -38,6 +36,7 @@ public class FlinkUARTOutputStream extends OutputStream {
      * @param uart UART number.
      */
     public FlinkUARTOutputStream(FlinkUART uart) {
+    	super(null);
     	port = uart;
 	}
 

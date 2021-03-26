@@ -6,30 +6,24 @@ package org.deepjava.runtime.util;
  */
 public class SLIP {
 
+	private ByteFifo rx;
+	private ByteFifo tx;
+	private boolean packetReceived = false;
+	private boolean escaping = false;
+	
+	private static final byte END = (byte)0300;
+	private static final byte ESC = (byte)0333;
+	private static final byte ESC_END = (byte)0334;
+	private static final byte ESC_ESC = (byte)0335;
+
 	/**
 	 * Creates a SLIP object using the supplied buffers.
 	 * @param rx receive buffer to use
-	 * @param tx transmitt buffer to use
+	 * @param tx transmit buffer to use
 	 */
 	public SLIP(ByteFifo rx, ByteFifo tx) {
 		this.rx = rx;
 		this.tx = tx;
-	}
-
-	/**
-	 * Returns the number of available bytes to read.
-	 * @return number of available bytes to read
-	 */
-	public int availToRead() {
-		return rx.availToRead();
-	}
-
-	/**
-	 * Returns the number of available bytes to write.
-	 * @return number of available bytes to write
-	 */
-	public int availToWrite() {
-		return tx.availToWrite();
 	}
 
 	/**
@@ -143,13 +137,4 @@ public class SLIP {
 		return received;
 	}
 
-	private ByteFifo rx;
-	private ByteFifo tx;
-	private boolean packetReceived = false;
-	private boolean escaping = false;
-	
-	private static final byte END = (byte)0300;
-	private static final byte ESC = (byte)0333;
-	private static final byte ESC_END = (byte)0334;
-	private static final byte ESC_ESC = (byte)0335;
 }

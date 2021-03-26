@@ -8,7 +8,7 @@ import org.deepjava.runtime.mpc555.driver.SCIInputStream;
 import org.deepjava.runtime.mpc555.driver.SCIOutputStream;
 import org.deepjava.runtime.ppc32.Task;
 import org.deepjava.runtime.util.ByteFifo;
-import org.deepjava.runtime.util.CmdInt;
+import org.deepjava.runtime.util.IntPacket;
 import org.deepjava.runtime.util.SLIP;
 
 
@@ -63,7 +63,7 @@ public class RN131 extends Task {
 		LOCAL_HEARTBEAT = sec2ticks(1);
 		REMOTE_HEARTBEAT = sec2ticks(2);
 		
-		cmd = new CmdInt(new SLIP(rx, tx));
+		intPacket = new IntPacket(new SLIP(rx, tx));
 		
 		Task.install(this);
 	}
@@ -323,7 +323,7 @@ public class RN131 extends Task {
 
 	public ByteFifo rx = new ByteFifo(2047);
 	public ByteFifo tx = new ByteFifo(2047);
-	public CmdInt cmd;
+	public IntPacket intPacket;
 	
 	private SCIInputStream in;
 	private SCIOutputStream out;

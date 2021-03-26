@@ -6,16 +6,14 @@ import org.deepjava.runtime.mpc555.driver.MPIOSM_DIO;
 import org.deepjava.runtime.mpc555.driver.RN131;
 import org.deepjava.runtime.mpc555.driver.SCI;
 import org.deepjava.runtime.ppc32.Task;
-import org.deepjava.runtime.util.CmdInt;
+import org.deepjava.runtime.util.IntPacket;
 
 public class WifiDemo extends Task {
 	
-	public WifiDemo() throws Exception {
-		period = 500;
-		
+	public WifiDemo() {
+		period = 500;	
 		SCI sci = SCI.getInstance(SCI.pSCI2);
 		sci.start(115200, SCI.NO_PARITY, (short)8);
-
 		wifi = new RN131(sci.in , sci.out, new MPIOSM_DIO(11, true));
 	}
 	
@@ -28,24 +26,20 @@ public class WifiDemo extends Task {
 			System.out.print("\t(not connected)\t");
 		
 		while (true) {
-			CmdInt.Type type = wifi.cmd.readCmd();
-			if (type == CmdInt.Type.None) break;
-			if (type == CmdInt.Type.Cmd) {
-				System.out.print("command=");
-				System.out.print(wifi.cmd.getInt());
-			}
-			else if (type == CmdInt.Type.Code) {
-				System.out.print("code=");
-				System.out.print(wifi.cmd.getInt());
-			}
-			else if (type == CmdInt.Type.Unknown) {
+			IntPacket.Type type = wifi.intPacket.readInt();
+			if (type == IntPacket.Type.None) break;
+			else if (type == IntPacket.Type.Int) {
+				System.out.print("int packet=");
+				System.out.print(wifi.intPacket.getInt());
+			} else if (type == IntPacket.Type.Unknown) {
 				System.out.print("unknown(");
-				System.out.print(wifi.cmd.getHeader());
+				System.out.print(wifi.intPacket.getHeader());
 				System.out.print(")=");
-				System.out.print(wifi.cmd.getInt());
+				System.out.print(wifi.intPacket.getInt());
 			}
 		}
 		System.out.println();
+		if (nofActivations % 20 == 0) wifi.intPacket.writeInt(nofActivations);
 	}
 	
 	public static void reset() {
@@ -54,19 +48,13 @@ public class WifiDemo extends Task {
 	
 	public static void sendCmd() {
 		if (task.wifi.connected()) {
-			task.wifi.cmd.writeCmd(123);
-		}
-	}
-	
-	public static void sendCode() {
-		if (task.wifi.connected()) {
-			task.wifi.cmd.writeCmd(CmdInt.Type.Code, 456);
+			task.wifi.intPacket.writeInt(123);
 		}
 	}
 	
 	public static void sendOther() {
 		if (task.wifi.connected()) {
-			task.wifi.cmd.writeCmd((byte)0xab, 789);
+			task.wifi.intPacket.writeInt((byte)0xab, 789);
 		}
 	}
 	
@@ -77,17 +65,10 @@ public class WifiDemo extends Task {
 	static {
 		SCI sci = SCI.getInstance(SCI.pSCI1);
 		sci.start(115200, SCI.NO_PARITY, (short)8);
-		
 		System.out = new PrintStream(sci.out);
-		System.err = new PrintStream(sci.out);
+		System.err = System.out;
 		System.out.println("WifiDemo");
-		
-		try {
-			task = new WifiDemo();
-			Task.install(task);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		task = new WifiDemo();
+		Task.install(task);
 	}
 }
