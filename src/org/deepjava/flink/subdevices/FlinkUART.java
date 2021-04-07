@@ -99,6 +99,7 @@ public class FlinkUART implements FlinkDefinitions {
 	 */	
 	public void reset() {
 		dev.setConfigReg(1);
+		dev.setConfigReg(0);
 	}
 	
 	/**
