@@ -11,7 +11,7 @@ board MicroZed {
 	
 	sysconst {
 		extRamSize   = 0x3fefffff;						# 1023MB (1GB-1MB) external RAM
-		extRamBase   = 0x100000;						# starting at 1MB
+		extRamBase   = 0x1000000;						# starting at 16MB
 		extFlashSize = 0x800000;						# 8M external flash, QSPI has 16M, but needs space for FSBL and PL
 #		extFlashBase = 0x100000;						# will be copied by FSBL to DDR, hence, must be linked for DDR
 	}
