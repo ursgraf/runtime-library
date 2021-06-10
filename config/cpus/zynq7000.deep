@@ -20,7 +20,7 @@ cpu zynq7010 {
 		
 		stackSizeSVC = 0x1000;							# stack size for SVC mode
 		stackSizeIRQ = 0x1000;							# stack size for IRQ mode
-		heapSize = 0x20000;								# Default heap size (128k)
+		heapSize = 0x10000;								# Default heap size (128k)
 
 		ioReg = 0xe0000000;								# I/O peripheral registers
 		uartController = ioReg + 0;						# UART controller
