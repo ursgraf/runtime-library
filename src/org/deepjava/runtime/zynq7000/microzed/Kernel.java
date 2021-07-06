@@ -173,14 +173,14 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 //			while (!US.BIT(PLL_STATUS, 2));	// wait to lock
 //			US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~0x10);	// no bypass
 //		}
-//
+
 //		US.PUT4(CPU_RST_CTRL, 0x100);	// assert peripheral reset, resets the GIC and timers
 //		US.PUT4(CPU_RST_CTRL, 0);	// deassert peripheral reset
 //		US.PUT4(UART_CLK_CTRL, 0xa03);	// UART clock, divisor = 10 -> 100MHz, select IO PLL, clock enable for UART0/1
 //		US.PUT4(APER_CLK_CTRL, 0x01ffcccd);	// enable clocks to access register of all peripherials
 //		US.PUT4(FPGA0_CLK_CTRL, 0x00200500); // PL clock 0, divisor1 = 2, divisor0 = 5, select IO PLL -> 100MHz
 //        US.PUT4(GTCR, 0x1);	// enable global timer, prescaler = 1 -> 333MHz
-//		
+		
 //		US.PUT4(MIO_PIN_47, 0x300);		// led, LVCMOS18, fast, GPIO 47, tristate disable
 //		US.PUT4(MIO_PIN_51, 0x300);		// led, LVCMOS18, fast, GPIO 51, tristate disable
 //		US.PUT4(MIO_PIN_00, 0x300);		// led, LVCMOS18, fast, GPIO 0, tristate disable
@@ -193,9 +193,9 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 //		US.PUT4(MIO_PIN_15, 0x12e0);	// UART0 tx
 //		US.PUT4(MIO_PIN_48, 0x12e0);	// UART1 tx
 //		US.PUT4(MIO_PIN_49, 0x12e1);	// UART1 rx
-//
-//		US.PUT4(LVL_SHFTR_EN, 0xf);	// enable all level shifters between PS and PL
-//		US.PUT4(FPGA_RST_CTRL, 0);	// deassert FPGA reset
+
+		US.PUT4(LVL_SHFTR_EN, 0xf);	// enable all level shifters between PS and PL
+		US.PUT4(FPGA_RST_CTRL, 0);	// deassert FPGA reset
 //		US.PUT4(UART_RST_CTRL, 0xa);	// assert UART1 reset, must be reset when already having been setup by FSBL
 //		US.PUT4(UART_RST_CTRL, 0);	// deassert UART1 reset
 		US.PUT4(SLCR_LOCK, 0x767b);
@@ -266,7 +266,7 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 					US.ASM("mov r15, r0");
 				} else {	// kernel
 					loopAddr = US.ADR_OF_METHOD("org/deepjava/runtime/zynq7000/microzed/Kernel/loop");
-					US.ASM("cpsie i");	// enable IRQ
+//					US.ASM("cpsie i");	// enable IRQ
 				}
 			}
 

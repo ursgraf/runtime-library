@@ -46,37 +46,37 @@ cpu zynq7010 {
 			technology = ram;
 		}
 		
-		segment InternalRam.ExceptionCode {
-			base = OCM_BaseAddr;
-			size = excpCodeSize;
-		}
+#		segment InternalRam.ExceptionCode {
+#			base = OCM_BaseAddr;
+#			size = excpCodeSize;
+#		}
 
-		segment InternalRam.SysTab {
-			base = sysTabBaseAddr;
-			attributes = read, write, systab;
-		}
+#		segment InternalRam.SysTab {
+#			base = sysTabBaseAddr;
+#			attributes = read, write, systab;
+#		}
 
 		segment InternalRam.Default {								# Default segment for code, constants and class fields
 			attributes = read, write, const, code, var;
 		}
 
-		segment InternalRam.Heap {
-			base = OCM_BaseAddr + OCM_Size - stackSizeSVC - stackSizeIRQ - heapSize;
-			size = heapSize;
-			attributes = read, write, heap;
-		}
+#		segment InternalRam.Heap {
+#			base = OCM_BaseAddr + OCM_Size - stackSizeSVC - stackSizeIRQ - heapSize;
+#			size = heapSize;
+#			attributes = read, write, heap;
+#		}
 		
-		segment InternalRam.StackIRQ {								# IRQ mode stack
-			base = OCM_BaseAddr + OCM_Size - stackSizeSVC - stackSizeIRQ ;
-			size = stackSizeIRQ;
-			attributes = read, write, stack;
-		}
+#		segment InternalRam.StackIRQ {								# IRQ mode stack
+#			base = OCM_BaseAddr + OCM_Size - stackSizeSVC - stackSizeIRQ ;
+#			size = stackSizeIRQ;
+#			attributes = read, write, stack;
+#		}
 		
-		segment InternalRam.StackSVC {								# Supervisor mode stack
-			base = OCM_BaseAddr + OCM_Size - stackSizeSVC ;
-			size = stackSizeSVC;
-			attributes = read, write, stack;
-		}
+#		segment InternalRam.StackSVC {								# Supervisor mode stack
+#			base = OCM_BaseAddr + OCM_Size - stackSizeSVC ;
+#			size = stackSizeSVC;
+#			attributes = read, write, stack;
+#		}
 	}
 
 	registermap {
