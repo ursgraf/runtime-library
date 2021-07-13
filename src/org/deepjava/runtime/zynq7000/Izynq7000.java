@@ -21,7 +21,7 @@ public interface Izynq7000 extends Iarm32 {
 	public static final int heapSize = 0x20000;
 	public static final int stackSizeIRQ = 0x1000;
 	public static final int stackSizeSVC = 0x1000;
-	public static final int sysTabBaseAddr = 0x1001000;
+	public static final int sysTabBaseAddr = 0x20001000;
 	public static final int excpCodeSize = 0x1000;
 	public static final int excpCodeBase = 0x0;
 	public static final int OCM_Size = 0x30000;

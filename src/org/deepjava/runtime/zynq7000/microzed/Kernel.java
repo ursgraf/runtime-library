@@ -211,12 +211,12 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
         US.ASM("vmsr FPEXC, r6");
         
         int addr = sysTabBaseAddr;
-		if (US.BIT(REBOOT_STATUS, 22)) {
-			// sysTab is in flash when running out of flash
-			addr += 0x100000;
-			// copy vector table from start of DDR to address 0
-			for (int i = 0; i < 8; i++) US.PUT4(i * 4, US.GET4(0x100050 + i * 4));
-		}
+//		if (US.BIT(REBOOT_STATUS, 22)) {
+//			// sysTab is in flash when running out of flash
+//			addr += 0x100000;
+//			// copy vector table from start of DDR to address 0
+//			for (int i = 0; i < 8; i++) US.PUT4(i * 4, US.GET4(0x100050 + i * 4));
+//		}
 		
  		// mark stack end with specific pattern
 		int stackOffset = US.GET4(addr + stStackOffset);

@@ -68,7 +68,7 @@ class Reset extends ARMException implements Izynq7000, IdeepCompilerConstants {
 	static void reset() {
 		int addr = sysTabBaseAddr;
 		// sysTab is in flash when running out of flash
-		if (US.BIT(REBOOT_STATUS, 22)) addr += 0x100000;
+//		if (US.BIT(REBOOT_STATUS, 22)) addr += 0x100000;
 		// set SVC stack pointer
 		int stackOffset = US.GET4(addr + stStackOffset);
 		int stackBase = US.GET4(addr + stackOffset + 4);
