@@ -89,7 +89,7 @@ public class TCRT1000 extends Task implements Izynq7000, FlinkDefinitions {
 			else gpio.setValue(addrPin1, true);
 			if (sensAdr / 4 % 2 == 0) gpio.setValue(addrPin2, false);
 			else gpio.setValue(addrPin2, true);
-			if (sensAdr % 8 == 0) gpio.setValue(addrPin3, false);
+			if (sensAdr / 8 % 2 == 0) gpio.setValue(addrPin3, false);
 			else gpio.setValue(addrPin3, true);
 			gpio.setValue(trigPin, true);
 			gpio.setValue(trigPin, false);
