@@ -46,15 +46,15 @@ cpu zynq7010 {
 			technology = ram;
 		}
 		
-#		segment InternalRam.ExceptionCode {
-#			base = OCM_BaseAddr;
-#			size = excpCodeSize;
-#		}
+		segment InternalRam.ExceptionCode {
+			base = OCM_BaseAddr;
+			size = excpCodeSize;
+		}
 
-#		segment InternalRam.SysTab {
-#			base = sysTabBaseAddr;
-#			attributes = read, write, systab;
-#		}
+		segment InternalRam.SysTab {
+			base = sysTabBaseAddr;
+			attributes = read, write, systab;
+		}
 
 		segment InternalRam.Default {								# Default segment for code, constants and class fields
 			attributes = read, write, const, code, var;

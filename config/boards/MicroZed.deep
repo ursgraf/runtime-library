@@ -108,7 +108,7 @@ board MicroZed {
 		}
 		modules {
 				kernel, heap: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default; 
-				exception: code@ExternalRam.ExceptionCode, const@ExternalRam.Default, var@ExternalRam.Default;
+				exception: code@InternalRam.ExceptionCode, const@ExternalRam.Default, var@ExternalRam.Default;
 				default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;      
 #				default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;      
 		}
@@ -248,7 +248,7 @@ board MicroZed {
 		}
 		modules {
 				kernel, heap: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default; 
-				exception: code@ExternalRam.ExceptionCode, const@ExternalRam.Default, var@ExternalRam.Default;
+				exception: code@InternalRam.ExceptionCode, const@ExternalRam.Default, var@ExternalRam.Default;
 				default: code@ExternalRam.Default, const@ExternalRam.Default, var@ExternalRam.Default;      
 		}
 	}

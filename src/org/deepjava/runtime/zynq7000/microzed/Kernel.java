@@ -150,54 +150,57 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 //		US.ASM("b -8"); // stop here
 		US.PUT4(SLCR_UNLOCK, 0xdf0d);
 		
-//		US.PUT4(ARM_PLL_CFG, 0x0fa220);	// configure ARM PLL for 1333MHZ with 33.33MHz quartz
-//		US.PUT4(ARM_PLL_CTRL, 0x28011);	// divider = 40, bypass, reset
-//		US.PUT4(ARM_PLL_CTRL, US.GET4(ARM_PLL_CTRL) & ~1);	// deassert reset
-//		while (!US.BIT(PLL_STATUS, 0));	// wait to lock
-//		US.PUT4(ARM_PLL_CTRL, US.GET4(ARM_PLL_CTRL) & ~0x10);	// no bypass
-//		US.PUT4(ARM_CLK_CTRL, 0x1f000200);	// use ARM PLL for CPU, divisor = 2 -> processor frequency = 667MHz
-//		// CPU_6x4x = 667MHz, CPU_3x2x = 333MHz, CPU_2x = 222MHz, CPU_1x = 111MHz
-//		
-//		// configure PLL if loading from JTAG, in case of POR, the PLL will be setup by FSBL
-//		if (!US.BIT(REBOOT_STATUS, 22)) {	
+		US.PUT4(ARM_PLL_CFG, 0x0fa220);	// configure ARM PLL for 1333MHZ with 33.33MHz quartz
+		US.PUT4(ARM_PLL_CTRL, 0x28011);	// divider = 40, bypass, reset
+		US.PUT4(ARM_PLL_CTRL, US.GET4(ARM_PLL_CTRL) & ~1);	// deassert reset
+		while (!US.BIT(PLL_STATUS, 0));	// wait to lock
+		US.PUT4(ARM_PLL_CTRL, US.GET4(ARM_PLL_CTRL) & ~0x10);	// no bypass
+		US.PUT4(ARM_CLK_CTRL, 0x1f000200);	// use ARM PLL for CPU, divisor = 2 -> processor frequency = 667MHz
+		// CPU_6x4x = 667MHz, CPU_3x2x = 333MHz, CPU_2x = 222MHz, CPU_1x = 111MHz
+		
+		// never configure the DDR PLL, will be set by host when loading through JTAG
+		// or will be set by FSBL after POR
+		// notably, the DDR PLL must not be set when loading through JTAG and code code resides in DDR
 //			US.PUT4(DDR_PLL_CFG, 0x12c220);	// configure DDR PLL for 1067MHZ with 33.33MHz quartz
 //			US.PUT4(DDR_PLL_CTRL, 0x20011);	// divider = 32, bypass, reset
 //			US.PUT4(DDR_PLL_CTRL, US.GET4(DDR_PLL_CTRL) & ~1);	// deassert reset
 //			while (!US.BIT(PLL_STATUS, 1));	// wait to lock
 //			US.PUT4(DDR_PLL_CTRL, US.GET4(DDR_PLL_CTRL) & ~0x10);	// no bypass
 //			US.PUT4(DDR_CLK_CTRL, 0xc200003);	// 2x-divisor = 3, 3x-divisor = 2
-//		
-//			US.PUT4(IO_PLL_CFG, 0x1f42c0);	// configure IO PLL for 1000MHZ with 33.33MHz quartz
-//			US.PUT4(IO_PLL_CTRL, 0x1e011);	// divider = 30, bypass, reset
-//			US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~1);	// deassert reset
-//			while (!US.BIT(PLL_STATUS, 2));	// wait to lock
-//			US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~0x10);	// no bypass
-//		}
-
-//		US.PUT4(CPU_RST_CTRL, 0x100);	// assert peripheral reset, resets the GIC and timers
-//		US.PUT4(CPU_RST_CTRL, 0);	// deassert peripheral reset
-//		US.PUT4(UART_CLK_CTRL, 0xa03);	// UART clock, divisor = 10 -> 100MHz, select IO PLL, clock enable for UART0/1
-//		US.PUT4(APER_CLK_CTRL, 0x01ffcccd);	// enable clocks to access register of all peripherials
-//		US.PUT4(FPGA0_CLK_CTRL, 0x00200500); // PL clock 0, divisor1 = 2, divisor0 = 5, select IO PLL -> 100MHz
-//        US.PUT4(GTCR, 0x1);	// enable global timer, prescaler = 1 -> 333MHz
 		
-//		US.PUT4(MIO_PIN_47, 0x300);		// led, LVCMOS18, fast, GPIO 47, tristate disable
-//		US.PUT4(MIO_PIN_51, 0x300);		// led, LVCMOS18, fast, GPIO 51, tristate disable
-//		US.PUT4(MIO_PIN_00, 0x300);		// led, LVCMOS18, fast, GPIO 0, tristate disable
-//		US.PUT4(MIO_PIN_09, 0x300);		// led, LVCMOS18, fast, GPIO 9, tristate disable
-//		US.PUT4(MIO_PIN_10, 0x300);		// led, LVCMOS18, fast, GPIO 10, tristate disable
-//		US.PUT4(MIO_PIN_11, 0x300);		// led, LVCMOS18, fast, GPIO 11, tristate disable
-//		US.PUT4(MIO_PIN_12, 0x300);		// led, LVCMOS18, fast, GPIO 12, tristate disable
-//		US.PUT4(MIO_PIN_13, 0x300);		// led, LVCMOS18, fast, GPIO 13, tristate disable
-//		US.PUT4(MIO_PIN_14, 0x12e1);	// UART0 rx
-//		US.PUT4(MIO_PIN_15, 0x12e0);	// UART0 tx
-//		US.PUT4(MIO_PIN_48, 0x12e0);	// UART1 tx
-//		US.PUT4(MIO_PIN_49, 0x12e1);	// UART1 rx
+		// configure PLL if loading from JTAG, in case of POR, the PLL will be setup by FSBL
+		if (!US.BIT(REBOOT_STATUS, 22)) { // is not a power-on reset
+			US.PUT4(IO_PLL_CFG, 0x1f42c0);	// configure IO PLL for 1000MHZ with 33.33MHz quartz
+			US.PUT4(IO_PLL_CTRL, 0x1e011);	// divider = 30, bypass, reset
+			US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~1);	// deassert reset
+			while (!US.BIT(PLL_STATUS, 2));	// wait to lock
+			US.PUT4(IO_PLL_CTRL, US.GET4(IO_PLL_CTRL) & ~0x10);	// no bypass
+		}
+
+		US.PUT4(CPU_RST_CTRL, 0x100);	// assert peripheral reset, resets the GIC and timers
+		US.PUT4(CPU_RST_CTRL, 0);	// deassert peripheral reset
+		US.PUT4(UART_CLK_CTRL, 0xa03);	// UART clock, divisor = 10 -> 100MHz, select IO PLL, clock enable for UART0/1
+		US.PUT4(APER_CLK_CTRL, 0x01ffcccd);	// enable clocks to access register of all peripherials
+		US.PUT4(FPGA0_CLK_CTRL, 0x00200500); // PL clock 0, divisor1 = 2, divisor0 = 5, select IO PLL -> 100MHz
+        US.PUT4(GTCR, 0x1);	// enable global timer, prescaler = 1 -> 333MHz
+		
+		US.PUT4(MIO_PIN_47, 0x300);		// led, LVCMOS18, fast, GPIO 47, tristate disable
+		US.PUT4(MIO_PIN_51, 0x300);		// led, LVCMOS18, fast, GPIO 51, tristate disable
+		US.PUT4(MIO_PIN_00, 0x300);		// led, LVCMOS18, fast, GPIO 0, tristate disable
+		US.PUT4(MIO_PIN_09, 0x300);		// led, LVCMOS18, fast, GPIO 9, tristate disable
+		US.PUT4(MIO_PIN_10, 0x300);		// led, LVCMOS18, fast, GPIO 10, tristate disable
+		US.PUT4(MIO_PIN_11, 0x300);		// led, LVCMOS18, fast, GPIO 11, tristate disable
+		US.PUT4(MIO_PIN_12, 0x300);		// led, LVCMOS18, fast, GPIO 12, tristate disable
+		US.PUT4(MIO_PIN_13, 0x300);		// led, LVCMOS18, fast, GPIO 13, tristate disable
+		US.PUT4(MIO_PIN_14, 0x12e1);	// UART0 rx
+		US.PUT4(MIO_PIN_15, 0x12e0);	// UART0 tx
+		US.PUT4(MIO_PIN_48, 0x12e0);	// UART1 tx
+		US.PUT4(MIO_PIN_49, 0x12e1);	// UART1 rx
 
 		US.PUT4(LVL_SHFTR_EN, 0xf);	// enable all level shifters between PS and PL
 		US.PUT4(FPGA_RST_CTRL, 0);	// deassert FPGA reset
-//		US.PUT4(UART_RST_CTRL, 0xa);	// assert UART1 reset, must be reset when already having been setup by FSBL
-//		US.PUT4(UART_RST_CTRL, 0);	// deassert UART1 reset
+		US.PUT4(UART_RST_CTRL, 0xa);	// assert UART1 reset, must be reset when already having been setup by FSBL
+		US.PUT4(UART_RST_CTRL, 0);	// deassert UART1 reset
 		US.PUT4(SLCR_LOCK, 0x767b);
 
         // enable coprocessor 10 and 11
@@ -211,7 +214,7 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
         US.ASM("vmsr FPEXC, r6");
         
         int addr = sysTabBaseAddr;
-//		if (US.BIT(REBOOT_STATUS, 22)) {
+//		if (US.BIT(REBOOT_STATUS, 22)) { // is a power-on reset
 //			// sysTab is in flash when running out of flash
 //			addr += 0x100000;
 //			// copy vector table from start of DDR to address 0
@@ -266,7 +269,7 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 					US.ASM("mov r15, r0");
 				} else {	// kernel
 					loopAddr = US.ADR_OF_METHOD("org/deepjava/runtime/zynq7000/microzed/Kernel/loop");
-//					US.ASM("cpsie i");	// enable IRQ
+					US.ASM("cpsie i");	// enable IRQ
 				}
 			}
 

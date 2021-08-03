@@ -66,6 +66,7 @@ class Reset extends ARMException implements Izynq7000, IdeepCompilerConstants {
 	}
 	
 	static void reset() {
+		US.ASM("cps #svc");	// change to supervisor mode
 		int addr = sysTabBaseAddr;
 		// sysTab is in flash when running out of flash
 //		if (US.BIT(REBOOT_STATUS, 22)) addr += 0x100000;

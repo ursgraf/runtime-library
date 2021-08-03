@@ -35,7 +35,7 @@ public class IrqInterrupt extends ARMException implements Izynq7000 {
 	 * Each interrupt request, which cannot be handled by a registered interrupt handler
 	 * increments this counter
 	 */
-	public static int nofUnexpInterrupts = 0;
+	public static int nofUnexpInterrupts;
 
 	/**
 	 * The number of times a irq interrupt was executed
