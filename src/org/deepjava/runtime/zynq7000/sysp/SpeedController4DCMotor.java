@@ -38,7 +38,6 @@ public class SpeedController4DCMotor implements FlinkDefinitions {
 	public FlinkCounter enc;
 	private int pwmChannel0, pwmChannel1, encChannel;
 	
-	private static final int pwmFreq = 20000;	// frequency of the pwm control signal in Hz
 	private static final int fqd = 4;			// factor for fast quadrature decoding
 	
 	private float scale;						// scaling factor [rad/tick]
@@ -52,6 +51,7 @@ public class SpeedController4DCMotor implements FlinkDefinitions {
 	private int absPos;							// [ticks]
 	private float speed = 0;					// [1/s]
 	private float e_1 = 0;						// [1/s]
+	private int pwmFreq = 20000;				// frequency of the pwm control signal in Hz
 	private int period;							// period in pwm setting
 	private boolean lock;						// locked-antiphase mode
 	
@@ -155,9 +155,17 @@ public class SpeedController4DCMotor implements FlinkDefinitions {
 	 * @param v desired speed in radian per second [1/s]
 	 */
 	public void setSpeed(float v) {
-		this.desiredSpeed = v;
+		desiredSpeed = v;
 	}
 	
+	/**
+	 * Set desired PWM frequency. Default is 20000Hz.
+	 * @param f frequency of the pwm control signal in Hz
+	 */
+	public void setPwmFreq(int f) {
+		pwmFreq = f;
+		if (pwm != null) period = pwm.getBaseClock() / f;
+	}
 	
 	/** 
 	 * Returns the current speed.
