@@ -5,7 +5,7 @@ import org.deepjava.flink.core.FlinkSubDevice;
 
 /**
  * The flink ADC subdevice realizes analog inputs in a flink device.
- * Its number of channels depend on the actual adc chip used. 
+ * Its number of channels depends on the actual adc chip used. 
  * 
  * @author Urs Graf 
  */
@@ -16,7 +16,7 @@ public class FlinkADC implements FlinkDefinitions {
 	private static int RESOLUTION_ADDRESS = 0;
 	private static int VALUE_0_ADDRESS = RESOLUTION_ADDRESS + REGISTER_WIDTH;
 	private int resolution;
-	private int bit_mask;
+	private int mask;
 	
 	/**
 	 * Creates a ADC subdevice.
@@ -24,10 +24,8 @@ public class FlinkADC implements FlinkDefinitions {
 	 */
 	public FlinkADC(FlinkSubDevice dev){
 		this.dev = dev;
-		this.resolution = dev.read(RESOLUTION_ADDRESS);
-		for(int i = 0; i < resolution;i++) {
-			bit_mask = bit_mask | (0x1<<i);
-		}
+		resolution = dev.read(RESOLUTION_ADDRESS);
+		mask = resolution - 1;
 	}
 	
 	/** 
@@ -36,7 +34,7 @@ public class FlinkADC implements FlinkDefinitions {
 	 * 4096 steps.
 	 * @return number of resolvable steps
 	 */
-	public int getResolution(){
+	public int getResolution() {
 		return resolution;
 	}
 	
@@ -48,7 +46,7 @@ public class FlinkADC implements FlinkDefinitions {
 	 */
 	public int getValue(int channel) {
 		if (channel < dev.nofChannels) {
-			return (dev.read(VALUE_0_ADDRESS + channel * REGISTER_WIDTH) & bit_mask);
+			return (dev.read(VALUE_0_ADDRESS + channel * REGISTER_WIDTH) & mask);
 		} else {
 			return 0;
 		}
