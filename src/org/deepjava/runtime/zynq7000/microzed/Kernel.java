@@ -33,7 +33,9 @@ import org.deepjava.unsafe.arm.US;
 public class Kernel implements IMicroZed, IdeepCompilerConstants {
 	final static int stackEndPattern = 0xee22dd33;
 	/** Clock frequency of the processor. */
-	public static final int clockFrequency = 667000000; // Hz
+	public static final int clockFrequency = 333333333; // Hz
+	private static int lastTimeStamp = 0;
+	private static long timerTicksElapsed = 0;
 	
 	static int loopAddr;
 	static int cmdAddr;
@@ -41,6 +43,7 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 	@SuppressWarnings("unused")
 	private static void loop() {	// endless loop
 		while (true) {
+//			updateTime();
 			try {
 				if (cmdAddr != -1) {
 					US.PUTGPR(6, cmdAddr);	// use scratch register
@@ -55,6 +58,16 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 			}
 		}
 	}
+
+	private static void updateTime() {
+		int currentTimeStamp = US.GET4(PTCOUNT);
+		int timeDifference =lastTimeStamp - currentTimeStamp;
+		lastTimeStamp = currentTimeStamp;
+		
+		// the private timer counts down, so a negative time difference (currentTime < lastTime)
+		// means a positive amount of time has elapsed
+		timerTicksElapsed += timeDifference; 
+	}
 	
 	/** 
 	 * Reads the system time.
@@ -62,14 +75,7 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 	 * @return System time in \u00b5s
 	 */
 	public static long timeUs() {
-		int high1, high2, low;
-		do {
-			high1 = US.GET4(GTCR_U); 
-			low = US.GET4(GTCR_L);
-			high2 = US.GET4(GTCR_U); 
-		} while (high1 != high2);
-		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
-		return time / 333;	// clock = 333MHz
+		return timeNs() / 1000;
 	}
 	
 	/** 
@@ -78,14 +84,8 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 	 * @return System time in ns
 	 */
 	public static long timeNs() {
-		int high1, high2, low;
-		do {
-			high1 = US.GET4(GTCR_U); 
-			low = US.GET4(GTCR_L);
-			high2 = US.GET4(GTCR_U); 
-		} while (high1 != high2);
-		long time = ((long)high1 << 32) | ((long)low & 0xffffffffL);
-		return time * 3;	// clock = 333MHz
+		updateTime();
+		return timerTicksElapsed * (1000000000/(clockFrequency/2));
 	}
 	
 	/** 
@@ -230,6 +230,10 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 		US.PUT4(ICCPMR, 0xff);	// set mask, the last 3 bits are read as 0
 		US.PUT4(ICCICR, 1);	// use irq, global interrupt enable
 		US.PUT4(ICDDCR, 1);	// enable distributor
+		
+		/* configure private timer*/
+		US.PUT4(PTLR, 0xffffffff); //reload timer to 2^31-1
+		US.PUT4(PTCR, 0x103);  //prescaler = 1, disable interrupt, enable auto reload and timer
 
 		int classConstOffset = US.GET4(addr);
 //		int state = 0;
