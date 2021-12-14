@@ -144,6 +144,13 @@ public class UART extends IrqInterrupt implements Izynq7000 {
 	 *            choose 9 data bits, no parity bit is available!
 	 */
 	public void start(int baudRate, short parity, short data) {
+		if (diff == 0) {  
+			US.PUT4(SLCR_UNLOCK, 0xdf0d);
+			US.PUT4(MIO_PIN_14, 0x12e1);	// UART0 rx
+			US.PUT4(MIO_PIN_15, 0x12e0);	// UART0 tx
+			US.PUT4(SLCR_LOCK, 0x767b);
+		}
+
 		final int BDIV = 15;
 		US.PUT4(UART0_BAUDGEN + diff, UART_CLK / (baudRate * (BDIV + 1)));	// CD
 		US.PUT4(UART0_BAUDDIV + diff, BDIV);

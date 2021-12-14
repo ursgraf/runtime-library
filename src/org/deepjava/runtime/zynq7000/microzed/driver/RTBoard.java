@@ -132,10 +132,6 @@ public class RTBoard implements IMicroZed {
 		dac = FlinkDevice.getAD5668();
 
 		// init leds and buttons
-		US.PUT4(SLCR_UNLOCK, 0xdf0d);
-		US.PUT4(MIO_PIN_14, 0x300);
-		US.PUT4(MIO_PIN_15, 0x300);
-		US.PUT4(SLCR_LOCK, 0x767b);
 		int reg = US.GET4(GPIO_DIR0);
 		reg |= 0x3c00; 
 		reg &= ~0xc000;
