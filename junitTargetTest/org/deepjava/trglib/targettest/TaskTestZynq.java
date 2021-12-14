@@ -22,6 +22,7 @@ import org.deepjava.runtime.Kernel;
 import org.deepjava.runtime.arm32.Task;
 import org.deepjava.runtime.util.Actionable;
 import org.deepjava.runtime.zynq7000.*;
+import org.deepjava.unsafe.arm.US;
 
 import ch.ntb.inf.junitTarget.*;
 
@@ -51,11 +52,13 @@ public class TaskTestZynq implements Izynq7000 {
 	
 	@Test
 	public static void testTaskTime() {
-//		US.PUT2(TBSCR, 0); 	// stop timer
-		long time = Kernel.timeUs();
+		US.PUT4(GTCR, 0);	// disable global timer, prescaler = 1 -> 333MHz
+		long time = Kernel.timeNs();
 		int timeMs = Task.time();	
-		Assert.assertEquals("Test1", timeMs, time / 1000);
-//		US.PUT2(TBSCR, 1); 	// restart timer
+		Assert.assertEquals("Test1", timeMs, time / 1000000);
+		time = Kernel.timeUs();
+		Assert.assertEquals("Test2", timeMs, (double)time / 1000, 10);
+		US.PUT4(GTCR, 0x1);	// enable global timer, prescaler = 1 -> 333MHz
 		CmdTransmitter.sendDone();
 	}	
 }

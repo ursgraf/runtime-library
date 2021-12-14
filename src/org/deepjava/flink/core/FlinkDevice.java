@@ -3,6 +3,7 @@ package org.deepjava.flink.core;
 import org.deepjava.flink.interfaces.zynq.AXIInterface;
 import org.deepjava.flink.subdevices.FlinkADC;
 import org.deepjava.flink.subdevices.FlinkCounter;
+import org.deepjava.flink.subdevices.FlinkDAC;
 import org.deepjava.flink.subdevices.FlinkGPIO;
 import org.deepjava.flink.subdevices.FlinkInfo;
 import org.deepjava.flink.subdevices.FlinkPPWA;
@@ -288,6 +289,17 @@ public class FlinkDevice implements FlinkDefinitions {
 	public static FlinkADC getAD7476() {
 		FlinkSubDevice d = getInstance().getSubdeviceByType(ANALOG_INPUT_INTERFACE_ID, 3);
 		if (d != null) return new FlinkADC(d);
+		return null;
+	}
+
+	/**
+	 * Returns a {@link org.deepjava.flink.subdevices.FlinkDAC} subdevice with subtype 0 
+	 * if present in this flink device. Subtype 3 is used for a AD7476 device. 
+	 * @return adc subdevice, null if not available
+	 */
+	public static FlinkDAC getAD5668() {
+		FlinkSubDevice d = getInstance().getSubdeviceByType(ANALOG_OUTPUT_INTERFACE_ID, 1);
+		if (d != null) return new FlinkDAC(d);
 		return null;
 	}
 

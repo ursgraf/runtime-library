@@ -192,8 +192,8 @@ public class Kernel implements IMicroZed, IdeepCompilerConstants {
 		US.PUT4(MIO_PIN_11, 0x300);		// led, LVCMOS18, fast, GPIO 11, tristate disable
 		US.PUT4(MIO_PIN_12, 0x300);		// led, LVCMOS18, fast, GPIO 12, tristate disable
 		US.PUT4(MIO_PIN_13, 0x300);		// led, LVCMOS18, fast, GPIO 13, tristate disable
-		US.PUT4(MIO_PIN_14, 0x12e1);	// UART0 rx
-		US.PUT4(MIO_PIN_15, 0x12e0);	// UART0 tx
+		US.PUT4(MIO_PIN_14, 0x300);		// led, LVCMOS18, fast, GPIO 14, tristate disable
+		US.PUT4(MIO_PIN_15, 0x300);		// led, LVCMOS18, fast, GPIO 15, tristate disable
 		US.PUT4(MIO_PIN_48, 0x12e0);	// UART1 tx
 		US.PUT4(MIO_PIN_49, 0x12e1);	// UART1 rx
 
