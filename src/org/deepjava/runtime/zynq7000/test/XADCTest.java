@@ -38,17 +38,11 @@ public class XADCTest extends Task {
 	 * @see org.deepjava.runtime.arm32.Task#action()
 	 */
 	public void action() {
-//		for(int i = 0; i < 4; i++) {
-//			System.out.print(sense.read(i));
-//			System.out.print('\t');
-//		}
-		System.out.print(XADC.read(0));
-		System.out.print('\t');
-		System.out.print(XADC.read(1));
-		System.out.print('\t');
-		System.out.print(XADC.read(2));
-		System.out.print('\t');
-		System.out.println(XADC.read(3));
+		for (int i = 0; i < 4; i++) {
+			System.out.print(XADC.read(i));
+			System.out.print('\t');
+		}
+		System.out.println();
 	}
 	
 	static {
@@ -57,8 +51,6 @@ public class XADCTest extends Task {
 		System.out = new PrintStream(uart.out);
 		System.err = System.out;
 		System.out.println("XADC test");
-		
-		// Initialize TCRT1000 driver for 4 sensors and start reading values
 		
 		// Create and install demo task
 		Task t = new XADCTest();
